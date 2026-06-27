@@ -1,20 +1,30 @@
-CREATE DATABASE lumiflow;
+CREATE DATABASE IF NOT EXISTS lumiflow
+    CHARACTER SET utf8mb4
+    COLLATE utf8mb4_unicode_ci;
+
 USE lumiflow;
 
--- =========================
+-- =====================================================
 -- SEGURANÇA
--- =========================
+-- =====================================================
 
 CREATE TABLE nivel_acesso
 (
-    id        BIGINT AUTO_INCREMENT PRIMARY KEY,
-    descricao VARCHAR(50) NOT NULL
+    id            BIGINT AUTO_INCREMENT PRIMARY KEY,
+    descricao     VARCHAR(50) NOT NULL,
+
+    criado_em     TIMESTAMP   NOT NULL DEFAULT CURRENT_TIMESTAMP,
+    atualizado_em TIMESTAMP   NULL     DEFAULT NULL ON UPDATE CURRENT_TIMESTAMP
 );
 
 CREATE TABLE setor
 (
-    id   BIGINT AUTO_INCREMENT PRIMARY KEY,
-    nome VARCHAR(100) NOT NULL
+    id            BIGINT AUTO_INCREMENT PRIMARY KEY,
+    nome          VARCHAR(100) NOT NULL,
+    possui_etapas BOOLEAN      NOT NULL DEFAULT FALSE,
+
+    criado_em     TIMESTAMP    NOT NULL DEFAULT CURRENT_TIMESTAMP,
+    atualizado_em TIMESTAMP    NULL     DEFAULT NULL ON UPDATE CURRENT_TIMESTAMP
 );
 
 CREATE TABLE usuario
@@ -23,114 +33,123 @@ CREATE TABLE usuario
     nome            VARCHAR(100) NOT NULL,
     login           VARCHAR(50)  NOT NULL UNIQUE,
     senha           VARCHAR(255) NOT NULL,
-    criado_em       TIMESTAMP    NOT NULL DEFAULT CURRENT_TIMESTAMP,
 
     nivel_acesso_id BIGINT       NOT NULL,
-    setor_id        BIGINT       NOT NULL,
+    setor_id        BIGINT       NULL,
+
+    criado_em       TIMESTAMP    NOT NULL DEFAULT CURRENT_TIMESTAMP,
+    atualizado_em   TIMESTAMP    NULL     DEFAULT NULL ON UPDATE CURRENT_TIMESTAMP,
 
     CONSTRAINT fk_usuario_nivel_acesso
         FOREIGN KEY (nivel_acesso_id)
-            REFERENCES nivel_acesso (id)
-            ON UPDATE CASCADE
-            ON DELETE RESTRICT,
+            REFERENCES nivel_acesso (id),
 
     CONSTRAINT fk_usuario_setor
         FOREIGN KEY (setor_id)
             REFERENCES setor (id)
-            ON UPDATE CASCADE
-            ON DELETE RESTRICT
 );
 
--- =========================
+-- =====================================================
 -- PRODUÇÃO
--- =========================
+-- =====================================================
 
 CREATE TABLE maquina
 (
-    id       BIGINT AUTO_INCREMENT PRIMARY KEY,
-    nome     VARCHAR(100) NOT NULL,
+    id            BIGINT AUTO_INCREMENT PRIMARY KEY,
+    nome          VARCHAR(100) NOT NULL,
 
-    setor_id BIGINT       NOT NULL,
+    setor_id      BIGINT       NOT NULL,
+
+    criado_em     TIMESTAMP    NOT NULL DEFAULT CURRENT_TIMESTAMP,
+    atualizado_em TIMESTAMP    NULL     DEFAULT NULL ON UPDATE CURRENT_TIMESTAMP,
 
     CONSTRAINT fk_maquina_setor
         FOREIGN KEY (setor_id)
             REFERENCES setor (id)
-            ON UPDATE CASCADE
-            ON DELETE RESTRICT
 );
 
 CREATE TABLE etapa_setor
 (
-    id       BIGINT AUTO_INCREMENT PRIMARY KEY,
-    nome     VARCHAR(100) NOT NULL,
-    ordem    INT          NOT NULL,
+    id            BIGINT AUTO_INCREMENT PRIMARY KEY,
+    nome          VARCHAR(100) NOT NULL,
+    ordem         INT          NOT NULL,
 
-    setor_id BIGINT       NOT NULL,
+    setor_id      BIGINT       NOT NULL,
+
+    criado_em     TIMESTAMP    NOT NULL DEFAULT CURRENT_TIMESTAMP,
+    atualizado_em TIMESTAMP    NULL     DEFAULT NULL ON UPDATE CURRENT_TIMESTAMP,
 
     CONSTRAINT fk_etapa_setor
         FOREIGN KEY (setor_id)
             REFERENCES setor (id)
-            ON UPDATE CASCADE
-            ON DELETE RESTRICT
 );
 
 CREATE TABLE produto
 (
-    id        BIGINT AUTO_INCREMENT PRIMARY KEY,
-    nome      VARCHAR(100) NOT NULL,
-    descricao VARCHAR(255)
+    id            BIGINT AUTO_INCREMENT PRIMARY KEY,
+    nome          VARCHAR(100) NOT NULL,
+    descricao     VARCHAR(255),
+
+    criado_em     TIMESTAMP    NOT NULL DEFAULT CURRENT_TIMESTAMP,
+    atualizado_em TIMESTAMP    NULL     DEFAULT NULL ON UPDATE CURRENT_TIMESTAMP
 );
 
 CREATE TABLE roteiro_produto
 (
-    id             BIGINT AUTO_INCREMENT PRIMARY KEY,
-    sequencia      INT    NOT NULL,
+    id         BIGINT AUTO_INCREMENT PRIMARY KEY,
+    sequencia  INT    NOT NULL,
 
-    produto_id     BIGINT NOT NULL,
-    etapa_setor_id BIGINT NOT NULL,
+    produto_id BIGINT NOT NULL,
+    setor_id   BIGINT NOT NULL,
 
     CONSTRAINT fk_roteiro_produto
         FOREIGN KEY (produto_id)
             REFERENCES produto (id)
-            ON UPDATE CASCADE
             ON DELETE CASCADE,
 
-    CONSTRAINT fk_roteiro_etapa
-        FOREIGN KEY (etapa_setor_id)
-            REFERENCES etapa_setor (id)
-            ON UPDATE CASCADE
-            ON DELETE RESTRICT
+    CONSTRAINT fk_roteiro_setor
+        FOREIGN KEY (setor_id)
+            REFERENCES setor (id)
 );
 
--- =========================
+-- =====================================================
 -- ORDENS DE PRODUÇÃO
--- =========================
+-- =====================================================
 
 CREATE TABLE ordem_producao
 (
-    id           BIGINT AUTO_INCREMENT PRIMARY KEY,
-    numero       VARCHAR(30) NOT NULL UNIQUE,
-    data_criacao TIMESTAMP   NOT NULL DEFAULT CURRENT_TIMESTAMP,
-    quantidade   INT         NOT NULL,
+    id            BIGINT AUTO_INCREMENT PRIMARY KEY,
+    numero        VARCHAR(30) NOT NULL UNIQUE,
 
-    status       VARCHAR(30) NOT NULL,
+    quantidade    INT         NOT NULL,
+    status        VARCHAR(30) NOT NULL,
 
-    produto_id   BIGINT      NOT NULL,
+    produto_id    BIGINT      NOT NULL,
+    criado_por_id BIGINT      NOT NULL,
+
+    data_criacao  TIMESTAMP   NOT NULL DEFAULT CURRENT_TIMESTAMP,
+
+    criado_em     TIMESTAMP   NOT NULL DEFAULT CURRENT_TIMESTAMP,
+    atualizado_em TIMESTAMP   NULL     DEFAULT NULL ON UPDATE CURRENT_TIMESTAMP,
 
     CONSTRAINT fk_ordem_produto
         FOREIGN KEY (produto_id)
-            REFERENCES produto (id)
-            ON UPDATE CASCADE
-            ON DELETE RESTRICT
+            REFERENCES produto (id),
+
+    CONSTRAINT fk_ordem_criado_por
+        FOREIGN KEY (criado_por_id)
+            REFERENCES usuario (id)
 );
 
 CREATE TABLE ordem_setor
 (
     id                BIGINT AUTO_INCREMENT PRIMARY KEY,
+
     sequencia         INT         NOT NULL,
 
     qtd_recebida      INT         NOT NULL DEFAULT 0,
     qtd_produzida     INT         NOT NULL DEFAULT 0,
+    qtd_pendente      INT         NOT NULL DEFAULT 0,
 
     status            VARCHAR(30) NOT NULL,
 
@@ -138,119 +157,168 @@ CREATE TABLE ordem_setor
     fim               TIMESTAMP   NULL,
 
     ordem_producao_id BIGINT      NOT NULL,
-    etapa_setor_id    BIGINT      NOT NULL,
+    setor_id          BIGINT      NOT NULL,
 
-    CONSTRAINT fk_ordem_setor_op
+    criado_em         TIMESTAMP   NOT NULL DEFAULT CURRENT_TIMESTAMP,
+    atualizado_em     TIMESTAMP   NULL     DEFAULT NULL ON UPDATE CURRENT_TIMESTAMP,
+
+    CONSTRAINT fk_ordem_setor_ordem
         FOREIGN KEY (ordem_producao_id)
             REFERENCES ordem_producao (id)
-            ON UPDATE CASCADE
             ON DELETE CASCADE,
 
-    CONSTRAINT fk_ordem_setor_etapa
-        FOREIGN KEY (etapa_setor_id)
-            REFERENCES etapa_setor (id)
-            ON UPDATE CASCADE
-            ON DELETE RESTRICT
+    CONSTRAINT fk_ordem_setor_setor
+        FOREIGN KEY (setor_id)
+            REFERENCES setor (id)
 );
 
--- =========================
--- PRODUÇÃO
--- =========================
+-- =====================================================
+-- LANÇAMENTOS DE PRODUÇÃO
+-- =====================================================
 
 CREATE TABLE lancamento
 (
     id             BIGINT AUTO_INCREMENT PRIMARY KEY,
+
     qtd_produzida  INT       NOT NULL,
-    data_hora      TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP,
     observacao     TEXT,
+
+    data_hora      TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP,
 
     ordem_setor_id BIGINT    NOT NULL,
     maquina_id     BIGINT    NOT NULL,
     usuario_id     BIGINT    NOT NULL,
 
+    etapa_setor_id BIGINT    NULL,
+
     CONSTRAINT fk_lancamento_ordem_setor
         FOREIGN KEY (ordem_setor_id)
-            REFERENCES ordem_setor (id)
-            ON UPDATE CASCADE
-            ON DELETE RESTRICT,
+            REFERENCES ordem_setor (id),
 
     CONSTRAINT fk_lancamento_maquina
         FOREIGN KEY (maquina_id)
-            REFERENCES maquina (id)
-            ON UPDATE CASCADE
-            ON DELETE RESTRICT,
+            REFERENCES maquina (id),
 
     CONSTRAINT fk_lancamento_usuario
         FOREIGN KEY (usuario_id)
-            REFERENCES usuario (id)
-            ON UPDATE CASCADE
-            ON DELETE RESTRICT
+            REFERENCES usuario (id),
+
+    CONSTRAINT fk_lancamento_etapa
+        FOREIGN KEY (etapa_setor_id)
+            REFERENCES etapa_setor (id)
 );
 
--- =========================
+-- =====================================================
 -- QUALIDADE
--- =========================
+-- =====================================================
 
 CREATE TABLE refugo
 (
-    id             BIGINT AUTO_INCREMENT PRIMARY KEY,
-    data_hora      TIMESTAMP    NOT NULL DEFAULT CURRENT_TIMESTAMP,
-    destino        VARCHAR(100) NOT NULL,
-    qtd_refugo     INT          NOT NULL,
+    id              BIGINT AUTO_INCREMENT PRIMARY KEY,
 
-    ordem_setor_id BIGINT       NOT NULL,
+    qtd_refugo      INT         NOT NULL,
+
+    motivo          TEXT        NOT NULL,
+
+    destino         VARCHAR(20) NOT NULL,
+
+    data_hora       TIMESTAMP   NOT NULL DEFAULT CURRENT_TIMESTAMP,
+
+    ordem_setor_id  BIGINT      NOT NULL,
+    setor_origem_id BIGINT      NOT NULL,
+    usuario_id      BIGINT      NOT NULL,
+
+    criado_em       TIMESTAMP   NOT NULL DEFAULT CURRENT_TIMESTAMP,
+    atualizado_em   TIMESTAMP   NULL     DEFAULT NULL ON UPDATE CURRENT_TIMESTAMP,
 
     CONSTRAINT fk_refugo_ordem_setor
         FOREIGN KEY (ordem_setor_id)
-            REFERENCES ordem_setor (id)
-            ON UPDATE CASCADE
-            ON DELETE RESTRICT
+            REFERENCES ordem_setor (id),
+
+    CONSTRAINT fk_refugo_setor_origem
+        FOREIGN KEY (setor_origem_id)
+            REFERENCES setor (id),
+
+    CONSTRAINT fk_refugo_usuario
+        FOREIGN KEY (usuario_id)
+            REFERENCES usuario (id),
+
+    CONSTRAINT chk_refugo_destino
+        CHECK (destino IN ('RETRABALHO', 'DESCARTE'))
 );
 
 CREATE TABLE retrabalho
 (
-    id          BIGINT AUTO_INCREMENT PRIMARY KEY,
-    qtd_refeita INT       NOT NULL,
-    data_hora   TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP,
-    observacao  TEXT,
+    id            BIGINT AUTO_INCREMENT PRIMARY KEY,
 
-    refugo_id   BIGINT    NOT NULL,
+    qtd_refeita   INT       NOT NULL,
+    observacao    TEXT,
+
+    data_hora     TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP,
+
+    refugo_id     BIGINT    NOT NULL,
+    maquina_id    BIGINT    NOT NULL,
+    usuario_id    BIGINT    NOT NULL,
+
+    criado_em     TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP,
+    atualizado_em TIMESTAMP NULL     DEFAULT NULL ON UPDATE CURRENT_TIMESTAMP,
 
     CONSTRAINT fk_retrabalho_refugo
         FOREIGN KEY (refugo_id)
             REFERENCES refugo (id)
-            ON UPDATE CASCADE
-            ON DELETE CASCADE
+            ON DELETE CASCADE,
+
+    CONSTRAINT fk_retrabalho_maquina
+        FOREIGN KEY (maquina_id)
+            REFERENCES maquina (id),
+
+    CONSTRAINT fk_retrabalho_usuario
+        FOREIGN KEY (usuario_id)
+            REFERENCES usuario (id)
 );
 
--- =========================
--- MATERIA PRIMA (VIDRO)
--- =========================
+-- =====================================================
+-- CONTROLE DE VIDRO
+-- =====================================================
 
 CREATE TABLE entrada_vidro
 (
-    id         BIGINT AUTO_INCREMENT PRIMARY KEY,
+    id            BIGINT AUTO_INCREMENT PRIMARY KEY,
 
-    tipo_vidro VARCHAR(30)    NOT NULL,
+    tipo_vidro    VARCHAR(30)    NOT NULL,
+    quantidade    DECIMAL(10, 2) NOT NULL,
 
-    quantidade DECIMAL(10, 2) NOT NULL,
-    data_hora  TIMESTAMP      NOT NULL DEFAULT CURRENT_TIMESTAMP
+    observacao    TEXT,
+
+    data_hora     TIMESTAMP      NOT NULL DEFAULT CURRENT_TIMESTAMP,
+
+    usuario_id    BIGINT         NOT NULL,
+
+    criado_em     TIMESTAMP      NOT NULL DEFAULT CURRENT_TIMESTAMP,
+    atualizado_em TIMESTAMP      NULL     DEFAULT NULL ON UPDATE CURRENT_TIMESTAMP,
+
+    CONSTRAINT fk_entrada_vidro_usuario
+        FOREIGN KEY (usuario_id)
+            REFERENCES usuario (id)
 );
 
 CREATE TABLE consumo_vidro
 (
-    id             BIGINT AUTO_INCREMENT PRIMARY KEY,
+    id            BIGINT AUTO_INCREMENT PRIMARY KEY,
 
-    tipo_vidro     VARCHAR(30)    NOT NULL,
+    tipo_vidro    VARCHAR(30)    NOT NULL,
+    quantidade    DECIMAL(10, 2) NOT NULL,
 
-    quantidade     DECIMAL(10, 2) NOT NULL,
-    data_hora      TIMESTAMP      NOT NULL DEFAULT CURRENT_TIMESTAMP,
+    observacao    TEXT,
 
-    ordem_setor_id BIGINT         NOT NULL,
+    data_hora     TIMESTAMP      NOT NULL DEFAULT CURRENT_TIMESTAMP,
 
-    CONSTRAINT fk_consumo_ordem_setor
-        FOREIGN KEY (ordem_setor_id)
-            REFERENCES ordem_setor (id)
-            ON UPDATE CASCADE
-            ON DELETE RESTRICT
+    usuario_id    BIGINT         NOT NULL,
+
+    criado_em     TIMESTAMP      NOT NULL DEFAULT CURRENT_TIMESTAMP,
+    atualizado_em TIMESTAMP      NULL     DEFAULT NULL ON UPDATE CURRENT_TIMESTAMP,
+
+    CONSTRAINT fk_consumo_vidro_usuario
+        FOREIGN KEY (usuario_id)
+            REFERENCES usuario (id)
 );
