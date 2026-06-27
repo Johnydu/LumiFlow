@@ -1,0 +1,26 @@
+package br.com.lumiflow.entity;
+
+import jakarta.persistence.*;
+import lombok.*;
+
+@Entity
+@AllArgsConstructor
+@NoArgsConstructor
+@Getter
+@Setter
+@Builder
+@Table(name = "setor")
+@EqualsAndHashCode(of = "id",callSuper = true)
+public class Setor extends Auditoria {
+
+    @Id
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
+    private Long id;
+
+    @Column(name = "nome", nullable = false)
+    private String nome;
+
+    @Column(name = "possui_etapas")
+    private Boolean possuiEtapas;
+
+}
