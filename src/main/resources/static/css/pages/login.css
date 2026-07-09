@@ -1,0 +1,163 @@
+/* ========================================
+   PAGES/LOGIN.CSS
+   ======================================== */
+
+body.page-usuario-login .screen {
+  width: 100%;
+  min-height: 100vh;
+  background: var(--color-bg-soft);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  transition: background 1.2s ease;
+  font-family: system-ui, sans-serif;
+}
+
+body.page-usuario-login .screen.on {
+  background: var(--color-surface-2);
+}
+
+body.page-usuario-login .card {
+  background: var(--color-surface-2);
+  border: 0.5px solid rgba(255,255,255,0.08);
+  border-radius: 16px;
+  padding: 40px 36px;
+  width: 360px;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 0;
+  box-shadow: 0 8px 40px rgba(0,0,0,0.5);
+  transition: box-shadow 1.2s ease;
+}
+
+body.page-usuario-login .card.on {
+  box-shadow: 0 8px 60px rgba(255,220,80,0.25), 0 0 120px rgba(255,200,50,0.1);
+}
+
+/* ============ LAMP WRAP AND GLOW ============ */
+body.page-usuario-login .lamp-wrap {
+  margin-bottom: 24px;
+  position: relative;
+}
+
+body.page-usuario-login .lamp-glow {
+  position: absolute;
+  width: 120px;
+  height: 120px;
+  border-radius: 50%;
+  background: radial-gradient(circle, rgba(255,220,50,0.5) 0%, transparent 70%);
+  top: -20px;
+  left: -20px;
+  opacity: 0;
+  transition: opacity 1.2s ease;
+  pointer-events: none;
+}
+
+body.page-usuario-login .lamp-glow.on {
+  opacity: 1;
+}
+
+/* ============ BRAND ============ */
+body.page-usuario-login .brand {
+  font-size: 22px;
+  font-weight: 700;
+  color: var(--color-text);
+  margin-bottom: 4px;
+  letter-spacing: -.02em;
+}
+
+body.page-usuario-login .brand-sub {
+  font-size: 12px;
+  color: rgba(255,255,255,0.35);
+  margin-bottom: 28px;
+}
+
+/* ============ FIELD ============ */
+body.page-usuario-login .field {
+  width: 100%;
+  margin-bottom: 14px;
+}
+
+body.page-usuario-login .field label {
+  display: block;
+  font-size: 11px;
+  color: rgba(255,255,255,0.5);
+  margin-bottom: 6px;
+  text-transform: uppercase;
+  letter-spacing: .05em;
+}
+
+body.page-usuario-login .field input {
+  width: 100%;
+  padding: 10px 14px;
+  background: rgba(255,255,255,0.05);
+  border: 0.5px solid rgba(255,255,255,0.12);
+  border-radius: 8px;
+  color: var(--color-text);
+  font-size: 14px;
+  outline: none;
+  transition: border-color .2s;
+}
+
+body.page-usuario-login .field input:focus {
+  border-color: var(--color-primary-muted);
+}
+
+/* ============ BUTTON ============ */
+body.page-usuario-login .btn {
+  width: 100%;
+  padding: 12px;
+  background: var(--color-primary-muted);
+  color: var(--color-text);
+  border: none;
+  border-radius: 8px;
+  font-size: 14px;
+  font-weight: 600;
+  cursor: pointer;
+  margin-top: 6px;
+  transition: background .2s, transform .1s;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
+}
+
+body.page-usuario-login .btn:hover {
+  background: var(--color-primary-dark);
+}
+
+body.page-usuario-login .btn:active {
+  transform: scale(0.98);
+}
+
+body.page-usuario-login .btn.success {
+  background: var(--color-warning-dark);
+}
+
+/* ============ MESSAGE ============ */
+body.page-usuario-login .msg {
+  font-size: 12px;
+  margin-top: 14px;
+  color: rgba(255,255,255,0.4);
+  text-align: center;
+  min-height: 18px;
+  transition: color .3s;
+}
+
+body.page-usuario-login .msg.error {
+  color: var(--color-danger);
+}
+
+body.page-usuario-login .msg.success {
+  color: var(--color-lamp-success);
+}
+
+/* ============ FOOTER NOTE ============ */
+body.page-usuario-login .footer-note {
+  font-size: 11px;
+  color: rgba(255,255,255,0.2);
+  margin-top: 20px;
+  text-align: center;
+  line-height: 1.6;
+}

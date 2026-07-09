@@ -1,0 +1,361 @@
+/* ========================================
+   COMPONENTS/FORMS.CSS
+   ======================================== */
+
+/* ============ FORM PANEL ============ */
+.form-panel {
+  width: 300px;
+  flex-shrink: 0;
+}
+
+body.page-setor-cadastrosetor .form-panel,
+body.page-usuario-cadastrousuario .form-panel {
+  width: 320px;
+  flex-shrink: 0;
+}
+
+body.page-maquina-cadastromaquinas .form-panel {
+  width: 300px;
+  flex-shrink: 0;
+}
+
+/* ============ FORM CARD ============ */
+.form-card {
+  background: var(--color-surface);
+  border: 1px solid rgba(255,255,255,0.08);
+  border-radius: 14px;
+  padding: 20px;
+}
+
+body.page-ordemproducao-lancamento .form-card,
+body.page-ordemproducao-novaordem .form-card,
+body.page-produto-cadastroproduto .form-card,
+body.page-vidracaria-vidracaria .form-card {
+  background: var(--color-surface);
+  border: 1px solid rgba(255,255,255,0.08);
+  border-radius: 14px;
+  padding: 22px;
+  margin-bottom: 14px;
+}
+
+body.page-ordemproducao-lancamento .form-card {
+  background: var(--color-surface);
+  border: 1px solid rgba(255,255,255,0.08);
+  border-radius: 14px;
+  padding: 22px;
+}
+
+/* ============ FORM TITLE ============ */
+.form-title {
+  font-size: 14px;
+  font-weight: bold;
+  margin-bottom: 16px;
+  padding-bottom: 10px;
+  border-bottom: 1px solid rgba(255,255,255,0.06);
+}
+
+body.page-ordemproducao-lancamento .card-title,
+body.page-ordemproducao-novaordem .card-title,
+body.page-produto-cadastroproduto .card-title,
+body.page-vidracaria-vidracaria .card-title {
+  font-size: 14px;
+  font-weight: bold;
+  margin-bottom: 16px;
+}
+
+/* ============ FIELD ============ */
+.field {
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+  margin-bottom: 14px;
+}
+
+body.page-usuario-login .field {
+  width: 100%;
+  margin-bottom: 14px;
+}
+
+body.page-ordemproducao-lancamento .field,
+body.page-ordemproducao-novaordem .field,
+body.page-produto-cadastroproduto .field,
+body.page-vidracaria-vidracaria .field {
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+}
+
+/* ============ FIELD LABEL ============ */
+.field label {
+  font-size: 11px;
+  color: var(--color-muted);
+  text-transform: uppercase;
+  letter-spacing: .05em;
+}
+
+.field label span {
+  color: var(--color-danger);
+}
+
+body.page-usuario-login .field label {
+  display: block;
+  font-size: 11px;
+  color: rgba(255,255,255,0.5);
+  margin-bottom: 6px;
+  text-transform: uppercase;
+  letter-spacing: .05em;
+}
+
+/* ============ FIELD INPUT/SELECT/TEXTAREA ============ */
+.field input,
+.field select {
+  background: var(--color-field);
+  border: 1px solid rgba(255,255,255,0.1);
+  border-radius: 10px;
+  color: var(--color-text);
+  font-size: 13px;
+  padding: 10px 14px;
+  outline: none;
+  width: 100%;
+}
+
+.field input:focus,
+.field select:focus {
+  border-color: var(--color-primary);
+}
+
+body.page-usuario-login .field input {
+  width: 100%;
+  padding: 10px 14px;
+  background: rgba(255,255,255,0.05);
+  border: 0.5px solid rgba(255,255,255,0.12);
+  border-radius: 8px;
+  color: var(--color-text);
+  font-size: 14px;
+  outline: none;
+  transition: border-color .2s;
+}
+
+body.page-usuario-login .field input:focus {
+  border-color: var(--color-primary-muted);
+}
+
+body.page-ordemproducao-lancamento .field input,
+body.page-ordemproducao-lancamento .field select,
+body.page-ordemproducao-lancamento .field textarea,
+body.page-ordemproducao-novaordem .field input,
+body.page-ordemproducao-novaordem .field select,
+body.page-ordemproducao-novaordem .field textarea,
+body.page-produto-cadastroproduto .field input,
+body.page-produto-cadastroproduto .field select,
+body.page-produto-cadastroproduto .field textarea,
+body.page-vidracaria-vidracaria .field input,
+body.page-vidracaria-vidracaria .field select {
+  background: var(--color-field);
+  border: 1px solid rgba(255,255,255,0.1);
+  border-radius: 10px;
+  color: var(--color-text);
+  font-size: 13px;
+  padding: 10px 14px;
+  outline: none;
+}
+
+body.page-ordemproducao-lancamento .field input:focus,
+body.page-ordemproducao-lancamento .field select:focus,
+body.page-ordemproducao-lancamento .field textarea:focus,
+body.page-ordemproducao-novaordem .field input:focus,
+body.page-ordemproducao-novaordem .field select:focus,
+body.page-produto-cadastroproduto .field input:focus,
+body.page-produto-cadastroproduto .field select:focus,
+body.page-vidracaria-vidracaria .field input:focus,
+body.page-vidracaria-vidracaria .field select:focus {
+  border-color: var(--color-primary);
+}
+
+body.page-ordemproducao-lancamento .field textarea,
+body.page-ordemproducao-novaordem .field textarea,
+body.page-produto-cadastroproduto .field textarea {
+  resize: none;
+  height: 80px;
+}
+
+body.page-produto-cadastroproduto .field textarea {
+  resize: none;
+  height: 70px;
+}
+
+/* ============ HINT ============ */
+.hint {
+  font-size: 10px;
+  color: var(--color-muted-4);
+  margin-top: 2px;
+}
+
+body.page-ordemproducao-lancamento .hint.warn {
+  color: var(--color-warning);
+}
+
+/* ============ FORM ACTIONS ============ */
+.form-actions {
+  display: flex;
+  gap: 8px;
+}
+
+body.page-ordemproducao-lancamento .form-actions,
+body.page-ordemproducao-novaordem .form-actions,
+body.page-produto-cadastroproduto .form-actions,
+body.page-vidracaria-vidracaria .form-actions {
+  display: flex;
+  justify-content: flex-end;
+  gap: 10px;
+}
+
+body.page-ordemproducao-novaordem .form-actions {
+  display: flex;
+  justify-content: flex-end;
+  gap: 10px;
+  margin-top: 6px;
+}
+
+body.page-usuario-cadastrousuario .form-actions {
+  display: flex;
+  gap: 8px;
+  margin-top: 4px;
+}
+
+/* ============ FORM GRID ============ */
+.form-grid {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 14px;
+  margin-bottom: 14px;
+}
+
+body.page-ordemproducao-lancamento .form-grid-3 {
+  display: grid;
+  grid-template-columns: 1fr 1fr 1fr;
+  gap: 14px;
+  margin-bottom: 14px;
+}
+
+body.page-vidracaria-vidracaria .form-grid {
+  display: grid;
+  grid-template-columns: 1fr 1fr 1fr;
+  gap: 14px;
+  margin-bottom: 14px;
+}
+
+/* ============ SETOR CHECKBOX ============ */
+body.page-produto-cadastroproduto .setores-grid {
+  display: grid;
+  grid-template-columns: repeat(2,1fr);
+  gap: 10px;
+}
+
+body.page-produto-cadastroproduto .setor-check {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  background: var(--color-field);
+  border: 1px solid rgba(255,255,255,0.08);
+  border-radius: 10px;
+  padding: 12px 16px;
+  cursor: pointer;
+  transition: .2s;
+  user-select: none;
+}
+
+body.page-produto-cadastroproduto .setor-check:hover {
+  border-color: rgba(97,87,255,0.4);
+}
+
+body.page-produto-cadastroproduto .setor-check.checked {
+  border-color: var(--color-primary);
+  background: rgba(97,87,255,0.08);
+}
+
+body.page-produto-cadastroproduto .setor-check input[type=checkbox] {
+  width: 16px;
+  height: 16px;
+  accent-color: var(--color-primary);
+  cursor: pointer;
+  flex-shrink: 0;
+}
+
+body.page-produto-cadastroproduto .setor-info {
+  flex: 1;
+}
+
+body.page-produto-cadastroproduto .setor-nome {
+  font-size: 13px;
+  font-weight: 500;
+}
+
+body.page-produto-cadastroproduto .setor-maq {
+  font-size: 10px;
+  color: var(--color-muted-5);
+  margin-top: 2px;
+}
+
+body.page-produto-cadastroproduto .setor-seq {
+  font-size: 11px;
+  color: var(--color-primary);
+  font-weight: 700;
+  min-width: 24px;
+  text-align: right;
+}
+
+/* ============ PREVIEW BOX ============ */
+body.page-produto-cadastroproduto .preview-box {
+  background: var(--color-field);
+  border: 1px solid rgba(255,255,255,0.06);
+  border-radius: 10px;
+  padding: 14px;
+  margin-top: 14px;
+}
+
+body.page-produto-cadastroproduto .preview-label {
+  font-size: 10px;
+  color: var(--color-muted-5);
+  text-transform: uppercase;
+  letter-spacing: .05em;
+  margin-bottom: 10px;
+}
+
+body.page-produto-cadastroproduto .preview-pills {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  flex-wrap: wrap;
+}
+
+/* ============ ETAPAS LIST ============ */
+body.page-setor-cadastrosetor .etapas-list {
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+  margin-bottom: 8px;
+}
+
+body.page-setor-cadastrosetor .etapa-item {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  background: var(--color-field);
+  border: 1px solid rgba(255,255,255,0.06);
+  border-radius: 8px;
+  padding: 8px 10px;
+}
+
+body.page-setor-cadastrosetor .etapa-num {
+  font-size: 10px;
+  color: var(--color-primary);
+  font-weight: 700;
+  width: 20px;
+}
+
+body.page-setor-cadastrosetor .etapa-nome {
+  flex: 1;
+  font-size: 12px;
+  color: var(--color-text);
+}

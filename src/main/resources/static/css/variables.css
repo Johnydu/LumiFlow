@@ -1,0 +1,73 @@
+/* ========================================
+   VARIABLES.CSS
+   ======================================== */
+
+:root {
+  /* ============ COLORS - Primary ============ */
+  --color-primary: #6157ff;
+  --color-primary-strong: #6d5cff;
+  --color-primary-muted: #534ab7;
+  --color-primary-dark: #3c3489;
+  --color-primary-soft: #a89fff;
+  --color-primary-light: #c6bbff;
+  --color-primary-bg: #2b254d;
+  --color-primary-hover: #4e45e0;
+  --color-primary-gradient-start: #1a1740;
+  --color-primary-gradient-end: #0f0f2a;
+
+  /* ============ COLORS - Background ============ */
+  --color-bg: #0c0c0f;
+  --color-bg-soft: #0f0f1a;
+  --color-surface: #1c1c1c;
+  --color-surface-2: #1a1a2e;
+  --color-surface-hover: #1a1b3b;
+  --color-panel: #232323;
+  --color-panel-alt: #1f1f1f;
+  --color-field: #161616;
+  --color-sidebar: #11122c;
+
+  /* ============ COLORS - Text ============ */
+  --color-text: #ffffff;
+  --color-muted: #888888;
+  --color-muted-2: #8f8f9e;
+  --color-muted-3: #7b7b8f;
+  --color-muted-4: #666666;
+  --color-muted-5: #555555;
+  --color-muted-6: #444444;
+  --color-muted-7: #333333;
+  --color-label: #8e8e8e;
+  --color-label-2: #8c8c8c;
+  --color-copy-muted: #9e9e9e;
+  --color-copy-muted-2: #9b9b9b;
+
+  /* ============ COLORS - Status ============ */
+  --color-success: #3ccf4e;
+  --color-success-soft: #8cff92;
+  --color-success-bg: #213b22;
+  --color-success-bg-soft: #1a2a1a;
+  --color-warning: #f6a623;
+  --color-warning-dark: #ba8a00;
+  --color-danger: #ff4d4d;
+  --color-danger-strong: #ff4f5e;
+
+  /* ============ COLORS - Accent ============ */
+  --color-blue: #7bb8ff;
+  --color-blue-bg: #1a2a3a;
+  --color-lilac: #d4a0ff;
+  --color-lilac-bg: #2a1a3a;
+  --color-mint: #7bffaa;
+  --color-mint-bg: #1a2a20;
+  --color-teal: #0f6e56;
+  --color-teal-light: #3ccf9e;
+  --color-operator: #6c8ebf;
+  --color-amber: #ba7517;
+  --color-lamp-success: #ffcc33;
+
+  /* ============ COLORS - Tracks ============ */
+  --color-track: #111111;
+  --color-track-soft: #222222;
+
+  /* ============ BORDERS ============ */
+  --border-subtle: rgba(255,255,255,0.08);
+  --border-strong: rgba(255,255,255,0.15);
+}

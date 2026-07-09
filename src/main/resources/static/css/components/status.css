@@ -1,0 +1,94 @@
+/* ========================================
+   COMPONENTS/STATUS.CSS
+   ======================================== */
+
+/* ============ STATUS GENERIC ============ */
+.status {
+  padding: 8px 16px;
+  border-radius: 20px;
+  font-size: 15px;
+  display: inline-block;
+  border: 1px solid rgba(255,255,255,0.1);
+}
+
+body.page-ordemproducao-detalhesordem .status-badge {
+  display: inline-flex;
+  align-items: center;
+  gap: 5px;
+  font-size: 11px;
+  padding: 4px 10px;
+  border-radius: 20px;
+  font-weight: 500;
+}
+
+body.page-ordemproducao-detalhesordem .s-dot {
+  width: 5px;
+  height: 5px;
+  border-radius: 50%;
+}
+
+body.page-ordemproducao-detalhesordem .s-and {
+  background: rgba(246,166,35,0.15);
+  color: var(--color-warning);
+}
+
+body.page-ordemproducao-detalhesordem .s-and .s-dot {
+  background: var(--color-warning);
+}
+
+/* ============ STATUS PURPLE ============ */
+.status-purple {
+  background: var(--color-primary-bg);
+  color: var(--color-primary-light);
+}
+
+/* ============ STATUS GREEN ============ */
+.status-green {
+  background: var(--color-success-bg);
+  color: var(--color-success-soft);
+}
+
+/* ============ STATUS IN LIST ============ */
+body.page-ordemproducao-listaordem .status {
+  display: inline-flex;
+  align-items: center;
+  gap: 4px;
+  font-size: 10px;
+  padding: 3px 8px;
+  border-radius: 20px;
+  font-weight: 500;
+  white-space: nowrap;
+}
+
+body.page-ordemproducao-listaordem .s-dot {
+  width: 5px;
+  height: 5px;
+  border-radius: 50%;
+}
+
+body.page-ordemproducao-listaordem .s-and {
+  background: rgba(246,166,35,0.15);
+  color: var(--color-warning);
+}
+
+body.page-ordemproducao-listaordem .s-and .s-dot {
+  background: var(--color-warning);
+}
+
+body.page-ordemproducao-listaordem .s-con {
+  background: rgba(60,207,78,0.15);
+  color: var(--color-success);
+}
+
+body.page-ordemproducao-listaordem .s-con .s-dot {
+  background: var(--color-success);
+}
+
+body.page-ordemproducao-listaordem .s-pen {
+  background: rgba(255,77,77,0.15);
+  color: var(--color-danger);
+}
+
+body.page-ordemproducao-listaordem .s-pen .s-dot {
+  background: var(--color-danger);
+}

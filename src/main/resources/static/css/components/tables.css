@@ -1,0 +1,289 @@
+/* ========================================
+   COMPONENTS/TABLES.CSS
+   ======================================== */
+
+/* ============ TABLE GENERIC ============ */
+table {
+  width: 100%;
+  border-collapse: collapse;
+}
+
+/* ============ TABLE HEADERS ============ */
+th {
+  padding: 22px;
+  text-align: left;
+  border-bottom: 1px solid rgba(255,255,255,0.05);
+  font-size: 18px;
+  color: var(--color-label-2);
+  font-weight: normal;
+}
+
+body.page-maquina-cadastromaquinas th,
+body.page-ordemproducao-detalhesordem th,
+body.page-ordemproducao-lancamento th,
+body.page-ordemproducao-listaordem th,
+body.page-produto-cadastroproduto th,
+body.page-relatorio-relatoriotempo th,
+body.page-setor-cadastrosetor th,
+body.page-usuario-cadastrousuario th,
+body.page-vidracaria-vidracaria th {
+  padding: 9px 14px;
+  text-align: left;
+  font-size: 10px;
+  color: var(--color-muted-5);
+  font-weight: 500;
+  border-bottom: 1px solid rgba(255,255,255,0.05);
+  background: var(--color-field);
+  text-transform: uppercase;
+  letter-spacing: .05em;
+}
+
+/* ============ TABLE DATA CELLS ============ */
+td {
+  padding: 22px;
+  text-align: left;
+  border-bottom: 1px solid rgba(255,255,255,0.05);
+  font-size: 18px;
+}
+
+body.page-maquina-cadastromaquinas td,
+body.page-ordemproducao-detalhesordem td,
+body.page-ordemproducao-lancamento td,
+body.page-ordemproducao-listaordem td,
+body.page-produto-cadastroproduto td,
+body.page-relatorio-relatoriotempo td,
+body.page-setor-cadastrosetor td,
+body.page-usuario-cadastrousuario td,
+body.page-vidracaria-vidracaria td {
+  padding: 11px 14px;
+  border-bottom: 1px solid rgba(255,255,255,0.05);
+  font-size: 12px;
+  vertical-align: middle;
+}
+
+body.page-ordemproducao-detalhesordem td {
+  padding: 14px 16px;
+  border-bottom: 1px solid rgba(255,255,255,0.05);
+  font-size: 12px;
+  vertical-align: middle;
+}
+
+body.page-vidracaria-vidracaria td {
+  padding: 12px 16px;
+  border-bottom: 1px solid rgba(255,255,255,0.05);
+  font-size: 12px;
+}
+
+/* ============ TABLE ROW HOVER ============ */
+tr:last-child td {
+  border-bottom: none;
+}
+
+body.page-maquina-cadastromaquinas tr:hover td,
+body.page-relatorio-relatoriotempo tr:hover td,
+body.page-usuario-cadastrousuario tr:hover td {
+  background: rgba(255,255,255,0.02);
+}
+
+body.page-ordemproducao-listaordem tr:hover td {
+  background: rgba(255,255,255,0.02);
+  cursor: pointer;
+}
+
+/* ============ TABLE PROGRESS ============ */
+.table-progress {
+  width: 120px;
+  height: 10px;
+  background: var(--color-field);
+  border-radius: 20px;
+  overflow: hidden;
+}
+
+.table-progress span {
+  display: block;
+  height: 100%;
+  background: var(--color-primary-strong);
+}
+
+/* ============ NUM CLASS (Monospace) ============ */
+.num {
+  font-family: monospace;
+  color: var(--color-muted);
+  font-size: 11px;
+}
+
+body.page-ordemproducao-detalhesordem .num {
+  font-family: monospace;
+  color: var(--color-muted);
+  font-size: 11px;
+}
+
+body.page-ordemproducao-listaordem .num {
+  font-family: monospace;
+  color: var(--color-muted);
+  font-size: 11px;
+}
+
+/* ============ PROGRESS WRAP ============ */
+body.page-ordemproducao-listaordem .prog-wrap {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+}
+
+body.page-ordemproducao-listaordem .prog-track {
+  flex: 1;
+  height: 5px;
+  background: var(--color-track);
+  border-radius: 3px;
+  overflow: hidden;
+  min-width: 70px;
+}
+
+body.page-ordemproducao-listaordem .prog-fill {
+  height: 5px;
+  border-radius: 3px;
+}
+
+body.page-ordemproducao-listaordem .p-and {
+  background: var(--color-primary);
+}
+
+body.page-ordemproducao-listaordem .p-con {
+  background: var(--color-success);
+}
+
+body.page-ordemproducao-listaordem .p-pen {
+  background: var(--color-danger);
+}
+
+body.page-ordemproducao-listaordem .prog-txt {
+  font-size: 10px;
+  color: var(--color-muted-4);
+  white-space: nowrap;
+}
+
+/* ============ ITEM PROGRESS WRAP ============ */
+body.page-ordemproducao-detalhesordem .p-wrap {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+}
+
+body.page-ordemproducao-detalhesordem .p-track {
+  flex: 1;
+  height: 5px;
+  background: var(--color-track);
+  border-radius: 3px;
+  overflow: hidden;
+  min-width: 80px;
+}
+
+body.page-ordemproducao-detalhesordem .p-fill {
+  height: 5px;
+  border-radius: 3px;
+}
+
+body.page-ordemproducao-detalhesordem .pf-and {
+  background: var(--color-primary);
+}
+
+body.page-ordemproducao-detalhesordem .pf-con {
+  background: var(--color-success);
+}
+
+body.page-ordemproducao-detalhesordem .pf-pen {
+  background: var(--color-danger);
+}
+
+body.page-ordemproducao-detalhesordem .p-txt {
+  font-size: 10px;
+  color: var(--color-muted-4);
+  white-space: nowrap;
+}
+
+/* ============ TAG PRODUTO ============ */
+body.page-relatorio-relatoriotempo .tag-prod {
+  display: inline-flex;
+  font-size: 10px;
+  padding: 3px 8px;
+  border-radius: 20px;
+  background: var(--color-primary-bg);
+  color: var(--color-primary-light);
+  white-space: nowrap;
+}
+
+/* ============ USER INFO ============ */
+body.page-usuario-cadastrousuario .user-avatar {
+  width: 28px;
+  height: 28px;
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 10px;
+  font-weight: 700;
+  flex-shrink: 0;
+}
+
+body.page-usuario-cadastrousuario .user-info {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+}
+
+body.page-usuario-cadastrousuario .user-name {
+  font-size: 12px;
+  font-weight: 500;
+}
+
+body.page-usuario-cadastrousuario .user-login {
+  font-size: 10px;
+  color: var(--color-muted-4);
+  font-family: monospace;
+}
+
+/* ============ OPERATOR GROUP ============ */
+body.page-relatorio-relatoriotempo .op-group {
+  background: var(--color-field);
+  padding: 8px 14px;
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  border-bottom: 1px solid rgba(255,255,255,0.05);
+}
+
+body.page-relatorio-relatoriotempo .op-avatar {
+  width: 26px;
+  height: 26px;
+  border-radius: 50%;
+  background: var(--color-primary);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 10px;
+  font-weight: 700;
+  flex-shrink: 0;
+}
+
+body.page-relatorio-relatoriotempo .op-name {
+  font-size: 12px;
+  font-weight: 600;
+}
+
+body.page-relatorio-relatoriotempo .op-setor {
+  font-size: 10px;
+  color: var(--color-muted);
+}
+
+/* ============ SEARCH FIELD ============ */
+body.page-usuario-cadastrousuario .search {
+  height: 36px;
+  padding: 0 12px;
+  border-radius: 10px;
+  border: 1px solid rgba(255,255,255,0.1);
+  background: var(--color-field);
+  color: var(--color-text);
+  font-size: 12px;
+  width: 200px;
+}

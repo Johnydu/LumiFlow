@@ -1,0 +1,156 @@
+CSS IMPORT ORDER
+===============
+
+This file documents the correct order in which CSS files should be imported in your HTML.
+The order is critical because later files build upon earlier ones through CSS cascade and variable availability.
+
+IMPORT SEQUENCE (Most Specific Below):
+======================================
+
+1. css/variables.css
+   - Contains all CSS custom properties (--color-*, --size-*, etc.)
+   - Must be first so all other files can reference these variables
+   - Dependencies: NONE
+
+2. css/globals.css
+   - Universal reset (*) and body baseline styles
+   - Sets foundational behavior for all pages
+   - Dependencies: variables.css
+
+3. css/sidebar.css
+   - Sidebar component used across multiple pages
+   - Contains sidebar, menu, profile, logo styles with multi-page variants
+   - Dependencies: variables.css, globals.css
+
+4. css/topbar.css
+   - Top navigation bar used across multiple pages
+   - Contains topbar, title, buttons, filter styles with page variants
+   - Dependencies: variables.css, globals.css
+
+5. css/components/buttons.css
+   - All button component styles (.btn, .btn-edit, .btn-delete, etc.)
+   - Used across all pages
+   - Dependencies: variables.css, globals.css
+
+6. css/components/forms.css
+   - Form-related components (.form-panel, .field, .form-actions, etc.)
+   - Used across multiple pages
+   - Dependencies: variables.css, globals.css
+
+7. css/components/tables.css
+   - Table-related styles (table, th, td, .table-progress, etc.)
+   - Used on pages with data tables
+   - Dependencies: variables.css, globals.css
+
+8. css/components/cards.css
+   - Card component styles (.card, .info-card, .saldo-card, .panel, etc.)
+   - Used extensively across pages
+   - Dependencies: variables.css, globals.css
+
+9. css/components/badges.css
+   - Badge and tag components (.badge, .setor-tag, .nivel-tag, etc.)
+   - Used for status indicators and categorization
+   - Dependencies: variables.css, globals.css
+
+10. css/components/status.css
+    - Status indicator styles (.status, .status-purple, .s-dot, etc.)
+    - Used for progress and state visualization
+    - Dependencies: variables.css, globals.css
+
+11. css/components/alerts.css
+    - Alert and message styles (.alert-success, .alert-error, .msg, etc.)
+    - Used for user feedback
+    - Dependencies: variables.css, globals.css
+
+12. css/pages/dashboard.css
+    - Dashboard page specific styles (body.page-dashboard-dashboard)
+    - Dependencies: all component files
+
+13. css/pages/login.css
+    - Login page specific styles (body.page-usuario-login)
+    - Dependencies: all component files
+
+14. css/pages/usuarios.css
+    - Users management page styles (body.page-usuario-cadastrousuario)
+    - Dependencies: all component files
+
+15. css/pages/maquinas.css
+    - Machines page styles (body.page-maquina-cadastromaquinas)
+    - Dependencies: all component files
+
+16. css/pages/produtos.css
+    - Products page styles (body.page-produto-cadastroproduto)
+    - Dependencies: all component files
+
+17. css/pages/setores.css
+    - Sectors page styles (body.page-setor-cadastrosetor)
+    - Dependencies: all component files
+
+18. css/pages/ordens.css
+    - Order details page styles (body.page-ordemproducao-detalhesordem)
+    - Dependencies: all component files
+
+19. css/pages/relatorio.css
+    - Reports page styles (body.page-relatorio-relatoriotempo)
+    - Dependencies: all component files
+
+20. css/pages/vidracaria.css
+    - Glass department page styles (body.page-vidracaria-vidracaria)
+    - Dependencies: all component files
+
+21. css/pages/novaordem.css
+    - New order creation page styles (body.page-ordemproducao-novaordem)
+    - Dependencies: all component files
+
+22. css/pages/listaordem.css
+    - Order list page styles (body.page-ordemproducao-listaordem)
+    - Dependencies: all component files
+
+23. css/utils.css
+    - Utility classes (.orange, .green, .red color utilities)
+    - Applied selectively for quick styling
+    - Dependencies: all other files
+
+24. css/responsive.css
+    - Media queries for responsive design (@media max-width: 1200px, 900px)
+    - Should be last to ensure responsive breakpoints override fixed styles
+    - Dependencies: all other files
+
+HTML LINK TAGS EXAMPLE:
+======================
+
+<head>
+    <link rel="stylesheet" href="css/variables.css">
+    <link rel="stylesheet" href="css/globals.css">
+    <link rel="stylesheet" href="css/sidebar.css">
+    <link rel="stylesheet" href="css/topbar.css">
+    <link rel="stylesheet" href="css/components/buttons.css">
+    <link rel="stylesheet" href="css/components/forms.css">
+    <link rel="stylesheet" href="css/components/tables.css">
+    <link rel="stylesheet" href="css/components/cards.css">
+    <link rel="stylesheet" href="css/components/badges.css">
+    <link rel="stylesheet" href="css/components/status.css">
+    <link rel="stylesheet" href="css/components/alerts.css">
+    <link rel="stylesheet" href="css/pages/dashboard.css">
+    <link rel="stylesheet" href="css/pages/login.css">
+    <link rel="stylesheet" href="css/pages/usuarios.css">
+    <link rel="stylesheet" href="css/pages/maquinas.css">
+    <link rel="stylesheet" href="css/pages/produtos.css">
+    <link rel="stylesheet" href="css/pages/setores.css">
+    <link rel="stylesheet" href="css/pages/ordens.css">
+    <link rel="stylesheet" href="css/pages/relatorio.css">
+    <link rel="stylesheet" href="css/pages/vidracaria.css">
+    <link rel="stylesheet" href="css/pages/novaordem.css">
+    <link rel="stylesheet" href="css/pages/listaordem.css">
+    <link rel="stylesheet" href="css/utils.css">
+    <link rel="stylesheet" href="css/responsive.css">
+</head>
+
+WHY THIS ORDER MATTERS:
+=======================
+
+1. Variables first: Ensures all CSS custom properties are available to downstream files
+2. Globals before components: Ensures base styles don't override component defaults
+3. Components before pages: Page styles can override component defaults when needed
+4. Utils near end: Utility classes should have high specificity to override when applied
+5. Responsive last: Media queries must override all other styles for mobile/tablet views

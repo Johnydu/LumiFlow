@@ -1,0 +1,371 @@
+/* ========================================
+   PAGES/SETORES.CSS
+   ======================================== */
+
+body.page-setor-cadastrosetor * {
+  box-sizing: border-box;
+  margin: 0;
+  padding: 0;
+  font-family: Arial, Helvetica, sans-serif;
+}
+
+body.page-setor-cadastrosetor {
+  background: var(--color-bg);
+  color: var(--color-text);
+  display: flex;
+  min-height: 100vh;
+}
+
+body.page-setor-cadastrosetor .sidebar {
+  width: 220px;
+  background: var(--color-sidebar);
+  border-right: 1px solid rgba(255,255,255,0.08);
+  padding: 20px;
+  display: flex;
+  flex-direction: column;
+}
+
+body.page-setor-cadastrosetor .logo {
+  font-size: 24px;
+  font-weight: bold;
+  margin-bottom: 24px;
+}
+
+body.page-setor-cadastrosetor .menu-title {
+  color: var(--color-muted-3);
+  font-size: 11px;
+  margin: 16px 0 8px;
+  letter-spacing: 1px;
+}
+
+body.page-setor-cadastrosetor .menu {
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+}
+
+body.page-setor-cadastrosetor .menu-item {
+  height: 42px;
+  border: 1px solid rgba(255,255,255,0.1);
+  border-radius: 10px;
+  display: flex;
+  align-items: center;
+  padding: 0 14px;
+  font-size: 13px;
+  cursor: pointer;
+}
+
+body.page-setor-cadastrosetor .menu-item:hover {
+  background: var(--color-surface-hover);
+}
+
+body.page-setor-cadastrosetor .menu-item.active {
+  background: rgba(97,87,255,0.2);
+  border-color: var(--color-primary);
+  color: var(--color-primary-soft);
+}
+
+body.page-setor-cadastrosetor .profile {
+  margin-top: auto;
+  border-top: 1px solid rgba(255,255,255,0.08);
+  padding-top: 14px;
+  display: flex;
+  align-items: center;
+  gap: 10px;
+}
+
+body.page-setor-cadastrosetor .avatar {
+  width: 36px;
+  height: 36px;
+  border-radius: 50%;
+  background: var(--color-primary);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-weight: bold;
+  font-size: 12px;
+}
+
+body.page-setor-cadastrosetor .pname {
+  font-size: 13px;
+  font-weight: 500;
+}
+
+body.page-setor-cadastrosetor .prole {
+  color: var(--color-muted-2);
+  font-size: 11px;
+}
+
+body.page-setor-cadastrosetor .main {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  overflow: hidden;
+}
+
+body.page-setor-cadastrosetor .topbar {
+  background: var(--color-sidebar);
+  border-bottom: 1px solid rgba(255,255,255,0.08);
+  padding: 14px 22px;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+}
+
+body.page-setor-cadastrosetor .topbar-title {
+  font-size: 18px;
+  font-weight: bold;
+}
+
+body.page-setor-cadastrosetor .btn-novo {
+  height: 38px;
+  padding: 0 18px;
+  border-radius: 10px;
+  border: none;
+  background: var(--color-primary);
+  color: var(--color-text);
+  font-size: 13px;
+  cursor: pointer;
+}
+
+body.page-setor-cadastrosetor .content {
+  flex: 1;
+  overflow-y: auto;
+  padding: 20px;
+  display: flex;
+  gap: 16px;
+}
+
+body.page-setor-cadastrosetor .lista {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  gap: 14px;
+}
+
+body.page-setor-cadastrosetor .panel {
+  background: var(--color-surface);
+  border: 1px solid rgba(255,255,255,0.08);
+  border-radius: 14px;
+  overflow: hidden;
+}
+
+body.page-setor-cadastrosetor .panel-header {
+  padding: 14px 18px;
+  border-bottom: 1px solid rgba(255,255,255,0.08);
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+}
+
+body.page-setor-cadastrosetor .panel-title {
+  font-size: 14px;
+  font-weight: bold;
+}
+
+body.page-setor-cadastrosetor table {
+  width: 100%;
+  border-collapse: collapse;
+}
+
+body.page-setor-cadastrosetor th {
+  padding: 9px 14px;
+  text-align: left;
+  font-size: 10px;
+  color: var(--color-muted-5);
+  font-weight: 500;
+  border-bottom: 1px solid rgba(255,255,255,0.05);
+  background: var(--color-field);
+  text-transform: uppercase;
+  letter-spacing: .05em;
+}
+
+body.page-setor-cadastrosetor td {
+  padding: 11px 14px;
+  border-bottom: 1px solid rgba(255,255,255,0.05);
+  font-size: 12px;
+  vertical-align: middle;
+}
+
+body.page-setor-cadastrosetor tr:last-child td {
+  border-bottom: none;
+}
+
+body.page-setor-cadastrosetor tr:hover td {
+  background: rgba(255,255,255,0.02);
+}
+
+body.page-setor-cadastrosetor .tag-maq {
+  display: inline-flex;
+  font-size: 10px;
+  padding: 3px 8px;
+  border-radius: 20px;
+  background: var(--color-surface-2);
+  color: var(--color-muted);
+  margin: 2px;
+}
+
+body.page-setor-cadastrosetor .btn-edit {
+  padding: 4px 12px;
+  font-size: 10px;
+  border-radius: 7px;
+  border: 1px solid rgba(255,255,255,0.1);
+  background: transparent;
+  color: var(--color-text);
+  cursor: pointer;
+  margin-right: 4px;
+}
+
+body.page-setor-cadastrosetor .btn-del {
+  padding: 4px 12px;
+  font-size: 10px;
+  border-radius: 7px;
+  border: 1px solid rgba(255,77,77,0.3);
+  background: transparent;
+  color: var(--color-danger);
+  cursor: pointer;
+}
+
+body.page-setor-cadastrosetor .form-panel {
+  width: 320px;
+  flex-shrink: 0;
+}
+
+body.page-setor-cadastrosetor .form-card {
+  background: var(--color-surface);
+  border: 1px solid rgba(255,255,255,0.08);
+  border-radius: 14px;
+  padding: 20px;
+}
+
+body.page-setor-cadastrosetor .form-title {
+  font-size: 14px;
+  font-weight: bold;
+  margin-bottom: 16px;
+  padding-bottom: 10px;
+  border-bottom: 1px solid rgba(255,255,255,0.06);
+}
+
+body.page-setor-cadastrosetor .field {
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+  margin-bottom: 14px;
+}
+
+body.page-setor-cadastrosetor .field label {
+  font-size: 11px;
+  color: var(--color-muted);
+  text-transform: uppercase;
+  letter-spacing: .05em;
+}
+
+body.page-setor-cadastrosetor .field label span {
+  color: var(--color-danger);
+}
+
+body.page-setor-cadastrosetor .field input,
+body.page-setor-cadastrosetor .field select {
+  background: var(--color-field);
+  border: 1px solid rgba(255,255,255,0.1);
+  border-radius: 10px;
+  color: var(--color-text);
+  font-size: 13px;
+  padding: 10px 14px;
+  outline: none;
+  width: 100%;
+}
+
+body.page-setor-cadastrosetor .field input:focus {
+  border-color: var(--color-primary);
+}
+
+body.page-setor-cadastrosetor .hint {
+  font-size: 10px;
+  color: var(--color-muted-4);
+  margin-top: 2px;
+}
+
+body.page-setor-cadastrosetor .etapas-list {
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+  margin-bottom: 8px;
+}
+
+body.page-setor-cadastrosetor .etapa-item {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  background: var(--color-field);
+  border: 1px solid rgba(255,255,255,0.06);
+  border-radius: 8px;
+  padding: 8px 10px;
+}
+
+body.page-setor-cadastrosetor .etapa-num {
+  font-size: 10px;
+  color: var(--color-primary);
+  font-weight: 700;
+  width: 20px;
+}
+
+body.page-setor-cadastrosetor .etapa-nome {
+  flex: 1;
+  font-size: 12px;
+  color: var(--color-text);
+}
+
+body.page-setor-cadastrosetor .etapa-del {
+  background: none;
+  border: none;
+  color: var(--color-danger);
+  cursor: pointer;
+  font-size: 14px;
+  padding: 0 4px;
+}
+
+body.page-setor-cadastrosetor .btn-add-etapa {
+  width: 100%;
+  padding: 8px;
+  border-radius: 8px;
+  border: 1px dashed rgba(255,255,255,0.15);
+  background: transparent;
+  color: var(--color-muted);
+  font-size: 12px;
+  cursor: pointer;
+  margin-bottom: 14px;
+}
+
+body.page-setor-cadastrosetor .btn-add-etapa:hover {
+  border-color: var(--color-primary);
+  color: var(--color-primary);
+}
+
+body.page-setor-cadastrosetor .form-actions {
+  display: flex;
+  gap: 8px;
+}
+
+body.page-setor-cadastrosetor .btn-cancel {
+  flex: 1;
+  padding: 10px;
+  border-radius: 10px;
+  border: 1px solid rgba(255,255,255,0.1);
+  background: transparent;
+  color: var(--color-muted);
+  font-size: 13px;
+  cursor: pointer;
+}
+
+body.page-setor-cadastrosetor .btn-submit {
+  flex: 1;
+  padding: 10px;
+  border-radius: 10px;
+  border: none;
+  background: var(--color-primary);
+  color: var(--color-text);
+  font-size: 13px;
+  cursor: pointer;
+  font-weight: 500;
+}

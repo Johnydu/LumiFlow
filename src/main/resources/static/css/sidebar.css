@@ -1,0 +1,290 @@
+/* ========================================
+   SIDEBAR.CSS
+   ======================================== */
+
+/* ============ SIDEBAR CONTAINER ============ */
+.sidebar {
+  width: 320px;
+  background: var(--color-sidebar);
+  border-right: 1px solid rgba(255,255,255,0.08);
+  padding: 20px;
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+}
+
+body.page-maquina-cadastromaquinas .sidebar,
+body.page-ordemproducao-detalhesordem .sidebar,
+body.page-ordemproducao-lancamento .sidebar,
+body.page-ordemproducao-listaordem .sidebar,
+body.page-ordemproducao-novaordem .sidebar,
+body.page-produto-cadastroproduto .sidebar,
+body.page-relatorio-relatoriotempo .sidebar,
+body.page-setor-cadastrosetor .sidebar,
+body.page-usuario-cadastrousuario .sidebar,
+body.page-vidracaria-vidracaria .sidebar {
+  width: 220px;
+  background: var(--color-sidebar);
+  border-right: 1px solid rgba(255,255,255,0.08);
+  padding: 20px;
+  display: flex;
+  flex-direction: column;
+}
+
+/* ============ LOGO ============ */
+.logo {
+  font-size: 38px;
+  font-weight: bold;
+  margin-bottom: 40px;
+}
+
+body.page-maquina-cadastromaquinas .logo,
+body.page-ordemproducao-detalhesordem .logo,
+body.page-ordemproducao-lancamento .logo,
+body.page-ordemproducao-listaordem .logo,
+body.page-ordemproducao-novaordem .logo,
+body.page-produto-cadastroproduto .logo,
+body.page-relatorio-relatoriotempo .logo,
+body.page-setor-cadastrosetor .logo,
+body.page-usuario-cadastrousuario .logo,
+body.page-vidracaria-vidracaria .logo {
+  font-size: 24px;
+  font-weight: bold;
+  margin-bottom: 24px;
+}
+
+/* ============ MENU TITLE ============ */
+.menu-title {
+  color: var(--color-muted-3);
+  font-size: 14px;
+  margin: 30px 0 12px;
+  letter-spacing: 1px;
+}
+
+body.page-maquina-cadastromaquinas .menu-title,
+body.page-ordemproducao-detalhesordem .menu-title,
+body.page-ordemproducao-lancamento .menu-title,
+body.page-ordemproducao-listaordem .menu-title,
+body.page-ordemproducao-novaordem .menu-title,
+body.page-produto-cadastroproduto .menu-title,
+body.page-relatorio-relatoriotempo .menu-title,
+body.page-setor-cadastrosetor .menu-title,
+body.page-usuario-cadastrousuario .menu-title,
+body.page-vidracaria-vidracaria .menu-title {
+  color: var(--color-muted-3);
+  font-size: 11px;
+  margin: 16px 0 8px;
+  letter-spacing: 1px;
+}
+
+/* ============ MENU ============ */
+.menu {
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+}
+
+body.page-maquina-cadastromaquinas .menu,
+body.page-ordemproducao-detalhesordem .menu,
+body.page-ordemproducao-lancamento .menu,
+body.page-ordemproducao-listaordem .menu,
+body.page-ordemproducao-novaordem .menu,
+body.page-produto-cadastroproduto .menu,
+body.page-relatorio-relatoriotempo .menu,
+body.page-setor-cadastrosetor .menu,
+body.page-usuario-cadastrousuario .menu,
+body.page-vidracaria-vidracaria .menu {
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+}
+
+/* ============ MENU ITEM ============ */
+.menu-item {
+  height: 64px;
+  border: 1px solid rgba(255,255,255,0.15);
+  border-radius: 18px;
+  display: flex;
+  align-items: center;
+  padding: 0 22px;
+  font-size: 20px;
+  cursor: pointer;
+  transition: 0.2s;
+}
+
+.menu-item:hover {
+  background: var(--color-surface-hover);
+}
+
+body.page-maquina-cadastromaquinas .menu-item,
+body.page-ordemproducao-detalhesordem .menu-item,
+body.page-ordemproducao-lancamento .menu-item,
+body.page-ordemproducao-listaordem .menu-item,
+body.page-ordemproducao-novaordem .menu-item,
+body.page-produto-cadastroproduto .menu-item,
+body.page-relatorio-relatoriotempo .menu-item,
+body.page-setor-cadastrosetor .menu-item,
+body.page-usuario-cadastrousuario .menu-item,
+body.page-vidracaria-vidracaria .menu-item {
+  height: 42px;
+  border: 1px solid rgba(255,255,255,0.1);
+  border-radius: 10px;
+  display: flex;
+  align-items: center;
+  padding: 0 14px;
+  font-size: 13px;
+  cursor: pointer;
+}
+
+body.page-maquina-cadastromaquinas .menu-item:hover,
+body.page-ordemproducao-detalhesordem .menu-item:hover,
+body.page-ordemproducao-lancamento .menu-item:hover,
+body.page-ordemproducao-listaordem .menu-item:hover,
+body.page-ordemproducao-novaordem .menu-item:hover,
+body.page-produto-cadastroproduto .menu-item:hover,
+body.page-relatorio-relatoriotempo .menu-item:hover,
+body.page-setor-cadastrosetor .menu-item:hover,
+body.page-usuario-cadastrousuario .menu-item:hover,
+body.page-vidracaria-vidracaria .menu-item:hover {
+  background: var(--color-surface-hover);
+}
+
+body.page-maquina-cadastromaquinas .menu-item.active,
+body.page-ordemproducao-detalhesordem .menu-item.active,
+body.page-ordemproducao-lancamento .menu-item.active,
+body.page-ordemproducao-listaordem .menu-item.active,
+body.page-ordemproducao-novaordem .menu-item.active,
+body.page-produto-cadastroproduto .menu-item.active,
+body.page-relatorio-relatoriotempo .menu-item.active,
+body.page-setor-cadastrosetor .menu-item.active,
+body.page-usuario-cadastrousuario .menu-item.active,
+body.page-vidracaria-vidracaria .menu-item.active {
+  background: rgba(97,87,255,0.2);
+  border-color: var(--color-primary);
+  color: var(--color-primary-soft);
+}
+
+/* ============ PROFILE SECTION ============ */
+.profile {
+  border-top: 1px solid rgba(255,255,255,0.08);
+  padding-top: 20px;
+  display: flex;
+  align-items: center;
+  gap: 14px;
+}
+
+body.page-maquina-cadastromaquinas .profile,
+body.page-ordemproducao-detalhesordem .profile,
+body.page-ordemproducao-lancamento .profile,
+body.page-ordemproducao-listaordem .profile,
+body.page-ordemproducao-novaordem .profile,
+body.page-produto-cadastroproduto .profile,
+body.page-relatorio-relatoriotempo .profile,
+body.page-setor-cadastrosetor .profile,
+body.page-usuario-cadastrousuario .profile,
+body.page-vidracaria-vidracaria .profile {
+  margin-top: auto;
+  border-top: 1px solid rgba(255,255,255,0.08);
+  padding-top: 14px;
+  display: flex;
+  align-items: center;
+  gap: 10px;
+}
+
+/* ============ AVATAR ============ */
+.avatar {
+  width: 52px;
+  height: 52px;
+  border-radius: 50%;
+  background: var(--color-primary);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-weight: bold;
+}
+
+body.page-maquina-cadastromaquinas .avatar,
+body.page-ordemproducao-detalhesordem .avatar,
+body.page-ordemproducao-lancamento .avatar,
+body.page-ordemproducao-listaordem .avatar,
+body.page-ordemproducao-novaordem .avatar,
+body.page-produto-cadastroproduto .avatar,
+body.page-relatorio-relatoriotempo .avatar,
+body.page-setor-cadastrosetor .avatar,
+body.page-usuario-cadastrousuario .avatar,
+body.page-vidracaria-vidracaria .avatar {
+  width: 36px;
+  height: 36px;
+  border-radius: 50%;
+  background: var(--color-primary);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-weight: bold;
+  font-size: 12px;
+}
+
+/* ============ PROFILE INFO ============ */
+.profile-info h4 {
+  font-size: 24px;
+}
+
+.profile-info span {
+  color: var(--color-muted-2);
+  font-size: 18px;
+}
+
+/* ============ PNAME AND PROLE ============ */
+.pname {
+  font-size: 13px;
+  font-weight: 500;
+}
+
+.prole {
+  color: var(--color-muted-2);
+  font-size: 11px;
+}
+
+body.page-maquina-cadastromaquinas .prole,
+body.page-ordemproducao-detalhesordem .prole,
+body.page-ordemproducao-lancamento .prole,
+body.page-ordemproducao-listaordem .prole,
+body.page-ordemproducao-novaordem .prole,
+body.page-produto-cadastroproduto .prole,
+body.page-relatorio-relatoriotempo .prole,
+body.page-setor-cadastrosetor .prole,
+body.page-usuario-cadastrousuario .prole,
+body.page-vidracaria-vidracaria .prole {
+  color: var(--color-muted-2);
+  font-size: 11px;
+}
+
+/* ============ BADGE IN SIDEBAR ============ */
+.badge {
+  margin-left: auto;
+  background: var(--color-danger-strong);
+  width: 32px;
+  height: 32px;
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 15px;
+  font-weight: bold;
+}
+
+body.page-ordemproducao-detalhesordem .badge-m,
+body.page-ordemproducao-lancamento .badge-m,
+body.page-ordemproducao-listaordem .badge-m,
+body.page-ordemproducao-novaordem .badge-m {
+  margin-left: auto;
+  background: var(--color-danger-strong);
+  width: 20px;
+  height: 20px;
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 10px;
+  font-weight: bold;
+}

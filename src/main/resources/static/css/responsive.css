@@ -1,0 +1,191 @@
+/* ========================================
+   RESPONSIVE.CSS
+   ======================================== */
+
+/* ============ DASHBOARD RESPONSIVE ============ */
+@media (max-width: 1200px) {
+  .cards {
+    grid-template-columns: repeat(2, 1fr);
+  }
+
+  .dashboard-grid {
+    grid-template-columns: 1fr;
+  }
+}
+
+@media (max-width: 900px) {
+  body {
+    flex-direction: column;
+  }
+
+  .sidebar {
+    width: 100%;
+  }
+
+  .cards {
+    grid-template-columns: 1fr;
+  }
+
+  .topbar {
+    flex-direction: column;
+    align-items: flex-start;
+    gap: 20px;
+  }
+
+  .panel {
+    overflow-x: auto;
+  }
+}
+
+/* ============ MAQUINAS RESPONSIVE ============ */
+@media(max-width:900px) {
+  body.page-maquina-cadastromaquinas .sidebar {
+    display: none;
+  }
+
+  body.page-maquina-cadastromaquinas .content {
+    flex-direction: column;
+  }
+
+  body.page-maquina-cadastromaquinas .form-panel {
+    width: 100%;
+  }
+
+  body.page-maquina-cadastromaquinas .setor-tabs {
+    overflow-x: auto;
+  }
+}
+
+/* ============ ORDENS DETALHESORDEM RESPONSIVE ============ */
+@media(max-width:900px) {
+  body.page-ordemproducao-detalhesordem .sidebar {
+    display: none;
+  }
+
+  body.page-ordemproducao-detalhesordem .info-cards {
+    grid-template-columns: repeat(2,1fr);
+  }
+
+  body.page-ordemproducao-detalhesordem .itens-card {
+    overflow-x: auto;
+  }
+}
+
+/* ============ ORDENS LANCAMENTO RESPONSIVE ============ */
+@media(max-width:900px) {
+  body.page-ordemproducao-lancamento .sidebar {
+    display: none;
+  }
+
+  body.page-ordemproducao-lancamento .form-grid,
+  body.page-ordemproducao-lancamento .form-grid-3 {
+    grid-template-columns: 1fr;
+  }
+
+  body.page-ordemproducao-lancamento .produto-destaque {
+    flex-direction: column;
+    align-items: flex-start;
+    gap: 12px;
+  }
+}
+
+/* ============ ORDENS LISTAORDEM RESPONSIVE ============ */
+@media(max-width:900px) {
+  body.page-ordemproducao-listaordem .sidebar {
+    display: none;
+  }
+
+  body.page-ordemproducao-listaordem .filtros {
+    flex-direction: column;
+  }
+
+  body.page-ordemproducao-listaordem .panel {
+    overflow-x: auto;
+  }
+}
+
+/* ============ ORDENS NOVAORDEM RESPONSIVE ============ */
+@media(max-width:900px) {
+  body.page-ordemproducao-novaordem .sidebar {
+    display: none;
+  }
+
+  body.page-ordemproducao-novaordem .form-grid {
+    grid-template-columns: 1fr;
+  }
+}
+
+/* ============ PRODUTOS RESPONSIVE ============ */
+@media(max-width:900px) {
+  body.page-produto-cadastroproduto .sidebar {
+    display: none;
+  }
+
+  body.page-produto-cadastroproduto .form-grid {
+    grid-template-columns: 1fr;
+  }
+
+  body.page-produto-cadastroproduto .setores-grid {
+    grid-template-columns: 1fr;
+  }
+}
+
+/* ============ RELATORIO RESPONSIVE ============ */
+@media(max-width:900px) {
+  body.page-relatorio-relatoriotempo .sidebar {
+    display: none;
+  }
+
+  body.page-relatorio-relatoriotempo .kpi-grid {
+    grid-template-columns: repeat(2,1fr);
+  }
+
+  body.page-relatorio-relatoriotempo .panel {
+    overflow-x: auto;
+  }
+}
+
+/* ============ SETORES RESPONSIVE ============ */
+@media(max-width:900px) {
+  body.page-setor-cadastrosetor .sidebar {
+    display: none;
+  }
+
+  body.page-setor-cadastrosetor .content {
+    flex-direction: column;
+  }
+
+  body.page-setor-cadastrosetor .form-panel {
+    width: 100%;
+  }
+}
+
+/* ============ USUARIOS RESPONSIVE ============ */
+@media(max-width:900px) {
+  body.page-usuario-cadastrousuario .sidebar {
+    display: none;
+  }
+
+  body.page-usuario-cadastrousuario .content {
+    flex-direction: column;
+  }
+
+  body.page-usuario-cadastrousuario .form-panel {
+    width: 100%;
+  }
+}
+
+/* ============ VIDRACARIA RESPONSIVE ============ */
+@media(max-width:900px) {
+  body.page-vidracaria-vidracaria .sidebar {
+    display: none;
+  }
+
+  body.page-vidracaria-vidracaria .saldo-grid {
+    grid-template-columns: 1fr;
+  }
+
+  body.page-vidracaria-vidracaria .form-grid {
+    grid-template-columns: 1fr;
+  }
+}

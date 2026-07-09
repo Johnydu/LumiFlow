@@ -1,0 +1,353 @@
+/* ========================================
+   COMPONENTS/BADGES.CSS
+   ======================================== */
+
+/* ============ GENERIC BADGE ============ */
+.badge {
+  margin-left: auto;
+  background: var(--color-danger-strong);
+  width: 32px;
+  height: 32px;
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 15px;
+  font-weight: bold;
+}
+
+/* ============ SETOR TAG ============ */
+.setor-tag {
+  display: inline-flex;
+  font-size: 10px;
+  padding: 3px 9px;
+  border-radius: 20px;
+  background: var(--color-primary-bg);
+  color: var(--color-primary-light);
+  border: 1px solid rgba(97,87,255,0.3);
+}
+
+body.page-ordemproducao-detalhesordem .setor-tag {
+  display: inline-flex;
+  font-size: 10px;
+  padding: 3px 8px;
+  border-radius: 20px;
+  background: var(--color-primary-bg);
+  color: var(--color-primary-light);
+  white-space: nowrap;
+}
+
+body.page-ordemproducao-listaordem .setor-tag {
+  display: inline-flex;
+  font-size: 10px;
+  padding: 3px 8px;
+  border-radius: 20px;
+  background: var(--color-primary-bg);
+  color: var(--color-primary-light);
+  white-space: nowrap;
+}
+
+body.page-ordemproducao-listaordem .setor-tag.ok {
+  background: var(--color-success-bg);
+  color: var(--color-success-soft);
+}
+
+body.page-usuario-cadastrousuario .setor-tag {
+  display: inline-flex;
+  font-size: 10px;
+  padding: 3px 9px;
+  border-radius: 20px;
+  background: var(--color-surface-2);
+  color: var(--color-muted);
+}
+
+body.page-setor-cadastrosetor .tag-maq {
+  display: inline-flex;
+  font-size: 10px;
+  padding: 3px 8px;
+  border-radius: 20px;
+  background: var(--color-surface-2);
+  color: var(--color-muted);
+  margin: 2px;
+}
+
+/* ============ SETOR TABS ============ */
+body.page-maquina-cadastromaquinas .setor-tabs {
+  display: flex;
+  gap: 8px;
+  flex-wrap: wrap;
+  margin-bottom: 14px;
+}
+
+body.page-maquina-cadastromaquinas .setor-tab {
+  padding: 6px 14px;
+  border-radius: 20px;
+  font-size: 12px;
+  cursor: pointer;
+  border: 1px solid rgba(255,255,255,0.1);
+  background: transparent;
+  color: var(--color-muted);
+}
+
+body.page-maquina-cadastromaquinas .setor-tab.active {
+  background: var(--color-primary);
+  border-color: var(--color-primary);
+  color: var(--color-text);
+  font-weight: 500;
+}
+
+body.page-relatorio-relatoriotempo .setor-tabs {
+  display: flex;
+  gap: 8px;
+  flex-wrap: wrap;
+}
+
+body.page-relatorio-relatoriotempo .setor-tab {
+  padding: 8px 18px;
+  border-radius: 20px;
+  font-size: 12px;
+  cursor: pointer;
+  border: 1px solid rgba(255,255,255,0.1);
+  background: transparent;
+  color: var(--color-muted);
+  transition: .2s;
+}
+
+body.page-relatorio-relatoriotempo .setor-tab:hover {
+  color: var(--color-text);
+  border-color: rgba(255,255,255,0.3);
+}
+
+body.page-relatorio-relatoriotempo .setor-tab.active {
+  background: var(--color-primary);
+  border-color: var(--color-primary);
+  color: var(--color-text);
+  font-weight: 500;
+}
+
+/* ============ NIVEL TAG ============ */
+body.page-usuario-cadastrousuario .nivel-tag {
+  display: inline-flex;
+  font-size: 10px;
+  padding: 3px 9px;
+  border-radius: 20px;
+  font-weight: 500;
+}
+
+body.page-usuario-cadastrousuario .n-sup {
+  background: rgba(97,87,255,0.2);
+  color: var(--color-primary-soft);
+  border: 1px solid rgba(97,87,255,0.3);
+}
+
+body.page-usuario-cadastrousuario .n-ges {
+  background: rgba(246,166,35,0.15);
+  color: var(--color-warning);
+  border: 1px solid rgba(246,166,35,0.2);
+}
+
+body.page-usuario-cadastrousuario .n-pcp {
+  background: rgba(15,110,86,0.2);
+  color: var(--color-teal-light);
+  border: 1px solid rgba(15,110,86,0.3);
+}
+
+body.page-usuario-cadastrousuario .n-ope {
+  background: rgba(108,142,191,0.2);
+  color: var(--color-blue);
+  border: 1px solid rgba(108,142,191,0.3);
+}
+
+/* ============ ETAPA TAG ============ */
+body.page-ordemproducao-detalhesordem .etapa-tag {
+  display: inline-flex;
+  font-size: 10px;
+  padding: 3px 8px;
+  border-radius: 20px;
+  background: var(--color-success-bg-soft);
+  color: var(--color-success-soft);
+  border: 1px solid rgba(60,207,78,0.2);
+  white-space: nowrap;
+}
+
+/* ============ PRODUTO DESTAQUE BADGES ============ */
+body.page-ordemproducao-lancamento .produto-badges {
+  display: flex;
+  gap: 8px;
+  align-items: center;
+}
+
+body.page-ordemproducao-lancamento .badge-setor {
+  background: var(--color-primary-bg);
+  color: var(--color-primary-light);
+  font-size: 11px;
+  padding: 5px 12px;
+  border-radius: 20px;
+  border: 1px solid var(--color-primary);
+}
+
+body.page-ordemproducao-lancamento .badge-disp {
+  background: rgba(246,166,35,0.15);
+  color: var(--color-warning);
+  font-size: 11px;
+  padding: 5px 12px;
+  border-radius: 20px;
+}
+
+body.page-ordemproducao-lancamento .badge-etapa {
+  background: var(--color-success-bg-soft);
+  color: var(--color-success-soft);
+  font-size: 11px;
+  padding: 5px 12px;
+  border-radius: 20px;
+  border: 1px solid rgba(60,207,78,0.3);
+}
+
+/* ============ ROTEIRO PILLS ============ */
+body.page-ordemproducao-detalhesordem .roteiro {
+  display: flex;
+  align-items: center;
+  gap: 0;
+  flex-wrap: wrap;
+  gap: 6px;
+}
+
+body.page-ordemproducao-detalhesordem .setor-pill {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  font-size: 11px;
+  padding: 6px 12px;
+  border-radius: 20px;
+  border: 1px solid rgba(255,255,255,0.1);
+  color: var(--color-muted);
+  background: var(--color-field);
+}
+
+body.page-ordemproducao-detalhesordem .setor-pill.done {
+  background: var(--color-success-bg);
+  color: var(--color-success-soft);
+  border-color: var(--color-success);
+}
+
+body.page-ordemproducao-detalhesordem .setor-pill.atual {
+  background: var(--color-primary-bg);
+  color: var(--color-primary-light);
+  border-color: var(--color-primary);
+  font-weight: 600;
+}
+
+body.page-ordemproducao-detalhesordem .setor-arr {
+  color: var(--color-muted-6);
+  font-size: 14px;
+}
+
+body.page-ordemproducao-novaordem .r-pill {
+  font-size: 11px;
+  padding: 5px 12px;
+  border-radius: 20px;
+  background: var(--color-primary-bg);
+  color: var(--color-primary-light);
+  border: 1px solid var(--color-primary);
+}
+
+body.page-ordemproducao-novaordem .r-arr {
+  color: var(--color-muted-7);
+  font-size: 13px;
+}
+
+body.page-produto-cadastroproduto .r-pill {
+  font-size: 11px;
+  padding: 5px 12px;
+  border-radius: 20px;
+  background: var(--color-primary-bg);
+  color: var(--color-primary-light);
+  border: 1px solid var(--color-primary);
+}
+
+body.page-produto-cadastroproduto .r-arr {
+  color: var(--color-muted-7);
+  font-size: 13px;
+}
+
+body.page-produto-cadastroproduto .r-empty {
+  font-size: 12px;
+  color: var(--color-muted-6);
+  font-style: italic;
+}
+
+/* ============ TIPO TAGS (Vidracaria) ============ */
+body.page-vidracaria-vidracaria .tipo-tag {
+  display: inline-flex;
+  font-size: 10px;
+  padding: 3px 8px;
+  border-radius: 20px;
+  white-space: nowrap;
+}
+
+body.page-vidracaria-vidracaria .tipo-in {
+  background: var(--color-blue-bg);
+  color: var(--color-blue);
+  border: 1px solid rgba(123,184,255,0.3);
+}
+
+body.page-vidracaria-vidracaria .tipo-jt {
+  background: var(--color-lilac-bg);
+  color: var(--color-lilac);
+  border: 1px solid rgba(212,160,255,0.3);
+}
+
+body.page-vidracaria-vidracaria .tipo-rf {
+  background: var(--color-mint-bg);
+  color: var(--color-mint);
+  border: 1px solid rgba(123,255,170,0.3);
+}
+
+body.page-vidracaria-vidracaria .tipo-ent {
+  font-size: 10px;
+  padding: 3px 8px;
+  border-radius: 20px;
+  background: rgba(60,207,78,0.1);
+  color: var(--color-success);
+  border: 1px solid rgba(60,207,78,0.2);
+}
+
+body.page-vidracaria-vidracaria .tipo-con {
+  font-size: 10px;
+  padding: 3px 8px;
+  border-radius: 20px;
+  background: rgba(255,77,77,0.1);
+  color: var(--color-danger);
+  border: 1px solid rgba(255,77,77,0.2);
+}
+
+/* ============ TIME TAGS (Relatório) ============ */
+body.page-relatorio-relatoriotempo .tag-tempo {
+  display: inline-flex;
+  font-size: 11px;
+  padding: 3px 10px;
+  border-radius: 20px;
+  font-weight: 500;
+  white-space: nowrap;
+}
+
+body.page-relatorio-relatoriotempo .t-ok {
+  background: rgba(60,207,78,0.15);
+  color: var(--color-success);
+}
+
+body.page-relatorio-relatoriotempo .t-med {
+  background: rgba(246,166,35,0.15);
+  color: var(--color-warning);
+}
+
+body.page-relatorio-relatoriotempo .t-slow {
+  background: rgba(255,77,77,0.15);
+  color: var(--color-danger);
+}
+
+body.page-relatorio-relatoriotempo .base-tag {
+  font-size: 10px;
+  color: var(--color-muted-5);
+  font-style: italic;
+}
