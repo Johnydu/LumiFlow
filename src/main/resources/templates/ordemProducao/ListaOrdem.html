@@ -1,0 +1,165 @@
+
+<!DOCTYPE html>
+<html lang="pt-BR" xmlns:th="http://www.thymeleaf.org">
+<head>
+<meta charset="UTF-8"/>
+<meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <link rel="stylesheet" th:href="@{/css/variables.css}">
+<link rel="stylesheet" th:href="@{/css/globals.css}">
+<link rel="stylesheet" th:href="@{/css/sidebar.css}">
+<link rel="stylesheet" th:href="@{/css/topbar.css}">
+<link rel="stylesheet" th:href="@{/css/components/buttons.css}">
+<link rel="stylesheet" th:href="@{/css/components/forms.css}">
+<link rel="stylesheet" th:href="@{/css/components/tables.css}">
+<link rel="stylesheet" th:href="@{/css/components/cards.css}">
+<link rel="stylesheet" th:href="@{/css/components/badges.css}">
+<link rel="stylesheet" th:href="@{/css/components/status.css}">
+<link rel="stylesheet" th:href="@{/css/components/alerts.css}">
+<link rel="stylesheet" th:href="@{/css/pages/dashboard.css}">
+<link rel="stylesheet" th:href="@{/css/pages/login.css}">
+<link rel="stylesheet" th:href="@{/css/pages/usuarios.css}">
+<link rel="stylesheet" th:href="@{/css/pages/maquinas.css}">
+<link rel="stylesheet" th:href="@{/css/pages/produtos.css}">
+<link rel="stylesheet" th:href="@{/css/pages/setores.css}">
+<link rel="stylesheet" th:href="@{/css/pages/ordens.css}">
+<link rel="stylesheet" th:href="@{/css/pages/relatorio.css}">
+<link rel="stylesheet" th:href="@{/css/pages/vidracaria.css}">
+<link rel="stylesheet" th:href="@{/css/pages/novaordem.css}">
+<link rel="stylesheet" th:href="@{/css/pages/listaordem.css}">
+<link rel="stylesheet" th:href="@{/css/utils.css}">
+<link rel="stylesheet" th:href="@{/css/responsive.css}"/>
+</head>
+<body class="page-ordemproducao-listaordem">
+<aside class="sidebar">
+  <div class="logo">LumiFlow</div>
+  <div class="menu-title">GERAL</div>
+  <div class="menu">
+    <div class="menu-item">Dashboard</div>
+    <div class="menu-item active">Ordens <span class="badge-m">4</span></div>
+    <div class="menu-item">Lançamentos</div>
+    <div class="menu-item">Relatórios</div>
+  </div>
+  <div class="menu-title">CADASTROS</div>
+  <div class="menu">
+    <div class="menu-item">Produtos</div>
+    <div class="menu-item">Setores</div>
+    <div class="menu-item">Máquinas</div>
+    <div class="menu-item">Roteiros</div>
+    <div class="menu-item">Usuários</div>
+  </div>
+  <div class="menu-title">SISTEMA</div>
+  <div class="menu">
+    <div class="menu-item">Configurações</div>
+  </div>
+  <div class="profile">
+    <div class="avatar">JE</div>
+    <div>
+      <div class="pname">Johny</div>
+      <div class="prole">Suporte</div>
+    </div>
+  </div>
+</aside>
+
+<main class="main">
+  <div class="topbar">
+    <span class="topbar-title">Ordens de Produção</span>
+    <button class="btn-nova">+ Nova Ordem</button>
+  </div>
+  <div class="content">
+    <div class="filtros">
+      <input class="filtro-input" type="text" placeholder="🔍  Buscar número ou produto..."/>
+      <select class="filtro-select">
+        <option>Todos os status</option>
+        <option>Em andamento</option>
+        <option>Concluída</option>
+        <option>Pendente</option>
+      </select>
+      <select class="filtro-select">
+        <option>Todos os setores</option>
+        <option>Corte</option>
+        <option>Dobra</option>
+        <option>Solda</option>
+        <option>Lixa</option>
+        <option>Pintura</option>
+        <option>Colagem</option>
+        <option>Acabamento</option>
+        <option>Montagem 2</option>
+      </select>
+    </div>
+
+    <div class="panel">
+      <div class="panel-header">
+        <span class="panel-title">Ordens</span>
+        <span class="panel-count">24 ordens encontradas</span>
+      </div>
+      <table>
+        <thead>
+          <tr>
+            <th style="width:75px">Número</th>
+            <th>Produto</th>
+            <th style="width:50px">Qtd</th>
+            <th style="width:150px">Progresso</th>
+            <th style="width:95px">Setor atual</th>
+            <th style="width:110px">Data criação</th>
+            <th style="width:110px">Status</th>
+            <th style="width:65px">Ação</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr>
+            <td class="num">OP-001</td><td>Arandela 12W</td><td>100</td>
+            <td><div class="prog-wrap"><div class="prog-track"><div class="prog-fill p-and" style="width:60%"></div></div><span class="prog-txt">60/100</span></div></td>
+            <td><span class="setor-tag">Pintura</span></td>
+            <td style="color:var(--color-muted);font-size:11px">19/05/2026</td>
+            <td><span class="status s-and"><span class="s-dot"></span>Em andamento</span></td>
+            <td><button class="btn-ver">Ver</button></td>
+          </tr>
+          <tr>
+            <td class="num">OP-002</td><td>Arandela 20W</td><td>50</td>
+            <td><div class="prog-wrap"><div class="prog-track"><div class="prog-fill p-and" style="width:40%"></div></div><span class="prog-txt">20/50</span></div></td>
+            <td><span class="setor-tag">Montagem</span></td>
+            <td style="color:var(--color-muted);font-size:11px">19/05/2026</td>
+            <td><span class="status s-and"><span class="s-dot"></span>Em andamento</span></td>
+            <td><button class="btn-ver">Ver</button></td>
+          </tr>
+          <tr>
+            <td class="num">OP-003</td><td>Arandela 9W</td><td>80</td>
+            <td><div class="prog-wrap"><div class="prog-track"><div class="prog-fill p-con" style="width:100%"></div></div><span class="prog-txt">80/80</span></div></td>
+            <td><span class="setor-tag ok">Embalagem</span></td>
+            <td style="color:var(--color-muted);font-size:11px">18/05/2026</td>
+            <td><span class="status s-con"><span class="s-dot"></span>Concluída</span></td>
+            <td><button class="btn-ver">Ver</button></td>
+          </tr>
+          <tr>
+            <td class="num">OP-004</td><td>Arandela 7W</td><td>60</td>
+            <td><div class="prog-wrap"><div class="prog-track"><div class="prog-fill p-pen" style="width:0%"></div></div><span class="prog-txt">0/60</span></div></td>
+            <td><span class="setor-tag">Corte</span></td>
+            <td style="color:var(--color-muted);font-size:11px">19/05/2026</td>
+            <td><span class="status s-pen"><span class="s-dot"></span>Pendente</span></td>
+            <td><button class="btn-ver">Ver</button></td>
+          </tr>
+          <tr>
+            <td class="num">OP-005</td><td>Arandela 15W</td><td>120</td>
+            <td><div class="prog-wrap"><div class="prog-track"><div class="prog-fill p-and" style="width:83%"></div></div><span class="prog-txt">100/120</span></div></td>
+            <td><span class="setor-tag">Solda</span></td>
+            <td style="color:var(--color-muted);font-size:11px">18/05/2026</td>
+            <td><span class="status s-and"><span class="s-dot"></span>Em andamento</span></td>
+            <td><button class="btn-ver">Ver</button></td>
+          </tr>
+        </tbody>
+      </table>
+      <div class="paginacao">
+        <span class="pag-info">Mostrando 1–5 de 24 ordens</span>
+        <div class="pag-btns">
+          <button class="pag-btn">‹</button>
+          <button class="pag-btn active">1</button>
+          <button class="pag-btn">2</button>
+          <button class="pag-btn">3</button>
+          <button class="pag-btn">›</button>
+        </div>
+      </div>
+    </div>
+  </div>
+</main>
+</body>
+</html>

@@ -1,0 +1,260 @@
+
+<!DOCTYPE html>
+<html lang="pt-BR" xmlns:th="http://www.thymeleaf.org">
+<head>
+<meta charset="UTF-8"/>
+<meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <link rel="stylesheet" th:href="@{/css/variables.css}">
+<link rel="stylesheet" th:href="@{/css/globals.css}">
+<link rel="stylesheet" th:href="@{/css/sidebar.css}">
+<link rel="stylesheet" th:href="@{/css/topbar.css}">
+<link rel="stylesheet" th:href="@{/css/components/buttons.css}">
+<link rel="stylesheet" th:href="@{/css/components/forms.css}">
+<link rel="stylesheet" th:href="@{/css/components/tables.css}">
+<link rel="stylesheet" th:href="@{/css/components/cards.css}">
+<link rel="stylesheet" th:href="@{/css/components/badges.css}">
+<link rel="stylesheet" th:href="@{/css/components/status.css}">
+<link rel="stylesheet" th:href="@{/css/components/alerts.css}">
+<link rel="stylesheet" th:href="@{/css/pages/dashboard.css}">
+<link rel="stylesheet" th:href="@{/css/pages/login.css}">
+<link rel="stylesheet" th:href="@{/css/pages/usuarios.css}">
+<link rel="stylesheet" th:href="@{/css/pages/maquinas.css}">
+<link rel="stylesheet" th:href="@{/css/pages/produtos.css}">
+<link rel="stylesheet" th:href="@{/css/pages/setores.css}">
+<link rel="stylesheet" th:href="@{/css/pages/ordens.css}">
+<link rel="stylesheet" th:href="@{/css/pages/relatorio.css}">
+<link rel="stylesheet" th:href="@{/css/pages/vidracaria.css}">
+<link rel="stylesheet" th:href="@{/css/pages/novaordem.css}">
+<link rel="stylesheet" th:href="@{/css/pages/listaordem.css}">
+<link rel="stylesheet" th:href="@{/css/utils.css}">
+<link rel="stylesheet" th:href="@{/css/responsive.css}"/>
+</head>
+<body class="page-ordemproducao-detalhesordem">
+
+<!-- SIDEBAR -->
+<aside class="sidebar">
+  <div class="logo">LumiFlow</div>
+  <div class="menu-title">GERAL</div>
+  <div class="menu">
+    <div class="menu-item">Dashboard</div>
+    <div class="menu-item active">Ordens <span class="badge-m">4</span></div>
+    <div class="menu-item">Lançamentos</div>
+    <div class="menu-item">Relatórios</div>
+  </div>
+  <div class="menu-title">CADASTROS</div>
+  <div class="menu">
+    <div class="menu-item">Produtos</div>
+    <div class="menu-item">Setores</div>
+    <div class="menu-item">Máquinas</div>
+    <div class="menu-item">Roteiros</div>
+    <div class="menu-item">Usuários</div>
+  </div>
+  <div class="menu-title">SISTEMA</div>
+  <div class="menu"><div class="menu-item">Configurações</div></div>
+  <div class="profile">
+    <div class="avatar">JE</div>
+    <div><div class="pname">Johny</div><div class="prole">Suporte</div></div>
+  </div>
+</aside>
+
+<!-- MAIN -->
+<main class="main">
+
+  <!-- TOPBAR -->
+  <div class="topbar">
+    <button class="btn-back">← Voltar</button>
+    <span class="topbar-title">Detalhe da Ordem</span>
+    <span class="op-num">OP-001</span>
+  </div>
+
+  <div class="content">
+
+    <!-- CARDS DE INFORMAÇÃO -->
+    <div class="info-cards">
+      <div class="info-card">
+        <div class="info-label">Produto</div>
+        <div class="info-val">Arandela 12W</div>
+      </div>
+      <div class="info-card">
+        <div class="info-label">Quantidade total</div>
+        <div class="info-val">100 unid.</div>
+      </div>
+      <div class="info-card">
+        <div class="info-label">Data de criação</div>
+        <div class="info-val">19/05/2026</div>
+      </div>
+      <div class="info-card">
+        <div class="info-label">Status</div>
+        <div class="info-val">
+          <span class="status-badge s-and"><span class="s-dot"></span>Em andamento</span>
+        </div>
+      </div>
+    </div>
+
+    <!-- PROGRESSO GERAL -->
+    <div class="prog-card">
+      <div class="prog-label">
+        <span>Progresso geral da ordem</span>
+        <span>60 / 100 unidades produzidas</span>
+      </div>
+      <div class="prog-track">
+        <div class="prog-fill" style="width:60%"></div>
+      </div>
+    </div>
+
+    <!-- ROTEIRO DE SETORES -->
+    <div class="roteiro-card">
+      <div class="card-title">Roteiro de produção</div>
+      <div class="roteiro">
+        <span class="setor-pill done">✓ Corte</span>
+        <span class="setor-arr">›</span>
+        <span class="setor-pill done">✓ Dobra</span>
+        <span class="setor-arr">›</span>
+        <span class="setor-pill done">✓ Solda</span>
+        <span class="setor-arr">›</span>
+        <span class="setor-pill atual">📍 Pintura</span>
+        <span class="setor-arr">›</span>
+        <span class="setor-pill">Colagem</span>
+        <span class="setor-arr">›</span>
+        <span class="setor-pill">Acabamento</span>
+      </div>
+    </div>
+
+    <!-- TABELA DE ITENS POR SETOR -->
+    <div class="itens-card">
+      <div class="itens-header">Itens por setor</div>
+      <table>
+        <thead>
+          <tr>
+            <th>Setor</th>
+            <th>Etapa</th>
+            <th style="width:60px">Recebido</th>
+            <th style="width:150px">Produzido</th>
+            <th style="width:70px">Pendente</th>
+            <th style="width:90px">Status</th>
+            <th style="width:80px">Ação</th>
+          </tr>
+        </thead>
+        <tbody>
+
+          <!-- Setor concluído -->
+          <tr>
+            <td><span class="setor-tag" style="background:var(--color-success-bg);color:var(--color-success-soft)">Corte</span></td>
+            <td style="color:var(--color-muted-4);font-size:11px">—</td>
+            <td>100</td>
+            <td><div class="p-wrap"><div class="p-track"><div class="p-fill pf-con" style="width:100%"></div></div><span class="p-txt">100/100</span></div></td>
+            <td style="color:var(--color-muted-4)">0</td>
+            <td><span class="status-badge s-and" style="background:rgba(60,207,78,0.15);color:var(--color-success)"><span class="s-dot" style="background:var(--color-success)"></span>Concluído</span></td>
+            <td><button class="btn-dis">—</button></td>
+          </tr>
+
+          <!-- Dobra com etapas -->
+          <tr>
+            <td><span class="setor-tag" style="background:var(--color-success-bg);color:var(--color-success-soft)">Dobra</span></td>
+            <td><span class="etapa-tag">1ª Dobra</span></td>
+            <td>100</td>
+            <td><div class="p-wrap"><div class="p-track"><div class="p-fill pf-con" style="width:100%"></div></div><span class="p-txt">100/100</span></div></td>
+            <td style="color:var(--color-muted-4)">0</td>
+            <td><span class="status-badge s-and" style="background:rgba(60,207,78,0.15);color:var(--color-success)"><span class="s-dot" style="background:var(--color-success)"></span>Concluído</span></td>
+            <td><button class="btn-dis">—</button></td>
+          </tr>
+          <tr>
+            <td><span class="setor-tag" style="background:var(--color-success-bg);color:var(--color-success-soft)">Dobra</span></td>
+            <td><span class="etapa-tag">2ª Dobra</span></td>
+            <td>100</td>
+            <td><div class="p-wrap"><div class="p-track"><div class="p-fill pf-con" style="width:100%"></div></div><span class="p-txt">100/100</span></div></td>
+            <td style="color:var(--color-muted-4)">0</td>
+            <td><span class="status-badge s-and" style="background:rgba(60,207,78,0.15);color:var(--color-success)"><span class="s-dot" style="background:var(--color-success)"></span>Concluído</span></td>
+            <td><button class="btn-dis">—</button></td>
+          </tr>
+
+          <!-- Solda concluído -->
+          <tr>
+            <td><span class="setor-tag" style="background:var(--color-success-bg);color:var(--color-success-soft)">Solda</span></td>
+            <td style="color:var(--color-muted-4);font-size:11px">—</td>
+            <td>100</td>
+            <td><div class="p-wrap"><div class="p-track"><div class="p-fill pf-con" style="width:100%"></div></div><span class="p-txt">100/100</span></div></td>
+            <td style="color:var(--color-muted-4)">0</td>
+            <td><span class="status-badge s-and" style="background:rgba(60,207,78,0.15);color:var(--color-success)"><span class="s-dot" style="background:var(--color-success)"></span>Concluído</span></td>
+            <td><button class="btn-dis">—</button></td>
+          </tr>
+
+          <!-- Pintura - setor atual em andamento -->
+          <tr style="background:rgba(97,87,255,0.05)">
+            <td><span class="setor-tag">Pintura</span></td>
+            <td style="color:var(--color-muted-4);font-size:11px">—</td>
+            <td>100</td>
+            <td><div class="p-wrap"><div class="p-track"><div class="p-fill pf-and" style="width:60%"></div></div><span class="p-txt">60/100</span></div></td>
+            <td style="color:var(--color-warning);font-weight:600">40</td>
+            <td><span class="status-badge s-and"><span class="s-dot"></span>Andamento</span></td>
+            <td><button class="btn-lancar">Lançar</button></td>
+          </tr>
+
+          <!-- Próximos setores -->
+          <tr style="opacity:0.4">
+            <td><span class="setor-tag">Colagem</span></td>
+            <td style="color:var(--color-muted-4);font-size:11px">—</td>
+            <td>—</td>
+            <td><div class="p-wrap"><div class="p-track"><div class="p-fill" style="width:0%"></div></div><span class="p-txt">0/—</span></div></td>
+            <td>—</td>
+            <td style="color:var(--color-muted-6);font-size:11px">Aguardando</td>
+            <td><button class="btn-dis">—</button></td>
+          </tr>
+          <tr style="opacity:0.4">
+            <td><span class="setor-tag">Acabamento</span></td>
+            <td style="color:var(--color-muted-4);font-size:11px">—</td>
+            <td>—</td>
+            <td><div class="p-wrap"><div class="p-track"><div class="p-fill" style="width:0%"></div></div><span class="p-txt">0/—</span></div></td>
+            <td>—</td>
+            <td style="color:var(--color-muted-6);font-size:11px">Aguardando</td>
+            <td><button class="btn-dis">—</button></td>
+          </tr>
+
+        </tbody>
+      </table>
+    </div>
+
+    <!-- HISTÓRICO DE LANÇAMENTOS -->
+    <div class="hist-card">
+      <div class="card-title">Histórico de lançamentos</div>
+      <div class="hist-item">
+        <div class="hist-dot"></div>
+        <div class="hist-info">
+          <div class="hist-title">Pintura — 60 unid. produzidas</div>
+          <div class="hist-sub">Cabine Preta · Carlos Silva · 19/05/2026 14:30</div>
+        </div>
+      </div>
+      <div class="hist-item">
+        <div class="hist-dot refugo"></div>
+        <div class="hist-info">
+          <div class="hist-title">Refugo — 5 unid. · Destino: Retrabalho</div>
+          <div class="hist-sub">Solda · Motivo: Solda irregular · Carlos Silva · 18/05/2026 16:00</div>
+        </div>
+      </div>
+      <div class="hist-item">
+        <div class="hist-dot"></div>
+        <div class="hist-info">
+          <div class="hist-title">Solda — 100 unid. produzidas</div>
+          <div class="hist-sub">Solda Alumínio · Maria Santos · 18/05/2026 15:00</div>
+        </div>
+      </div>
+      <div class="hist-item">
+        <div class="hist-dot"></div>
+        <div class="hist-info">
+          <div class="hist-title">Dobra 2ª Dobra — 100 unid. produzidas</div>
+          <div class="hist-sub">Dobradeira Argus 2 · Pedro Lima · 18/05/2026 11:00</div>
+        </div>
+      </div>
+      <div class="hist-item">
+        <div class="hist-dot"></div>
+        <div class="hist-info">
+          <div class="hist-title">Dobra 1ª Dobra — 100 unid. produzidas</div>
+          <div class="hist-sub">Dobradeira Argus 1 · João Souza · 18/05/2026 09:00</div>
+        </div>
+      </div>
+    </div>
+
+  </div>
+</main>
+</body>
+</html>

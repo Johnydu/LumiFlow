@@ -1,0 +1,215 @@
+
+<!DOCTYPE html>
+<html lang="pt-BR" xmlns:th="http://www.thymeleaf.org">
+<head>
+<meta charset="UTF-8"/>
+<meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <link rel="stylesheet" th:href="@{/css/variables.css}">
+<link rel="stylesheet" th:href="@{/css/globals.css}">
+<link rel="stylesheet" th:href="@{/css/sidebar.css}">
+<link rel="stylesheet" th:href="@{/css/topbar.css}">
+<link rel="stylesheet" th:href="@{/css/components/buttons.css}">
+<link rel="stylesheet" th:href="@{/css/components/forms.css}">
+<link rel="stylesheet" th:href="@{/css/components/tables.css}">
+<link rel="stylesheet" th:href="@{/css/components/cards.css}">
+<link rel="stylesheet" th:href="@{/css/components/badges.css}">
+<link rel="stylesheet" th:href="@{/css/components/status.css}">
+<link rel="stylesheet" th:href="@{/css/components/alerts.css}">
+<link rel="stylesheet" th:href="@{/css/pages/dashboard.css}">
+<link rel="stylesheet" th:href="@{/css/pages/login.css}">
+<link rel="stylesheet" th:href="@{/css/pages/usuarios.css}">
+<link rel="stylesheet" th:href="@{/css/pages/maquinas.css}">
+<link rel="stylesheet" th:href="@{/css/pages/produtos.css}">
+<link rel="stylesheet" th:href="@{/css/pages/setores.css}">
+<link rel="stylesheet" th:href="@{/css/pages/ordens.css}">
+<link rel="stylesheet" th:href="@{/css/pages/relatorio.css}">
+<link rel="stylesheet" th:href="@{/css/pages/vidracaria.css}">
+<link rel="stylesheet" th:href="@{/css/pages/novaordem.css}">
+<link rel="stylesheet" th:href="@{/css/pages/listaordem.css}">
+<link rel="stylesheet" th:href="@{/css/utils.css}">
+<link rel="stylesheet" th:href="@{/css/responsive.css}"/>
+</head>
+<body class="page-ordemproducao-lancamento">
+
+<!-- SIDEBAR -->
+<aside class="sidebar">
+  <div class="logo">LumiFlow</div>
+  <div class="menu-title">GERAL</div>
+  <div class="menu">
+    <div class="menu-item">Dashboard</div>
+    <div class="menu-item active">Ordens</div>
+    <div class="menu-item">Lançamentos</div>
+    <div class="menu-item">Relatórios</div>
+  </div>
+  <div class="menu-title">CADASTROS</div>
+  <div class="menu">
+    <div class="menu-item">Produtos</div>
+    <div class="menu-item">Setores</div>
+    <div class="menu-item">Máquinas</div>
+    <div class="menu-item">Roteiros</div>
+    <div class="menu-item">Usuários</div>
+  </div>
+  <div class="menu-title">SISTEMA</div>
+  <div class="menu"><div class="menu-item">Configurações</div></div>
+  <div class="profile">
+    <div class="avatar">CS</div>
+    <div><div class="pname">Carlos</div><div class="prole">Operador · Dobra</div></div>
+  </div>
+</aside>
+
+<!-- MAIN -->
+<main class="main">
+  <div class="topbar">
+    <button class="btn-back">← Voltar</button>
+    <span class="topbar-title">Lançamento</span>
+  </div>
+
+  <div class="content">
+
+    <!-- PRODUTO DESTACADO -->
+    <div class="produto-destaque">
+      <div>
+        <div class="produto-nome">Arandela 12W</div>
+        <div class="produto-op">OP-001</div>
+      </div>
+      <div class="produto-badges">
+        <span class="badge-etapa">2ª Dobra</span>
+        <span class="badge-setor">Dobra</span>
+        <span class="badge-disp">40 disp.</span>
+      </div>
+    </div>
+
+    <!-- ABAS -->
+    <div class="tabs">
+      <button class="tab active" id="tab-btn-prod" onclick="showTab('producao')">Produção</button>
+      <button class="tab" id="tab-btn-ref" onclick="showTab('refugo')">Refugo</button>
+      <button class="tab" id="tab-btn-ret" onclick="showTab('retrabalho')">Retrabalho</button>
+    </div>
+
+    <!-- FORM PRODUÇÃO -->
+    <div id="tab-producao" class="form-card">
+      <div class="form-grid">
+        <div class="field">
+          <label>Máquina <span>*</span></label>
+          <select>
+            <option>Selecione a máquina</option>
+            <option>Dobradeira Argus 1</option>
+            <option selected>Dobradeira Argus 2</option>
+            <option>Dobradeira Manual 1</option>
+            <option>Dobradeira Manual 2</option>
+          </select>
+        </div>
+        <div class="field">
+          <label>Quantidade produzida <span>*</span></label>
+          <input type="number" value="40" placeholder="0"/>
+          <span class="hint warn">Máximo: 40 unid.</span>
+        </div>
+      </div>
+      <div class="form-grid-3">
+        <div class="field">
+          <label>Data <span>*</span></label>
+          <input type="date" value="2026-05-30"/>
+        </div>
+        <div class="field">
+          <label>Hora <span>*</span></label>
+          <input type="time" value="14:30"/>
+        </div>
+        <div class="field">
+          <label>Observação</label>
+          <input type="text" placeholder="Opcional..."/>
+        </div>
+      </div>
+      <div class="form-actions">
+        <button class="btn-cancel">Cancelar</button>
+        <button class="btn-submit">Confirmar</button>
+      </div>
+    </div>
+
+    <!-- FORM REFUGO -->
+    <div id="tab-refugo" class="form-card" style="display:none">
+      <div class="form-grid">
+        <div class="field">
+          <label>Quantidade refugada <span>*</span></label>
+          <input type="number" placeholder="0"/>
+        </div>
+        <div class="field">
+          <label>Setor de origem do erro <span>*</span></label>
+          <select>
+            <option>Selecione o setor</option>
+            <option>Corte</option>
+            <option selected>Dobra</option>
+            <option>Solda</option>
+            <option>Pintura</option>
+          </select>
+        </div>
+      </div>
+      <div class="form-grid">
+        <div class="field">
+          <label>Destino <span>*</span></label>
+          <select>
+            <option>Selecione</option>
+            <option>Retrabalho</option>
+            <option>Descarte</option>
+          </select>
+        </div>
+        <div class="field">
+          <label>Data e hora <span>*</span></label>
+          <input type="datetime-local" value="2026-05-30T14:30"/>
+        </div>
+      </div>
+      <div class="field" style="margin-bottom:14px">
+        <label>Motivo <span>*</span></label>
+        <textarea placeholder="Descreva o motivo do refugo..."></textarea>
+      </div>
+      <div class="form-actions">
+        <button class="btn-cancel">Cancelar</button>
+        <button class="btn-submit refugo">Confirmar Refugo</button>
+      </div>
+    </div>
+
+    <!-- FORM RETRABALHO -->
+    <div id="tab-retrabalho" class="form-card" style="display:none">
+      <div class="form-grid">
+        <div class="field">
+          <label>Refugo vinculado <span>*</span></label>
+          <select>
+            <option>Selecione o refugo</option>
+            <option selected>REF-003 · 5 unid. · Solda irregular</option>
+            <option>REF-005 · 2 unid. · Corte fora de medida</option>
+          </select>
+        </div>
+        <div class="field">
+          <label>Máquina <span>*</span></label>
+          <select>
+            <option>Selecione a máquina</option>
+            <option selected>Dobradeira Argus 1</option>
+            <option>Dobradeira Argus 2</option>
+          </select>
+        </div>
+      </div>
+      <div class="form-grid">
+        <div class="field">
+          <label>Quantidade refeita <span>*</span></label>
+          <input type="number" placeholder="0"/>
+        </div>
+        <div class="field">
+          <label>Data e hora <span>*</span></label>
+          <input type="datetime-local" value="2026-05-30T14:30"/>
+        </div>
+      </div>
+      <div class="field" style="margin-bottom:14px">
+        <label>Observação</label>
+        <textarea placeholder="Descreva o que foi corrigido..."></textarea>
+      </div>
+      <div class="form-actions">
+        <button class="btn-cancel">Cancelar</button>
+        <button class="btn-submit retrab">Confirmar Retrabalho</button>
+      </div>
+    </div>
+
+  </div>
+</main>
+
+<script th:src="@{/js/lancamento.js}"></script>
+</body>
+</html>

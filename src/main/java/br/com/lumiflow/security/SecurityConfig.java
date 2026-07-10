@@ -54,6 +54,7 @@ public class SecurityConfig {
                                 "/css/**",
                                 "/js/**",
                                 "/images/**",
+                                "/style.css",
                                 "/webjars/**"
                         ).permitAll()
 

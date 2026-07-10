@@ -1,0 +1,193 @@
+<!DOCTYPE html>
+<html lang="pt-BR" xmlns:th="http://www.thymeleaf.org">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Cadastro de Setores - LumiFlow</title>
+  <link rel="stylesheet" th:href="@{/css/variables.css}">
+<link rel="stylesheet" th:href="@{/css/globals.css}">
+<link rel="stylesheet" th:href="@{/css/sidebar.css}">
+<link rel="stylesheet" th:href="@{/css/topbar.css}">
+<link rel="stylesheet" th:href="@{/css/components/buttons.css}">
+<link rel="stylesheet" th:href="@{/css/components/forms.css}">
+<link rel="stylesheet" th:href="@{/css/components/tables.css}">
+<link rel="stylesheet" th:href="@{/css/components/cards.css}">
+<link rel="stylesheet" th:href="@{/css/components/badges.css}">
+<link rel="stylesheet" th:href="@{/css/components/status.css}">
+<link rel="stylesheet" th:href="@{/css/components/alerts.css}">
+<link rel="stylesheet" th:href="@{/css/pages/dashboard.css}">
+<link rel="stylesheet" th:href="@{/css/pages/login.css}">
+<link rel="stylesheet" th:href="@{/css/pages/usuarios.css}">
+<link rel="stylesheet" th:href="@{/css/pages/maquinas.css}">
+<link rel="stylesheet" th:href="@{/css/pages/produtos.css}">
+<link rel="stylesheet" th:href="@{/css/pages/setores.css}">
+<link rel="stylesheet" th:href="@{/css/pages/ordens.css}">
+<link rel="stylesheet" th:href="@{/css/pages/relatorio.css}">
+<link rel="stylesheet" th:href="@{/css/pages/vidracaria.css}">
+<link rel="stylesheet" th:href="@{/css/pages/novaordem.css}">
+<link rel="stylesheet" th:href="@{/css/pages/listaordem.css}">
+<link rel="stylesheet" th:href="@{/css/utils.css}">
+<link rel="stylesheet" th:href="@{/css/responsive.css}">
+</head>
+<body class="page-setor-cadastrosetor">
+
+<aside class="sidebar">
+  <div class="logo">LumiFlow</div>
+  <div class="menu-title">GERAL</div>
+  <div class="menu">
+    <div class="menu-item">Dashboard</div>
+    <div class="menu-item">Ordens</div>
+    <div class="menu-item">Lançamentos</div>
+    <div class="menu-item">Relatórios</div>
+  </div>
+  <div class="menu-title">CADASTROS</div>
+  <div class="menu">
+    <div class="menu-item">Produtos</div>
+    <div class="menu-item active">Setores</div>
+    <div class="menu-item">Máquinas</div>
+    <div class="menu-item">Roteiros</div>
+    <div class="menu-item">Usuários</div>
+  </div>
+  <div class="menu-title">SISTEMA</div>
+  <div class="menu"><div class="menu-item">Configurações</div></div>
+  <div class="profile">
+    <div class="avatar">JE</div>
+    <div><div class="pname">Johny</div><div class="prole">Suporte</div></div>
+  </div>
+</aside>
+
+<main class="main">
+  <div class="topbar">
+    <span class="topbar-title">Setores</span>
+    <button class="btn-novo" onclick="showForm()">+ Novo Setor</button>
+  </div>
+
+  <div class="content">
+
+    <!-- LISTA -->
+    <div class="lista">
+      <div class="panel">
+        <div class="panel-header">
+          <span class="panel-title">Setores cadastrados</span>
+        </div>
+        <table>
+          <thead>
+            <tr>
+              <th>Setor</th>
+              <th>Máquinas</th>
+              <th>Etapas</th>
+              <th style="width:120px">Ações</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr>
+              <td style="font-weight:500">Corte / Preparação</td>
+              <td><span class="tag-maq">Laser</span></td>
+              <td style="color:var(--color-muted-5);font-size:11px">—</td>
+              <td><button class="btn-edit" onclick="showForm()">Editar</button><button class="btn-del">Excluir</button></td>
+            </tr>
+            <tr>
+              <td style="font-weight:500">Dobra</td>
+              <td>
+                <span class="tag-maq">Argus 1</span>
+                <span class="tag-maq">Argus 2</span>
+                <span class="tag-maq">Manual 1</span>
+                <span class="tag-maq">Manual 2</span>
+              </td>
+              <td><span style="color:var(--color-primary);font-size:11px">1ª Dobra, 2ª Dobra</span></td>
+              <td><button class="btn-edit" onclick="showForm()">Editar</button><button class="btn-del">Excluir</button></td>
+            </tr>
+            <tr>
+              <td style="font-weight:500">União / Solda</td>
+              <td><span class="tag-maq">Solda Alumínio</span></td>
+              <td style="color:var(--color-muted-5);font-size:11px">—</td>
+              <td><button class="btn-edit" onclick="showForm()">Editar</button><button class="btn-del">Excluir</button></td>
+            </tr>
+            <tr>
+              <td style="font-weight:500">Lixa</td>
+              <td style="color:var(--color-muted-5);font-size:11px">—</td>
+              <td style="color:var(--color-muted-5);font-size:11px">—</td>
+              <td><button class="btn-edit" onclick="showForm()">Editar</button><button class="btn-del">Excluir</button></td>
+            </tr>
+            <tr>
+              <td style="font-weight:500">Pintura</td>
+              <td>
+                <span class="tag-maq">Cabine Preta</span>
+                <span class="tag-maq">Cabine Marrom</span>
+                <span class="tag-maq">Cabine Branca</span>
+                <span class="tag-maq">Cabine Champagne</span>
+              </td>
+              <td style="color:var(--color-muted-5);font-size:11px">—</td>
+              <td><button class="btn-edit" onclick="showForm()">Editar</button><button class="btn-del">Excluir</button></td>
+            </tr>
+            <tr>
+              <td style="font-weight:500">Colagem</td>
+              <td><span class="tag-maq">Mesa 1</span></td>
+              <td style="color:var(--color-muted-5);font-size:11px">—</td>
+              <td><button class="btn-edit" onclick="showForm()">Editar</button><button class="btn-del">Excluir</button></td>
+            </tr>
+            <tr>
+              <td style="font-weight:500">Acabamento Final</td>
+              <td><span class="tag-maq">Mesa 1</span><span class="tag-maq">Mesa 2</span></td>
+              <td style="color:var(--color-muted-5);font-size:11px">—</td>
+              <td><button class="btn-edit" onclick="showForm()">Editar</button><button class="btn-del">Excluir</button></td>
+            </tr>
+            <tr>
+              <td style="font-weight:500">Montagem 2</td>
+              <td style="color:var(--color-muted-5);font-size:11px">—</td>
+              <td style="color:var(--color-muted-5);font-size:11px">—</td>
+              <td><button class="btn-edit" onclick="showForm()">Editar</button><button class="btn-del">Excluir</button></td>
+            </tr>
+            <tr>
+              <td style="font-weight:500">Vidraçaria</td>
+              <td style="color:var(--color-muted-5);font-size:11px">—</td>
+              <td style="color:var(--color-muted-5);font-size:11px">—</td>
+              <td><button class="btn-edit" onclick="showForm()">Editar</button><button class="btn-del">Excluir</button></td>
+            </tr>
+          </tbody>
+        </table>
+      </div>
+    </div>
+
+    <!-- FORMULÁRIO -->
+    <div class="form-panel" id="form-panel" style="display:none">
+      <div class="form-card">
+        <div class="form-title">Novo Setor</div>
+
+        <div class="field">
+          <label>Nome do setor <span>*</span></label>
+          <input type="text" placeholder="Ex: Dobra"/>
+        </div>
+
+        <!-- ETAPAS -->
+        <div class="field">
+          <label>Etapas de produção</label>
+          <span class="hint" style="margin-bottom:8px">Opcional — preencha somente se o setor tiver subdivisões (ex: 1ª Dobra, 2ª Dobra).</span>
+          <div class="etapas-list" id="etapas-list">
+            <div class="etapa-item">
+              <span class="etapa-num">1º</span>
+              <span class="etapa-nome">1ª Dobra</span>
+              <button class="etapa-del" onclick="removeEtapa(this)">✕</button>
+            </div>
+            <div class="etapa-item">
+              <span class="etapa-num">2º</span>
+              <span class="etapa-nome">2ª Dobra</span>
+              <button class="etapa-del" onclick="removeEtapa(this)">✕</button>
+            </div>
+          </div>
+          <button class="btn-add-etapa" onclick="addEtapa()">+ Adicionar etapa</button>
+        </div>
+
+        <div class="form-actions">
+          <button class="btn-cancel" onclick="hideForm()">Cancelar</button>
+          <button class="btn-submit">Salvar</button>
+        </div>
+      </div>
+    </div>
+
+  </div>
+</main>
+
+<script th:src="@{/js/cadastro-setor.js}"></script>
+</body>
+</html>

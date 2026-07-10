@@ -1,0 +1,118 @@
+
+<!DOCTYPE html>
+<html lang="pt-BR" xmlns:th="http://www.thymeleaf.org">
+<head>
+<meta charset="UTF-8"/>
+<meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <link rel="stylesheet" th:href="@{/css/variables.css}">
+<link rel="stylesheet" th:href="@{/css/globals.css}">
+<link rel="stylesheet" th:href="@{/css/sidebar.css}">
+<link rel="stylesheet" th:href="@{/css/topbar.css}">
+<link rel="stylesheet" th:href="@{/css/components/buttons.css}">
+<link rel="stylesheet" th:href="@{/css/components/forms.css}">
+<link rel="stylesheet" th:href="@{/css/components/tables.css}">
+<link rel="stylesheet" th:href="@{/css/components/cards.css}">
+<link rel="stylesheet" th:href="@{/css/components/badges.css}">
+<link rel="stylesheet" th:href="@{/css/components/status.css}">
+<link rel="stylesheet" th:href="@{/css/components/alerts.css}">
+<link rel="stylesheet" th:href="@{/css/pages/dashboard.css}">
+<link rel="stylesheet" th:href="@{/css/pages/login.css}">
+<link rel="stylesheet" th:href="@{/css/pages/usuarios.css}">
+<link rel="stylesheet" th:href="@{/css/pages/maquinas.css}">
+<link rel="stylesheet" th:href="@{/css/pages/produtos.css}">
+<link rel="stylesheet" th:href="@{/css/pages/setores.css}">
+<link rel="stylesheet" th:href="@{/css/pages/ordens.css}">
+<link rel="stylesheet" th:href="@{/css/pages/relatorio.css}">
+<link rel="stylesheet" th:href="@{/css/pages/vidracaria.css}">
+<link rel="stylesheet" th:href="@{/css/pages/novaordem.css}">
+<link rel="stylesheet" th:href="@{/css/pages/listaordem.css}">
+<link rel="stylesheet" th:href="@{/css/utils.css}">
+<link rel="stylesheet" th:href="@{/css/responsive.css}"/>
+</head>
+<body class="page-ordemproducao-novaordem">
+
+<aside class="sidebar">
+  <div class="logo">LumiFlow</div>
+  <div class="menu-title">GERAL</div>
+  <div class="menu">
+    <div class="menu-item">Dashboard</div>
+    <div class="menu-item active">Ordens <span class="badge-m">4</span></div>
+    <div class="menu-item">Lançamentos</div>
+    <div class="menu-item">Relatórios</div>
+  </div>
+  <div class="menu-title">CADASTROS</div>
+  <div class="menu">
+    <div class="menu-item">Produtos</div>
+    <div class="menu-item">Setores</div>
+    <div class="menu-item">Máquinas</div>
+    <div class="menu-item">Roteiros</div>
+    <div class="menu-item">Usuários</div>
+  </div>
+  <div class="menu-title">SISTEMA</div>
+  <div class="menu"><div class="menu-item">Configurações</div></div>
+  <div class="profile">
+    <div class="avatar">JE</div>
+    <div><div class="pname">Johny</div><div class="prole">Suporte</div></div>
+  </div>
+</aside>
+
+<main class="main">
+  <div class="topbar">
+    <button class="btn-back">← Voltar</button>
+    <span class="topbar-title">Nova Ordem de Produção</span>
+  </div>
+
+  <div class="content">
+
+    <!-- DADOS DA ORDEM -->
+    <div class="form-card">
+      <div class="card-title">Dados da ordem</div>
+      <div class="form-grid" style="margin-bottom:14px">
+        <div class="field">
+          <label>Produto <span>*</span></label>
+          <select onchange="updateRoteiro(this.value)">
+            <option value="">Selecione o produto</option>
+            <option value="arandela12">Arandela 12W</option>
+            <option value="arandela20">Arandela 20W</option>
+            <option value="222pt">222PT</option>
+            <option value="327mr">327MR</option>
+          </select>
+        </div>
+        <div class="field">
+          <label>Quantidade <span>*</span></label>
+          <input type="number" placeholder="0"/>
+          <span class="hint">Quantidade total a produzir.</span>
+        </div>
+        <div class="field">
+          <label>Data <span>*</span></label>
+          <input type="date" value="2026-05-30"/>
+        </div>
+        <div class="field">
+          <label>Observação</label>
+          <input type="text" placeholder="Opcional..."/>
+        </div>
+      </div>
+
+      <!-- ROTEIRO AUTOMÁTICO -->
+      <div class="roteiro-card">
+        <div class="roteiro-label">Roteiro do produto</div>
+        <div class="roteiro-pills" id="roteiro-pills">
+          <span class="r-empty">Selecione um produto para ver o roteiro.</span>
+        </div>
+        <div class="roteiro-info" id="roteiro-info" style="display:none">
+          ℹ️ Roteiro carregado automaticamente do cadastro do produto.
+        </div>
+      </div>
+    </div>
+
+    <div class="form-actions">
+      <button class="btn-cancel">Cancelar</button>
+      <button class="btn-submit">Criar Ordem</button>
+    </div>
+
+  </div>
+</main>
+
+<script th:src="@{/js/nova-ordem.js}"></script>
+</body>
+</html>

@@ -1,0 +1,217 @@
+
+<!DOCTYPE html>
+<html lang="pt-BR" xmlns:th="http://www.thymeleaf.org">
+<head>
+<meta charset="UTF-8"/>
+<meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <link rel="stylesheet" th:href="@{/css/variables.css}">
+<link rel="stylesheet" th:href="@{/css/globals.css}">
+<link rel="stylesheet" th:href="@{/css/sidebar.css}">
+<link rel="stylesheet" th:href="@{/css/topbar.css}">
+<link rel="stylesheet" th:href="@{/css/components/buttons.css}">
+<link rel="stylesheet" th:href="@{/css/components/forms.css}">
+<link rel="stylesheet" th:href="@{/css/components/tables.css}">
+<link rel="stylesheet" th:href="@{/css/components/cards.css}">
+<link rel="stylesheet" th:href="@{/css/components/badges.css}">
+<link rel="stylesheet" th:href="@{/css/components/status.css}">
+<link rel="stylesheet" th:href="@{/css/components/alerts.css}">
+<link rel="stylesheet" th:href="@{/css/pages/dashboard.css}">
+<link rel="stylesheet" th:href="@{/css/pages/login.css}">
+<link rel="stylesheet" th:href="@{/css/pages/usuarios.css}">
+<link rel="stylesheet" th:href="@{/css/pages/maquinas.css}">
+<link rel="stylesheet" th:href="@{/css/pages/produtos.css}">
+<link rel="stylesheet" th:href="@{/css/pages/setores.css}">
+<link rel="stylesheet" th:href="@{/css/pages/ordens.css}">
+<link rel="stylesheet" th:href="@{/css/pages/relatorio.css}">
+<link rel="stylesheet" th:href="@{/css/pages/vidracaria.css}">
+<link rel="stylesheet" th:href="@{/css/pages/novaordem.css}">
+<link rel="stylesheet" th:href="@{/css/pages/listaordem.css}">
+<link rel="stylesheet" th:href="@{/css/utils.css}">
+<link rel="stylesheet" th:href="@{/css/responsive.css}"/>
+</head>
+<body class="page-vidracaria-vidracaria">
+
+<aside class="sidebar">
+  <div class="logo">LumiFlow</div>
+  <div class="menu-title">GERAL</div>
+  <div class="menu">
+    <div class="menu-item">Dashboard</div>
+    <div class="menu-item">Ordens</div>
+    <div class="menu-item active">Lançamentos</div>
+    <div class="menu-item">Relatórios</div>
+  </div>
+  <div class="menu-title">CADASTROS</div>
+  <div class="menu">
+    <div class="menu-item">Produtos</div>
+    <div class="menu-item">Setores</div>
+    <div class="menu-item">Máquinas</div>
+    <div class="menu-item">Roteiros</div>
+    <div class="menu-item">Usuários</div>
+  </div>
+  <div class="menu-title">SISTEMA</div>
+  <div class="menu"><div class="menu-item">Configurações</div></div>
+  <div class="profile">
+    <div class="avatar">MA</div>
+    <div><div class="pname">Maria</div><div class="prole">Operador · Vidraçaria</div></div>
+  </div>
+</aside>
+
+<main class="main">
+  <div class="topbar">
+    <span class="topbar-title">Vidraçaria</span>
+  </div>
+
+  <div class="content">
+
+    <!-- SALDO ATUAL -->
+    <div class="saldo-grid">
+      <div class="saldo-card">
+        <div class="saldo-tipo">Incolor</div>
+        <div class="saldo-val" style="color:var(--color-blue)">20</div>
+        <div class="saldo-sub">chapas em estoque</div>
+        <div class="saldo-bar"><div class="saldo-fill" style="width:40%;background:var(--color-blue)"></div></div>
+      </div>
+      <div class="saldo-card">
+        <div class="saldo-tipo">Jateado</div>
+        <div class="saldo-val" style="color:var(--color-danger)">2</div>
+        <div class="saldo-sub">chapas em estoque ⚠️</div>
+        <div class="saldo-bar"><div class="saldo-fill" style="width:5%;background:var(--color-danger)"></div></div>
+      </div>
+      <div class="saldo-card">
+        <div class="saldo-tipo">Refletivo</div>
+        <div class="saldo-val" style="color:var(--color-mint)">5</div>
+        <div class="saldo-sub">chapas em estoque</div>
+        <div class="saldo-bar"><div class="saldo-fill" style="width:25%;background:var(--color-mint)"></div></div>
+      </div>
+    </div>
+
+    <!-- ABAS -->
+    <div class="tabs">
+      <button class="tab active" onclick="showTab('consumo',this)">Registrar Consumo</button>
+      <button class="tab entrada" onclick="showTab('entrada',this)">Registrar Entrada</button>
+    </div>
+
+    <!-- FORM CONSUMO -->
+    <div id="tab-consumo" class="form-card">
+      <div class="card-title">Consumo de chapas de vidro</div>
+      <div class="form-grid">
+        <div class="field">
+          <label>Tipo de vidro <span>*</span></label>
+          <select>
+            <option>Selecione o tipo</option>
+            <option selected>Incolor</option>
+            <option>Jateado</option>
+            <option>Refletivo</option>
+          </select>
+        </div>
+        <div class="field">
+          <label>Quantidade <span>*</span></label>
+          <input type="number" value="3" placeholder="0"/>
+        </div>
+        <div class="field">
+          <label>Data e hora <span>*</span></label>
+          <input type="datetime-local" value="2026-05-30T14:30"/>
+        </div>
+      </div>
+      <div class="field" style="margin-bottom:14px">
+        <label>Observação</label>
+        <input type="text" placeholder="Opcional..."/>
+      </div>
+      <div class="form-actions">
+        <button class="btn-cancel">Cancelar</button>
+        <button class="btn-submit">Confirmar Consumo</button>
+      </div>
+    </div>
+
+    <!-- FORM ENTRADA -->
+    <div id="tab-entrada" class="form-card" style="display:none">
+      <div class="card-title">Entrada de chapas de vidro</div>
+      <div class="form-grid">
+        <div class="field">
+          <label>Tipo de vidro <span>*</span></label>
+          <select>
+            <option>Selecione o tipo</option>
+            <option>Incolor</option>
+            <option selected>Jateado</option>
+            <option>Refletivo</option>
+          </select>
+        </div>
+        <div class="field">
+          <label>Quantidade recebida <span>*</span></label>
+          <input type="number" value="20" placeholder="0"/>
+        </div>
+        <div class="field">
+          <label>Data e hora <span>*</span></label>
+          <input type="datetime-local" value="2026-05-30T08:00"/>
+        </div>
+      </div>
+      <div class="field" style="margin-bottom:14px">
+        <label>Observação</label>
+        <input type="text" placeholder="Ex: Nota fiscal 1234..."/>
+      </div>
+      <div class="form-actions">
+        <button class="btn-cancel">Cancelar</button>
+        <button class="btn-submit entrada">Confirmar Entrada</button>
+      </div>
+    </div>
+
+    <!-- HISTÓRICO -->
+    <div class="panel">
+      <div class="panel-header">
+        Histórico
+        <span class="panel-sub">entradas e consumos</span>
+      </div>
+      <table>
+        <thead>
+          <tr>
+            <th>Tipo</th>
+            <th>Tipo de vidro</th>
+            <th style="width:80px">Qtd</th>
+            <th style="width:160px">Data e hora</th>
+            <th>Operador</th>
+            <th>Observação</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr>
+            <td><span class="tipo-con">Consumo</span></td>
+            <td><span class="tipo-tag tipo-in">Incolor</span></td>
+            <td>3</td>
+            <td style="color:var(--color-muted);font-size:11px">30/05/2026 14:30</td>
+            <td>Maria</td>
+            <td style="color:var(--color-muted-5)">—</td>
+          </tr>
+          <tr>
+            <td><span class="tipo-ent">Entrada</span></td>
+            <td><span class="tipo-tag tipo-jt">Jateado</span></td>
+            <td>20</td>
+            <td style="color:var(--color-muted);font-size:11px">30/05/2026 08:00</td>
+            <td>Maria</td>
+            <td style="color:var(--color-muted-5)">NF 1234</td>
+          </tr>
+          <tr>
+            <td><span class="tipo-con">Consumo</span></td>
+            <td><span class="tipo-tag tipo-rf">Refletivo</span></td>
+            <td>2</td>
+            <td style="color:var(--color-muted);font-size:11px">29/05/2026 16:00</td>
+            <td>Maria</td>
+            <td style="color:var(--color-muted-5)">—</td>
+          </tr>
+          <tr>
+            <td><span class="tipo-con">Consumo</span></td>
+            <td><span class="tipo-tag tipo-jt">Jateado</span></td>
+            <td>5</td>
+            <td style="color:var(--color-muted);font-size:11px">29/05/2026 10:00</td>
+            <td>João</td>
+            <td style="color:var(--color-muted-5)">—</td>
+          </tr>
+        </tbody>
+      </table>
+    </div>
+
+  </div>
+</main>
+
+<script th:src="@{/js/vidracaria.js}"></script>
+</body>
+</html>
