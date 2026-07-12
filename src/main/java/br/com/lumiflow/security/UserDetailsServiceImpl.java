@@ -40,7 +40,7 @@ public class UserDetailsServiceImpl implements UserDetailsService {
     // Chamado automaticamente pelo Spring Security no login
     // ============================================================
     @Override
-    @Transactional(readOnly = true) // evita LazyInitializationException ao acessar setor
+    @Transactional(readOnly = true) // evita LazyInitializationException ao acessar setorId
     public UserDetails loadUserByUsername(String login) throws UsernameNotFoundException {
 
         // Busca o usuário no banco pelo campo 'login'

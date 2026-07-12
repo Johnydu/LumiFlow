@@ -18,7 +18,7 @@ import java.util.List;
  * O Spring Security não conhece nossa classe Usuario — ele só
  * trabalha com UserDetails. Esta classe faz essa ponte.
  *
- * Também expõe dados extras do usuário logado (ex: setor, nome)
+ * Também expõe dados extras do usuário logado (ex: setorId, nome)
  * para uso no Thymeleaf com sec:authentication.
  * ============================================================
  */
@@ -43,7 +43,7 @@ public class UsuarioDetails implements UserDetails {
     public Collection<? extends GrantedAuthority> getAuthorities() {
         return List.of(
                 new SimpleGrantedAuthority(
-                        "ROLE_" + usuario.getNivelAcesso().getRole().name()
+                        "ROLE_" + usuario.getNivelAcesso().getDescricao().name()
                 )
         );
     }
@@ -102,7 +102,7 @@ public class UsuarioDetails implements UserDetails {
     }
 
     /**
-     * Retorna o nome do setor do usuário logado.
+     * Retorna o nome do setorId do usuário logado.
      * Uso no HTML: ${#authentication.principal.nomeSetor}
      */
     public String getNomeSetor() {
@@ -111,8 +111,8 @@ public class UsuarioDetails implements UserDetails {
     }
 
     /**
-     * Retorna o ID do setor do usuário logado.
-     * Usado no Service para filtrar ordens apenas do setor do operador.
+     * Retorna o ID do setorId do usuário logado.
+     * Usado no Service para filtrar ordens apenas do setorId do operador.
      */
     public Long getSetorId() {
         if (usuario.getSetor() == null) return null;
@@ -121,10 +121,10 @@ public class UsuarioDetails implements UserDetails {
 
     /**
      * Retorna o nível de acesso como string legível.
-     * Uso no HTML: ${#authentication.principal.nivelAcesso}
+     * Uso no HTML: ${#authentication.principal.nivelAcessoId}
      */
     public String getNivelAcesso() {
-        return usuario.getNivelAcesso().getRole().name();
+        return usuario.getNivelAcesso().getDescricao().name();
     }
 
     /**

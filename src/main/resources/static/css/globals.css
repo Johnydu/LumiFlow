@@ -27,3 +27,22 @@ body.page-usuario-login * {
 body.page-usuario-login {
   background: var(--color-bg-soft);
 }
+.logo{
+  text-decoration:none;
+  color:inherit;
+  display:block;
+}
+
+.menu-item{
+  text-decoration:none;
+  color:inherit;
+  cursor:pointer;
+}
+
+.logout-btn{
+  width:100%;
+  border:none;
+  background:none;
+  text-align:left;
+  font:inherit;
+}

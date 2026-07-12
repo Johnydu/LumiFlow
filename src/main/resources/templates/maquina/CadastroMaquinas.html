@@ -75,7 +75,7 @@
     <!-- ================================ -->
     <div class="lista">
 
-      <!-- Filtro por setor -->
+      <!-- Filtro por setorId -->
       <div class="setor-tabs">
         <button class="setor-tab active" onclick="setTab(this)">Todos</button>
         <button class="setor-tab" onclick="setTab(this)">Corte</button>
@@ -234,8 +234,8 @@
 
         <div class="field">
           <label>Setor vinculado <span>*</span></label>
-          <!-- th:field="*{setor}" -->
-          <!-- th:each="setor : ${setores}" -->
+          <!-- th:field="*{setorId}" -->
+          <!-- th:each="setorId : ${setores}" -->
           <select id="input-setor">
             <option value="">Selecione o setor</option>
             <option>Corte / Preparação</option>

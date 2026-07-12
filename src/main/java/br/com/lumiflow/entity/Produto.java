@@ -8,7 +8,6 @@ import lombok.*;
 @Table(name = "produto")
 @Getter
 @Setter
-@Builder
 @AllArgsConstructor
 @NoArgsConstructor
 @EqualsAndHashCode(of = "id", callSuper = true)

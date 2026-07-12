@@ -10,7 +10,6 @@ import org.springframework.security.config.annotation.web.configuration.EnableWe
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.security.web.SecurityFilterChain;
-import org.springframework.security.web.util.matcher.AntPathRequestMatcher;
 
 /**
  * ============================================================
@@ -22,6 +21,13 @@ import org.springframework.security.web.util.matcher.AntPathRequestMatcher;
  * - Configurar o logout
  * - Registrar o BCrypt como encoder de senhas
  * ============================================================
+ *
+ * IMPORTANTE: os requestMatchers específicos (com hasRole/hasAnyRole)
+ * precisam vir ANTES das regras genéricas (ex: "/dashboard/**"),
+ * porque o Spring Security aplica a PRIMEIRA regra que casar com a URL.
+ * Todas as rotas abaixo foram ajustadas para bater com o prefixo real
+ * usado nos controllers: "/dashboard/...".
+ * ============================================================
  */
 @Configuration
 @EnableWebSecurity
@@ -29,13 +35,17 @@ import org.springframework.security.web.util.matcher.AntPathRequestMatcher;
 public class SecurityConfig {
 
     // ============================================================
-    // INJEÇÃO DE DEPENDÊNCIA VIA CONSTRUTOR (SOLID - DIP)
+    // ROLES — evita duplicação de literais espalhadas pela config
     // ============================================================
-    private final UserDetailsServiceImpl userDetailsService;
+    private static final String ROLE_SUPORTE = "SUPORTE";
+    private static final String ROLE_PCP_SUPERVISOR = "PCP_SUPERVISOR";
+    private static final String ROLE_GESTAO = "GESTAO";
+    private static final String LOGIN_PAGE = "/login";
 
-    public SecurityConfig(UserDetailsServiceImpl userDetailsService) {
-        this.userDetailsService = userDetailsService;
-    }
+    // Observação: não precisamos injetar UserDetailsServiceImpl aqui.
+    // Como ele é a única implementação de UserDetailsService no contexto,
+    // o Spring Security a detecta e usa automaticamente no
+    // DaoAuthenticationProvider por trás do formLogin().
 
     // ============================================================
     // FILTRO DE SEGURANÇA — DEFINE AS REGRAS DE ACESSO
@@ -59,57 +69,58 @@ public class SecurityConfig {
                         ).permitAll()
 
                         // Tela de login — pública
-                        .requestMatchers("/login", "/login?error").permitAll()
+                        .requestMatchers(LOGIN_PAGE, LOGIN_PAGE + "?error").permitAll()
 
                         // ----------------------------------------
                         // ROTAS EXCLUSIVAS DO SUPORTE
                         // ----------------------------------------
                         .requestMatchers(
-                                "/usuarios/**",
-                                "/configuracoes/**"
-                        ).hasRole("SUPORTE")
+                                "/dashboard/usuario/**",
+                                "/dashboard/configuracoes/**"
+                        ).hasRole(ROLE_SUPORTE)
 
                         // ----------------------------------------
                         // ROTAS DE CADASTRO — SUPORTE E PCP
                         // ----------------------------------------
                         .requestMatchers(
-                                "/setores/**",
-                                "/maquinas/**",
-                                "/produtos/**",
-                                "/roteiros/**"
-                        ).hasAnyRole("SUPORTE", "PCP_SUPERVISOR")
+                                "/dashboard/setores/**",
+                                "/dashboard/maquinas/**",
+                                "/dashboard/produtos/**",
+                                "/dashboard/roteiros/**"
+                        ).hasAnyRole(ROLE_SUPORTE, ROLE_PCP_SUPERVISOR)
 
                         // ----------------------------------------
                         // CRIAÇÃO DE ORDENS — SUPORTE E PCP
                         // ----------------------------------------
                         .requestMatchers(
-                                "/ordens/nova",
-                                "/ordens/salvar"
-                        ).hasAnyRole("SUPORTE", "PCP_SUPERVISOR")
+                                "/dashboard/ordens/nova",
+                                "/dashboard/ordens/salvar"
+                        ).hasAnyRole(ROLE_SUPORTE, ROLE_PCP_SUPERVISOR)
 
                         // ----------------------------------------
                         // VISUALIZAÇÃO DE ORDENS — TODOS
                         // ----------------------------------------
-                        .requestMatchers("/ordens/**").authenticated()
+                        .requestMatchers("/dashboard/ordens/**").authenticated()
 
                         // ----------------------------------------
                         // LANÇAMENTOS — TODOS OS LOGADOS
                         // ----------------------------------------
-                        .requestMatchers("/lancamentos/**").authenticated()
+                        .requestMatchers("/dashboard/lancamentos/**").authenticated()
 
                         // ----------------------------------------
                         // VIDRAÇARIA — TODOS OS LOGADOS
                         // ----------------------------------------
-                        .requestMatchers("/vidracaria/**").authenticated()
+                        .requestMatchers("/dashboard/vidracaria/**").authenticated()
 
                         // ----------------------------------------
                         // RELATÓRIOS — SUPORTE, GESTÃO E PCP
                         // ----------------------------------------
-                        .requestMatchers("/relatorios/**")
-                        .hasAnyRole("SUPORTE", "GESTAO", "PCP_SUPERVISOR")
+                        .requestMatchers("/dashboard/relatorios/**")
+                        .hasAnyRole(ROLE_SUPORTE, ROLE_GESTAO, ROLE_PCP_SUPERVISOR)
 
                         // ----------------------------------------
-                        // DASHBOARD — TODOS OS LOGADOS
+                        // DASHBOARD — TODOS OS LOGADOS (regra genérica,
+                        // precisa vir por último, depois das específicas acima)
                         // ----------------------------------------
                         .requestMatchers("/dashboard/**").authenticated()
 
@@ -121,23 +132,25 @@ public class SecurityConfig {
                 // CONFIGURAÇÃO DO FORMULÁRIO DE LOGIN
                 // ----------------------------------------
                 .formLogin(form -> form
-                        .loginPage("/login")               // tela de login personalizada
-                        .loginProcessingUrl("/login")      // URL que processa o POST do formulário
-                        .usernameParameter("login")        // nome do campo no HTML (th:field="*{login}")
-                        .passwordParameter("senha")        // nome do campo no HTML (th:field="*{senha}")
-                        .defaultSuccessUrl("/dashboard", true) // redireciona após login bem-sucedido
-                        .failureUrl("/login?error=true")   // redireciona em caso de erro
+                        .loginPage(LOGIN_PAGE)                     // tela de login personalizada
+                        .loginProcessingUrl(LOGIN_PAGE)            // URL que processa o POST do formulário
+                        .usernameParameter("login")                // nome do campo no HTML (th:field="*{login}")
+                        .passwordParameter("senha")                // nome do campo no HTML (th:field="*{senha}")
+                        .defaultSuccessUrl("/dashboard", true)     // redireciona após login bem-sucedido
+                        .failureUrl(LOGIN_PAGE + "?error=true")    // redireciona em caso de erro
                         .permitAll()
                 )
 
                 // ----------------------------------------
                 // CONFIGURAÇÃO DO LOGOUT
+                // logoutUrl() substitui o antigo logoutRequestMatcher(new
+                // AntPathRequestMatcher(...)), que está deprecated.
                 // ----------------------------------------
                 .logout(logout -> logout
-                        .logoutRequestMatcher(new AntPathRequestMatcher("/logout"))
-                        .logoutSuccessUrl("/login?logout=true") // redireciona após logout
-                        .invalidateHttpSession(true)            // invalida a sessão
-                        .deleteCookies("JSESSIONID")            // remove o cookie de sessão
+                        .logoutUrl("/logout")
+                        .logoutSuccessUrl(LOGIN_PAGE + "?logout=true") // redireciona após logout
+                        .invalidateHttpSession(true)                  // invalida a sessão
+                        .deleteCookies("JSESSIONID")                  // remove o cookie de sessão
                         .permitAll()
                 )
 

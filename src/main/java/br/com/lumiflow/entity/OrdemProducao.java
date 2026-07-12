@@ -12,7 +12,6 @@ import java.time.LocalDateTime;
 @NoArgsConstructor
 @Getter
 @Setter
-@Builder
 @EqualsAndHashCode(of = "id", callSuper = true)
 public class OrdemProducao extends Auditoria{
 

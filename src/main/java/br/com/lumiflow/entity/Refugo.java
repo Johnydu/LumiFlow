@@ -12,7 +12,6 @@ import java.time.LocalDateTime;
 @Table(name = "refugo")
 @AllArgsConstructor
 @NoArgsConstructor
-@Builder
 @EqualsAndHashCode(of = "id", callSuper = true)
 public class Refugo extends Auditoria {
 

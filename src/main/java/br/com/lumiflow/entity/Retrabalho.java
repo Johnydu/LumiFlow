@@ -10,7 +10,6 @@ import java.time.LocalDateTime;
 @Table(name = "retrabalho")
 @Getter
 @Setter
-@Builder
 @AllArgsConstructor
 @NoArgsConstructor
 @EqualsAndHashCode(of = "id", callSuper = true)

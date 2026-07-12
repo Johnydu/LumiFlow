@@ -2,6 +2,8 @@ package br.com.lumiflow.controller;
 
 import br.com.lumiflow.dto.UsuarioDTO;
 import br.com.lumiflow.exception.BusinessException;
+import br.com.lumiflow.service.NivelAcessoService;
+import br.com.lumiflow.service.SetorService;
 import br.com.lumiflow.service.UsuarioService;
 import jakarta.validation.Valid;
 import lombok.AllArgsConstructor;
@@ -14,10 +16,12 @@ import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
 @Controller
 @AllArgsConstructor
-@RequestMapping("/admin/usuario")
+@RequestMapping("/dashboard/usuario")
 public class UsuarioController {
 
     private final UsuarioService usuarioService;
+    private final NivelAcessoService nivelAcessoService;
+    private final SetorService setorService;
 
 
     @PostMapping
@@ -25,17 +29,16 @@ public class UsuarioController {
                        BindingResult result, RedirectAttributes attributes, Model model) {
         if (result.hasErrors()) {
             attributes.addFlashAttribute("message","Preencha os campos corretamente");
-            return "redirect:/admin/usuario";
-        }
+            return "redirect:/dashboard/usuario";}
         try {
             usuarioService.novoUsuario(usuarioDTO);
             attributes.addFlashAttribute("message", "Usuario novo com sucesso");
 
-            return  "redirect:/admin/usuario";
+            return "redirect:/dashboard/usuario";
         } catch (BusinessException e) {
-            model.addAttribute("message", e.getMessage());
+            attributes.addFlashAttribute("message", e.getMessage());
         }
-        return  "redirect:/admin/usuario";
+        return "redirect:/dashboard/usuario";
     }
 
     @GetMapping
@@ -58,10 +61,10 @@ public class UsuarioController {
 
         model.addAttribute(
                 "usuarioDTO",
-                new UsuarioDTO()
+                new UsuarioDTO(null,null,null,null,null,null)
         );
 
-        return "usuario/cadastroUsuario";
+        return "/usuario/ListaUsuario";
     }
 
     @PostMapping("/{id}")
@@ -69,13 +72,29 @@ public class UsuarioController {
 
         try {
             usuarioService.excluirUsuario(id);
-            attributes.addFlashAttribute("sucesso", "Usuario deletado com sucesso");
+            attributes.addFlashAttribute("message", "Usuario deletado com sucesso");
         } catch (BusinessException e) {
-            attributes.addFlashAttribute("error", e.getMessage());
+            attributes.addFlashAttribute("message", e.getMessage());
         }
-        return "redirect:/admin/Usuario";
+        return "redirect:/dashboard/usuario";
     }
 
+    @PostMapping("/{id}/editar")
+    public String editar(@PathVariable Long id,
+                         @Valid @ModelAttribute("usuarioDTO") UsuarioDTO usuarioDTO,
+                         BindingResult result, RedirectAttributes attributes) {
+        if (result.hasErrors()) {
+            attributes.addFlashAttribute("message", "Preencha os campos corretamente");
+            return "redirect:/dashboard/usuario";
+        }
+        try {
+            usuarioService.atualizarUsuario(id, usuarioDTO);
+            attributes.addFlashAttribute("message", "Usuário atualizado com sucesso");
+        } catch (BusinessException e) {
+            attributes.addFlashAttribute("message", e.getMessage());
+        }
+        return "redirect:/dashboard/usuario";
+    }
 
 
 }

@@ -1,6 +1,6 @@
 package br.com.lumiflow.entity;
 
-import br.com.lumiflow.entity.enums.Roles;
+import br.com.lumiflow.entity.enums.Descricao;
 import jakarta.persistence.*;
 import lombok.*;
 
@@ -8,10 +8,9 @@ import lombok.*;
 @Table(name = "nivel_acesso")
 @Getter
 @Setter
-@Builder
 @NoArgsConstructor
 @AllArgsConstructor
-@EqualsAndHashCode(of = "id")
+@EqualsAndHashCode(of = "id",callSuper = true)
 public class NivelAcesso extends Auditoria {
 
     @Id
@@ -20,6 +19,6 @@ public class NivelAcesso extends Auditoria {
 
     @Enumerated(EnumType.STRING)
     @Column(name = "descricao", nullable = false,unique = true)
-    private Roles role;
+    private Descricao descricao;
 
 }

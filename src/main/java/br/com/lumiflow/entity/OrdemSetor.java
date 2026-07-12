@@ -10,7 +10,6 @@ import java.time.LocalDateTime;
 @Table(name = "ordem_setor")
 @Getter
 @Setter
-@Builder
 @AllArgsConstructor
 @NoArgsConstructor
 @EqualsAndHashCode(of = "id", callSuper = true)

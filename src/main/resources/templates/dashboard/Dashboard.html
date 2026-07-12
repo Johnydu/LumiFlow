@@ -11,7 +11,7 @@
   <!-- ========================================== -->
   <script src="https://unpkg.com/htmx.org@1.9.10"></script>
 
-  <link rel="stylesheet" th:href="@{/css/variables.css}">
+<link rel="stylesheet" th:href="@{/css/variables.css}">
 <link rel="stylesheet" th:href="@{/css/globals.css}">
 <link rel="stylesheet" th:href="@{/css/sidebar.css}">
 <link rel="stylesheet" th:href="@{/css/topbar.css}">
@@ -64,11 +64,23 @@
 
       <!-- Seção: Cadastros (visível para Suporte e PCP) -->
       <div class="menu-title">CADASTROS</div>
+
       <div class="menu">
-        <div class="menu-item">Produtos</div>
-        <div class="menu-item">Setores</div>
-        <div class="menu-item">Roteiros</div>
-        <div class="menu-item">Usuários</div>
+        <a th:href="@{/dashboard/produto}" class="menu-item">
+          Produtos
+        </a>
+
+        <a th:href="@{/dashboard/setor}" class="menu-item">
+          Setores
+        </a>
+
+        <a th:href="@{/dashboard/roteiro}" class="menu-item">
+          Roteiros
+        </a>
+
+        <a th:href="@{/dashboard/usuario}" class="menu-item">
+          Usuários
+        </a>
       </div>
 
       <!-- Seção: Sistema (visível apenas para Suporte) -->
@@ -85,7 +97,7 @@
       <div class="profile-info">
         <!-- th:text="${usuarioLogado.nome}" -->
         <h4>Johny</h4>
-        <!-- th:text="${usuarioLogado.nivelAcesso.descricao}" -->
+        <!-- th:text="${usuarioLogado.nivelAcessoId.descricao}" -->
         <span>Suporte</span>
       </div>
     </div>
@@ -274,7 +286,7 @@
 
         <div class="panel-header">Ordens por setor</div>
 
-        <!-- th:each="setor : ${setores}" -->
+        <!-- th:each="setorId : ${setores}" -->
         <div class="sector-list">
 
           <!-- Item: Corte - Pendente -->
@@ -283,7 +295,7 @@
               <h4>Corte</h4>
               <p>1 pendente</p>
             </div>
-            <!-- th:text="${setor.totalOrdens}" -->
+            <!-- th:text="${setorId.totalOrdens}" -->
             <div class="sector-number red">1</div>
           </div>
 
