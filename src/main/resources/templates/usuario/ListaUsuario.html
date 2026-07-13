@@ -58,7 +58,7 @@
 <main class="main">
   <div class="topbar">
     <span class="topbar-title">Usuários</span>
-    <button class="btn-novo" onclick="showForm()">+ Novo Usuário</button>
+    <button class="btn-novo" onclick="novoUsuarioForm()">+ Novo Usuário</button>
   </div>
 
   <!-- MENSAGENS: um único atributo, usado por todos os fluxos (novo, editar, excluir) -->
@@ -95,7 +95,7 @@
             <td>
               <button type="button"
                       class="btn-edit"
-                      onclick="showForm()">
+                      th:attr="onclick=|editarUsuario(${usuario.id}, '${usuario.nome}', '${usuario.login}', ${usuario.nivelAcesso.id}, ${usuario.setor != null ? usuario.setor.id : 'null'})|">
                 Editar
               </button>
 
@@ -123,7 +123,7 @@
             th:action="@{/dashboard/usuario}"
             th:object="${usuarioDTO}"
             method="post">
-        <div class="form-title">Novo Usuário</div>
+        <div class="form-title" id="form-title">Novo Usuário</div>
 
         <div class="field">
           <label>Nome completo <span>*</span></label>

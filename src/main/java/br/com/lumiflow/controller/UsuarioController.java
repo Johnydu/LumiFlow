@@ -32,7 +32,6 @@ public class UsuarioController {
             return "redirect:/dashboard/usuario";}
         try {
             usuarioService.novoUsuario(usuarioDTO);
-            attributes.addFlashAttribute("message", "Usuario novo com sucesso");
 
             return "redirect:/dashboard/usuario";
         } catch (BusinessException e) {
@@ -72,7 +71,6 @@ public class UsuarioController {
 
         try {
             usuarioService.excluirUsuario(id);
-            attributes.addFlashAttribute("message", "Usuario deletado com sucesso");
         } catch (BusinessException e) {
             attributes.addFlashAttribute("message", e.getMessage());
         }
