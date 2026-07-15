@@ -1,0 +1,57 @@
+<aside th:fragment="sidebar(activePage)"
+       id="sidebar" class="sidebar"
+       xmlns:sec="http://www.thymeleaf.org/extras/spring-security">
+
+    <div class="logo">LumiFlow</div>
+
+    <div class="menu-title">GERAL</div>
+    <div class="menu">
+        <a th:href="@{/dashboard}"
+           th:classappend="${activePage == 'dashboard'} ? 'active'"
+           class="menu-item">Dashboard</a>
+        <a th:href="@{/dashboard/ordem}"
+           th:classappend="${activePage == 'ordem'} ? 'active'"
+           class="menu-item">Ordens</a>
+        <a th:href="@{/dashboard/lancamento}"
+           th:classappend="${activePage == 'lancamento'} ? 'active'"
+           class="menu-item">Lançamentos</a>
+        <a th:href="@{/dashboard/relatorio}"
+           th:classappend="${activePage == 'relatorio'} ? 'active'"
+           class="menu-item">Relatórios</a>
+    </div>
+
+    <div class="menu-title">CADASTROS</div>
+    <div class="menu">
+        <a th:href="@{/dashboard/produto}"
+           th:classappend="${activePage == 'produto'} ? 'active'"
+           class="menu-item">Produtos</a>
+        <a th:href="@{/dashboard/setor}"
+           th:classappend="${activePage == 'setor'} ? 'active'"
+           class="menu-item">Setores</a>
+        <a th:href="@{/dashboard/maquina}"
+           th:classappend="${activePage == 'maquina'} ? 'active'"
+           class="menu-item">Máquinas</a>
+        <a th:href="@{/dashboard/roteiro}"
+           th:classappend="${activePage == 'roteiro'} ? 'active'"
+           class="menu-item">Roteiros</a>
+        <a th:href="@{/dashboard/usuario}"
+           th:classappend="${activePage == 'usuario'} ? 'active'"
+           class="menu-item">Usuários</a>
+    </div>
+
+    <div class="menu-title">SISTEMA</div>
+    <div class="menu">
+        <a th:href="@{/dashboard/configuracao}"
+           th:classappend="${activePage == 'configuracao'} ? 'active'"
+           class="menu-item">Configurações</a>
+    </div>
+
+    <!-- Perfil do usuário logado -->
+    <div class="profile">
+        <div class="avatar" sec:authentication="principal.iniciais"></div>
+        <div class="pname" sec:authentication="principal.nomeCompleto"></div>
+        <div class="prole" sec:authentication="principal.nivelAcesso"></div>
+    </div>
+
+
+</aside>

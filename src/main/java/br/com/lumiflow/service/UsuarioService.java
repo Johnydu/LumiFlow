@@ -2,6 +2,7 @@ package br.com.lumiflow.service;
 
 import br.com.lumiflow.dto.UsuarioDTO;
 import br.com.lumiflow.dto.UsuarioListaDTO;
+import br.com.lumiflow.dto.UsuarioLogadoDTO;
 import br.com.lumiflow.entity.Usuario;
 import br.com.lumiflow.exception.BusinessException;
 import br.com.lumiflow.mapper.UsuarioMapper;
@@ -9,6 +10,7 @@ import br.com.lumiflow.repository.UsuarioRepository;
 import jakarta.validation.Valid;
 import jakarta.validation.constraints.NotNull;
 import lombok.AllArgsConstructor;
+import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
@@ -66,4 +68,18 @@ public class UsuarioService {
         usuarioRepository.save(usuario);
 
     }
+
+    public UsuarioLogadoDTO obterUsuarioLogado(){
+
+        Usuario usuario = (Usuario) SecurityContextHolder
+                .getContext()
+                .getAuthentication()
+                .getPrincipal();
+
+        return new UsuarioLogadoDTO(usuario.getNome(),
+                usuario.getNivelAcesso().getDescricao().name());
+
+    }
+
+
 }

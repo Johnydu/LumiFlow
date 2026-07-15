@@ -31,30 +31,7 @@
 </head>
 <body class="page-setor-cadastrosetor">
 
-<aside class="sidebar">
-  <div class="logo">LumiFlow</div>
-  <div class="menu-title">GERAL</div>
-  <div class="menu">
-    <div class="menu-item">Dashboard</div>
-    <div class="menu-item">Ordens</div>
-    <div class="menu-item">Lançamentos</div>
-    <div class="menu-item">Relatórios</div>
-  </div>
-  <div class="menu-title">CADASTROS</div>
-  <div class="menu">
-    <div class="menu-item">Produtos</div>
-    <div class="menu-item active">Setores</div>
-    <div class="menu-item">Máquinas</div>
-    <div class="menu-item">Roteiros</div>
-    <div class="menu-item">Usuários</div>
-  </div>
-  <div class="menu-title">SISTEMA</div>
-  <div class="menu"><div class="menu-item">Configurações</div></div>
-  <div class="profile">
-    <div class="avatar">JE</div>
-    <div><div class="pname">Johny</div><div class="prole">Suporte</div></div>
-  </div>
-</aside>
+<aside th:replace="~{fragments/sidebar :: sidebar(activePage='setor')}"></aside>
 
 <main class="main">
   <div class="topbar">
@@ -189,5 +166,6 @@
 </main>
 
 <script th:src="@{/js/cadastro-setor.js}"></script>
+<script th:src="@{/js/sidebar.js}"></script>
 </body>
 </html>

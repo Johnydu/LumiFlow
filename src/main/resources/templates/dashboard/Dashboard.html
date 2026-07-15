@@ -42,81 +42,19 @@
   <!-- ========================================== -->
   <!-- SIDEBAR - MENU LATERAL                     -->
   <!-- ========================================== -->
-  <aside class="sidebar">
 
-    <div>
-
-      <!-- Logo do sistema -->
-      <div class="logo">LumiFlow</div>
-
-      <!-- Seção: Geral -->
-      <div class="menu-title">GERAL</div>
-      <div class="menu">
-        <div class="menu-item">Dashboard</div>
-        <div class="menu-item">
-          Ordens
-          <!-- Badge com total de ordens pendentes -->
-          <div class="badge">4</div>
-        </div>
-        <div class="menu-item">Lançamentos</div>
-        <div class="menu-item">Relatórios</div>
-      </div>
-
-      <!-- Seção: Cadastros (visível para Suporte e PCP) -->
-      <div class="menu-title">CADASTROS</div>
-
-      <div class="menu">
-        <a th:href="@{/dashboard/produto}" class="menu-item">
-          Produtos
-        </a>
-
-        <a th:href="@{/dashboard/setor}" class="menu-item">
-          Setores
-        </a>
-
-        <a th:href="@{/dashboard/roteiro}" class="menu-item">
-          Roteiros
-        </a>
-
-        <a th:href="@{/dashboard/usuario}" class="menu-item">
-          Usuários
-        </a>
-      </div>
-
-      <!-- Seção: Sistema (visível apenas para Suporte) -->
-      <div class="menu-title">SISTEMA</div>
-      <div class="menu">
-        <div class="menu-item">Configurações</div>
-      </div>
-
-    </div>
-
-    <!-- Perfil do usuário logado -->
-    <div class="profile">
-      <div class="avatar">JE</div>
-      <div class="profile-info">
-        <!-- th:text="${usuarioLogado.nome}" -->
-        <h4>Johny</h4>
-        <!-- th:text="${usuarioLogado.nivelAcessoId.descricao}" -->
-        <span>Suporte</span>
-      </div>
-    </div>
-
-  </aside>
-
+  <aside th:replace="~{fragments/sidebar :: sidebar(activePage='dashboard')}"></aside>
   <!-- ========================================== -->
   <!-- CONTEÚDO PRINCIPAL                         -->
   <!-- ========================================== -->
   <main class="content">
 
     <!-- Barra superior com título e botão -->
-    <div class="topbar">
-      <h1>Dashboard</h1>
-      <div>
-        <!-- Botão visível apenas para PCP e Suporte (sec:authorize) -->
-        <button class="btn">Nova ordem</button>
-      </div>
-    </div>
+    <div th:replace="~{fragments/topbar :: topbar(
+    'Dashboard',
+    'Nova Ordem',
+    'novaOrdem()'
+)}"></div>
 
     <!-- ========================================== -->
     <!-- CARDS DE ESTATÍSTICAS                      -->
@@ -342,6 +280,7 @@
     </section>
 
   </main>
+  <script th:src="@{/js/sidebar.js}"></script>
 
 </body>
 </html>

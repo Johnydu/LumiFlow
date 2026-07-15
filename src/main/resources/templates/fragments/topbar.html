@@ -1,0 +1,25 @@
+<th:block xmlns:th="http://www.thymeleaf.org"
+          th:fragment="topbar(titulo, textoBotao, acaoBotao)">
+
+    <div class="topbar">
+
+        <div class="topbar-left">
+            <button class="menu-toggle"
+                    onclick="toggleSidebar()">
+                ☰
+            </button>
+
+            <span class="topbar-title"
+                  th:text="${titulo}">
+            </span>
+        </div>
+
+        <button th:if="${textoBotao != null}"
+                class="btn-novo"
+                th:text="${textoBotao}"
+                th:attr="onclick=${acaoBotao}">
+        </button>
+
+    </div>
+
+</th:block>

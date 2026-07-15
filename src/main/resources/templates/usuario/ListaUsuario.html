@@ -30,36 +30,15 @@
 </head>
 <body class="page-usuario-cadastrousuario">
 
-<aside class="sidebar">
-  <div class="logo">LumiFlow</div>
-  <div class="menu-title">GERAL</div>
-  <div class="menu">
-    <div class="menu-item">Dashboard</div>
-    <div class="menu-item">Ordens</div>
-    <div class="menu-item">Lançamentos</div>
-    <div class="menu-item">Relatórios</div>
-  </div>
-  <div class="menu-title">CADASTROS</div>
-  <div class="menu">
-    <div class="menu-item">Produtos</div>
-    <div class="menu-item">Setores</div>
-    <div class="menu-item">Máquinas</div>
-    <div class="menu-item">Roteiros</div>
-    <div class="menu-item active">Usuários</div>
-  </div>
-  <div class="menu-title">SISTEMA</div>
-  <div class="menu"><div class="menu-item">Configurações</div></div>
-  <div class="profile">
-    <div class="avatar">JE</div>
-    <div><div class="pname">Johny</div><div class="prole">Suporte</div></div>
-  </div>
-</aside>
+
+<aside th:replace="~{fragments/sidebar :: sidebar(activePage='usuario')}"></aside>
 
 <main class="main">
-  <div class="topbar">
-    <span class="topbar-title">Usuários</span>
-    <button class="btn-novo" onclick="novoUsuarioForm()">+ Novo Usuário</button>
-  </div>
+  <div th:replace="~{fragments/topbar :: topbar(
+    'Usuários',
+    '+ Novo Usuário',
+    'novoUsuarioForm()'
+)}"></div>
 
   <!-- MENSAGENS: um único atributo, usado por todos os fluxos (novo, editar, excluir) -->
   <div th:if="${message}" class="alert">
@@ -86,7 +65,19 @@
           </thead>
           <tbody>
           <tr th:each="usuario : ${usuarios}">
-            <td th:text="${usuario.nome}"></td>
+
+            <td>
+              <div class="user-info">
+                <div class="user-avatar"
+                     th:text="${#strings.substring(usuario.nome,0,1)}">
+                </div>
+
+                <div>
+                  <div class="user-name" th:text="${usuario.nome}"></div>
+                  <div class="user-login" th:text="${usuario.login}"></div>
+                </div>
+              </div>
+            </td>
 
             <td th:text="${usuario.nivelAcesso.descricao}"></td>
 
@@ -111,6 +102,7 @@
 
               </form>
             </td>
+
           </tr>
           </tbody>
         </table>
@@ -178,5 +170,6 @@
 </main>
 
 <script th:src="@{/js/cadastro-usuario.js}"></script>
+<script th:src="@{/js/sidebar.js}"></script>
 </body>
 </html>

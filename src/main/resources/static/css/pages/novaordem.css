@@ -16,14 +16,7 @@ body.page-ordemproducao-novaordem {
   min-height: 100vh;
 }
 
-body.page-ordemproducao-novaordem .sidebar {
-  width: 220px;
-  background: var(--color-sidebar);
-  border-right: 1px solid rgba(255,255,255,0.08);
-  padding: 20px;
-  display: flex;
-  flex-direction: column;
-}
+
 
 body.page-ordemproducao-novaordem .logo {
   font-size: 24px;

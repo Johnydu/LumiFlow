@@ -13,26 +13,54 @@
   }
 }
 
+
 @media (max-width: 900px) {
-  body {
+  .menu-toggle {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    width: 40px;
+    height: 40px;
+    border: none;
+    border-radius: 10px;
+    background: var(--color-primary);
+    color: #fff;
+    font-size: 20px;
+    cursor: pointer;
+  }
+  body.page-dashboard-dashboard .sidebar {
+    position:fixed;
+    top:0;
+    left:-240px;
+    width:220px;
+    height:100vh;
+    z-index:999;
+    transition:.3s;
+    overflow-y:auto;
+  }
+  body.page-dashboard-dashboard .sidebar.open{
+    left: 0;
+  }
+
+  body.page-dashboard-dashboard.content{
     flex-direction: column;
   }
 
-  .sidebar {
+  body.page-dashboard-dashboard.form-panel{
     width: 100%;
   }
 
-  .cards {
+  body.page-dashboard-dashboard .cards {
     grid-template-columns: 1fr;
   }
 
-  .topbar {
+  body.page-dashboard-dashboard .topbar {
     flex-direction: column;
     align-items: flex-start;
     gap: 20px;
   }
 
-  .panel {
+  body.page-dashboard-dashboard .panel {
     overflow-x: auto;
   }
 }
@@ -161,17 +189,47 @@
 }
 
 /* ============ USUARIOS RESPONSIVE ============ */
-@media(max-width:900px) {
-  body.page-usuario-cadastrousuario .sidebar {
-    display: none;
+.menu-toggle{
+  display:none;
+}
+
+@media(max-width:900px){
+
+  .menu-toggle{
+    display:flex;
+    align-items:center;
+    justify-content:center;
+    width:40px;
+    height:40px;
+    border:none;
+    border-radius:10px;
+    background:var(--color-primary);
+    color:#fff;
+    font-size:20px;
+    cursor:pointer;
   }
 
-  body.page-usuario-cadastrousuario .content {
-    flex-direction: column;
+  body.page-usuario-cadastrousuario .sidebar{
+    position:fixed;
+    top:0;
+    left:-240px;
+    width:220px;
+    height:100vh;
+    z-index:999;
+    transition:.3s;
+    overflow-y:auto;
   }
 
-  body.page-usuario-cadastrousuario .form-panel {
-    width: 100%;
+  body.page-usuario-cadastrousuario .sidebar.open{
+    left:0;
+  }
+
+  body.page-usuario-cadastrousuario .content{
+    flex-direction:column;
+  }
+
+  body.page-usuario-cadastrousuario .form-panel{
+    width:100%;
   }
 }
 

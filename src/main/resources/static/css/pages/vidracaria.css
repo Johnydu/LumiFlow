@@ -16,20 +16,9 @@ body.page-vidracaria-vidracaria {
   min-height: 100vh;
 }
 
-body.page-vidracaria-vidracaria .sidebar {
-  width: 220px;
-  background: var(--color-sidebar);
-  border-right: 1px solid rgba(255,255,255,0.08);
-  padding: 20px;
-  display: flex;
-  flex-direction: column;
-}
 
-body.page-vidracaria-vidracaria .logo {
-  font-size: 24px;
-  font-weight: bold;
-  margin-bottom: 24px;
-}
+
+
 
 body.page-vidracaria-vidracaria .menu-title {
   color: var(--color-muted-3);
@@ -38,22 +27,9 @@ body.page-vidracaria-vidracaria .menu-title {
   letter-spacing: 1px;
 }
 
-body.page-vidracaria-vidracaria .menu {
-  display: flex;
-  flex-direction: column;
-  gap: 6px;
-}
 
-body.page-vidracaria-vidracaria .menu-item {
-  height: 42px;
-  border: 1px solid rgba(255,255,255,0.1);
-  border-radius: 10px;
-  display: flex;
-  align-items: center;
-  padding: 0 14px;
-  font-size: 13px;
-  cursor: pointer;
-}
+
+
 
 body.page-vidracaria-vidracaria .menu-item:hover {
   background: var(--color-surface-hover);
@@ -74,17 +50,7 @@ body.page-vidracaria-vidracaria .profile {
   gap: 10px;
 }
 
-body.page-vidracaria-vidracaria .avatar {
-  width: 36px;
-  height: 36px;
-  border-radius: 50%;
-  background: var(--color-primary);
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  font-weight: bold;
-  font-size: 12px;
-}
+
 
 body.page-vidracaria-vidracaria .pname {
   font-size: 13px;
