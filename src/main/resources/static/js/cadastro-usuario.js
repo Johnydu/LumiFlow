@@ -26,14 +26,15 @@ function novoUsuarioForm() {
 // (POST /dashboard/usuario/{id}/editar).
 function editarUsuario(id, nome, login, nivelAcessoId, setorId) {
   const form = document.querySelector('.form-card');
+
   form.action = '/dashboard/usuario/' + id + '/editar';
 
   document.getElementById('form-title').textContent = 'Editar Usuário';
 
   document.getElementById('nome').value = nome;
   document.getElementById('login').value = login;
-  document.getElementById('nivelAcesso').value = nivelAcessoId;
-  document.getElementById('setor').value = setorId ?? '';
+  document.getElementById('nivelAcessoId').value = nivelAcessoId;
+  document.getElementById('setorId').value = setorId ?? '';
 
   // Senha fica em branco de propósito: o usuário só digita algo aqui
   // se quiser trocar a senha atual. Backend trata campo vazio como
@@ -44,3 +45,16 @@ function editarUsuario(id, nome, login, nivelAcessoId, setorId) {
 
   showForm();
 }
+document.addEventListener('DOMContentLoaded', () => {
+  const alert = document.querySelector('.alert-success, .alert-error');
+
+  if (alert) {
+    setTimeout(() => {
+      alert.style.opacity = '0';
+
+      setTimeout(() => {
+        alert.remove();
+      }, 300);
+    }, 3000);
+  }
+});

@@ -1,4 +1,4 @@
-package br.com.lumiflow.dto;
+package br.com.lumiflow.dto.setor;
 
 public record SetorDTO(
         Long id,

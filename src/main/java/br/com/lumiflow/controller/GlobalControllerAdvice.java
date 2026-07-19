@@ -1,5 +1,5 @@
 package br.com.lumiflow.controller;
-import br.com.lumiflow.dto.UsuarioLogadoDTO;
+import br.com.lumiflow.dto.usuario.UsuarioLogadoDTO;
 import br.com.lumiflow.security.UsuarioDetails;
 import org.springframework.security.core.Authentication;
 import org.springframework.web.bind.annotation.ControllerAdvice;

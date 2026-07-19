@@ -1,4 +1,4 @@
-package br.com.lumiflow.dto;
+package br.com.lumiflow.dto.nivelacesso;
 
 import br.com.lumiflow.entity.enums.Descricao;
 

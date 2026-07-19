@@ -1,6 +1,6 @@
 package br.com.lumiflow.mapper;
 
-import br.com.lumiflow.dto.SetorDTO;
+import br.com.lumiflow.dto.setor.SetorDTO;
 import br.com.lumiflow.entity.Setor;
 import org.mapstruct.Mapper;
 import org.mapstruct.Mapping;

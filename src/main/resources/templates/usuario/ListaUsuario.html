@@ -1,6 +1,7 @@
 <!DOCTYPE html>
 <html lang="pt-BR" xmlns:th="http://www.thymeleaf.org">
 <head>
+  <ti>Lumiflow Usuarios</ti>
   <meta charset="UTF-8"/>
   <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
   <link rel="stylesheet" th:href="@{/css/variables.css}">
@@ -41,7 +42,8 @@
 )}"></div>
 
   <!-- MENSAGENS: um único atributo, usado por todos os fluxos (novo, editar, excluir) -->
-  <div th:if="${message}" class="alert">
+  <div th:if="${message}"
+       th:class="${messageType == 'success'} ? 'alert-success' : 'alert-error'">
     <span th:text="${message}"></span>
   </div>
 
@@ -79,18 +81,24 @@
               </div>
             </td>
 
-            <td th:text="${usuario.nivelAcesso.descricao}"></td>
+            <td th:text="${usuario.nivelAcesso}"></td>
 
-            <td th:text="${usuario.setor != null ? usuario.setor.nome : '-'}"></td>
+            <td th:text="${usuario.setor != null ? usuario.setor : '-'}"></td>
 
             <td>
               <button type="button"
                       class="btn-edit"
-                      th:attr="onclick=|editarUsuario(${usuario.id}, '${usuario.nome}', '${usuario.login}', ${usuario.nivelAcesso.id}, ${usuario.setor != null ? usuario.setor.id : 'null'})|">
+                      th:attr="onclick=|editarUsuario(
+                          ${usuario.id},
+                          '${usuario.nome}',
+                          '${usuario.login}',
+                          ${usuario.nivelAcessoId},
+                          ${usuario.setorId}
+                          )|">
                 Editar
               </button>
 
-              <form th:action="@{/dashboard/usuario/{id}(id=${usuario.id})}"
+              <form th:action="@{/dashboard/usuario/{id}/excluir(id=${usuario.id})}"
                     method="post"
                     style="display:inline">
 
@@ -138,7 +146,7 @@
         </div>
         <div class="field">
           <label>Nível de acesso <span>*</span></label>
-          <select th:field="*{nivelAcesso}">
+          <select th:field="*{nivelAcessoId}">
             <option value="">Selecione o nível</option>
             <option th:each="nivel : ${niveisAcesso}"
                     th:value="${nivel.id}"
@@ -149,7 +157,7 @@
         </div>
         <div class="field">
           <label>Setor</label>
-          <select th:field="*{setor}">
+          <select th:field="*{setorId}">
             <option value="">Nenhum (gestão/suporte)</option>
             <option th:each="setor : ${setores}"
                     th:value="${setor.id}"

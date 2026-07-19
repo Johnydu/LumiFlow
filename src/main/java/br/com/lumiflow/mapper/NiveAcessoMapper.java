@@ -1,6 +1,6 @@
 package br.com.lumiflow.mapper;
 
-import br.com.lumiflow.dto.NivelAcessoDTO;
+import br.com.lumiflow.dto.nivelacesso.NivelAcessoDTO;
 import br.com.lumiflow.entity.NivelAcesso;
 import org.mapstruct.Mapper;
 import org.mapstruct.Mapping;

@@ -1,38 +1,37 @@
-
 <!DOCTYPE html>
 <html lang="pt-BR" xmlns:th="http://www.thymeleaf.org">
 <head>
-<meta charset="UTF-8"/>
-<meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <meta charset="UTF-8"/>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
   <link rel="stylesheet" th:href="@{/css/variables.css}">
-<link rel="stylesheet" th:href="@{/css/globals.css}">
-<link rel="stylesheet" th:href="@{/css/sidebar.css}">
-<link rel="stylesheet" th:href="@{/css/topbar.css}">
-<link rel="stylesheet" th:href="@{/css/components/buttons.css}">
-<link rel="stylesheet" th:href="@{/css/components/forms.css}">
-<link rel="stylesheet" th:href="@{/css/components/tables.css}">
-<link rel="stylesheet" th:href="@{/css/components/cards.css}">
-<link rel="stylesheet" th:href="@{/css/components/badges.css}">
-<link rel="stylesheet" th:href="@{/css/components/status.css}">
-<link rel="stylesheet" th:href="@{/css/components/alerts.css}">
-<link rel="stylesheet" th:href="@{/css/pages/dashboard.css}">
-<link rel="stylesheet" th:href="@{/css/pages/login.css}">
-<link rel="stylesheet" th:href="@{/css/pages/usuarios.css}">
-<link rel="stylesheet" th:href="@{/css/pages/maquinas.css}">
-<link rel="stylesheet" th:href="@{/css/pages/produtos.css}">
-<link rel="stylesheet" th:href="@{/css/pages/setores.css}">
-<link rel="stylesheet" th:href="@{/css/pages/ordens.css}">
-<link rel="stylesheet" th:href="@{/css/pages/relatorio.css}">
-<link rel="stylesheet" th:href="@{/css/pages/vidracaria.css}">
-<link rel="stylesheet" th:href="@{/css/pages/novaordem.css}">
-<link rel="stylesheet" th:href="@{/css/pages/listaordem.css}">
-<link rel="stylesheet" th:href="@{/css/utils.css}">
-<link rel="stylesheet" th:href="@{/css/responsive.css}"/>
+  <link rel="stylesheet" th:href="@{/css/globals.css}">
+  <link rel="stylesheet" th:href="@{/css/sidebar.css}">
+  <link rel="stylesheet" th:href="@{/css/topbar.css}">
+  <link rel="stylesheet" th:href="@{/css/components/buttons.css}">
+  <link rel="stylesheet" th:href="@{/css/components/forms.css}">
+  <link rel="stylesheet" th:href="@{/css/components/tables.css}">
+  <link rel="stylesheet" th:href="@{/css/components/cards.css}">
+  <link rel="stylesheet" th:href="@{/css/components/badges.css}">
+  <link rel="stylesheet" th:href="@{/css/components/status.css}">
+  <link rel="stylesheet" th:href="@{/css/components/alerts.css}">
+  <link rel="stylesheet" th:href="@{/css/pages/dashboard.css}">
+  <link rel="stylesheet" th:href="@{/css/pages/login.css}">
+  <link rel="stylesheet" th:href="@{/css/pages/usuarios.css}">
+  <link rel="stylesheet" th:href="@{/css/pages/maquinas.css}">
+  <link rel="stylesheet" th:href="@{/css/pages/produtos.css}">
+  <link rel="stylesheet" th:href="@{/css/pages/setores.css}">
+  <link rel="stylesheet" th:href="@{/css/pages/ordens.css}">
+  <link rel="stylesheet" th:href="@{/css/pages/relatorio.css}">
+  <link rel="stylesheet" th:href="@{/css/pages/vidracaria.css}">
+  <link rel="stylesheet" th:href="@{/css/pages/novaordem.css}">
+  <link rel="stylesheet" th:href="@{/css/pages/listaordem.css}">
+  <link rel="stylesheet" th:href="@{/css/utils.css}">
+  <link rel="stylesheet" th:href="@{/css/responsive.css}"/>
 </head>
 <body class="page-maquina-cadastromaquinas">
 
 <!-- SIDEBAR - MENU LATERAL           -->
-<aside th:replace="~{fragments/sidebar :: sidebar(activePage='CadastroMaquinas')}"></aside>
+<aside th:replace="~{fragments/sidebar :: sidebar(activePage='maquina')}"></aside>
 <!-- ================================ -->
 <!-- CONTEÚDO PRINCIPAL               -->
 <!-- ================================ -->
@@ -63,130 +62,53 @@
       <div class="panel">
         <div class="panel-header">
           <span class="panel-title">Máquinas cadastradas</span>
-          <!-- th:text="${'Total: ' + maquinas.size() + ' máquinas'}" -->
+          <!-- th:text="${'Total: ' + maquinas.size() + ' máquinas'}"-->
           <span class="panel-count">10 máquinas</span>
         </div>
 
         <!-- th:each="maquina : ${maquinas}" -->
         <table>
           <thead>
-            <tr>
-              <th>Nome da máquina</th>
-              <th>Setor vinculado</th>
-              <th style="width:120px">Ações</th>
-            </tr>
+          <tr>
+            <th>Nome da máquina</th>
+            <th>Setor vinculado</th>
+            <th style="width:120px">Ações</th>
+          </tr>
           </thead>
           <tbody>
-            <!-- Corte -->
-            <tr>
-              <td style="font-weight:500">Laser</td>
-              <td><span class="setor-tag">Corte / Preparação</span></td>
-              <td>
-                <button class="btn-edit" onclick="showForm('Laser','Corte / Preparação')">Editar</button>
-                <button class="btn-del">Excluir</button>
-              </td>
-            </tr>
-            <!-- Dobra -->
-            <tr>
-              <td style="font-weight:500">Dobradeira Argus 1</td>
-              <td><span class="setor-tag">Dobra</span></td>
-              <td>
-                <button class="btn-edit" onclick="showForm('Dobradeira Argus 1','Dobra')">Editar</button>
-                <button class="btn-del">Excluir</button>
-              </td>
-            </tr>
-            <tr>
-              <td style="font-weight:500">Dobradeira Argus 2</td>
-              <td><span class="setor-tag">Dobra</span></td>
-              <td>
-                <button class="btn-edit" onclick="showForm('Dobradeira Argus 2','Dobra')">Editar</button>
-                <button class="btn-del">Excluir</button>
-              </td>
-            </tr>
-            <tr>
-              <td style="font-weight:500">Dobradeira Manual 1</td>
-              <td><span class="setor-tag">Dobra</span></td>
-              <td>
-                <button class="btn-edit" onclick="showForm('Dobradeira Manual 1','Dobra')">Editar</button>
-                <button class="btn-del">Excluir</button>
-              </td>
-            </tr>
-            <tr>
-              <td style="font-weight:500">Dobradeira Manual 2</td>
-              <td><span class="setor-tag">Dobra</span></td>
-              <td>
-                <button class="btn-edit" onclick="showForm('Dobradeira Manual 2','Dobra')">Editar</button>
-                <button class="btn-del">Excluir</button>
-              </td>
-            </tr>
-            <!-- Solda -->
-            <tr>
-              <td style="font-weight:500">Solda Alumínio</td>
-              <td><span class="setor-tag">União / Solda</span></td>
-              <td>
-                <button class="btn-edit" onclick="showForm('Solda Alumínio','União / Solda')">Editar</button>
-                <button class="btn-del">Excluir</button>
-              </td>
-            </tr>
-            <!-- Pintura -->
-            <tr>
-              <td style="font-weight:500">Cabine Preta</td>
-              <td><span class="setor-tag">Pintura</span></td>
-              <td>
-                <button class="btn-edit" onclick="showForm('Cabine Preta','Pintura')">Editar</button>
-                <button class="btn-del">Excluir</button>
-              </td>
-            </tr>
-            <tr>
-              <td style="font-weight:500">Cabine Marrom</td>
-              <td><span class="setor-tag">Pintura</span></td>
-              <td>
-                <button class="btn-edit" onclick="showForm('Cabine Marrom','Pintura')">Editar</button>
-                <button class="btn-del">Excluir</button>
-              </td>
-            </tr>
-            <tr>
-              <td style="font-weight:500">Cabine Branca</td>
-              <td><span class="setor-tag">Pintura</span></td>
-              <td>
-                <button class="btn-edit" onclick="showForm('Cabine Branca','Pintura')">Editar</button>
-                <button class="btn-del">Excluir</button>
-              </td>
-            </tr>
-            <tr>
-              <td style="font-weight:500">Cabine Champagne</td>
-              <td><span class="setor-tag">Pintura</span></td>
-              <td>
-                <button class="btn-edit" onclick="showForm('Cabine Champagne','Pintura')">Editar</button>
-                <button class="btn-del">Excluir</button>
-              </td>
-            </tr>
-            <!-- Colagem -->
-            <tr>
-              <td style="font-weight:500">Mesa 1</td>
-              <td><span class="setor-tag">Colagem</span></td>
-              <td>
-                <button class="btn-edit" onclick="showForm('Mesa 1','Colagem')">Editar</button>
-                <button class="btn-del">Excluir</button>
-              </td>
-            </tr>
-            <!-- Acabamento -->
-            <tr>
-              <td style="font-weight:500">Mesa 1</td>
-              <td><span class="setor-tag">Acabamento Final</span></td>
-              <td>
-                <button class="btn-edit" onclick="showForm('Mesa 1','Acabamento Final')">Editar</button>
-                <button class="btn-del">Excluir</button>
-              </td>
-            </tr>
-            <tr>
-              <td style="font-weight:500">Mesa 2</td>
-              <td><span class="setor-tag">Acabamento Final</span></td>
-              <td>
-                <button class="btn-edit" onclick="showForm('Mesa 2','Acabamento Final')">Editar</button>
-                <button class="btn-del">Excluir</button>
-              </td>
-            </tr>
+          <tr th:each="maquina : ${maquinas}">
+
+            <td th:text="${maquina.nome}"></td>
+
+            <td>
+        <span class="setor-tag"
+              th:text="${maquina.setor != null ? maquina.setor.nome : '-'}">
+        </span>
+            </td>
+
+            <td>
+
+              <button type="button"
+                      class="btn-edit"
+                      th:attr="onclick=|editarMaquina(${maquina.id}, '${maquina.nome}', ${maquina.setor != null ? maquina.setor.id : 'null'})|">
+                Editar
+              </button>
+
+              <form th:action="@{/dashboard/maquina/{id}(id=${maquina.id})}"
+                    method="post"
+                    style="display:inline">
+
+                <button type="submit"
+                        class="btn-del"
+                        onclick="return confirm('Tem certeza que deseja excluir esta máquina?');">
+                  Excluir
+                </button>
+
+              </form>
+
+            </td>
+
+          </tr>
           </tbody>
         </table>
       </div>
@@ -196,43 +118,59 @@
     <!-- FORMULÁRIO - NOVA / EDITAR       -->
     <!-- ================================ -->
     <div class="form-panel" id="form-panel" style="display:none">
-      <div class="form-card">
-        <!-- th:text="${maquina.id == null ? 'Nova Máquina' : 'Editar Máquina'}" -->
-        <div class="form-title" id="form-title">Nova Máquina</div>
+
+      <form class="form-card"
+            th:action="@{/dashboard/maquina}"
+            th:object="${maquinaDTO}"
+            method="post">
+
+        <div class="form-title" id="form-title">
+          Nova Máquina
+        </div>
+
+        <input type="hidden" th:field="*{id}"/>
 
         <div class="field">
           <label>Nome da máquina <span>*</span></label>
-          <!-- th:field="*{nome}" -->
-          <input type="text" id="input-nome" placeholder="Ex: Dobradeira Argus 1"/>
+
+          <input type="text"
+                 th:field="*{nome}"
+                 placeholder="Ex: Dobradeira Argus 1"/>
         </div>
 
         <div class="field">
           <label>Setor vinculado <span>*</span></label>
-          <!-- th:field="*{setorId}" -->
-          <!-- th:each="setorId : ${setores}" -->
-          <select id="input-setor">
+
+          <select th:field="*{setor}">
             <option value="">Selecione o setor</option>
-            <option>Corte / Preparação</option>
-            <option>Dobra</option>
-            <option>União / Solda</option>
-            <option>Lixa</option>
-            <option>Pintura</option>
-            <option>Colagem</option>
-            <option>Acabamento Final</option>
-            <option>Montagem 2</option>
+
+            <option th:each="setor : ${setores}"
+                    th:value="${setor.id}"
+                    th:text="${setor.nome}">
+            </option>
           </select>
-          <span class="hint">A máquina ficará disponível apenas neste setor.</span>
+
+          <span class="hint">
+                A máquina ficará disponível apenas neste setor.
+            </span>
         </div>
 
         <div class="form-actions">
-          <button class="btn-cancel" onclick="hideForm()">Cancelar</button>
-          <!-- th:action="@{/maquinas/salvar}" method="post" -->
-          <button class="btn-submit">Salvar</button>
-        </div>
-      </div>
-    </div>
+          <button type="button"
+                  class="btn-cancel"
+                  onclick="hideForm()">
+            Cancelar
+          </button>
 
-  </div>
+          <button type="submit"
+                  class="btn-submit">
+            Salvar
+          </button>
+        </div>
+
+      </form>
+
+    </div>
 </main>
 
 <script th:src="@{/js/cadastro-maquinas.js}"></script>
