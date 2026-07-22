@@ -47,11 +47,19 @@
     </div>
 
     <!-- Perfil do usuário logado -->
-    <div class="profile">
-        <div class="avatar" sec:authentication="principal.iniciais"></div>
-        <div class="pname" sec:authentication="principal.nomeCompleto"></div>
-        <div class="prole" sec:authentication="principal.nivelAcesso"></div>
-    </div>
+    <div class="sidebar-footer">
+        <div class="profile">
+            <div class="avatar" sec:authentication="principal.iniciais"></div>
 
+            <div class="profile-info">
+                <div class="pname" sec:authentication="principal.nomeCompleto"></div>
+                <div class="prole" sec:authentication="principal.nivelAcesso"></div>
+            </div>
+        </div>
+
+        <div class="app-version">
+            v1.0.0
+        </div>
+    </div>
 
 </aside>

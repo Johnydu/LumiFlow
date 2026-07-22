@@ -1,6 +1,7 @@
 <!DOCTYPE html>
 <html lang="pt-BR" xmlns:th="http://www.thymeleaf.org">
 <head>
+  <title>LumiFlow Maquinas</title>
   <meta charset="UTF-8"/>
   <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
   <link rel="stylesheet" th:href="@{/css/variables.css}">
@@ -38,7 +39,12 @@
 <main class="main">
   <div class="topbar">
     <span class="topbar-title">Máquinas</span>
-    <button class="btn-novo" onclick="showForm()">+ Nova Máquina</button>
+    <button class="btn-novo" onclick="novaMaquinaForm()"> Nova Máquina</button>
+  </div>
+
+  <div th:if="${message}"
+       th:class="${messageType == 'success'} ? 'alert-success' : 'alert-error'">
+    <span th:text="${message}"></span>
   </div>
 
   <div class="content">
@@ -50,23 +56,30 @@
 
       <!-- Filtro por setorId -->
       <div class="setor-tabs">
-        <button class="setor-tab active" onclick="setTab(this)">Todos</button>
-        <button class="setor-tab" onclick="setTab(this)">Corte</button>
-        <button class="setor-tab" onclick="setTab(this)">Dobra</button>
-        <button class="setor-tab" onclick="setTab(this)">Solda</button>
-        <button class="setor-tab" onclick="setTab(this)">Pintura</button>
-        <button class="setor-tab" onclick="setTab(this)">Colagem</button>
-        <button class="setor-tab" onclick="setTab(this)">Acabamento</button>
+
+        <button type="button"
+                class="setor-tab active"
+                onclick="filtrarSetor(this, 'todos')">
+          Todos
+        </button>
+
+        <button type="button"
+                class="setor-tab"
+                th:each="setor : ${setores}"
+                th:text="${setor.nome}"
+                th:attr="onclick=|filtrarSetor(this, '${setor.nome}')|">
+        </button>
+
       </div>
 
       <div class="panel">
         <div class="panel-header">
           <span class="panel-title">Máquinas cadastradas</span>
-          <!-- th:text="${'Total: ' + maquinas.size() + ' máquinas'}"-->
-          <span class="panel-count">10 máquinas</span>
+          <span class="panel-count"
+                th:text="${#lists.size(maquinas) + ' máquinas'}">
+          </span>
         </div>
 
-        <!-- th:each="maquina : ${maquinas}" -->
         <table>
           <thead>
           <tr>
@@ -76,25 +89,31 @@
           </tr>
           </thead>
           <tbody>
-          <tr th:each="maquina : ${maquinas}">
+          <tr th:each="maquina : ${maquinas}"
+              th:data-setor="${maquina.setor}">
 
             <td th:text="${maquina.nome}"></td>
 
+
             <td>
-        <span class="setor-tag"
-              th:text="${maquina.setor != null ? maquina.setor.nome : '-'}">
-        </span>
+       <span class="setor-tag"
+             th:text="${maquina.setor}">
+       </span>
             </td>
 
             <td>
 
               <button type="button"
                       class="btn-edit"
-                      th:attr="onclick=|editarMaquina(${maquina.id}, '${maquina.nome}', ${maquina.setor != null ? maquina.setor.id : 'null'})|">
-                Editar
+                      th:attr="onclick=|editarMaquina(
+                          ${maquina.id},
+                          '${maquina.nome}',
+                          ${maquina.setorId != null ? maquina.setorId : 'null'}
+                          )|">
+              Editar
               </button>
 
-              <form th:action="@{/dashboard/maquina/{id}(id=${maquina.id})}"
+              <form th:action="@{/dashboard/maquina/{id}/excluir(id=${maquina.id})}"
                     method="post"
                     style="display:inline">
 
@@ -141,7 +160,7 @@
         <div class="field">
           <label>Setor vinculado <span>*</span></label>
 
-          <select th:field="*{setor}">
+          <select th:field="*{setorId}">
             <option value="">Selecione o setor</option>
 
             <option th:each="setor : ${setores}"
@@ -175,5 +194,7 @@
 
 <script th:src="@{/js/cadastro-maquinas.js}"></script>
 <script th:src="@{/js/sidebar.js}"></script>
+<script th:src="@{/js/alerts.js}"></script>
+
 </body>
 </html>

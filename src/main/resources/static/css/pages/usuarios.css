@@ -85,10 +85,6 @@ body.page-usuario-cadastrousuario table {
   width: 100%;
   border-collapse: collapse;
 }
-.user-login{
-  font-size:10px;color:#666;font-family:monospace;
-}
-
 
 body.page-usuario-cadastrousuario th,
 body.page-usuario-cadastrousuario td {

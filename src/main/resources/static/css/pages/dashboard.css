@@ -1,23 +1,23 @@
 /* ==========================================
        CONTEÚDO PRINCIPAL
     ========================================== */
-.content {
+body.page-dashboard-dashboard .content {
   flex: 1;
   padding: 28px;
 }
 
 /* Barra superior com título e botão */
-.topbar {
+body.page-dashboard-dashboard .topbar {
   display: flex;
   align-items: center;
   justify-content: space-between;
   margin-bottom: 26px;
 }
 
-.topbar h1 { font-size: 40px; }
+body.page-dashboard-dashboard .topbar h1 { font-size: 40px; }
 
 /* Botão Nova Ordem */
-.btn {
+body.page-dashboard-dashboard .btn {
   height: 64px;
   padding: 0 30px;
   border-radius: 18px;
@@ -29,52 +29,52 @@
   transition: 0.2s;
 }
 
-.btn:hover { background: #1a1b3b; }
+body.page-dashboard-dashboard .btn:hover { background: #1a1b3b; }
 
 /* ==========================================
    CARDS DE ESTATÍSTICAS
 ========================================== */
-.cards {
+body.page-dashboard-dashboard .cards {
   display: grid;
   grid-template-columns: repeat(4, 1fr);
   gap: 20px;
   margin-bottom: 24px;
 }
 
-.card {
+body.page-dashboard-dashboard .card {
   background: #232323;
   border-radius: 24px;
   padding: 28px;
   border: 1px solid rgba(255,255,255,0.08);
 }
 
-.card h3 { color: #8e8e8e; font-size: 18px; margin-bottom: 22px; }
-.card .number { font-size: 54px; font-weight: bold; margin-bottom: 10px; }
-.card p { color: #9e9e9e; font-size: 18px; }
+body.page-dashboard-dashboard .card h3 { color: #8e8e8e; font-size: 18px; margin-bottom: 22px; }
+body.page-dashboard-dashboard .card .number { font-size: 54px; font-weight: bold; margin-bottom: 10px; }
+body.page-dashboard-dashboard .card p { color: #9e9e9e; font-size: 18px; }
 
 /* Cores dos números por status */
-.orange { color: #f6a623; }
-.green  { color: #3ccf4e; }
-.red    { color: #ff4d4d; }
+body.page-dashboard-dashboard .orange { color: #f6a623; }
+body.page-dashboard-dashboard .green  { color: #3ccf4e; }
+body.page-dashboard-dashboard .red    { color: #ff4d4d; }
 
 /* ==========================================
    GRID PRINCIPAL - TABELA + SETORES
 ========================================== */
-.dashboard-grid {
+body.page-dashboard-dashboard .dashboard-grid {
   display: grid;
   grid-template-columns: 2fr 1fr;
   gap: 22px;
 }
 
 /* Painel genérico (tabela e setores) */
-.panel {
+body.page-dashboard-dashboard .panel {
   background: #232323;
   border-radius: 24px;
   border: 1px solid rgba(255,255,255,0.08);
   overflow: hidden;
 }
 
-.panel-header {
+body.page-dashboard-dashboard .panel-header {
   padding: 24px 28px;
   border-bottom: 1px solid rgba(255,255,255,0.08);
   font-size: 22px;
@@ -84,19 +84,20 @@
 /* ==========================================
    TABELA DE ORDENS EM ANDAMENTO
 ========================================== */
-table { width: 100%; border-collapse: collapse; }
+body.page-dashboard-dashboard table { width: 100%; border-collapse: collapse; }
 
-th, td {
+body.page-dashboard-dashboard th,
+body.page-dashboard-dashboard td {
   padding: 22px;
   text-align: left;
   border-bottom: 1px solid rgba(255,255,255,0.05);
   font-size: 18px;
 }
 
-th { color: #8c8c8c; font-weight: normal; }
+body.page-dashboard-dashboard th { color: #8c8c8c; font-weight: normal; }
 
 /* Barra de progresso dentro da tabela */
-.table-progress {
+body.page-dashboard-dashboard .table-progress {
   width: 120px;
   height: 10px;
   background: #161616;
@@ -104,14 +105,14 @@ th { color: #8c8c8c; font-weight: normal; }
   overflow: hidden;
 }
 
-.table-progress span {
+body.page-dashboard-dashboard .table-progress span {
   display: block;
   height: 100%;
   background: #6d5cff;
 }
 
 /* Badge de setorId atual */
-.status {
+body.page-dashboard-dashboard .status {
   padding: 8px 16px;
   border-radius: 20px;
   font-size: 15px;
@@ -119,20 +120,20 @@ th { color: #8c8c8c; font-weight: normal; }
   border: 1px solid rgba(255,255,255,0.1);
 }
 
-.status-purple { background: #2b254d; color: #c6bbff; }
-.status-green  { background: #213b22; color: #8cff92; }
+body.page-dashboard-dashboard .status-purple { background: #2b254d; color: #c6bbff; }
+body.page-dashboard-dashboard .status-green  { background: #213b22; color: #8cff92; }
 
 /* ==========================================
    PAINEL DE ORDENS POR SETOR
 ========================================== */
-.sector-list {
+body.page-dashboard-dashboard .sector-list {
   padding: 20px;
   display: flex;
   flex-direction: column;
   gap: 16px;
 }
 
-.sector-item {
+body.page-dashboard-dashboard .sector-item {
   background: #1f1f1f;
   border: 1px solid rgba(255,255,255,0.08);
   border-radius: 18px;
@@ -142,6 +143,6 @@ th { color: #8c8c8c; font-weight: normal; }
   align-items: center;
 }
 
-.sector-item h4 { font-size: 22px; margin-bottom: 8px; }
-.sector-item p  { color: #9b9b9b; font-size: 16px; }
-.sector-number  { font-size: 42px; font-weight: bold; }
+body.page-dashboard-dashboard .sector-item h4 { font-size: 22px; margin-bottom: 8px; }
+body.page-dashboard-dashboard .sector-item p  { color: #9b9b9b; font-size: 16px; }
+body.page-dashboard-dashboard .sector-number  { font-size: 42px; font-weight: bold; }

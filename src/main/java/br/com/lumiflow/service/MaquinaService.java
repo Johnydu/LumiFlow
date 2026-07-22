@@ -17,6 +17,7 @@ public class MaquinaService {
 
     private final MaquinaRepository maquinaRepository;
     private final MaquinaMapper maquinaMapper;
+    private final SetorService setorService;
 
 
 
@@ -27,11 +28,14 @@ public class MaquinaService {
 
     public void novaMaquina(@Valid MaquinaDTO maquinaDTO) {
         if(maquinaRepository.findByNome(maquinaDTO.nome()).isPresent()){
-            throw new BusinessException("Já existe uma máquina cadastrada com o nome '" +
+            throw new BusinessException("Já existe uma máquina cadastrada com esse nome '" +
                             maquinaDTO.nome() + "'"
             );
         }
-        maquinaRepository.save(maquinaMapper.toEntity(maquinaDTO));
+        Maquina  maquina = maquinaMapper.toEntity(maquinaDTO);
+        maquina.setSetor(setorService.buscarSetorPorId(maquinaDTO.setorId()));
+
+        maquinaRepository.save(maquina);
     }
 
 
@@ -40,5 +44,25 @@ public class MaquinaService {
                 ()-> new BusinessException("Maquina não encontrada"));
 
         maquinaRepository.delete(maquina);
+    }
+
+    public void editarMaquina(Long id, MaquinaDTO maquinaDTO) {
+        Maquina maquina = maquinaRepository.findById(id)
+                .orElseThrow(() ->
+                        new BusinessException("Máquina não encontrada"));
+
+        maquinaRepository.findByNome(maquinaDTO.nome())
+                .filter(outra -> !outra.getId().equals(id))
+                .ifPresent(outra -> {
+                    throw new BusinessException(
+                            "Já existe uma máquina cadastrada com esse nome"
+                    );
+                });
+
+        maquina.setNome(maquinaDTO.nome());
+        maquina.setSetor(setorService.buscarSetorPorId(maquinaDTO.setorId()));
+
+        maquinaRepository.save(maquina);
+
     }
 }
