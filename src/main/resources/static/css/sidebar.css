@@ -85,5 +85,16 @@
   font-weight: bold;
 }
 
+.sidebar-footer {
+  margin-top: auto;
+}
+
+.app-version {
+  text-align: right;
+  margin-top: 10px;
+  font-size: 11px;
+  color: #999;
+}
+
 .profile-info h4 { font-size: 24px; }
 .profile-info span { color: #8f8f9e; font-size: 18px; }

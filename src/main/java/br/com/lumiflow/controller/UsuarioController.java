@@ -92,7 +92,7 @@ public class UsuarioController {
             return "redirect:/dashboard/usuario";
         }
         try {
-            usuarioService.atualizarUsuario( id, usuarioEdicaoDTO);
+            usuarioService.editarUsuario( id, usuarioEdicaoDTO);
             attributes.addFlashAttribute("message", "Usuário atualizado com sucesso");
             attributes.addFlashAttribute("messageType", "success");
         } catch (BusinessException e) {

@@ -1,24 +1,58 @@
-function showForm(nome, setor) {
+function showForm() {
   document.getElementById('form-panel').style.display = 'block';
-  if (nome) {
-    document.getElementById('form-title').textContent = 'Editar Máquina';
-    document.getElementById('input-nome').value = nome;
-    const sel = document.getElementById('input-setor');
-    for (let opt of sel.options) {
-      if (opt.text === setor) { opt.selected = true; break; }
-    }
-  } else {
-    document.getElementById('form-title').textContent = 'Nova Máquina';
-    document.getElementById('input-nome').value = '';
-    document.getElementById('input-setor').selectedIndex = 0;
-  }
 }
 
 function hideForm() {
   document.getElementById('form-panel').style.display = 'none';
 }
 
-function setTab(el) {
-  document.querySelectorAll('.setor-tab').forEach(t => t.classList.remove('active'));
-  el.classList.add('active');
+function novaMaquinaForm() {
+
+  const form = document.querySelector('.form-card');
+
+  form.reset();
+  form.action = '/dashboard/maquina';
+
+  document.getElementById('id').value = '';
+  document.getElementById('form-title').textContent = 'Nova Máquina';
+
+  showForm();
+}
+
+function editarMaquina(id, nome, setorId) {
+
+  const form = document.querySelector('.form-card');
+
+  form.action = '/dashboard/maquina/' + id + '/editar';
+
+  document.getElementById('id').value = id;
+  document.getElementById('nome').value = nome;
+  document.getElementById('setorId').value = setorId;
+
+  document.getElementById('form-title').textContent =
+      'Editar Máquina';
+
+  showForm();
+}
+
+function filtrarSetor(botao, setor) {
+
+  document
+      .querySelectorAll('.setor-tab')
+      .forEach(t => t.classList.remove('active'));
+
+  botao.classList.add('active');
+
+  const linhas = document.querySelectorAll('tbody tr');
+
+  linhas.forEach(linha => {
+
+    const setorLinha = linha.dataset.setor;
+
+    if (setor === 'todos' || setorLinha === setor) {
+      linha.style.display = '';
+    } else {
+      linha.style.display = 'none';
+    }
+  });
 }

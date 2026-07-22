@@ -1,6 +1,5 @@
 package br.com.lumiflow.dto.maquina;
 
-import br.com.lumiflow.entity.Setor;
 import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.NotNull;
 
@@ -8,10 +7,12 @@ public record MaquinaDTO(
 
         Long id,
 
-        @NotBlank
+        @NotBlank(message = "Informe o nome da máquina")
         String nome,
 
-        @NotNull
-        Setor setor
+        String setor,
+
+        @NotNull(message = "Selecione um setor")
+        Long setorId
 ) {
 }
