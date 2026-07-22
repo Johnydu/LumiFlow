@@ -69,7 +69,7 @@ public class UsuarioService {
         usuarioRepository.delete(usuario);
     }
 
-    public void atualizarUsuario (Long id, UsuarioEdicaoDTO usuarioEdicaoDTO) {
+    public void editarUsuario(Long id, UsuarioEdicaoDTO usuarioEdicaoDTO) {
 
         Usuario usuario = usuarioRepository.findById(id)
                 .orElseThrow(() ->
