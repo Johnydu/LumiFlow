@@ -1,0 +1,161 @@
+<!DOCTYPE html>
+<html lang="pt-BR" xmlns:th="http://www.thymeleaf.org">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Cadastro de Setores - LumiFlow</title>
+  <link rel="stylesheet" th:href="@{/css/variables.css}">
+  <link rel="stylesheet" th:href="@{/css/globals.css}">
+  <link rel="stylesheet" th:href="@{/css/sidebar.css}">
+  <link rel="stylesheet" th:href="@{/css/topbar.css}">
+  <link rel="stylesheet" th:href="@{/css/components/buttons.css}">
+  <link rel="stylesheet" th:href="@{/css/components/forms.css}">
+  <link rel="stylesheet" th:href="@{/css/components/tables.css}">
+  <link rel="stylesheet" th:href="@{/css/components/cards.css}">
+  <link rel="stylesheet" th:href="@{/css/components/badges.css}">
+  <link rel="stylesheet" th:href="@{/css/components/status.css}">
+  <link rel="stylesheet" th:href="@{/css/components/alerts.css}">
+  <link rel="stylesheet" th:href="@{/css/pages/dashboard.css}">
+  <link rel="stylesheet" th:href="@{/css/pages/login.css}">
+  <link rel="stylesheet" th:href="@{/css/pages/usuarios.css}">
+  <link rel="stylesheet" th:href="@{/css/pages/maquinas.css}">
+  <link rel="stylesheet" th:href="@{/css/pages/produtos.css}">
+  <link rel="stylesheet" th:href="@{/css/pages/setores.css}">
+  <link rel="stylesheet" th:href="@{/css/pages/ordens.css}">
+  <link rel="stylesheet" th:href="@{/css/pages/relatorio.css}">
+  <link rel="stylesheet" th:href="@{/css/pages/vidracaria.css}">
+  <link rel="stylesheet" th:href="@{/css/pages/novaordem.css}">
+  <link rel="stylesheet" th:href="@{/css/pages/listaordem.css}">
+  <link rel="stylesheet" th:href="@{/css/utils.css}">
+  <link rel="stylesheet" th:href="@{/css/responsive.css}">
+</head>
+<body class="page-setor-cadastrosetor">
+
+<aside th:replace="~{fragments/sidebar :: sidebar(activePage='setor')}"></aside>
+
+<main class="main">
+  <div class="topbar">
+    <span class="topbar-title">Setores</span>
+    <button type="button" class="btn-novo" onclick="novoSetorForm()">+ Novo Setor</button>
+  </div>
+
+  <div th:if="${message}"
+       th:class="${messageType == 'success'} ? 'alert-success' : 'alert-error'">
+    <span th:text="${message}"></span>
+  </div>
+
+  <div class="content">
+
+    <div class="lista">
+      <div class="panel">
+        <div class="panel-header">
+          <span class="panel-title">Setores cadastrados</span>
+          <span class="panel-count"
+                th:text="${#lists.size(setores) + ' setor(es)'}">
+          </span>
+        </div>
+
+        <table>
+          <thead>
+          <tr>
+            <th>Setor</th>
+            <th>Máquinas</th>
+            <th>Etapas</th>
+            <th style="width:120px">Ações</th>
+          </tr>
+          </thead>
+          <tbody>
+          <tr th:each="setor : ${setores}">
+            <td style="font-weight:500" th:text="${setor.nome()}"></td>
+            <td>
+                <span class="tag-maq"
+                      th:text="${setor.quantidadeMaquinas() + ' máquina(s)'}">
+                </span>
+            </td>
+            <td>
+                <span th:if="${setor.possuiEtapas()}"
+                      style="color:var(--color-primary);font-size:12px">
+                  Possui etapas
+                </span>
+              <span th:unless="${setor.possuiEtapas()}"
+                    style="color:var(--color-muted-5);font-size:12px">
+                  Não possui
+                </span>
+            </td>
+            <td>
+              <button type="button"
+                      class="btn-edit"
+                      th:attr="onclick=|editarSetor(${setor.id()}, '${setor.nome()}', ${setor.possuiEtapas()})|">
+                Editar
+              </button>
+              <form th:action="@{/dashboard/setores/{id}/excluir(id=${setor.id()})}"
+                    method="post"
+                    style="display:inline">
+                <input type="hidden"
+                       th:name="${_csrf.parameterName}"
+                       th:value="${_csrf.token}"/>
+                <button type="submit"
+                        class="btn-del"
+                        onclick="return confirm('Tem certeza que deseja excluir este setor?');">
+                  Excluir
+                </button>
+              </form>
+            </td>
+          </tr>
+
+          <tr th:if="${#lists.isEmpty(setores)}">
+            <td colspan="4"
+                style="text-align:center;color:var(--color-muted-5)">
+              Nenhum setor cadastrado.
+            </td>
+          </tr>
+          </tbody>
+        </table>
+      </div>
+    </div>
+
+    <div class="form-panel" id="form-panel" style="display:none">
+      <form class="form-card"
+            id="setor-form"
+            th:action="@{/dashboard/setores}"
+            th:object="${setorDTO}"
+            method="post">
+
+        <input type="hidden" th:field="*{id}"/>
+
+        <div class="form-title" id="form-title">Novo Setor</div>
+
+        <div class="field">
+          <label>Nome do setor <span>*</span></label>
+          <input type="text"
+                 th:field="*{nome}"
+                 placeholder="Ex: Dobra"/>
+        </div>
+
+        <div class="field">
+          <label>Possui etapas de produção?</label>
+          <select th:field="*{possuiEtapas}">
+            <option value="false">Não</option>
+            <option value="true">Sim</option>
+          </select>
+          <span class="hint">
+            As etapas são definidas no cadastro do produto.
+          </span>
+        </div>
+
+        <div class="form-actions">
+          <button type="button" class="btn-cancel" onclick="hideForm()">Cancelar</button>
+          <button type="submit" class="btn-submit">Salvar</button>
+        </div>
+
+      </form>
+    </div>
+
+  </div>
+</main>
+
+<script th:src="@{/js/cadastro-setor.js}"></script>
+<script th:src="@{/js/sidebar.js}"></script>
+<script th:src="@{/js/alerts.js}"></script>
+</body>
+</html>

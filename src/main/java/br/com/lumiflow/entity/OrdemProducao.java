@@ -1,6 +1,6 @@
 package br.com.lumiflow.entity;
-
 import br.com.lumiflow.entity.enums.EstatusOrdemProducao;
+
 import jakarta.persistence.*;
 import lombok.*;
 

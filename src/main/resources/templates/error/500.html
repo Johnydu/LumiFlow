@@ -1,0 +1,26 @@
+<!DOCTYPE html>
+<html lang="pt-BR" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <title>Erro interno</title>
+    <link rel="stylesheet" th:href="@{/css/variables.css}">
+    <link rel="stylesheet" th:href="@{/css/globals.css}">
+</head>
+<body>
+
+<div class="error-container">
+    <h1>500</h1>
+
+    <h2>Erro interno do sistema</h2>
+
+    <p>
+        Ocorreu um erro inesperado durante o processamento da solicitação.
+    </p>
+
+    <a th:href="@{/dashboard}" class="btn-voltar">
+        Voltar ao Dashboard
+    </a>
+</div>
+
+</body>
+</html>

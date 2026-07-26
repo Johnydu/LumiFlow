@@ -32,7 +32,7 @@
 <body class="page-maquina-cadastromaquinas">
 
 <!-- SIDEBAR - MENU LATERAL           -->
-<aside th:replace="~{fragments/sidebar :: sidebar(activePage='maquina')}"></aside>
+<aside th:replace="~{fragments/sidebar :: sidebar(activePage='maquinas')}"></aside>
 <!-- ================================ -->
 <!-- CONTEÚDO PRINCIPAL               -->
 <!-- ================================ -->
@@ -113,7 +113,7 @@
               Editar
               </button>
 
-              <form th:action="@{/dashboard/maquina/{id}/excluir(id=${maquina.id})}"
+              <form th:action="@{/dashboard/maquinas/{id}/excluir(id=${maquina.id})}"
                     method="post"
                     style="display:inline">
 
@@ -139,7 +139,7 @@
     <div class="form-panel" id="form-panel" style="display:none">
 
       <form class="form-card"
-            th:action="@{/dashboard/maquina}"
+            th:action="@{/dashboard/maquinas}"
             th:object="${maquinaDTO}"
             method="post">
 

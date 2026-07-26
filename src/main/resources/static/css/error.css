@@ -1,0 +1,40 @@
+.error-container {
+    min-height: 100vh;
+    background: var(--color-bg);
+    color: var(--color-text);
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    gap: 16px;
+    text-align: center;
+    padding: 24px;
+}
+
+.error-container h1 {
+    font-size: 96px;
+    color: var(--color-primary);
+}
+
+.error-container h2 {
+    font-size: 32px;
+}
+
+.error-container p {
+    max-width: 500px;
+    color: var(--color-muted);
+}
+
+.btn-voltar {
+    margin-top: 12px;
+    padding: 12px 24px;
+    border-radius: 12px;
+    background: var(--color-primary);
+    color: white;
+    text-decoration: none;
+    transition: .2s;
+}
+
+.btn-voltar:hover {
+    opacity: .9;
+}
