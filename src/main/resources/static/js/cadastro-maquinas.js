@@ -11,7 +11,7 @@ function novaMaquinaForm() {
   const form = document.querySelector('.form-card');
 
   form.reset();
-  form.action = '/dashboard/maquina';
+  form.action = '/dashboard/maquinas';
 
   document.getElementById('id').value = '';
   document.getElementById('form-title').textContent = 'Nova Máquina';
@@ -23,7 +23,7 @@ function editarMaquina(id, nome, setorId) {
 
   const form = document.querySelector('.form-card');
 
-  form.action = '/dashboard/maquina/' + id + '/editar';
+  form.action = '/dashboard/maquinas/' + id + '/editar';
 
   document.getElementById('id').value = id;
   document.getElementById('nome').value = nome;

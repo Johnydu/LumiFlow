@@ -1,8 +1,8 @@
 package br.com.lumiflow.controller;
 
 import br.com.lumiflow.dto.maquina.MaquinaDTO;
+import br.com.lumiflow.dto.setor.SetorDTO;
 import br.com.lumiflow.exception.BusinessException;
-import br.com.lumiflow.service.MaquinaService;
 import br.com.lumiflow.service.SetorService;
 import jakarta.validation.Valid;
 import lombok.AllArgsConstructor;
@@ -14,75 +14,72 @@ import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
 @Controller
 @AllArgsConstructor
-@RequestMapping("/dashboard/maquinas")
-public class MaquinaController {
+@RequestMapping("/dashboard/setores")
+public class SetorController {
 
     private final SetorService setorService;
-    private final MaquinaService maquinaService;
-
 
     @GetMapping
-    public String maquinas(Model model) {
-        model.addAttribute("maquinas", maquinaService.listarMaquinas());
-        model.addAttribute("maquinaDTO", new MaquinaDTO(null, null, null, null));
-        model.addAttribute("setores", setorService.listarSetores());
-        return "maquina/CadastroMaquinas";
+    public String setores(Model model){
+        model.addAttribute("setores",setorService.listarSetores());
+        model.addAttribute("setorDTO",new SetorDTO(null,null,null));
+        return "setor/Setores";
     }
 
     @PostMapping
-    public String novaMquina(@Valid @ModelAttribute("maquinaDTO") MaquinaDTO maquinaDTO, BindingResult result,
+    public String novoSetor(@Valid @ModelAttribute("setorDTO") SetorDTO setorDTO, BindingResult result,
                              RedirectAttributes attributes) {
         if (result.hasErrors()) {
             attributes.addFlashAttribute("message","Preencha todos os campos corretamente");
             attributes.addFlashAttribute("messageType", "error");
-            return  "redirect:/dashboard/maquinas";
+            return  "redirect:/dashboard/setores";
         }
         try {
-            maquinaService.novaMaquina(maquinaDTO);
-            attributes.addFlashAttribute("message","Maquina cadastrada com sucesso");
+            setorService.novoSetor(setorDTO);
+            attributes.addFlashAttribute("message","Setor cadastrada com sucesso");
             attributes.addFlashAttribute("messageType", "success");
 
         } catch (BusinessException e) {
             attributes.addFlashAttribute("message", e.getMessage());
             attributes.addFlashAttribute("messageType", "error");
         }
-        return "redirect:/dashboard/maquinas";
+        return "redirect:/dashboard/setores";
 
     }
 
-    @PostMapping("/{id}/excluir")
-    public String deletarMaquina(@Valid @PathVariable long id, RedirectAttributes attributes) {
-
+    @PostMapping("{id}/excluir")
+    public String excluirSetor(@PathVariable("id") Long id,RedirectAttributes attributes){
         try {
-            maquinaService.deletarMaquina(id);
-            attributes.addFlashAttribute("message","Maquina removida com sucesso");
+            setorService.exluirSetor(id);
+            attributes.addFlashAttribute("message","Setor removido com sucesso");
             attributes.addFlashAttribute("messageType", "success");
         } catch (BusinessException e) {
             attributes.addFlashAttribute("message", e.getMessage());
             attributes.addFlashAttribute("messageType", "error");
         }
 
-        return "redirect:/dashboard/maquinas";
+        return "redirect:/dashboard/setores";
     }
 
     @PostMapping("/{id}/editar")
-    public String editar(@PathVariable Long id,
-                         @Valid @ModelAttribute("maquinaDTO") MaquinaDTO maquinaDTO,
-                         BindingResult result, RedirectAttributes attributes) {
+    public String editarSetor(@PathVariable ("id") long id,@Valid @ModelAttribute("setorDTO") SetorDTO setorDTO, BindingResult result,
+                            RedirectAttributes attributes) {
         if (result.hasErrors()) {
-            attributes.addFlashAttribute("message", "Preencha os campos corretamente");
+            attributes.addFlashAttribute("message","Preencha todos os campos corretamente");
             attributes.addFlashAttribute("messageType", "error");
-            return "redirect:/dashboard/maquinas";
+            return  "redirect:/dashboard/setores";
         }
         try {
-            maquinaService.editarMaquina( id, maquinaDTO);
-            attributes.addFlashAttribute("message", "Maquina atualizada com sucesso");
+            setorService.editarSetor(id,setorDTO);
+            attributes.addFlashAttribute("message","Setor cadastrada com sucesso");
             attributes.addFlashAttribute("messageType", "success");
+
         } catch (BusinessException e) {
             attributes.addFlashAttribute("message", e.getMessage());
             attributes.addFlashAttribute("messageType", "error");
         }
-        return "redirect:/dashboard/maquinas";
+        return "redirect:/dashboard/setores";
+
     }
 
 }

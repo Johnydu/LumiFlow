@@ -3,6 +3,9 @@ package br.com.lumiflow.entity;
 import jakarta.persistence.*;
 import lombok.*;
 
+import java.util.ArrayList;
+import java.util.List;
+
 @Entity
 @AllArgsConstructor
 @NoArgsConstructor
@@ -21,5 +24,7 @@ public class Setor extends Auditoria {
 
     @Column(name = "possui_etapas")
     private Boolean possuiEtapas;
+
+
 
 }

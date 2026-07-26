@@ -1,6 +1,6 @@
 package br.com.lumiflow.entity;
-
 import br.com.lumiflow.entity.enums.EstatusOrdemSetor;
+
 import jakarta.persistence.*;
 import lombok.*;
 

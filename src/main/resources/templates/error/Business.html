@@ -1,0 +1,26 @@
+<!DOCTYPE html>
+<html lang="pt-BR" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <title>Aviso do Sistema</title>
+    <link rel="stylesheet" th:href="@{/css/variables.css}">
+    <link rel="stylesheet" th:href="@{/css/globals.css}">
+</head>
+<body>
+
+<div class="error-container">
+    <h1>⚠</h1>
+
+    <h2>Operação não permitida</h2>
+
+    <p th:text="${message}">
+        Ocorreu uma regra de negócio que impediu a operação.
+    </p>
+
+    <a href="javascript:history.back()" class="btn-voltar">
+        Voltar
+    </a>
+</div>
+
+</body>
+</html>
