@@ -1,7 +1,7 @@
 package br.com.lumiflow.service;
 
 import br.com.lumiflow.dto.maquina.MaquinaDTO;
-import br.com.lumiflow.entity.Maquina;
+import br.com.lumiflow.model.Maquina;
 import br.com.lumiflow.mapper.MaquinaMapper;
 import br.com.lumiflow.exception.BusinessException;
 import br.com.lumiflow.repository.MaquinaRepository;

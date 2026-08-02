@@ -8,16 +8,15 @@
   flex-shrink: 0;
 }
 
+body.page-produto-cadastroproduto .form-panel
+body.page-maquina-cadastromaquinas .form-panel,
 body.page-setor-cadastrosetor .form-panel,
 body.page-usuario-cadastrousuario .form-panel {
   width: 320px;
   flex-shrink: 0;
 }
 
-body.page-maquina-cadastromaquinas .form-panel {
-  width: 300px;
-  flex-shrink: 0;
-}
+
 
 /* ============ FORM CARD ============ */
 .form-card {
@@ -179,10 +178,7 @@ body.page-produto-cadastroproduto .field textarea {
   height: 80px;
 }
 
-body.page-produto-cadastroproduto .field textarea {
-  resize: none;
-  height: 70px;
-}
+
 
 /* ============ HINT ============ */
 .hint {
@@ -330,32 +326,37 @@ body.page-produto-cadastroproduto .preview-pills {
 }
 
 /* ============ ETAPAS LIST ============ */
-body.page-setor-cadastrosetor .etapas-list {
-  display: flex;
-  flex-direction: column;
-  gap: 6px;
-  margin-bottom: 8px;
+.etapas-list {
+  display: flex !important;
+  flex-direction: column !important;
+  gap: 10px !important;
+  width: 100% !important;
 }
 
-body.page-setor-cadastrosetor .etapa-item {
-  display: flex;
-  align-items: center;
-  gap: 8px;
-  background: var(--color-field);
-  border: 1px solid rgba(255,255,255,0.06);
-  border-radius: 8px;
-  padding: 8px 10px;
+.etapa-item {
+  display: flex !important;
+  flex-direction: row !important;
+  align-items: center !important;
+  gap: 8px !important;
+  width: 100% !important;
+  box-sizing: border-box !important;
 }
 
-body.page-setor-cadastrosetor .etapa-num {
-  font-size: 10px;
-  color: var(--color-primary);
-  font-weight: 700;
-  width: 20px;
+.etapa-item .etapa-num {
+  flex: 0 0 34px !important;
 }
 
-body.page-setor-cadastrosetor .etapa-nome {
-  flex: 1;
-  font-size: 12px;
-  color: var(--color-text);
+/* O truque do width: 0 + flex: 1 impede que o select estoure o card */
+.etapa-item .etapa-select,
+.etapa-item select {
+  flex: 1 !important;
+  width: 0 !important;
+  min-width: 120px !important;
+  box-sizing: border-box !important;
+}
+
+.etapa-item .etapa-actions {
+  flex: 0 0 auto !important;
+  display: flex !important;
+  gap: 6px !important;
 }

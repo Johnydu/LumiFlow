@@ -3,7 +3,7 @@ package br.com.lumiflow.mapper;
 import br.com.lumiflow.dto.usuario.UsuarioDTO;
 import br.com.lumiflow.dto.usuario.UsuarioEdicaoDTO;
 import br.com.lumiflow.dto.usuario.UsuarioListaDTO;
-import br.com.lumiflow.entity.Usuario;
+import br.com.lumiflow.model.Usuario;
 import org.mapstruct.Mapper;
 import org.mapstruct.Mapping;
 

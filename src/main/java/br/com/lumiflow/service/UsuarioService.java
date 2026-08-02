@@ -4,7 +4,7 @@ import br.com.lumiflow.dto.usuario.UsuarioDTO;
 import br.com.lumiflow.dto.usuario.UsuarioEdicaoDTO;
 import br.com.lumiflow.dto.usuario.UsuarioListaDTO;
 import br.com.lumiflow.dto.usuario.UsuarioLogadoDTO;
-import br.com.lumiflow.entity.Usuario;
+import br.com.lumiflow.model.Usuario;
 import br.com.lumiflow.mapper.UsuarioMapper;
 import br.com.lumiflow.exception.BusinessException;
 import br.com.lumiflow.repository.UsuarioRepository;

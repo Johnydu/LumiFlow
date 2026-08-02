@@ -22,7 +22,7 @@ public class SetorController {
     @GetMapping
     public String setores(Model model){
         model.addAttribute("setores",setorService.listarSetores());
-        model.addAttribute("setorDTO",new SetorDTO(null,null,null));
+        model.addAttribute("setorDTO",new SetorDTO(null,null,null,null));
         return "setor/Setores";
     }
 
@@ -30,6 +30,12 @@ public class SetorController {
     public String novoSetor(@Valid @ModelAttribute("setorDTO") SetorDTO setorDTO, BindingResult result,
                              RedirectAttributes attributes) {
         if (result.hasErrors()) {
+            // ---> ADICIONE ESTAS LINHAS AQUI <---
+            result.getAllErrors().forEach(error -> {
+                System.out.println(">>> ERRO DE VALIDAÇÃO/BIND: " + error.toString());
+            });
+            // ------------------------------------
+
             attributes.addFlashAttribute("message","Preencha todos os campos corretamente");
             attributes.addFlashAttribute("messageType", "error");
             return  "redirect:/dashboard/setores";
@@ -48,9 +54,20 @@ public class SetorController {
     }
 
     @PostMapping("{id}/excluir")
-    public String excluirSetor(@PathVariable("id") Long id,RedirectAttributes attributes){
+    public String excluirSetor(@PathVariable("id") Long id,BindingResult result,RedirectAttributes attributes){
+        if (result.hasErrors()) {
+            // ---> ADICIONE ESTAS LINHAS AQUI <---
+            result.getAllErrors().forEach(error -> {
+                System.out.println(">>> ERRO DE VALIDAÇÃO/BIND: " + error.toString());
+            });
+            // ------------------------------------
+
+            attributes.addFlashAttribute("message","Preencha todos os campos corretamente");
+            attributes.addFlashAttribute("messageType", "error");
+            return  "redirect:/dashboard/setores";
+        }
         try {
-            setorService.exluirSetor(id);
+            setorService.excluirSetor(id);
             attributes.addFlashAttribute("message","Setor removido com sucesso");
             attributes.addFlashAttribute("messageType", "success");
         } catch (BusinessException e) {

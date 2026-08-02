@@ -50,28 +50,63 @@ body.page-usuario-login .btn.success {
   background: var(--color-warning-dark);
 }
 
-/* ============ BTN EDIT ============ */
-.btn-edit {
-  padding: 4px 12px;
-  font-size: 10px;
-  border-radius: 7px;
-  border: 1px solid rgba(255,255,255,0.1);
-  background: transparent;
-  color: var(--color-text);
+/* ========================================
+   ACTION BUTTONS PADRÃO LUMIFLOW
+   ======================================== */
+
+.btn-edit,
+.btn-del {
+  min-width: 90px;
+  height: 38px;
+  padding: 0 18px;
+
+  border-radius: 12px;
+  border: 1px solid;
+
+  font-size: 12px;
+  font-weight: 600;
+  letter-spacing: .3px;
+
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 6px;
+
   cursor: pointer;
-  margin-right: 4px;
+  transition: all .25s ease;
 }
 
-/* ============ BTN DELETE ============ */
-.btn-del {
-  padding: 4px 12px;
-  font-size: 10px;
-  border-radius: 7px;
-  border: 1px solid rgba(255,77,77,0.3);
-  background: transparent;
-  color: var(--color-danger);
-  cursor: pointer;
+/* EDITAR */
+
+.btn-edit {
+  background: rgba(59,130,246,.10);
+  border-color: rgba(59,130,246,.25);
+  color: #93c5fd;
 }
+
+.btn-edit:hover {
+  background: rgba(59,130,246,.18);
+  border-color: rgba(59,130,246,.45);
+  transform: translateY(-1px);
+}
+
+/* EXCLUIR */
+
+.btn-del {
+  background: rgba(239,68,68,.10);
+  border-color: rgba(239,68,68,.25);
+  color: #fca5a5;
+}
+
+.btn-del:hover {
+  background: rgba(239,68,68,.18);
+  border-color: rgba(239,68,68,.45);
+  transform: translateY(-1px);
+}
+
+/* Agrupamento dos botões */
+
+
 
 /* ============ BTN CANCEL ============ */
 .btn-cancel {
@@ -95,6 +130,7 @@ body.page-usuario-login .btn-cancel {
   cursor: pointer;
 }
 
+body.page-produto-cadastroproduto.btn-cancel,
 body.page-ordemproducao-lancamento .btn-cancel,
 body.page-ordemproducao-novaordem .btn-cancel,
 body.page-vidracaria-vidracaria .btn-cancel {
@@ -133,6 +169,7 @@ body.page-usuario-login .btn-submit {
 
 body.page-ordemproducao-lancamento .btn-submit,
 body.page-ordemproducao-novaordem .btn-submit,
+body.page-produto-cadastroproduto .btn-submit,
 body.page-vidracaria-vidracaria .btn-submit {
   padding: 10px 22px;
   border-radius: 10px;
@@ -271,3 +308,6 @@ body.page-relatorio-relatoriotempo .pag-btn.active {
   background: var(--color-primary);
   border-color: var(--color-primary);
 }
+
+
+

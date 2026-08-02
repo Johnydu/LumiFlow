@@ -72,6 +72,7 @@ body.page-setor-cadastrosetor .tag-maq {
 }
 
 /* ============ SETOR TABS ============ */
+body.page-produto-cadastroprodutor .setor-tabs,
 body.page-maquina-cadastromaquinas .setor-tabs {
   display: flex;
   gap: 8px;
@@ -79,6 +80,8 @@ body.page-maquina-cadastromaquinas .setor-tabs {
   margin-bottom: 14px;
 }
 
+
+body.page-produto-cadastroprodutor .setor-tab,
 body.page-maquina-cadastromaquinas .setor-tab {
   padding: 6px 14px;
   border-radius: 20px;
@@ -88,7 +91,7 @@ body.page-maquina-cadastromaquinas .setor-tab {
   background: transparent;
   color: var(--color-muted);
 }
-
+body.page-produto-cadastroprodutor .setor-tab-active,
 body.page-maquina-cadastromaquinas .setor-tab.active {
   background: var(--color-primary);
   border-color: var(--color-primary);

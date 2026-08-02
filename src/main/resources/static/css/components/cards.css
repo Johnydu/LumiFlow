@@ -158,6 +158,7 @@ body.page-vidracaria-vidracaria .panel {
 }
 
 body.page-maquina-cadastromaquinas .panel-header,
+body.page-produto-cadastroproduto .panel-header,
 body.page-setor-cadastrosetor .panel-header,
 body.page-usuario-cadastrousuario .panel-header {
   padding: 14px 18px;
@@ -214,6 +215,7 @@ body.page-ordemproducao-listaordem .panel-title {
 }
 
 /* ============ PANEL COUNT ============ */
+
 body.page-maquina-cadastromaquinas .panel-count {
   font-size: 11px;
   color: var(--color-muted-4);
@@ -222,6 +224,10 @@ body.page-maquina-cadastromaquinas .panel-count {
 body.page-ordemproducao-listaordem .panel-count {
   font-size: 11px;
   color: var(--color-muted);
+}
+body.page-produto-cadastroproduto .panel-count {
+  font-size: 11px;
+  color: var(--color-muted-4);
 }
 
 /* ============ PANEL SUB ============ */
@@ -481,4 +487,12 @@ body.page-ordemproducao-listaordem .pag-info {
 body.page-ordemproducao-listaordem .pag-btns {
   display: flex;
   gap: 5px;
+}
+
+/* ============ FORM PANEL (Roteiros) ============ */
+body.page-roteiro-cadastroroteiros .form-panel {
+  width: 480px !important; /* Aumenta o tamanho do card/painel lateral */
+  flex-shrink: 0;
+  position: sticky;
+  top: 20px;
 }
