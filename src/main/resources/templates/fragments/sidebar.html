@@ -4,6 +4,11 @@
 
     <div class="logo">LumiFlow</div>
 
+    <!-- Botão de fechar posicionado no topo, logo acima de GERAL -->
+    <button class="menu-toggle sidebar-close" onclick="toggleSidebar()">
+        ☰
+    </button>
+
     <div class="menu-title">GERAL</div>
     <div class="menu">
         <a th:href="@{/dashboard}"
@@ -18,12 +23,15 @@
         <a th:href="@{/dashboard/relatorio}"
            th:classappend="${activePage == 'relatorio'} ? 'active'"
            class="menu-item">Relatórios</a>
+        <a th:href="@{/dashboard/vidracaria}"
+           th:classappend="${activePage == 'vidracaria'} ? 'active'"
+           class="menu-item">Vidraçaria</a>
     </div>
 
     <div class="menu-title">CADASTROS</div>
     <div class="menu">
-        <a th:href="@{/dashboard/produto}"
-           th:classappend="${activePage == 'produto'} ? 'active'"
+        <a th:href="@{/dashboard/produtos}"
+           th:classappend="${activePage == 'produtos'} ? 'active'"
            class="menu-item">Produtos</a>
         <a th:href="@{/dashboard/setores}"
            th:classappend="${activePage == 'setores'} ? 'active'"
@@ -31,8 +39,8 @@
         <a th:href="@{/dashboard/maquinas}"
            th:classappend="${activePage == 'maquinas'} ? 'active'"
            class="menu-item">Máquinas</a>
-        <a th:href="@{/dashboard/roteiro}"
-           th:classappend="${activePage == 'roteiro'} ? 'active'"
+        <a th:href="@{/dashboard/roteiros}"
+           th:classappend="${activePage == 'roteiros'} ? 'active'"
            class="menu-item">Roteiros</a>
         <a th:href="@{/dashboard/usuario}"
            th:classappend="${activePage == 'usuario'} ? 'active'"

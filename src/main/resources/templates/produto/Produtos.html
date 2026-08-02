@@ -1,0 +1,277 @@
+<!DOCTYPE html>
+<html lang="pt-BR" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8"/>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+    <title>Produtos - LumiFlow</title>
+
+    <link rel="stylesheet" th:href="@{/css/topbar.css}">
+    <link rel="stylesheet" th:href="@{/css/variables.css}">
+    <link rel="stylesheet" th:href="@{/css/globals.css}">
+    <link rel="stylesheet" th:href="@{/css/sidebar.css}">
+    <link rel="stylesheet" th:href="@{/css/components/buttons.css}">
+    <link rel="stylesheet" th:href="@{/css/components/forms.css}">
+    <link rel="stylesheet" th:href="@{/css/components/tables.css}">
+    <link rel="stylesheet" th:href="@{/css/components/cards.css}">
+    <link rel="stylesheet" th:href="@{/css/components/badges.css}">
+    <link rel="stylesheet" th:href="@{/css/components/status.css}">
+    <link rel="stylesheet" th:href="@{/css/components/alerts.css}">
+    <link rel="stylesheet" th:href="@{/css/pages/produtos.css}">
+    <link rel="stylesheet" th:href="@{/css/utils.css}">
+    <link rel="stylesheet" th:href="@{/css/responsive.css}">
+</head>
+<body class="page-produto-cadastroproduto">
+
+<!-- ================================ -->
+<!-- SIDEBAR                          -->
+<!-- ================================ -->
+<aside th:replace="~{fragments/sidebar :: sidebar(activePage='produtos')}"></aside>
+
+<main class="main">
+
+    <!-- ================================ -->
+    <!-- TOPBAR                           -->
+    <!-- ================================ -->
+    <div th:replace="~{fragments/topbar :: topbar(
+    'Produtos',
+    '+ Novo Produto',
+    'novoProdutoForm()'
+)}"></div>
+
+    <!-- ================================ -->
+    <!-- MENSAGENS DE FEEDBACK            -->
+    <!-- ================================ -->
+    <div th:if="${message}"
+         th:class="${messageType == 'success'} ? 'alert-success' : 'alert-error'">
+        <span th:text="${message}"></span>
+    </div>
+
+    <div class="content">
+
+        <!-- LISTA -->
+        <div class="lista">
+
+            <div class="panel">
+
+                <div class="panel-header">
+                    <form method="get" th:action="@{/dashboard/produtos}">
+                        <input type="text"
+                               name="nome"
+                               th:value="${param.nome}"
+                               class="produto-search"
+                               placeholder="Buscar produto...">
+                    </form>
+
+                    <span class="panel-title">
+                    Produtos cadastrados
+                </span>
+
+                    <span class="panel-count"
+                          th:text="${#lists.size(produtos) + ' produto(s)'}">
+                </span>
+                </div>
+
+                <table>
+                    <thead>
+                    <tr>
+                        <th>Produto</th>
+                        <th>Código</th>
+                        <th>Descrição</th>
+                        <th style="width:150px">Ações</th>
+                    </tr>
+                    </thead>
+
+                    <tbody>
+
+                    <tr th:each="produto : ${produtos}">
+
+                        <td>
+                            <div class="produto-info">
+                                <div class="produto-nome"
+                                     th:text="${produto.nome()}">
+                                </div>
+                            </div>
+                        </td>
+
+                        <td class="num"
+                            th:text="${produto.codigo()}">
+                        </td>
+
+                        <td class="produto-desc"
+                            th:text="${produto.descricao()}">
+                        </td>
+
+                        <td>
+                            <div class="table-actions">
+
+                                <button type="button"
+                                        class="btn-edit"
+                                        th:attr="onclick=|editarProduto(
+                                        ${produto.id()},
+                                        '${produto.nome()}',
+                                        '${produto.codigo()}',
+                                        '${produto.descricao()}'
+                                    )|">
+                                    ✏ Editar
+                                </button>
+
+                                <form th:action="@{/dashboard/produtos/{id}/excluir(id=${produto.id()})}"
+                                      method="post">
+
+                                    <input type="hidden"
+                                           th:name="${_csrf.parameterName}"
+                                           th:value="${_csrf.token}" />
+
+                                    <button type="submit"
+                                            class="btn-del"
+                                            onclick="return confirm('Tem certeza que deseja excluir este produto?');">
+                                        🗑 Excluir
+                                    </button>
+
+                                </form>
+
+                            </div>
+                        </td>
+
+                    </tr>
+
+                    <tr th:if="${#lists.isEmpty(produtos)}">
+                        <td colspan="4"
+                            style="text-align:center;color:var(--color-muted-5)">
+                            Nenhum produto cadastrado.
+                        </td>
+                    </tr>
+
+                    </tbody>
+                </table>
+
+            </div>
+
+        </div>
+
+        <!-- FORMULÁRIO -->
+        <div class="form-panel" id="form-panel" style="display:none">
+
+            <form class="form-card"
+                  id="produto-form"
+                  th:action="@{/dashboard/produtos}"
+                  th:object="${produtoDTO}"
+                  method="post">
+
+                <input type="hidden"
+                       id="id"
+                       th:field="*{id}" />
+
+                <div class="form-title" id="form-title">
+                    Novo produto
+                </div>
+
+                <div class="field">
+                    <label for="nome">
+                        Nome do produto <span>*</span>
+                    </label>
+
+                    <input type="text"
+                           id="nome"
+                           th:field="*{nome}"
+                           placeholder="Ex: Plafon">
+                </div>
+
+                <div class="field">
+                    <label for="codigo">
+                        Código <span>*</span>
+                    </label>
+
+                    <input type="text"
+                           id="codigo"
+                           th:field="*{codigo}"
+                           placeholder="Ex: 123456">
+                </div>
+
+                <div class="field">
+                    <label for="descricao">
+                        Descrição
+                    </label>
+
+                    <textarea id="descricao"
+                              th:field="*{descricao}"
+                              maxlength="500"
+                              rows="4"
+                              placeholder="Descrição do produto">
+                </textarea>
+                </div>
+
+                <div class="form-actions">
+                    <button type="button"
+                            class="btn-cancel"
+                            onclick="hideForm()">
+                        Cancelar
+                    </button>
+
+                    <button type="submit"
+                            class="btn-submit">
+                        Salvar
+                    </button>
+                </div>
+
+            </form>
+
+        </div>
+
+    </div>
+                <!-- ABA ROTEIRO -->
+                <div id="tab-roteiro" style="display:none">
+
+                    <form class="form-card"
+                          id="roteiro-form"
+                          th:action="@{/dashboard/produtos/roteiro}"
+                          method="post">
+
+                        <input type="hidden"
+                               id="roteiro-produto-id"
+                               name="produtoId"/>
+
+                        <div class="form-title">
+                            Roteiro de Produção
+                        </div>
+
+                    <!-- PRÉVIA DO ROTEIRO -->
+                    <div class="preview-box">
+                        <div class="preview-label">Prévia do roteiro</div>
+                        <div class="preview-pills" id="preview-pills">
+                            <span style="color:var(--color-muted-5);font-size:12px">
+                                Nenhum setor selecionado.
+                            </span>
+                        </div>
+                    </div>
+
+                        <div class="form-actions">
+
+                            <button type="button"
+                                    class="btn-cancel"
+                                    onclick="hideForm()">
+                                Cancelar
+                            </button>
+
+                            <button type="submit"
+                                    class="btn-submit">
+                                Salvar Roteiro
+                            </button>
+
+                    </div>
+
+                </form>
+
+            </div>
+
+    </div>
+
+
+</main>
+
+<script th:src="@{/js/cadastro-produto.js}"></script>
+<script th:src="@{/js/sidebar.js}"></script>
+<script th:src="@{/js/alerts.js}"></script>
+
+</body>
+</html>

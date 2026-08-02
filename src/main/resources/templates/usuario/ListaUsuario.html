@@ -1,7 +1,7 @@
 <!DOCTYPE html>
 <html lang="pt-BR" xmlns:th="http://www.thymeleaf.org">
 <head>
-  <title>LumiFlow Usuarios</title>
+  <title>Usuarios - LumiFlow</title>
   <meta charset="UTF-8"/>
   <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
   <link rel="stylesheet" th:href="@{/css/variables.css}">
@@ -15,20 +15,9 @@
   <link rel="stylesheet" th:href="@{/css/components/badges.css}">
   <link rel="stylesheet" th:href="@{/css/components/status.css}">
   <link rel="stylesheet" th:href="@{/css/components/alerts.css}">
-  <link rel="stylesheet" th:href="@{/css/pages/dashboard.css}">
-  <link rel="stylesheet" th:href="@{/css/pages/login.css}">
-  <link rel="stylesheet" th:href="@{/css/pages/usuarios.css}">
-  <link rel="stylesheet" th:href="@{/css/pages/maquinas.css}">
-  <link rel="stylesheet" th:href="@{/css/pages/produtos.css}">
-  <link rel="stylesheet" th:href="@{/css/pages/setores.css}">
-  <link rel="stylesheet" th:href="@{/css/pages/ordens.css}">
-  <link rel="stylesheet" th:href="@{/css/pages/relatorio.css}">
-  <link rel="stylesheet" th:href="@{/css/pages/vidracaria.css}">
-  <link rel="stylesheet" th:href="@{/css/pages/novaordem.css}">
-  <link rel="stylesheet" th:href="@{/css/pages/listaordem.css}">
   <link rel="stylesheet" th:href="@{/css/utils.css}">
-  <link rel="stylesheet" th:href="@{/css/responsive.css}"/>
   <link rel="stylesheet" th:href="@{/css/error.css}">
+  <link rel="stylesheet" th:href="@{/css/responsive.css}"/>
 </head>
 <body class="page-usuario-cadastrousuario">
 
@@ -42,7 +31,6 @@
     'novoUsuarioForm()'
 )}"></div>
 
-  <!-- MENSAGENS: um único atributo, usado por todos os fluxos (novo, editar, excluir) -->
   <div th:if="${message}"
        th:class="${messageType == 'success'} ? 'alert-success' : 'alert-error'">
     <span th:text="${message}"></span>
@@ -67,49 +55,53 @@
           </tr>
           </thead>
           <tbody>
-          <tr th:each="usuario : ${usuarios}">
+          <!-- Mude de th:each="usuario : ${usuarios}" para: -->
+          <tr th:each="u : ${usuarios}">
 
             <td>
-              <div class="user-info">
+              <div class="user-info" style="display: flex; align-items: center; gap: 12px;">
                 <div class="user-avatar"
-                     th:text="${#strings.substring(usuario.nome,0,1)}">
+                     style="width: 36px; height: 36px; min-width: 36px; border-radius: 50%; background-color: var(--color-primary); display: flex; align-items: center; justify-content: center; color: #ffffff; font-weight: bold;"
+                     th:text="${#strings.substring(u.nome,0,1)}">
                 </div>
 
                 <div>
-                  <div class="user-name" th:text="${usuario.nome}"></div>
-                  <div class="user-login" th:text="${usuario.login}"></div>
+                  <div class="user-name" th:text="${u.nome}"></div>
+                  <div class="user-login" th:text="${u.login}"></div>
                 </div>
               </div>
             </td>
 
-            <td th:text="${usuario.nivelAcesso}"></td>
+            <td th:text="${u.nivelAcesso}"></td>
 
-            <td th:text="${usuario.setor != null ? usuario.setor : '-'}"></td>
+            <td th:text="${u.setor != null ? u.setor : '-'}"></td>
 
             <td>
-              <button type="button"
-                      class="btn-edit"
-                      th:attr="onclick=|editarUsuario(
-                          ${usuario.id},
-                          '${usuario.nome}',
-                          '${usuario.login}',
-                          ${usuario.nivelAcessoId},
-                          ${usuario.setorId}
-                          )|">
-                Editar
-              </button>
-
-              <form th:action="@{/dashboard/usuario/{id}/excluir(id=${usuario.id})}"
-                    method="post"
-                    style="display:inline">
-
-                <button type="submit"
-                        class="btn-del"
-                        onclick="return confirm('Tem certeza que deseja excluir este usuário?');">
-                  Excluir
+              <div class="table-actions">
+                <button type="button"
+                        class="btn-edit"
+                        th:attr="onclick=|editarUsuario(
+                    ${u.id},
+                    '${u.nome}',
+                    '${u.login}',
+                    ${u.nivelAcessoId},
+                    ${u.setorId}
+                    )|">
+                  ✏ Editar
                 </button>
 
-              </form>
+
+                <form th:action="@{/dashboard/usuario/{id}/excluir(id=${u.id})}"
+                      method="post"
+                      style="display:inline">
+
+                  <button type="submit"
+                          class="btn-del"
+                          onclick="return confirm('Tem certeza que deseja excluir este usuário?');">
+                    🗑  Excluir
+                  </button>
+                </form>
+              </div>
             </td>
 
           </tr>

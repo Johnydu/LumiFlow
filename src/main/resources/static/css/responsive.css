@@ -1,9 +1,27 @@
 /* ========================================
    RESPONSIVE.CSS
+   Breakpoints: Desktop → Tablet → Mobile
+   1200px | 900px | 768px | 480px
    ======================================== */
 
-/* ============ DASHBOARD RESPONSIVE ============ */
+
+/* ========================================
+   TABLET — até 1200px
+   Layout em coluna, grid simplificado
+   ======================================== */
+
 @media (max-width: 1200px) {
+
+  /* ============ LAYOUT ============ */
+  .content {
+    flex-direction: column;
+  }
+
+  .form-panel {
+    width: 100%;
+  }
+
+  /* ============ DASHBOARD ============ */
   .cards {
     grid-template-columns: repeat(2, 1fr);
   }
@@ -11,10 +29,27 @@
   .dashboard-grid {
     grid-template-columns: 1fr;
   }
+
+  /* ============ KPI GRID ============ */
+  body.page-relatorio-relatoriotempo .kpi-grid {
+    grid-template-columns: repeat(2, 1fr);
+  }
+
+  /* ============ INFO CARDS ============ */
+  body.page-ordemproducao-detalhesordem .info-cards {
+    grid-template-columns: repeat(2, 1fr);
+  }
 }
 
 
+/* ========================================
+   TABLET PEQUENO / HAMBÚRGUER — até 900px
+   Sidebar vira menu deslizante
+   ======================================== */
+
 @media (max-width: 900px) {
+
+  /* ============ MENU TOGGLE ============ */
   .menu-toggle {
     display: flex;
     align-items: center;
@@ -27,223 +62,215 @@
     color: #fff;
     font-size: 20px;
     cursor: pointer;
+    flex-shrink: 0;
   }
-  body.page-dashboard-dashboard .sidebar {
-    position:fixed;
-    top:0;
-    left:-240px;
-    width:220px;
-    height:100vh;
-    z-index:999;
-    transition:.3s;
-    overflow-y:auto;
+  .sidebar-close {
+    display: flex !important;
   }
-  body.page-dashboard-dashboard .sidebar.open{
+
+  .logo-container {
+    display: flex !important;
+    justify-content: space-between !important;
+    align-items: center !important;
+    padding: 10px 15px !important;
+  }
+
+  /* ============ SIDEBAR ============ */
+  .sidebar {
+    position: fixed;
+    top: 0;
+    left: -260px;
+    width: 240px;
+    height: 100vh;
+    z-index: 9999;
+    transition: left .3s ease;
+    overflow-y: auto;
+  }
+
+  .sidebar.open {
     left: 0;
   }
 
-  body.page-dashboard-dashboard.content{
-    flex-direction: column;
-  }
-
-  body.page-dashboard-dashboard.form-panel{
-    width: 100%;
-  }
-
-  body.page-dashboard-dashboard .cards {
-    grid-template-columns: 1fr;
-  }
-
-  body.page-dashboard-dashboard .topbar {
-    flex-direction: column;
-    align-items: flex-start;
-    gap: 20px;
-  }
-
-  body.page-dashboard-dashboard .panel {
-    overflow-x: auto;
-  }
-}
-
-/* ============ MAQUINAS RESPONSIVE ============ */
-@media(max-width:900px) {
-  body.page-maquina-cadastromaquinas .sidebar {
+  /* ============ OVERLAY ============ */
+  .sidebar-overlay {
     display: none;
+    position: fixed;
+    inset: 0;
+    background: rgba(0, 0, 0, .5);
+    z-index: 9998;
   }
 
-  body.page-maquina-cadastromaquinas .content {
+  .sidebar-overlay.open {
+    display: block;
+  }
+
+  /* ============ TOPBAR ============ */
+  .topbar {
+    padding: 12px 16px !important;
+    gap: 10px;
+  }
+
+  .topbar-title {
+    font-size: 16px !important;
+  }
+
+  .btn-novo,
+  .btn-nova {
+    height: 36px !important;
+    padding: 0 14px !important;
+    font-size: 12px !important;
+  }
+
+  /* ============ LAYOUT ============ */
+  .content {
     flex-direction: column;
-  }
-
-  body.page-maquina-cadastromaquinas .form-panel {
-    width: 100%;
-  }
-
-  body.page-maquina-cadastromaquinas .setor-tabs {
-    overflow-x: auto;
-  }
-}
-
-/* ============ ORDENS DETALHESORDEM RESPONSIVE ============ */
-@media(max-width:900px) {
-  body.page-ordemproducao-detalhesordem .sidebar {
-    display: none;
-  }
-
-  body.page-ordemproducao-detalhesordem .info-cards {
-    grid-template-columns: repeat(2,1fr);
-  }
-
-  body.page-ordemproducao-detalhesordem .itens-card {
-    overflow-x: auto;
-  }
-}
-
-/* ============ ORDENS LANCAMENTO RESPONSIVE ============ */
-@media(max-width:900px) {
-  body.page-ordemproducao-lancamento .sidebar {
-    display: none;
-  }
-
-  body.page-ordemproducao-lancamento .form-grid,
-  body.page-ordemproducao-lancamento .form-grid-3 {
-    grid-template-columns: 1fr;
-  }
-
-  body.page-ordemproducao-lancamento .produto-destaque {
-    flex-direction: column;
-    align-items: flex-start;
     gap: 12px;
   }
-}
 
-/* ============ ORDENS LISTAORDEM RESPONSIVE ============ */
-@media(max-width:900px) {
-  body.page-ordemproducao-listaordem .sidebar {
-    display: none;
-  }
-
-  body.page-ordemproducao-listaordem .filtros {
-    flex-direction: column;
-  }
-
-  body.page-ordemproducao-listaordem .panel {
-    overflow-x: auto;
-  }
-}
-
-/* ============ ORDENS NOVAORDEM RESPONSIVE ============ */
-@media(max-width:900px) {
-  body.page-ordemproducao-novaordem .sidebar {
-    display: none;
-  }
-
-  body.page-ordemproducao-novaordem .form-grid {
-    grid-template-columns: 1fr;
-  }
-}
-
-/* ============ PRODUTOS RESPONSIVE ============ */
-@media(max-width:900px) {
-  body.page-produto-cadastroproduto .sidebar {
-    display: none;
-  }
-
-  body.page-produto-cadastroproduto .form-grid {
-    grid-template-columns: 1fr;
-  }
-
-  body.page-produto-cadastroproduto .setores-grid {
-    grid-template-columns: 1fr;
-  }
-}
-
-/* ============ RELATORIO RESPONSIVE ============ */
-@media(max-width:900px) {
-  body.page-relatorio-relatoriotempo .sidebar {
-    display: none;
-  }
-
-  body.page-relatorio-relatoriotempo .kpi-grid {
-    grid-template-columns: repeat(2,1fr);
-  }
-
-  body.page-relatorio-relatoriotempo .panel {
-    overflow-x: auto;
-  }
-}
-
-/* ============ SETORES RESPONSIVE ============ */
-@media(max-width:900px) {
-  body.page-setor-cadastrosetor .sidebar {
-    display: none;
-  }
-
-  body.page-setor-cadastrosetor .content {
-    flex-direction: column;
-  }
-
-  body.page-setor-cadastrosetor .form-panel {
+  .form-panel {
     width: 100%;
   }
-}
 
-/* ============ USUARIOS RESPONSIVE ============ */
-.menu-toggle{
-  display:none;
-}
-
-@media(max-width:900px){
-
-  .menu-toggle{
-    display:flex;
-    align-items:center;
-    justify-content:center;
-    width:40px;
-    height:40px;
-    border:none;
-    border-radius:10px;
-    background:var(--color-primary);
-    color:#fff;
-    font-size:20px;
-    cursor:pointer;
-  }
-
-  body.page-usuario-cadastrousuario .sidebar{
-    position:fixed;
-    top:0;
-    left:-240px;
-    width:220px;
-    height:100vh;
-    z-index:999;
-    transition:.3s;
-    overflow-y:auto;
-  }
-
-  body.page-usuario-cadastrousuario .sidebar.open{
-    left:0;
-  }
-
-  body.page-usuario-cadastrousuario .content{
-    flex-direction:column;
-  }
-
-  body.page-usuario-cadastrousuario .form-panel{
-    width:100%;
+  /* ============ TABELA ============ */
+  .panel {
+    overflow-x: auto;
   }
 }
 
-/* ============ VIDRACARIA RESPONSIVE ============ */
-@media(max-width:900px) {
-  body.page-vidracaria-vidracaria .sidebar {
-    display: none;
+
+/* ========================================
+   MOBILE — até 768px
+   Layout totalmente em coluna, tabela com scroll
+   ======================================== */
+
+@media (max-width: 768px) {
+
+  /* ============ MAIN ============ */
+  .main {
+    width: 100%;
+    box-sizing: border-box;
   }
 
+  /* ============ CONTENT ============ */
+  .content {
+    padding: 12px !important;
+    flex-direction: column;
+    gap: 10px;
+  }
+
+  /* ============ PANEL ============ */
+  .panel {
+    width: 100%;
+    box-sizing: border-box;
+    overflow-x: auto;
+  }
+
+  /* ============ PANEL HEADER ============ */
+  .panel-header {
+    flex-wrap: wrap;
+    gap: 8px;
+    padding: 12px 14px !important;
+  }
+
+  /* ============ TABELA ============ */
+  table {
+    min-width: 100% !important;
+    width: 100% !important;
+  }
+
+  td, th {
+    padding: 10px 8px !important;
+    font-size: 11px !important;
+  }
+
+  /* ============ BOTÕES DE AÇÃO (FORÇAR EXIBIÇÃO) ============ */
+  td:last-child {
+    display: flex !important;
+    flex-direction: column !important;
+    align-items: stretch !important;
+    gap: 8px !important;
+    width: 100% !important;
+    white-space: normal !important;
+    overflow: visible !important;
+    box-sizing: border-box !important;
+  }
+
+  .table-actions {
+    display: flex !important;
+    flex-direction: column !important;
+    align-items: stretch !important;
+    gap: 8px !important;
+    width: 100% !important;
+  }
+
+  .table-actions form {
+    display: block !important;
+    width: 100% !important;
+    margin: 0 !important;
+  }
+
+  .table-actions button,
+  .table-actions .btn-edit,
+  .table-actions .btn-del {
+    display: flex !important;
+    width: 100% !important;
+    min-width: 100% !important;
+    justify-content: center !important;
+    align-items: center !important;
+    text-align: center !important;
+    box-sizing: border-box !important;
+  }
+  /* ============ FORMULÁRIO ============ */
+  .form-card {
+    padding: 16px !important;
+  }
+
+  .form-grid {
+    grid-template-columns: 1fr !important;
+  }
+
+  .form-actions {
+    flex-direction: column;
+  }
+
+  .btn-cancel,
+  .btn-submit {
+    width: 100%;
+  }
+
+  /* ============ DASHBOARD ============ */
+  .cards {
+    grid-template-columns: 1fr;
+  }
+
+  /* ============ KPI GRID ============ */
+  body.page-relatorio-relatoriotempo .kpi-grid {
+    grid-template-columns: repeat(2, 1fr);
+  }
+
+  /* ============ INFO CARDS ============ */
+  body.page-ordemproducao-detalhesordem .info-cards {
+    grid-template-columns: 1fr 1fr;
+  }
+
+  /* ============ SALDO CARDS ============ */
   body.page-vidracaria-vidracaria .saldo-grid {
     grid-template-columns: 1fr;
   }
 
-  body.page-vidracaria-vidracaria .form-grid {
-    grid-template-columns: 1fr;
+  /* ============ ABAS (TABS) ============ */
+  .tabs {
+    padding: 10px 10px 0 !important;
+    gap: 4px;
+  }
+
+  .tab {
+    padding: 6px 10px !important;
+    font-size: 11px !important;
+  }
+
+  /* ============ SETORES GRID ============ */
+  body.page-produto-cadastroproduto .setores-grid {
+    grid-template-columns: 1fr !important;
   }
 }

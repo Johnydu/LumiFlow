@@ -3,7 +3,9 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
   <title>Cadastro de Setores - LumiFlow</title>
+
   <link rel="stylesheet" th:href="@{/css/variables.css}">
   <link rel="stylesheet" th:href="@{/css/globals.css}">
   <link rel="stylesheet" th:href="@{/css/sidebar.css}">
@@ -15,17 +17,6 @@
   <link rel="stylesheet" th:href="@{/css/components/badges.css}">
   <link rel="stylesheet" th:href="@{/css/components/status.css}">
   <link rel="stylesheet" th:href="@{/css/components/alerts.css}">
-  <link rel="stylesheet" th:href="@{/css/pages/dashboard.css}">
-  <link rel="stylesheet" th:href="@{/css/pages/login.css}">
-  <link rel="stylesheet" th:href="@{/css/pages/usuarios.css}">
-  <link rel="stylesheet" th:href="@{/css/pages/maquinas.css}">
-  <link rel="stylesheet" th:href="@{/css/pages/produtos.css}">
-  <link rel="stylesheet" th:href="@{/css/pages/setores.css}">
-  <link rel="stylesheet" th:href="@{/css/pages/ordens.css}">
-  <link rel="stylesheet" th:href="@{/css/pages/relatorio.css}">
-  <link rel="stylesheet" th:href="@{/css/pages/vidracaria.css}">
-  <link rel="stylesheet" th:href="@{/css/pages/novaordem.css}">
-  <link rel="stylesheet" th:href="@{/css/pages/listaordem.css}">
   <link rel="stylesheet" th:href="@{/css/utils.css}">
   <link rel="stylesheet" th:href="@{/css/responsive.css}">
 </head>
@@ -34,10 +25,11 @@
 <aside th:replace="~{fragments/sidebar :: sidebar(activePage='setor')}"></aside>
 
 <main class="main">
-  <div class="topbar">
-    <span class="topbar-title">Setores</span>
-    <button type="button" class="btn-novo" onclick="novoSetorForm()">+ Novo Setor</button>
-  </div>
+    <div th:replace="~{fragments/topbar :: topbar(
+    'Setores',
+    '+ Novo Setor',
+    'novoSetorForm()'
+)}"></div>
 
   <div th:if="${message}"
        th:class="${messageType == 'success'} ? 'alert-success' : 'alert-error'">
@@ -83,23 +75,28 @@
                 </span>
             </td>
             <td>
-              <button type="button"
-                      class="btn-edit"
-                      th:attr="onclick=|editarSetor(${setor.id()}, '${setor.nome()}', ${setor.possuiEtapas()})|">
-                Editar
-              </button>
-              <form th:action="@{/dashboard/setores/{id}/excluir(id=${setor.id()})}"
-                    method="post"
-                    style="display:inline">
-                <input type="hidden"
-                       th:name="${_csrf.parameterName}"
-                       th:value="${_csrf.token}"/>
-                <button type="submit"
-                        class="btn-del"
-                        onclick="return confirm('Tem certeza que deseja excluir este setor?');">
-                  Excluir
+              <div class="table-actions">
+                <button type="button"
+                        class="btn-edit"
+                        th:data-id="${setor.id()}"
+                        th:data-nome="${setor.nome()}"
+                        th:data-possui="${setor.possuiEtapas()}"
+                        onclick="editarSetorDoBotao(this)">
+                  ✏ Editar
                 </button>
-              </form>
+                <form th:action="@{/dashboard/setores/{id}/excluir(id=${setor.id()})}"
+                      method="post"
+                      style="display:inline">
+                  <input type="hidden"
+                         th:name="${_csrf.parameterName}"
+                         th:value="${_csrf.token}"/>
+                  <button type="submit"
+                          class="btn-del"
+                          onclick="return confirm('Tem certeza que deseja excluir este setor?');">
+                    🗑  Excluir
+                  </button>
+                </form>
+              </div>
             </td>
           </tr>
 
@@ -124,23 +121,32 @@
         <input type="hidden" th:field="*{id}"/>
 
         <div class="form-title" id="form-title">Novo Setor</div>
-
+        
         <div class="field">
-          <label>Nome do setor <span>*</span></label>
-          <input type="text"
-                 th:field="*{nome}"
-                 placeholder="Ex: Dobra"/>
+          <label for="nome">Nome do Setor</label>
+          <input type="text" id="nome" th:field="*{nome}" class="form-control" placeholder="Ex: Costura, Acabamento..." required />
         </div>
 
         <div class="field">
           <label>Possui etapas de produção?</label>
-          <select th:field="*{possuiEtapas}">
-            <option value="false">Não</option>
+          <select name="possuiEtapas"
+                  id="possui-etapas-select"
+                  class="form-control"
+                  onchange="toggleEtapasContainer()">
             <option value="true">Sim</option>
+            <option value="false">Não</option>
           </select>
-          <span class="hint">
-            As etapas são definidas no cadastro do produto.
-          </span>
+        </div>
+
+        <!-- Container dinâmico das etapas do setor -->
+        <div class="field" id="container-etapas-setor" style="display:none;">
+          <label>Etapas/Processos do Setor</label>
+          <div class="etapas-list" id="etapas-setor-list">
+            <!-- Preenchido via JavaScript -->
+          </div>
+          <button type="button" class="btn-add-etapa" onclick="adicionarEtapaSetor()">
+            + Adicionar Etapa
+          </button>
         </div>
 
         <div class="form-actions">

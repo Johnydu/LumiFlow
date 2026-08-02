@@ -1,0 +1,285 @@
+/* ========================================
+   PAGES/ROTEIROS.CSS
+   ======================================== */
+
+body.page-roteiro-cadastroroteiros {
+    background: var(--color-bg);
+    color: var(--color-text);
+    display: flex;
+    min-height: 100vh;
+}
+
+/* ==============================
+   MAIN
+   ============================== */
+
+body.page-roteiro-cadastroroteiros .main {
+    flex: 1;
+    display: flex;
+    flex-direction: column;
+    overflow: hidden;
+}
+
+/* ==============================
+   TOPBAR
+   ============================== */
+
+
+
+/* ==============================
+   PANEL
+   ============================== */
+
+body.page-roteiro-cadastroroteiros .panel {
+    background: var(--color-surface);
+    border: 1px solid rgba(255,255,255,0.08);
+    border-radius: 18px;
+    overflow: hidden;
+}
+
+body.page-roteiro-cadastroroteiros .panel-header {
+    padding: 16px 20px;
+    border-bottom: 1px solid rgba(255,255,255,0.08);
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 12px;
+}
+
+body.page-roteiro-cadastroroteiros .panel-title {
+    font-size: 15px;
+    font-weight: 600;
+}
+
+body.page-roteiro-cadastroroteiros .panel-count {
+    font-size: 12px;
+    color: var(--color-muted);
+}
+
+/* ==============================
+   TABLE
+   ============================== */
+
+
+
+/* ==============================
+   FORM PANEL
+   ============================== */
+
+body.page-roteiro-cadastroroteiros .form-panel {
+    width: 380px;
+    flex-shrink: 0;
+    position: sticky;
+    top: 20px;
+}
+
+body.page-roteiro-cadastroroteiros .form-card {
+    background: var(--color-surface);
+    border: 1px solid rgba(255,255,255,0.08);
+    border-radius: 18px;
+    padding: 20px;
+}
+
+body.page-roteiro-cadastroroteiros .form-title {
+    font-size: 15px;
+    font-weight: 600;
+    margin-bottom: 18px;
+    padding-bottom: 12px;
+    border-bottom: 1px solid rgba(255,255,255,0.06);
+}
+
+body.page-roteiro-cadastroroteiros .field {
+    display: flex;
+    flex-direction: column;
+    gap: 6px;
+    margin-bottom: 16px;
+}
+
+body.page-roteiro-cadastroroteiros .field label {
+    font-size: 11px;
+    color: var(--color-muted);
+    text-transform: uppercase;
+    letter-spacing: .05em;
+}
+
+body.page-roteiro-cadastroroteiros .field label span {
+    color: var(--color-danger);
+}
+
+body.page-roteiro-cadastroroteiros .field input,
+body.page-roteiro-cadastroroteiros .field select {
+    background: var(--color-field);
+    border: 1px solid rgba(255,255,255,0.1);
+    border-radius: 10px;
+    color: var(--color-text);
+    font-size: 13px;
+    padding: 10px 14px;
+    outline: none;
+    width: 100%;
+}
+
+body.page-roteiro-cadastroroteiros .field input:focus,
+body.page-roteiro-cadastroroteiros .field select:focus {
+    border-color: var(--color-primary);
+}
+
+body.page-roteiro-cadastroroteiros .hint {
+    font-size: 10px;
+    color: var(--color-muted-4);
+    line-height: 1.5;
+}
+
+/* ==============================
+   ETAPAS
+   ============================== */
+
+body.page-roteiro-cadastroroteiros .etapas-list {
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+}
+
+body.page-roteiro-cadastroroteiros .etapa-item {
+    display: grid;
+    grid-template-columns: 42px minmax(0, 1fr) auto; /* minmax(0, 1fr) impede que o grid estoure a largura */
+    gap: 8px;
+    align-items: center;
+    background: var(--color-field);
+    border: 1px solid rgba(255,255,255,0.08);
+    border-radius: 12px;
+    padding: 10px;
+}
+
+body.page-roteiro-cadastroroteiros .etapa-num {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    width: 34px;
+    height: 34px;
+    border-radius: 50%;
+    background: rgba(97,87,255,0.15);
+    color: var(--color-primary-soft);
+    font-size: 12px;
+    font-weight: 700;
+    flex-shrink: 0;
+}
+
+body.page-roteiro-cadastroroteiros .etapa-select {
+    background: var(--color-surface);
+    border: 1px solid rgba(255,255,255,0.1);
+    border-radius: 10px;
+    color: var(--color-text);
+    font-size: 13px;
+    padding: 10px 12px;
+    outline: none;
+    width: 100%;
+    min-width: 0; /* Impede que o select ignore os limites do grid */
+    box-sizing: border-box;
+}
+
+body.page-roteiro-cadastroroteiros .etapa-actions {
+    display: flex;
+    align-items: center;
+    gap: 6px;
+}
+
+body.page-roteiro-cadastroroteiros .etapa-move,
+body.page-roteiro-cadastroroteiros .etapa-del {
+    width: 30px;
+    height: 30px;
+    border: 1px solid rgba(255,255,255,0.1);
+    background: transparent;
+    color: var(--color-text);
+    border-radius: 8px;
+    cursor: pointer;
+    transition: .2s;
+}
+
+body.page-roteiro-cadastroroteiros .etapa-move:hover,
+body.page-roteiro-cadastroroteiros .etapa-del:hover {
+    background: rgba(255,255,255,0.05);
+}
+
+body.page-roteiro-cadastroroteiros .btn-add-etapa {
+    width: 100%;
+    margin-top: 10px;
+    padding: 10px 12px;
+    border-radius: 10px;
+    border: 1px dashed rgba(255,255,255,0.18);
+    background: transparent;
+    color: var(--color-text);
+    cursor: pointer;
+    transition: .2s;
+    font-size: 13px;
+}
+
+body.page-roteiro-cadastroroteiros .btn-add-etapa:hover {
+    background: rgba(255,255,255,0.04);
+}
+
+/* ==============================
+   ACTIONS
+   ============================== */
+
+body.page-roteiro-cadastroroteiros .form-actions {
+    display: flex;
+    gap: 10px;
+    margin-top: 20px;
+}
+
+body.page-roteiro-cadastroroteiros .btn-cancel,
+body.page-roteiro-cadastroroteiros .btn-submit {
+    flex: 1;
+    height: 46px;
+    border-radius: 12px;
+    cursor: pointer;
+}
+
+body.page-roteiro-cadastroroteiros .btn-cancel {
+    border: 1px solid rgba(255,255,255,.1);
+    background: transparent;
+    color: var(--color-text);
+}
+
+body.page-roteiro-cadastroroteiros .btn-submit {
+    border: none;
+    background: var(--color-primary);
+    color: white;
+}
+
+/* ==========================================================
+   BLINDAGEM CONTRA CONFLITOS GLOBAIS - ETAPAS ROTEIRO
+   ========================================================== */
+body.page-roteiro-cadastroroteiros .etapas-list {
+    display: flex !important;
+    flex-direction: column !important;
+    gap: 12px !important;
+    width: 100% !important;
+}
+
+body.page-roteiro-cadastroroteiros .etapas-list .etapa-item {
+    display: flex !important;
+    flex-direction: row !important;
+    align-items: center !important;
+    justify-content: space-between !important;
+    gap: 8px !important;
+    width: 100% !important;
+    box-sizing: border-box !important;
+}
+
+body.page-roteiro-cadastroroteiros .etapas-list .etapa-item .etapa-num {
+    flex: 0 0 34px !important;
+}
+
+body.page-roteiro-cadastroroteiros .etapas-list .etapa-item .etapa-select {
+    flex: 1 !important;
+    width: 100% !important;
+    min-width: 0 !important;
+    box-sizing: border-box !important;
+}
+
+body.page-roteiro-cadastroroteiros .etapas-list .etapa-item .etapa-actions {
+    flex: 0 0 auto !important;
+    display: flex !important;
+    gap: 6px !important;
+}

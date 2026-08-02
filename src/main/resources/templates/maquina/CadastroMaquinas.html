@@ -1,7 +1,7 @@
 <!DOCTYPE html>
 <html lang="pt-BR" xmlns:th="http://www.thymeleaf.org">
 <head>
-  <title>LumiFlow Maquinas</title>
+  <title>Maquinas - LumiFlow</title>
   <meta charset="UTF-8"/>
   <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
   <link rel="stylesheet" th:href="@{/css/variables.css}">
@@ -15,17 +15,6 @@
   <link rel="stylesheet" th:href="@{/css/components/badges.css}">
   <link rel="stylesheet" th:href="@{/css/components/status.css}">
   <link rel="stylesheet" th:href="@{/css/components/alerts.css}">
-  <link rel="stylesheet" th:href="@{/css/pages/dashboard.css}">
-  <link rel="stylesheet" th:href="@{/css/pages/login.css}">
-  <link rel="stylesheet" th:href="@{/css/pages/usuarios.css}">
-  <link rel="stylesheet" th:href="@{/css/pages/maquinas.css}">
-  <link rel="stylesheet" th:href="@{/css/pages/produtos.css}">
-  <link rel="stylesheet" th:href="@{/css/pages/setores.css}">
-  <link rel="stylesheet" th:href="@{/css/pages/ordens.css}">
-  <link rel="stylesheet" th:href="@{/css/pages/relatorio.css}">
-  <link rel="stylesheet" th:href="@{/css/pages/vidracaria.css}">
-  <link rel="stylesheet" th:href="@{/css/pages/novaordem.css}">
-  <link rel="stylesheet" th:href="@{/css/pages/listaordem.css}">
   <link rel="stylesheet" th:href="@{/css/utils.css}">
   <link rel="stylesheet" th:href="@{/css/responsive.css}"/>
 </head>
@@ -37,10 +26,11 @@
 <!-- CONTEÚDO PRINCIPAL               -->
 <!-- ================================ -->
 <main class="main">
-  <div class="topbar">
-    <span class="topbar-title">Máquinas</span>
-    <button class="btn-novo" onclick="novaMaquinaForm()"> Nova Máquina</button>
-  </div>
+  <div th:replace="~{fragments/topbar :: topbar(
+    'Maquinas',
+    '+ Nova Maquina',
+    'novaMaquinaForm()'
+)}"></div>
 
   <div th:if="${message}"
        th:class="${messageType == 'success'} ? 'alert-success' : 'alert-error'">
@@ -102,28 +92,30 @@
             </td>
 
             <td>
+              <div class="table-actions">
 
-              <button type="button"
-                      class="btn-edit"
-                      th:attr="onclick=|editarMaquina(
-                          ${maquina.id},
-                          '${maquina.nome}',
-                          ${maquina.setorId != null ? maquina.setorId : 'null'}
-                          )|">
-              Editar
-              </button>
-
-              <form th:action="@{/dashboard/maquinas/{id}/excluir(id=${maquina.id})}"
-                    method="post"
-                    style="display:inline">
-
-                <button type="submit"
-                        class="btn-del"
-                        onclick="return confirm('Tem certeza que deseja excluir esta máquina?');">
-                  Excluir
+                <button type="button"
+                        class="btn-edit"
+                        th:attr="onclick=|editarMaquina(
+                            ${maquina.id},
+                            '${maquina.nome}',
+                            ${maquina.setorId != null ? maquina.setorId : 'null'}
+                            )|">
+                   ✏ Editar
                 </button>
 
-              </form>
+                <form th:action="@{/dashboard/maquinas/{id}/excluir(id=${maquina.id})}"
+                      method="post"
+                      style="display:inline">
+
+                  <button type="submit"
+                          class="btn-del"
+                          onclick="return confirm('Tem certeza que deseja excluir esta máquina?');">
+                    🗑 Excluir
+                  </button>
+
+                </form>
+              </div>
 
             </td>
 
@@ -187,9 +179,12 @@
           </button>
         </div>
 
+
       </form>
 
     </div>
+    
+  </div>
 </main>
 
 <script th:src="@{/js/cadastro-maquinas.js}"></script>

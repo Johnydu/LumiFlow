@@ -6,18 +6,23 @@
 table {
   width: 100%;
   border-collapse: collapse;
+  table-layout: auto;
 }
 
 /* ============ TABLE HEADERS ============ */
-th {
+th{
   padding: 22px;
   text-align: left;
   border-bottom: 1px solid rgba(255,255,255,0.05);
   font-size: 12px;
   color: var(--color-muted-5);
+  white-space: nowrap;
   font-weight: normal;
+  overflow: hidden;
+  text-overflow: ellipsis;
 }
 
+body.page-roteiro-cadastroroteiros th,
 body.page-maquina-cadastromaquinas th,
 body.page-ordemproducao-detalhesordem th,
 body.page-ordemproducao-lancamento th,
@@ -89,6 +94,7 @@ body.page-ordemproducao-listaordem tr:hover td {
   background: rgba(255,255,255,0.02);
   cursor: pointer;
 }
+
 
 /* ============ TABLE PROGRESS ============ */
 .table-progress {
@@ -214,4 +220,11 @@ body.page-usuario-cadastrousuario .search {
   color: var(--color-text);
   font-size: 12px;
   width: 200px;
+}
+
+.table-actions {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  justify-content: flex-end;
 }

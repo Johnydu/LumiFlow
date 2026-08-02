@@ -1,7 +1,7 @@
 package br.com.lumiflow.repository;
 
 
-import br.com.lumiflow.entity.Maquina;
+import br.com.lumiflow.model.Maquina;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.stereotype.Repository;
 
