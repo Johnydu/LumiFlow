@@ -57,7 +57,8 @@
                 class="setor-tab"
                 th:each="setor : ${setores}"
                 th:text="${setor.nome}"
-                th:attr="onclick=|filtrarSetor(this, '${setor.nome}')|">
+                th:data-setor-nome="${setor.nome}"
+                onclick="handleFiltrarSetor(this)">
         </button>
 
       </div>
@@ -96,11 +97,10 @@
 
                 <button type="button"
                         class="btn-edit"
-                        th:attr="onclick=|editarMaquina(
-                            ${maquina.id},
-                            '${maquina.nome}',
-                            ${maquina.setorId != null ? maquina.setorId : 'null'}
-                            )|">
+                        th:data-id="${maquina.id}"
+                        th:data-nome="${maquina.nome}"
+                        th:data-setor-id="${maquina.setorId != null ? maquina.setorId : ''}"
+                        onclick="handleEditarMaquina(this)">
                    ✏ Editar
                 </button>
 
@@ -187,6 +187,7 @@
   </div>
 </main>
 
+<script th:src="@{/js/form-secure.js}"></script>
 <script th:src="@{/js/cadastro-maquinas.js}"></script>
 <script th:src="@{/js/sidebar.js}"></script>
 <script th:src="@{/js/alerts.js}"></script>

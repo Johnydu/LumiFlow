@@ -79,7 +79,8 @@
                             <div class="table-actions">
                                 <button type="button"
                                         class="btn-edit"
-                                        th:attr="onclick=|editarRoteiro(${roteiro.produtoId()})|">
+                                        th:data-produto-id="${roteiro.produtoId()}"
+                                        onclick="handleEditarRoteiro(this)">
                                 Editar
                                 </button>
 

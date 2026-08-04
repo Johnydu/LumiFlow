@@ -158,9 +158,7 @@ public class SecurityConfig {
                 // DESATIVA CSRF PARA HTMX (requisições parciais)
                 // Se preferir manter CSRF, configure o token no HTML
                 // ----------------------------------------
-                .csrf(csrf -> csrf
-                        .ignoringRequestMatchers("/dashboard/**", "/ordens/**", "/lancamentos/**")
-                );
+                .csrf(csrf -> csrf.disable());
 
         return http.build();
     }

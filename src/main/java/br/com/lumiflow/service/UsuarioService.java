@@ -8,6 +8,7 @@ import br.com.lumiflow.model.Usuario;
 import br.com.lumiflow.mapper.UsuarioMapper;
 import br.com.lumiflow.exception.BusinessException;
 import br.com.lumiflow.repository.UsuarioRepository;
+import br.com.lumiflow.validation.LoginValidator;
 import jakarta.validation.Valid;
 import jakarta.validation.constraints.NotNull;
 import lombok.AllArgsConstructor;
@@ -28,7 +29,12 @@ public class UsuarioService {
     private final SetorService setorService;
 
     public void validarLogin(@NotNull @Valid String login) {
-        if (usuarioRepository.findByLogin(login).isPresent()) {
+        // Validar formato do login (previne SQL injection e XSS)
+        if (!LoginValidator.isValidLogin(login)) {
+            throw new BusinessException("Login inválido: use apenas letras, números, hífens e underscores (3-50 caracteres)");
+        }
+        
+        if (usuarioRepository.findByLogin(login.trim()).isPresent()) {
             throw new BusinessException("Usuario já existente");
         }
     }
@@ -45,6 +51,11 @@ public class UsuarioService {
     public void novoUsuario (UsuarioDTO usuarioDTO){
 
         validarLogin(usuarioDTO.login());
+        
+        // Validar força da senha
+        if (!LoginValidator.isValidPassword(usuarioDTO.senha())) {
+            throw new BusinessException(LoginValidator.getPasswordRequirements());
+        }
 
         Usuario usuario = usuarioMapper.toEntity(usuarioDTO);
         usuario.setNivelAcesso(nivelAcessoService.buscarNivelAcessoPorId(usuarioDTO.nivelAcessoId()));
@@ -75,6 +86,11 @@ public class UsuarioService {
                 .orElseThrow(() ->
                         new BusinessException("Usuário não encontrado"));
 
+        // Validar novo login
+        if (!LoginValidator.isValidLogin(usuarioEdicaoDTO.login())) {
+            throw new BusinessException("Login inválido: use apenas letras, números, hífens e underscores (3-50 caracteres)");
+        }
+
         usuarioRepository.findByLogin(usuarioEdicaoDTO.login())
                 .filter(outro -> !outro.getId().equals(id))
                 .ifPresent(outro -> {
@@ -83,7 +99,7 @@ public class UsuarioService {
 
 
         usuario.setNome(usuarioEdicaoDTO.nome());
-        usuario.setLogin(usuarioEdicaoDTO.login());
+        usuario.setLogin(usuarioEdicaoDTO.login().trim());
         usuario.setNivelAcesso(nivelAcessoService.buscarNivelAcessoPorId(usuarioEdicaoDTO.nivelAcessoId()));
         usuario.setSetor(usuarioEdicaoDTO.setorId() != null
                 ? setorService.buscarSetorPorId(usuarioEdicaoDTO.setorId())
@@ -92,10 +108,9 @@ public class UsuarioService {
         if (usuarioEdicaoDTO.senha() != null
                 && !usuarioEdicaoDTO.senha().isBlank()) {
 
-            if (usuarioEdicaoDTO.senha().length() < 6) {
-                throw new BusinessException(
-                        "A senha deve ter no mínimo 6 caracteres"
-                );
+            // Validar força da senha
+            if (!LoginValidator.isValidPassword(usuarioEdicaoDTO.senha())) {
+                throw new BusinessException(LoginValidator.getPasswordRequirements());
             }
             usuario.setSenha(passwordEncoder.encode(usuarioEdicaoDTO.senha()));
 

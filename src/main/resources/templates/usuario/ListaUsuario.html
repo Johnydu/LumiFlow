@@ -80,20 +80,20 @@
               <div class="table-actions">
                 <button type="button"
                         class="btn-edit"
-                        th:attr="onclick=|editarUsuario(
-                    ${u.id},
-                    '${u.nome}',
-                    '${u.login}',
-                    ${u.nivelAcessoId},
-                    ${u.setorId}
-                    )|">
+                        th:data-id="${u.id}"
+                        th:data-nome="${u.nome}"
+                        th:data-login="${u.login}"
+                        th:data-nivel="${u.nivelAcessoId}"
+                        th:data-setor="${u.setorId}"
+                        onclick="handleEditarUsuario(this)">
                   ✏ Editar
                 </button>
 
 
                 <form th:action="@{/dashboard/usuario/{id}/excluir(id=${u.id})}"
                       method="post"
-                      style="display:inline">
+                      style="display:inline"
+                      class="form-excluir-usuario">
 
                   <button type="submit"
                           class="btn-del"
@@ -135,7 +135,7 @@
           <label>Senha <span>*</span></label>
           <input type="password"
                  th:field="*{senha}"
-                 placeholder="Mínimo 6 caracteres"/>
+                 placeholder="Min. 12 caracteres com maiúscula, minúscula, número e caractere especial (@$!%*?&)"/>
         </div>
         <div class="field">
           <label>Nível de acesso <span>*</span></label>
@@ -170,6 +170,7 @@
   </div>
 </main>
 
+<script th:src="@{/js/usuario-secure.js}"></script>
 <script th:src="@{/js/cadastro-usuario.js}"></script>
 <script th:src="@{/js/sidebar.js}"></script>
 <script th:src="@{/js/alerts.js}"></script>
