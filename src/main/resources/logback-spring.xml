@@ -1,42 +1,41 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <configuration>
-
-    <!-- Onde os arquivos de log serão salvos no computador/servidor -->
-    <property name="LOG_DIR" value="./logs"/>
-
-    <!-- Formato visual profissional do log -->
     <property name="LOG_PATTERN" value="%d{yyyy-MM-dd HH:mm:ss.SSS} [%thread] %-5level %logger{36} - %msg%n"/>
 
-    <!-- 1. Console Appender (O que aparece na sua tela preta rodando a aplicação) -->
+    <!-- Console Appender (Ativo em qualquer ambiente)[cite: 2] -->
     <appender name="CONSOLE" class="ch.qos.logback.core.ConsoleAppender">
         <encoder>
             <pattern>${LOG_PATTERN}</pattern>
         </encoder>
     </appender>
 
-    <!-- 2. File Appender (O que grava os logs em arquivos de texto físicos) -->
-    <appender name="FILE" class="ch.qos.logback.core.rolling.RollingFileAppender">
-        <file>${LOG_DIR}/lumiflow.log</file>
+    <!-- Perfil de DESENVOLVIMENTO / LOCAL -->
+    <springProfile name="!prod">
+        <property name="LOG_DIR" value="./logs"/>
+        <appender name="FILE" class="ch.qos.logback.core.rolling.RollingFileAppender">
+            <file>${LOG_DIR}/lumiflow.log</file>
+            <rollingPolicy class="ch.qos.logback.core.rolling.SizeAndTimeBasedRollingPolicy">
+                <fileNamePattern>${LOG_DIR}/archived/lumiflow-%d{yyyy-MM-dd}.%i.log</fileNamePattern>
+                <maxFileSize>10MB</maxFileSize>
+                <maxHistory>30</maxHistory>
+            </rollingPolicy>
+            <encoder>
+                <pattern>${LOG_PATTERN}</pattern>
+            </encoder>
+        </appender>
 
-        <!-- Política: Cria um arquivo novo todo dia ou quando atingir 10MB -->
-        <rollingPolicy class="ch.qos.logback.core.rolling.SizeAndTimeBasedRollingPolicy">
-            <fileNamePattern>${LOG_DIR}/archived/lumiflow-%d{yyyy-MM-dd}.%i.log</fileNamePattern>
-            <maxFileSize>10MB</maxFileSize>
-            <maxHistory>30</maxHistory> <!-- Guarda o histórico dos últimos 30 dias -->
-        </rollingPolicy>
+        <root level="INFO">
+            <appender-ref ref="CONSOLE"/>
+            <appender-ref ref="FILE"/>
+        </root>
+    </springProfile>
 
-        <encoder>
-            <pattern>${LOG_PATTERN}</pattern>
-        </encoder>
-    </appender>
+    <!-- Perfil de PRODUÇÃO (Railway) - Apenas CONSOLE[cite: 2] -->
+    <springProfile name="prod">
+        <root level="INFO">
+            <appender-ref ref="CONSOLE"/>
+        </root>
+    </springProfile>
 
-    <!-- Configuração de quais pacotes gravam o quê -->
-    <root level="INFO">
-        <appender-ref ref="CONSOLE"/>
-        <appender-ref ref="FILE"/>
-    </root>
-
-    <!-- Se quiser deixar logs do seu próprio sistema mais detalhados -->
-    <logger name="com.seuprojeto.lumiflow" level="DEBUG" />
-
+    <logger name="br.com.lumiflow" level="INFO" />
 </configuration>

@@ -3,41 +3,79 @@ package br.com.lumiflow.validation;
 import java.util.regex.Pattern;
 
 /**
- * Validador de entrada para login - Previne SQL Injection e XSS
+ * Validador de login e senha.
+ * Proteção contra entradas inválidas e padronização de credenciais.
  */
-public class LoginValidator {
+public final class LoginValidator {
 
-    // Padrão: apenas letras, números, underscores e hífens (3-50 caracteres)
-    private static final Pattern LOGIN_PATTERN = Pattern.compile("^[a-zA-Z0-9_-]{3,50}$");
-    
-    // Padrão de senha forte: min 12 chars, 1 maiúscula, 1 minúscula, 1 número, 1 especial
-    private static final Pattern PASSWORD_PATTERN = 
-        Pattern.compile("^(?=.*[a-z])(?=.*[A-Z])(?=.*\\d)(?=.*[@$!%*?&])[A-Za-z\\d@$!%*?&]{12,}$");
-
-    /**
-     * Valida se o login segue o padrão de segurança
-     */
-    public static boolean isValidLogin(String login) {
-        if (login == null || login.isBlank()) {
-            return false;
-        }
-        return LOGIN_PATTERN.matcher(login.trim()).matches();
+    private LoginValidator() {
+        throw new IllegalStateException("Classe utilitária");
     }
 
     /**
-     * Valida se a senha atende aos requisitos de força
+     * Login:
+     * - 3 a 50 caracteres
+     * - letras
+     * - números
+     * - ponto
+     * - underscore
+     * - hífen
      */
-    public static boolean isValidPassword(String password) {
-        if (password == null || password.length() < 12) {
+    private static final Pattern LOGIN_PATTERN =
+            Pattern.compile("^[a-zA-Z0-9._-]{3,50}$");
+
+    /**
+     * Senha:
+     * - mínimo 8 caracteres
+     * - 1 letra minúscula
+     * - 1 letra maiúscula
+     * - 1 número
+     */
+    private static final Pattern PASSWORD_PATTERN =
+            Pattern.compile(
+                    "^(?=.*[a-z])(?=.*[A-Z])(?=.*\\d).{8,}$"
+            );
+
+    /**
+     * Valida login.
+     */
+    public static boolean isValidLogin(String login) {
+
+        if (login == null) {
             return false;
         }
+
+        login = login.trim();
+
+        if (login.isBlank()) {
+            return false;
+        }
+
+        return LOGIN_PATTERN.matcher(login).matches();
+    }
+
+    /**
+     * Valida senha.
+     */
+    public static boolean isValidPassword(String password) {
+
+        if (password == null) {
+            return false;
+        }
+
         return PASSWORD_PATTERN.matcher(password).matches();
     }
 
     /**
-     * Mensagem de erro para senha fraca
+     * Mensagem para exibição ao usuário.
      */
     public static String getPasswordRequirements() {
-        return "Senha deve conter: mínimo 12 caracteres, 1 maiúscula, 1 minúscula, 1 número e 1 caractere especial (@$!%*?&)";
+        return """
+                A senha deve conter:
+                - mínimo de 8 caracteres
+                - pelo menos 1 letra maiúscula
+                - pelo menos 1 letra minúscula
+                - pelo menos 1 número
+                """;
     }
 }
