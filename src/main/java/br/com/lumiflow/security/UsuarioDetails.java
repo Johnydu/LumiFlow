@@ -41,11 +41,24 @@ public class UsuarioDetails implements UserDetails {
     // ============================================================
     @Override
     public Collection<? extends GrantedAuthority> getAuthorities() {
-        return List.of(
-                new SimpleGrantedAuthority(
-                        "ROLE_" + usuario.getNivelAcesso().getDescricao().name()
-                )
-        );
+        String roleName = "ROLE_USER"; // Role padrão de segurança caso falhe
+
+        // Tratamento seguro contra NullPointerException
+        if (usuario != null
+                && usuario.getNivelAcesso() != null
+                && usuario.getNivelAcesso().getDescricao() != null) {
+
+            String enumName = usuario.getNivelAcesso().getDescricao().name();
+
+            // Garante que não duplica 'ROLE_' se o Enum já tiver
+            if (!enumName.startsWith("ROLE_")) {
+                roleName = "ROLE_" + enumName;
+            } else {
+                roleName = enumName;
+            }
+        }
+
+        return List.of(new SimpleGrantedAuthority(roleName));
     }
 
     // ============================================================
@@ -124,6 +137,9 @@ public class UsuarioDetails implements UserDetails {
      * Uso no HTML: ${#authentication.principal.nivelAcessoId}
      */
     public String getNivelAcesso() {
+        if (usuario == null || usuario.getNivelAcesso() == null || usuario.getNivelAcesso().getDescricao() == null) {
+            return "USUARIO";
+        }
         return usuario.getNivelAcesso().getDescricao().name();
     }
 
