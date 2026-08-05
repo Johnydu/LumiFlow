@@ -4,4 +4,3 @@ dockerfile = "Dockerfile"
 
 [deploy]
 numReplicas = 1
-startCommand = "java -Dspring.profiles.active=prod -Xmx512m -Xms256m -jar app.jar"
