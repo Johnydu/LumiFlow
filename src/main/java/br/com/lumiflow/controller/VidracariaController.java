@@ -13,7 +13,7 @@ public class VidracariaController {
     @GetMapping
     public String vidracaria(){
 
-        return "vidracaria/vidracaria";
+        return "vidracaria/Vidracaria";
     }
 
     
