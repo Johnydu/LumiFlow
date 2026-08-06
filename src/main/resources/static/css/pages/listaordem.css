@@ -1,0 +1,50 @@
+/* Layout Global de Conteúdo */
+.main-wrapper {
+    display: flex;
+    flex-direction: column;
+    flex: 1;
+    margin-left: 260px; /* Largura padrão da sidebar */
+    min-height: 100vh;
+}
+
+.content {
+    display: flex;
+    flex-direction: column;
+    gap: 20px;
+    padding: 24px;
+    width: 100%;
+}
+
+.filtros {
+    display: flex;
+    gap: 16px;
+    align-items: center;
+    width: 100%;
+}
+
+.search-input-wrapper {
+    flex: 1;
+    position: relative;
+}
+
+.panel {
+    width: 100%;
+}
+
+.panel-footer {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding-top: 16px;
+}
+
+.pagination {
+    display: flex;
+    gap: 8px;
+}
+
+.empty-state {
+    text-align: center;
+    color: var(--color-muted-5);
+    padding: 40px 0;
+}

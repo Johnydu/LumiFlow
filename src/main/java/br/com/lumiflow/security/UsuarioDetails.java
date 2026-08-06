@@ -125,7 +125,7 @@ public class UsuarioDetails implements UserDetails {
 
     /**
      * Retorna o ID do setorId do usuário logado.
-     * Usado no Service para filtrar ordens apenas do setorId do operador.
+     * Usado no Service para filtrar listaDeOrdens apenas do setorId do operador.
      */
     public Long getSetorId() {
         if (usuario.getSetor() == null) return null;
