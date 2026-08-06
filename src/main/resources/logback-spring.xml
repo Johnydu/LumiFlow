@@ -1,41 +1,121 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <configuration>
-    <property name="LOG_PATTERN" value="%d{yyyy-MM-dd HH:mm:ss.SSS} [%thread] %-5level %logger{36} - %msg%n"/>
+    <!-- Variáveis de padrão de log -->
+    <!-- Formato para desenvolvimento: com cores e detalhes -->
+    <property name="LOG_PATTERN_DEV" value="%d{yyyy-MM-dd HH:mm:ss.SSS} [%thread] %highlight(%-5level) %cyan(%logger{36}) - %msg%n"/>
+    <!-- Formato para produção: estruturado, sem cores -->
+    <property name="LOG_PATTERN_PROD" value="%d{yyyy-MM-dd HH:mm:ss.SSS} [%thread] %-5level [%logger{36}] - %msg%n"/>
 
-    <!-- Console Appender (Ativo em qualquer ambiente)[cite: 2] -->
-    <appender name="CONSOLE" class="ch.qos.logback.core.ConsoleAppender">
-        <encoder>
-            <pattern>${LOG_PATTERN}</pattern>
-        </encoder>
-    </appender>
+    <!-- Configuração para DESENVOLVIMENTO -->
+    <springProfile name="dev,!prod">
+        <!-- Console Appender (com suporte ao JAnsi via dependência do pom.xml) -->
+        <appender name="CONSOLE" class="ch.qos.logback.core.ConsoleAppender">
+            <withJansi>true</withJansi>
+            <encoder>
+                <pattern>${LOG_PATTERN_DEV}</pattern>
+                <charset>UTF-8</charset>
+            </encoder>
+        </appender>
 
-    <!-- Perfil de DESENVOLVIMENTO / LOCAL -->
-    <springProfile name="!prod">
-        <property name="LOG_DIR" value="./logs"/>
+        <!-- Arquivo geral em desenvolvimento -->
+        <property name="LOG_DIR_DEV" value="./logs"/>
         <appender name="FILE" class="ch.qos.logback.core.rolling.RollingFileAppender">
-            <file>${LOG_DIR}/lumiflow.log</file>
+            <file>${LOG_DIR_DEV}/lumiflow.log</file>
             <rollingPolicy class="ch.qos.logback.core.rolling.SizeAndTimeBasedRollingPolicy">
-                <fileNamePattern>${LOG_DIR}/archived/lumiflow-%d{yyyy-MM-dd}.%i.log</fileNamePattern>
+                <fileNamePattern>${LOG_DIR_DEV}/archived/lumiflow-%d{yyyy-MM-dd}.%i.log</fileNamePattern>
                 <maxFileSize>10MB</maxFileSize>
                 <maxHistory>30</maxHistory>
             </rollingPolicy>
             <encoder>
-                <pattern>${LOG_PATTERN}</pattern>
+                <pattern>${LOG_PATTERN_PROD}</pattern>
+                <charset>UTF-8</charset>
+            </encoder>
+        </appender>
+
+        <!-- Arquivo específico para ERROS em desenvolvimento -->
+        <appender name="ERROR_FILE" class="ch.qos.logback.core.rolling.RollingFileAppender">
+            <file>${LOG_DIR_DEV}/errors.log</file>
+            <filter class="ch.qos.logback.classic.filter.LevelFilter">
+                <level>ERROR</level>
+                <onMatch>ACCEPT</onMatch>
+                <onMismatch>DENY</onMismatch>
+            </filter>
+            <rollingPolicy class="ch.qos.logback.core.rolling.SizeAndTimeBasedRollingPolicy">
+                <fileNamePattern>${LOG_DIR_DEV}/archived/errors-%d{yyyy-MM-dd}.%i.log</fileNamePattern>
+                <maxFileSize>10MB</maxFileSize>
+                <maxHistory>30</maxHistory>
+            </rollingPolicy>
+            <encoder>
+                <pattern>${LOG_PATTERN_PROD}</pattern>
+                <charset>UTF-8</charset>
             </encoder>
         </appender>
 
         <root level="INFO">
             <appender-ref ref="CONSOLE"/>
             <appender-ref ref="FILE"/>
+            <appender-ref ref="ERROR_FILE"/>
         </root>
     </springProfile>
 
-    <!-- Perfil de PRODUÇÃO (Railway) - Apenas CONSOLE[cite: 2] -->
+    <!-- Configuração para PRODUÇÃO -->
     <springProfile name="prod">
+        <!-- Console Appender para Produção (padrão sem cores para Cloud/Railway) -->
+        <appender name="CONSOLE" class="ch.qos.logback.core.ConsoleAppender">
+            <encoder>
+                <pattern>${LOG_PATTERN_PROD}</pattern>
+                <charset>UTF-8</charset>
+            </encoder>
+        </appender>
+
+        <!-- Arquivo geral em produção (caminho relativo seguro ./logs) -->
+        <property name="LOG_DIR_PROD" value="./logs"/>
+        <appender name="FILE_PROD" class="ch.qos.logback.core.rolling.RollingFileAppender">
+            <file>${LOG_DIR_PROD}/lumiflow.log</file>
+            <rollingPolicy class="ch.qos.logback.core.rolling.SizeAndTimeBasedRollingPolicy">
+                <fileNamePattern>${LOG_DIR_PROD}/archived/lumiflow-%d{yyyy-MM-dd}.%i.log</fileNamePattern>
+                <maxFileSize>10MB</maxFileSize>
+                <maxHistory>30</maxHistory>
+            </rollingPolicy>
+            <encoder>
+                <pattern>${LOG_PATTERN_PROD}</pattern>
+                <charset>UTF-8</charset>
+            </encoder>
+        </appender>
+
+        <!-- Arquivo de ERROS em produção -->
+        <appender name="ERROR_FILE_PROD" class="ch.qos.logback.core.rolling.RollingFileAppender">
+            <file>${LOG_DIR_PROD}/errors.log</file>
+            <filter class="ch.qos.logback.classic.filter.LevelFilter">
+                <level>ERROR</level>
+                <onMatch>ACCEPT</onMatch>
+                <onMismatch>DENY</onMismatch>
+            </filter>
+            <rollingPolicy class="ch.qos.logback.core.rolling.SizeAndTimeBasedRollingPolicy">
+                <fileNamePattern>${LOG_DIR_PROD}/archived/errors-%d{yyyy-MM-dd}.%i.log</fileNamePattern>
+                <maxFileSize>10MB</maxFileSize>
+                <maxHistory>30</maxHistory>
+            </rollingPolicy>
+            <encoder>
+                <pattern>${LOG_PATTERN_PROD}</pattern>
+                <charset>UTF-8</charset>
+            </encoder>
+        </appender>
+
         <root level="INFO">
             <appender-ref ref="CONSOLE"/>
+            <appender-ref ref="FILE_PROD"/>
+            <appender-ref ref="ERROR_FILE_PROD"/>
         </root>
     </springProfile>
 
-    <logger name="br.com.lumiflow" level="INFO" />
+    <!-- Loggers específicos por pacote -->
+    <logger name="br.com.lumiflow" level="INFO"/>
+    <logger name="br.com.lumiflow.exception" level="DEBUG"/>
+    <logger name="org.springframework.web" level="WARN"/>
+    <logger name="org.springframework.security" level="WARN"/>
+    <logger name="org.springframework.data" level="WARN"/>
+    <logger name="org.flywaydb" level="INFO"/>
+    <logger name="org.postgresql" level="WARN"/>
+
 </configuration>

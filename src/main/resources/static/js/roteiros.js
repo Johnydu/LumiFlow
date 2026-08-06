@@ -1,32 +1,69 @@
+/**
+ * ============================================================
+ * GESTÃO DE ROTEIROS — LumiFlow
+ * ============================================================
+ */
+
 let etapaIndex = 0;
 
+// ============================================================
+// PAINEL / VISIBILIDADE DO FORMULÁRIO
+// ============================================================
 function showForm() {
-    document.getElementById('form-panel').style.display = 'block';
+    const panel = document.getElementById('form-panel');
+    if (panel) {
+        panel.style.display = 'block';
+    }
 }
 
 function hideForm() {
-    document.getElementById('form-panel').style.display = 'none';
+    const panel = document.getElementById('form-panel');
+    if (panel) {
+        panel.style.display = 'none';
+
+        // Limpa o formulário de forma segura
+        const form = document.getElementById('roteiro-form');
+        if (form) form.reset();
+
+        limparEtapas();
+    }
 }
 
 function limparEtapas() {
     const container = document.getElementById('etapas-list');
-    container.innerHTML = '';
+    if (container) {
+        container.innerHTML = '';
+    }
     etapaIndex = 0;
 }
 
+// ============================================================
+// NOVO ROTEIRO
+// ============================================================
 function novoRoteiroForm() {
     const form = document.getElementById('roteiro-form');
-    form.action = '/dashboard/roteiros';
+    if (form) {
+        form.action = '/dashboard/roteiros';
+    }
 
-    document.getElementById('form-title').textContent = 'Novo Roteiro';
-    document.getElementById('produtoId').value = '';
+    const titleEl = document.getElementById('form-title');
+    if (titleEl) {
+        titleEl.textContent = 'Novo Roteiro';
+    }
+
+    const produtoInput = document.getElementById('produtoId');
+    if (produtoInput) {
+        produtoInput.value = '';
+    }
 
     limparEtapas();
     adicionarEtapa();
-
     showForm();
 }
 
+// ============================================================
+// ESTRUTURA E MANIPULAÇÃO DAS ETAPAS (DOM)
+// ============================================================
 function criarLinhaEtapa(setorId = '', etapaSetorId = '') {
     const index = etapaIndex++;
     const templateSetor = document.getElementById('setor-options-template');
@@ -59,10 +96,8 @@ function criarLinhaEtapa(setorId = '', etapaSetorId = '') {
     `;
 
     const selectSetor = row.querySelector('.setor-select');
-    selectSetor.value = setorId ? String(setorId) : '';
-
-    if (setorId) {
-        carregarEtapasDoSetor(selectSetor, etapaSetorId);
+    if (selectSetor && setorId) {
+        selectSetor.value = String(setorId);
     }
 
     return row;
@@ -70,10 +105,12 @@ function criarLinhaEtapa(setorId = '', etapaSetorId = '') {
 
 async function adicionarEtapa(setorId = '', etapaSetorId = '') {
     const container = document.getElementById('etapas-list');
+    if (!container) return;
+
     const row = criarLinhaEtapa(setorId, etapaSetorId);
     container.appendChild(row);
 
-    // Se veio um setor pré-selecionado (como na edição), busca e seleciona a etapa correspondente
+    // Se veio um setor pré-selecionado (ex: na edição), carrega e seleciona as etapas correspondentes
     if (setorId) {
         const selectSetor = row.querySelector('.setor-select');
         await carregarEtapasDoSetor(selectSetor, etapaSetorId);
@@ -84,9 +121,13 @@ async function adicionarEtapa(setorId = '', etapaSetorId = '') {
 
 function removerEtapa(btn) {
     const container = document.getElementById('etapas-list');
-    btn.closest('.etapa-item').remove();
+    const item = btn.closest('.etapa-item');
 
-    if (container.children.length === 0) {
+    if (item) {
+        item.remove();
+    }
+
+    if (container && container.children.length === 0) {
         adicionarEtapa();
     } else {
         reindexarPassos();
@@ -96,6 +137,8 @@ function removerEtapa(btn) {
 function moverEtapa(btn, direcao) {
     const item = btn.closest('.etapa-item');
     const container = document.getElementById('etapas-list');
+
+    if (!item || !container) return;
 
     if (direcao < 0 && item.previousElementSibling) {
         container.insertBefore(item, item.previousElementSibling);
@@ -108,7 +151,8 @@ function moverEtapa(btn, direcao) {
 
 function reindexarPassos() {
     document.querySelectorAll('.etapa-item').forEach((item, index) => {
-        item.querySelector('.etapa-num').textContent = `${index + 1}º`;
+        const numEl = item.querySelector('.etapa-num');
+        if (numEl) numEl.textContent = `${index + 1}º`;
 
         const selectSetor = item.querySelector('.setor-select');
         const selectEtapa = item.querySelector('.etapa-setor-select');
@@ -118,15 +162,24 @@ function reindexarPassos() {
     });
 }
 
-// Disparado quando o usuário troca o setor na linha
+// ============================================================
+// REQUISIÇÕES ASYNC / FETCH
+// ============================================================
+
+// Disparado quando o usuário altera o setor na linha
 async function aoMudarSetor(selectSetor) {
     await carregarEtapasDoSetor(selectSetor, '');
 }
 
 async function carregarEtapasDoSetor(selectSetor, etapaSetorIdSelecionada) {
+    if (!selectSetor) return;
+
     const setorId = selectSetor.value;
     const row = selectSetor.closest('.etapa-item');
+    if (!row) return;
+
     const selectEtapa = row.querySelector('.etapa-setor-select');
+    if (!selectEtapa) return;
 
     selectEtapa.innerHTML = '<option value="">Selecione o processo</option>';
 
@@ -147,36 +200,66 @@ async function carregarEtapasDoSetor(selectSetor, etapaSetorIdSelecionada) {
             });
         }
     } catch (e) {
-        console.error('Erro ao buscar processos do setor', e);
+        console.error('Erro ao buscar processos do setor:', e);
+    }
+}
+
+// ============================================================
+// HANDLER E EDIÇÃO DE ROTEIRO (SEGURANÇA CONTRA XSS)
+// ============================================================
+
+/**
+ * Handler seguro para acionamento via botão com data-attribute
+ * Uso no HTML: <button type="button" th:data-produto-id="${roteiro.produtoId}" onclick="handleEditarRoteiro(this)">Editar</button>
+ */
+function handleEditarRoteiro(button) {
+    const produtoId = button.getAttribute('data-produto-id');
+    if (produtoId) {
+        editarRoteiro(produtoId);
+    } else {
+        console.warn('ID do produto não encontrado no botão de edição.');
     }
 }
 
 async function editarRoteiro(produtoId) {
-    const response = await fetch(`/dashboard/roteiros/${produtoId}`);
+    try {
+        const response = await fetch(`/dashboard/roteiros/${produtoId}`);
 
-    if (!response.ok) {
-        alert('Não foi possível carregar o roteiro.');
-        return;
-    }
-
-    const roteiro = await response.json();
-
-    const form = document.getElementById('roteiro-form');
-    form.action = `/dashboard/roteiros/${produtoId}/editar`;
-
-    document.getElementById('form-title').textContent = 'Editar Roteiro';
-    document.getElementById('produtoId').value = roteiro.produtoId;
-
-    limparEtapas();
-
-    if (roteiro.passos && roteiro.passos.length > 0) {
-        // Cria todas as linhas primeiro de forma síncrona para fixar os selects e índices corretos
-        for (const passo of roteiro.passos) {
-            await adicionarEtapa(passo.setorId, passo.etapaSetorId);
+        if (!response.ok) {
+            alert('Não foi possível carregar as informações do roteiro.');
+            return;
         }
-    } else {
-        adicionarEtapa();
-    }
 
-    showForm();
+        const roteiro = await response.json();
+
+        const form = document.getElementById('roteiro-form');
+        if (form) {
+            form.action = `/dashboard/roteiros/${produtoId}/editar`;
+        }
+
+        const titleEl = document.getElementById('form-title');
+        if (titleEl) {
+            titleEl.textContent = 'Editar Roteiro';
+        }
+
+        const produtoInput = document.getElementById('produtoId');
+        if (produtoInput) {
+            produtoInput.value = roteiro.produtoId;
+        }
+
+        limparEtapas();
+
+        if (roteiro.passos && roteiro.passos.length > 0) {
+            for (const passo of roteiro.passos) {
+                await adicionarEtapa(passo.setorId, passo.etapaSetorId);
+            }
+        } else {
+            await adicionarEtapa();
+        }
+
+        showForm();
+    } catch (error) {
+        console.error('Erro ao editar roteiro:', error);
+        alert('Ocorreu um erro ao carregar o formulário de edição.');
+    }
 }

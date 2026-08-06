@@ -152,13 +152,12 @@ public class SecurityConfig {
                         .invalidateHttpSession(true)                  // invalida a sessão
                         .deleteCookies("JSESSIONID")                  // remove o cookie de sessão
                         .permitAll()
-                )
+                );
 
                 // ----------------------------------------
                 // DESATIVA CSRF PARA HTMX (requisições parciais)
                 // Se preferir manter CSRF, configure o token no HTML
-                // ----------------------------------------
-                .csrf(csrf -> csrf.disable());
+                // ----------------------------------------;
 
         return http.build();
     }
