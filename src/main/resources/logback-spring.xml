@@ -1,14 +1,11 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <configuration>
     <!-- Variáveis de padrão de log -->
-    <!-- Formato para desenvolvimento: com cores e detalhes -->
     <property name="LOG_PATTERN_DEV" value="%d{yyyy-MM-dd HH:mm:ss.SSS} [%thread] %highlight(%-5level) %cyan(%logger{36}) - %msg%n"/>
-    <!-- Formato para produção: estruturado, sem cores -->
     <property name="LOG_PATTERN_PROD" value="%d{yyyy-MM-dd HH:mm:ss.SSS} [%thread] %-5level [%logger{36}] - %msg%n"/>
 
-    <!-- Configuração para DESENVOLVIMENTO -->
+    <!-- CONFIGURAÇÃO PARA DESENVOLVIMENTO (Console colorido + Arquivo local ./logs) -->
     <springProfile name="dev,!prod">
-        <!-- Console Appender (com suporte ao JAnsi via dependência do pom.xml) -->
         <appender name="CONSOLE" class="ch.qos.logback.core.ConsoleAppender">
             <withJansi>true</withJansi>
             <encoder>
@@ -17,7 +14,6 @@
             </encoder>
         </appender>
 
-        <!-- Arquivo geral em desenvolvimento -->
         <property name="LOG_DIR_DEV" value="./logs"/>
         <appender name="FILE" class="ch.qos.logback.core.rolling.RollingFileAppender">
             <file>${LOG_DIR_DEV}/lumiflow.log</file>
@@ -32,7 +28,6 @@
             </encoder>
         </appender>
 
-        <!-- Arquivo específico para ERROS em desenvolvimento -->
         <appender name="ERROR_FILE" class="ch.qos.logback.core.rolling.RollingFileAppender">
             <file>${LOG_DIR_DEV}/errors.log</file>
             <filter class="ch.qos.logback.classic.filter.LevelFilter">
@@ -58,9 +53,8 @@
         </root>
     </springProfile>
 
-    <!-- Configuração para PRODUÇÃO -->
+    <!-- CONFIGURAÇÃO PARA PRODUÇÃO / CLOUD / RAILWAY (Apenas Console) -->
     <springProfile name="prod">
-        <!-- Console Appender para Produção (padrão sem cores para Cloud/Railway) -->
         <appender name="CONSOLE" class="ch.qos.logback.core.ConsoleAppender">
             <encoder>
                 <pattern>${LOG_PATTERN_PROD}</pattern>
@@ -68,44 +62,9 @@
             </encoder>
         </appender>
 
-        <!-- Arquivo geral em produção (caminho relativo seguro ./logs) -->
-        <property name="LOG_DIR_PROD" value="./logs"/>
-        <appender name="FILE_PROD" class="ch.qos.logback.core.rolling.RollingFileAppender">
-            <file>${LOG_DIR_PROD}/lumiflow.log</file>
-            <rollingPolicy class="ch.qos.logback.core.rolling.SizeAndTimeBasedRollingPolicy">
-                <fileNamePattern>${LOG_DIR_PROD}/archived/lumiflow-%d{yyyy-MM-dd}.%i.log</fileNamePattern>
-                <maxFileSize>10MB</maxFileSize>
-                <maxHistory>30</maxHistory>
-            </rollingPolicy>
-            <encoder>
-                <pattern>${LOG_PATTERN_PROD}</pattern>
-                <charset>UTF-8</charset>
-            </encoder>
-        </appender>
-
-        <!-- Arquivo de ERROS em produção -->
-        <appender name="ERROR_FILE_PROD" class="ch.qos.logback.core.rolling.RollingFileAppender">
-            <file>${LOG_DIR_PROD}/errors.log</file>
-            <filter class="ch.qos.logback.classic.filter.LevelFilter">
-                <level>ERROR</level>
-                <onMatch>ACCEPT</onMatch>
-                <onMismatch>DENY</onMismatch>
-            </filter>
-            <rollingPolicy class="ch.qos.logback.core.rolling.SizeAndTimeBasedRollingPolicy">
-                <fileNamePattern>${LOG_DIR_PROD}/archived/errors-%d{yyyy-MM-dd}.%i.log</fileNamePattern>
-                <maxFileSize>10MB</maxFileSize>
-                <maxHistory>30</maxHistory>
-            </rollingPolicy>
-            <encoder>
-                <pattern>${LOG_PATTERN_PROD}</pattern>
-                <charset>UTF-8</charset>
-            </encoder>
-        </appender>
-
+        <!-- Em produção na nuvem, enviamos apenas para o Console/STDOUT -->
         <root level="INFO">
             <appender-ref ref="CONSOLE"/>
-            <appender-ref ref="FILE_PROD"/>
-            <appender-ref ref="ERROR_FILE_PROD"/>
         </root>
     </springProfile>
 
