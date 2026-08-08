@@ -11,6 +11,7 @@
 body.page-produto-cadastroproduto .form-panel
 body.page-maquina-cadastromaquinas .form-panel,
 body.page-setor-cadastrosetor .form-panel,
+body.page-operador-cadastrooperador .form-panel,
 body.page-usuario-cadastrousuario .form-panel {
   width: 320px;
   flex-shrink: 0;
@@ -29,6 +30,7 @@ body.page-usuario-cadastrousuario .form-panel {
 body.page-ordemproducao-lancamento .form-card,
 body.page-ordemproducao-novaordem .form-card,
 body.page-produto-cadastroproduto .form-card,
+body.page-operador-cadastrooperador .form-card,
 body.page-vidracaria-vidracaria .form-card {
   background: var(--color-surface);
   border: 1px solid rgba(255,255,255,0.08);
@@ -56,6 +58,7 @@ body.page-ordemproducao-lancamento .form-card {
 body.page-ordemproducao-lancamento .card-title,
 body.page-ordemproducao-novaordem .card-title,
 body.page-produto-cadastroproduto .card-title,
+body.page-operador-cadastrooperador .card-title,
 body.page-vidracaria-vidracaria .card-title {
   font-size: 14px;
   font-weight: bold;
@@ -78,6 +81,7 @@ body.page-usuario-login .field {
 body.page-ordemproducao-lancamento .field,
 body.page-ordemproducao-novaordem .field,
 body.page-produto-cadastroproduto .field,
+body.page-operador-cadastrooperador .field,
 body.page-vidracaria-vidracaria .field {
   display: flex;
   flex-direction: column;
@@ -146,6 +150,8 @@ body.page-ordemproducao-novaordem .field input,
 body.page-ordemproducao-novaordem .field select,
 body.page-ordemproducao-novaordem .field textarea,
 body.page-produto-cadastroproduto .field input,
+body.page-operador-cadastrooperador .field input,
+body.page-operador-cadastrooperador .field select,
 body.page-produto-cadastroproduto .field select,
 body.page-produto-cadastroproduto .field textarea,
 body.page-vidracaria-vidracaria .field input,
@@ -164,6 +170,8 @@ body.page-ordemproducao-lancamento .field select:focus,
 body.page-ordemproducao-lancamento .field textarea:focus,
 body.page-ordemproducao-novaordem .field input:focus,
 body.page-ordemproducao-novaordem .field select:focus,
+body.page-operador-cadastrooperador .field select:focus,
+body.page-operador-cadastrooperador .field input:focus,
 body.page-produto-cadastroproduto .field input:focus,
 body.page-produto-cadastroproduto .field select:focus,
 body.page-vidracaria-vidracaria .field input:focus,
@@ -200,6 +208,7 @@ body.page-ordemproducao-lancamento .hint.warn {
 body.page-ordemproducao-lancamento .form-actions,
 body.page-ordemproducao-novaordem .form-actions,
 body.page-produto-cadastroproduto .form-actions,
+body.page-operador-cadastrooperador .form-actions,
 body.page-vidracaria-vidracaria .form-actions {
   display: flex;
   justify-content: flex-end;

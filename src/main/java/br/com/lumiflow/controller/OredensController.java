@@ -9,7 +9,7 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import lombok.extern.slf4j.Slf4j;
 
 @Controller
-@RequestMapping("/dashboard/ordens")
+@RequestMapping("/dashboard/ordens/setor/{setorId}")
 @AllArgsConstructor
 @Slf4j
 public class OredensController {

@@ -18,6 +18,7 @@ body.page-produto-cadastroproduto .content,
 body.page-relatorio-relatoriotempo .content,
 body.page-setor-cadastrosetor .content,
 body.page-usuario-cadastrousuario .content,
+body.page-operador-cadastrooperador .content,
 body.page-vidracaria-vidracaria .content {
   flex: 1;
   overflow-y: auto;
@@ -83,6 +84,7 @@ body.page-produto-cadastroproduto .topbar,
 body.page-relatorio-relatoriotempo .topbar,
 body.page-setor-cadastrosetor .topbar,
 body.page-roteiro-cadastroroteiros .topbar,
+body.page-operador-cadastrooperador  .topbar,
 body.page-usuario-cadastrousuario .topbar,
 body.page-vidracaria-vidracaria .topbar {
   background: var(--color-sidebar);

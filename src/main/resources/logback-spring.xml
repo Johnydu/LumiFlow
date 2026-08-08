@@ -5,7 +5,7 @@
     <property name="LOG_PATTERN_PROD" value="%d{yyyy-MM-dd HH:mm:ss.SSS} [%thread] %-5level [%logger{36}] - %msg%n"/>
 
     <!-- CONFIGURAÇÃO PARA DESENVOLVIMENTO (Console colorido + Arquivo local ./logs) -->
-    <springProfile name="dev,!prod">
+    <springProfile name="dev">
         <appender name="CONSOLE" class="ch.qos.logback.core.ConsoleAppender">
             <withJansi>true</withJansi>
             <encoder>

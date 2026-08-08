@@ -43,7 +43,7 @@ public class ProdutoController {
         if (result.hasErrors()) {
             attributes.addFlashAttribute("message","Preencha todos os campos corretamente");
             attributes.addFlashAttribute("messageType", "error");
-            return  "redirect:/dashboard/produto";
+            return  "redirect:/dashboard/produtos";
         }
         try {
             produtoService.novoProduto(produtoDTO);

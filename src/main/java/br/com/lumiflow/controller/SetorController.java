@@ -1,6 +1,5 @@
 package br.com.lumiflow.controller;
 
-import br.com.lumiflow.dto.maquina.MaquinaDTO;
 import br.com.lumiflow.dto.setor.SetorDTO;
 import br.com.lumiflow.exception.BusinessException;
 import br.com.lumiflow.service.SetorService;

@@ -1,0 +1,33 @@
+/* ==========================================================================
+   LUMIFLOW - PÁGINA DE CADASTRO DE OPERADORES
+   ========================================================================== */
+
+body.page-operador-cadastrooperador .operador-search {
+    width: 220px;
+    padding: 8px 12px;
+    background-color: var(--color-bg-input, rgba(255, 255, 255, 0.05));
+    border: 1px solid var(--color-border, rgba(255, 255, 255, 0.1));
+    border-radius: 6px;
+    color: #fff;
+    font-size: 0.88rem;
+    outline: none;
+}
+
+body.page-operador-cadastrooperador .operador-search:focus {
+    border-color: var(--color-primary, #6c5ce7);
+}
+
+body.page-operador-cadastrooperador .operador-info {
+    display: flex;
+    flex-direction: column;
+}
+
+body.page-operador-cadastrooperador .operador-nome {
+    font-weight: 600;
+    color: #fff;
+}
+
+body.page-operador-cadastrooperador .operador-setor {
+    color: var(--color-muted-5, #a0a0a0);
+    font-size: 0.9rem;
+}

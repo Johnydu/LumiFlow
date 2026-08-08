@@ -6,10 +6,10 @@ public record ProdutoDTO(
 
         Long id,
 
-        @NotBlank
+
         String nome,
 
-        @NotBlank
+        @NotBlank(message = "Campo código obrigatorio !")
         String codigo,
 
         String descricao

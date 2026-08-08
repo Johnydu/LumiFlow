@@ -142,6 +142,7 @@ body.page-produto-cadastroproduto .panel,
 body.page-relatorio-relatoriotempo .panel,
 body.page-setor-cadastrosetor .panel,
 body.page-usuario-cadastrousuario .panel,
+body.page-operador-cadastrooperador .panel,
 body.page-vidracaria-vidracaria .panel {
   background: var(--color-surface);
   border: 1px solid rgba(255,255,255,0.08);
@@ -159,6 +160,7 @@ body.page-vidracaria-vidracaria .panel {
 
 body.page-maquina-cadastromaquinas .panel-header,
 body.page-produto-cadastroproduto .panel-header,
+body.page-operador-cadastrooperador .panel-header,
 body.page-setor-cadastrosetor .panel-header,
 body.page-usuario-cadastrousuario .panel-header {
   padding: 14px 18px;

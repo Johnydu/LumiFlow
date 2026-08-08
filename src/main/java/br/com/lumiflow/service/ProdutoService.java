@@ -11,6 +11,7 @@ import lombok.AllArgsConstructor;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
+import java.util.Locale;
 
 @Service
 @AllArgsConstructor
@@ -19,12 +20,19 @@ public class ProdutoService {
     private final ProdutoRepository produtoRepository;
     private final ProdutoMapper produtoMapper;
 
-    public void validarProduto(String nome){
+    public void validarNomeProduto(String nome){
 
-        if(produtoRepository.findByNome(nome).isPresent()){
-            throw new BusinessException("Produto já cadastrado");
+        if(produtoRepository.existsByNome(nome)) {
+            throw new BusinessException("Já existe produto cadastrado com nome "+nome);
         }
     }
+
+    public void validarCodigoProduto(String codigo){
+        if (produtoRepository.existsByCodigo(codigo)){
+            throw new BusinessException("Já existe produto com o codigo " +codigo);
+        }
+    }
+
 
     public Produto buscarPorNome(String nome) {
         return produtoRepository.findByNome(nome).orElseThrow(()-> new BusinessException("Produto não encontrado"));
@@ -37,7 +45,8 @@ public class ProdutoService {
 
     public void novoProduto(ProdutoDTO produtoDTO){
 
-        validarProduto(produtoDTO.nome());
+        validarNomeProduto(produtoDTO.nome());
+        validarCodigoProduto(produtoDTO.codigo());
 
         produtoRepository.save(produtoMapper.toEntity(produtoDTO));
 
@@ -51,20 +60,15 @@ public class ProdutoService {
 
         buscarProdutoPorId(id);
         produtoRepository.deleteById(id);
-
     }
 
     public void editarProduto(Long id, ProdutoDTO produtoDTO) {
         Produto produto = buscarProdutoPorId(id);
 
-        produto.setNome(produtoDTO.nome());
+        produto.setNome(produtoDTO.nome().toUpperCase(Locale.ROOT));
         produto.setCodigo(produtoDTO.codigo());
         produto.setDescricao(produtoDTO.descricao());
 
         produtoRepository.save(produto);
-
-
-
-
     }
 }

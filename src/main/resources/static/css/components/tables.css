@@ -24,6 +24,7 @@ th{
 
 body.page-roteiro-cadastroroteiros th,
 body.page-maquina-cadastromaquinas th,
+body.page-operador-cadastrooperador th,
 body.page-ordemproducao-detalhesordem th,
 body.page-ordemproducao-lancamento th,
 body.page-ordemproducao-listaordem th,
@@ -59,6 +60,7 @@ body.page-produto-cadastroproduto td,
 body.page-relatorio-relatoriotempo td,
 body.page-setor-cadastrosetor td,
 body.page-usuario-cadastrousuario td,
+body.page-operador-cadastrooperador td,
 body.page-vidracaria-vidracaria td {
   padding: 11px 14px;
   border-bottom: 1px solid rgba(255,255,255,0.05);
