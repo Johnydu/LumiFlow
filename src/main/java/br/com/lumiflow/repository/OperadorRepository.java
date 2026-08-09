@@ -9,4 +9,11 @@ import java.util.List;
 @Repository
 public interface OperadorRepository extends JpaRepository<Operador, Long> {
     List<Operador> findAllByOrderByNomeAsc();
+
+    Operador findByNome(String nome);
+
+    boolean existsByNome(String nome);
+
+    boolean existsByNomeAndIdNot(String nome, Long id);
+
 }

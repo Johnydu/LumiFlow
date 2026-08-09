@@ -65,6 +65,7 @@
       </div>
 
       <div class="panel">
+
         <div class="panel-header">
           <span class="panel-title">Máquinas cadastradas</span>
           <span class="panel-count"
@@ -109,6 +110,10 @@
                       method="post"
                       style="display:inline">
 
+                  <input type="hidden"
+                         th:name="${_csrf.parameterName}"
+                         th:value="${_csrf.token}" />
+
                   <button type="submit"
                           class="btn-del"
                           onclick="return confirm('Tem certeza que deseja excluir esta máquina?');">
@@ -135,6 +140,10 @@
             th:action="@{/dashboard/maquinas}"
             th:object="${maquinaDTO}"
             method="post">
+
+        <input type="hidden"
+               th:name="${_csrf.parameterName}"
+               th:value="${_csrf.token}" />
 
         <div class="form-title" id="form-title">
           Nova Máquina

@@ -3,6 +3,7 @@ package br.com.lumiflow.security;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.security.authentication.AuthenticationManager;
+import org.springframework.security.config.Customizer;
 import org.springframework.security.config.annotation.authentication.configuration.AuthenticationConfiguration;
 import org.springframework.security.config.annotation.method.configuration.EnableMethodSecurity;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
@@ -149,10 +150,12 @@ public class SecurityConfig {
                 .logout(logout -> logout
                         .logoutUrl("/logout")
                         .logoutSuccessUrl(LOGIN_PAGE + "?logout=true") // redireciona após logout
-                        .invalidateHttpSession(true)                  // invalida a sessão
+                        .invalidateHttpSession(true)
+                        .clearAuthentication(true)
                         .deleteCookies("JSESSIONID")                  // remove o cookie de sessão
                         .permitAll()
-                );
+                )
+                .csrf(Customizer.withDefaults());
 
                 // ----------------------------------------
                 // DESATIVA CSRF PARA HTMX (requisições parciais)

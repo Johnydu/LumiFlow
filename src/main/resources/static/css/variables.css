@@ -15,6 +15,13 @@
   --color-primary-gradient-start: #1a1740;
   --color-primary-gradient-end: #0f0f2a;
 
+  /* Raios de borda */
+  --radius-md: 8px;
+
+  /* Cores de Alerta / Perigo */
+  --color-danger-hover: #bb2d3b;
+  --color-danger-light: rgba(220, 53, 69, 0.1);
+
   /* ============ COLORS - Background ============ */
   --color-bg: #0c0c0f;
   --color-bg-soft: #0f0f1a;

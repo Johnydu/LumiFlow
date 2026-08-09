@@ -218,19 +218,14 @@ body.page-ordemproducao-listaordem .panel-title {
 
 /* ============ PANEL COUNT ============ */
 
-body.page-maquina-cadastromaquinas .panel-count {
+
+
+
+.panel-count{
   font-size: 11px;
   color: var(--color-muted-4);
 }
 
-body.page-ordemproducao-listaordem .panel-count {
-  font-size: 11px;
-  color: var(--color-muted);
-}
-body.page-produto-cadastroproduto .panel-count {
-  font-size: 11px;
-  color: var(--color-muted-4);
-}
 
 /* ============ PANEL SUB ============ */
 body.page-relatorio-relatoriotempo .panel-sub {

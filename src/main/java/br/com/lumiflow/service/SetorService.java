@@ -69,8 +69,9 @@ public class SetorService {
             // Remove as etapas vinculadas primeiro para evitar violação de chave estrangeira
             etapaSetorRepository.deleteAllBySetorId(id);
             setorRepository.delete(setor);
-        } catch (Exception e) {
-            throw new BusinessException("Não é possível excluir este setor pois ele está em uso em roteiros ou processos.");
+        } catch (BusinessException e) {
+            throw new BusinessException(
+                    "Não é possível excluir este setor pois ele está em uso em roteiros ou processos.");
         }
     }
 

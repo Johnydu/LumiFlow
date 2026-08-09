@@ -1,6 +1,6 @@
 <!DOCTYPE html>
 <html lang="pt-BR" xmlns:th="http://www.thymeleaf.org"
-     xmlns:sec="http://www.thymeleaf.org/extras/spring-security">
+      xmlns:sec="http://www.thymeleaf.org/extras/spring-security">
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
@@ -26,7 +26,7 @@
 <aside th:replace="~{fragments/sidebar :: sidebar(activePage='setor')}"></aside>
 
 <main class="main">
-    <div th:replace="~{fragments/topbar :: topbar(
+  <div th:replace="~{fragments/topbar :: topbar(
     'Setores',
     '+ Novo Setor',
     'novoSetorForm()'
@@ -40,7 +40,9 @@
   <div class="content">
 
     <div class="lista">
+
       <div class="panel">
+
         <div class="panel-header">
           <span class="panel-title">Setores cadastrados</span>
           <span class="panel-count"
@@ -59,18 +61,19 @@
           </thead>
           <tbody>
           <tr th:each="setor : ${setores}">
-            <td style="font-weight:500" th:text="${setor.nome()}"></td>
+            <!-- Removidos os parênteses () dos acessos ao DTO -->
+            <td style="font-weight:500" th:text="${setor.nome}"></td>
             <td>
                 <span class="tag-maq"
-                      th:text="${setor.quantidadeMaquinas() + ' máquina(s)'}">
+                      th:text="${setor.quantidadeMaquinas + ' máquina(s)'}">
                 </span>
             </td>
             <td>
-                <span th:if="${setor.possuiEtapas()}"
+                <span th:if="${setor.possuiEtapas}"
                       style="color:var(--color-primary);font-size:12px">
                   Possui etapas
                 </span>
-              <span th:unless="${setor.possuiEtapas()}"
+              <span th:unless="${setor.possuiEtapas}"
                     style="color:var(--color-muted-5);font-size:12px">
                   Não possui
                 </span>
@@ -79,22 +82,23 @@
               <div class="table-actions">
                 <button type="button"
                         class="btn-edit"
-                        th:data-id="${setor.id()}"
-                        th:data-nome="${setor.nome()}"
-                        th:data-possui="${setor.possuiEtapas()}"
+                        th:data-id="${setor.id}"
+                        th:data-nome="${setor.nome}"
+                        th:data-possui="${setor.possuiEtapas}"
                         onclick="editarSetorDoBotao(this)">
                   ✏ Editar
                 </button>
-                <form th:action="@{/dashboard/setores/{id}/excluir(id=${setor.id()})}"
+                <form th:action="@{/dashboard/setores/{id}/excluir(id=${setor.id})}"
                       method="post"
                       style="display:inline">
                   <input type="hidden"
                          th:name="${_csrf.parameterName}"
-                         th:value="${_csrf.token}"/>
+                         th:value="${_csrf.token}" />
+
                   <button type="submit"
                           class="btn-del"
                           onclick="return confirm('Tem certeza que deseja excluir este setor?');">
-                    🗑  Excluir
+                    🗑 Excluir
                   </button>
                 </form>
               </div>
@@ -119,23 +123,27 @@
             th:object="${setorDTO}"
             method="post">
 
+        <input type="hidden"
+               th:name="${_csrf.parameterName}"
+               th:value="${_csrf.token}" />
+
         <input type="hidden" th:field="*{id}"/>
 
         <div class="form-title" id="form-title">Novo Setor</div>
-        
+
         <div class="field">
           <label for="nome">Nome do Setor</label>
           <input type="text" id="nome" th:field="*{nome}" class="form-control" placeholder="Ex: Costura, Acabamento..." required />
         </div>
 
         <div class="field">
-          <label>Possui etapas de produção?</label>
-          <select name="possuiEtapas"
+          <label for="possui-etapas-select">Possui etapas de produção?</label>
+          <select th:field="*{possuiEtapas}"
                   id="possui-etapas-select"
                   class="form-control"
                   onchange="toggleEtapasContainer()">
-            <option value="true">Sim</option>
-            <option value="false">Não</option>
+            <option th:value="true">Sim</option>
+            <option th:value="false">Não</option>
           </select>
         </div>
 

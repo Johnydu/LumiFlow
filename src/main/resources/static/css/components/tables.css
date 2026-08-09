@@ -21,18 +21,23 @@ th{
   overflow: hidden;
   text-overflow: ellipsis;
 }
+ .search {
+  width: 220px;
+  height: 36px;
+  padding: 0 12px;
+  border-radius: 10px;
+  border: 1px solid rgba(255, 255, 255, .1);
+  background: var(--color-field);
+  color: var(--color-text);
+  font-size: 12px;
+}
 
-body.page-roteiro-cadastroroteiros th,
-body.page-maquina-cadastromaquinas th,
-body.page-operador-cadastrooperador th,
-body.page-ordemproducao-detalhesordem th,
-body.page-ordemproducao-lancamento th,
-body.page-ordemproducao-listaordem th,
-body.page-produto-cadastroproduto th,
-body.page-relatorio-relatoriotempo th,
-body.page-setor-cadastrosetor th,
-body.page-usuario-cadastrousuario th,
-body.page-vidracaria-vidracaria th {
+ .search:focus {
+  outline: none;
+  border-color: var(--color-primary);
+}
+
+th {
   padding: 9px 14px;
   text-align: left;
   font-size: 12px;

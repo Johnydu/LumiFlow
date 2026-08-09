@@ -1,125 +1,98 @@
 /**
  * LumiFlow - Gerenciamento de Operadores
- * JS assíncrono para controle do modal, submissão AJAX e filtros.
+ * Funções para controle do painel lateral de cadastro e edição.
  */
+
+/**
+ * Abre o painel lateral para cadastrar um novo operador.
+ */
+window.novoOperadorForm = function() {
+    const formPanel = document.getElementById('form-panel');
+    const formTitle = document.getElementById('form-title');
+    const form = document.getElementById('operador-form');
+
+    if (form) {
+        form.reset();
+        // Reseta o action para a rota de criação
+        form.action = '/dashboard/operadores';
+    }
+
+    // Limpa o ID oculto
+    const idInput = document.getElementById('id');
+    if (idInput) idInput.value = '';
+
+    if (formTitle) formTitle.textContent = 'Novo operador';
+
+    if (formPanel) {
+        formPanel.style.display = 'block';
+    }
+
+    // Foco automático no primeiro campo
+    const inputNome = document.getElementById('nome');
+    if (inputNome) inputNome.focus();
+};
+
+/**
+ * Preenche e abre o painel lateral para editar um operador existente.
+ * @param {HTMLElement} button - O botão clicado da tabela contendo os atributos data-*
+ */
+window.handleEditarOperador = function(button) {
+    const formPanel = document.getElementById('form-panel');
+    const formTitle = document.getElementById('form-title');
+    const form = document.getElementById('operador-form');
+
+    // Recupera os valores dos atributos data- do botão da tabela
+    const id = button.getAttribute('data-id') || '';
+    const nome = button.getAttribute('data-nome') || '';
+    const funcao = button.getAttribute('data-funcao') || '';
+    const setorId = button.getAttribute('data-setor-id') || '';
+
+    // ATUALIZA A ACTION PARA A ROTA DE EDIÇÃO: /dashboard/operadores/{id}/editar
+    if (form && id) {
+        form.action = `/dashboard/operadores/${id}/editar`;
+    }
+
+    // Preenche os campos do formulário
+    const idInput = document.getElementById('id');
+    const nomeInput = document.getElementById('nome');
+    const funcaoInput = document.getElementById('funcao');
+    const setorSelect = document.getElementById('setorPadraoId');
+
+    if (idInput) idInput.value = id;
+    if (nomeInput) nomeInput.value = nome;
+    if (funcaoInput) funcaoInput.value = funcao;
+    if (setorSelect) setorSelect.value = setorId;
+
+    if (formTitle) formTitle.textContent = 'Editar operador';
+
+    if (formPanel) {
+        formPanel.style.display = 'block';
+    }
+};
+
+/**
+ * Oculta o painel lateral do formulário.
+ */
+window.hideForm = function() {
+    const formPanel = document.getElementById('form-panel');
+    if (formPanel) {
+        formPanel.style.display = 'none';
+    }
+};
+
+// Filtro automático de busca ao digitar (Debounce)
 document.addEventListener('DOMContentLoaded', () => {
     'use strict';
 
-    // Elements
-    const modalOperador = document.getElementById('modalOperador');
-    const modalTitle = document.getElementById('modalTitle');
-    const formOperador = document.getElementById('formOperador');
-
-    const inputId = document.getElementById('operadorId');
-    const inputNome = document.getElementById('inputNome');
-    const inputFuncao = document.getElementById('inputFuncao');
-    const selectSetorPadrao = document.getElementById('selectSetorPadrao');
-
-    const btnFecharModal = document.getElementById('btnFecharModal');
-    const btnCancelarModal = document.getElementById('btnCancelarModal');
-    const formFiltros = document.getElementById('formFiltros');
-    const inputBusca = formFiltros ? formFiltros.querySelector('input[name="busca"]') : null;
-
-    // --- 1. Abertura e Fechamento do Modal ---
-    window.abrirModalOperador = () => {
-        formOperador.reset();
-        inputId.value = '';
-        modalTitle.textContent = 'Novo Operador';
-        modalOperador.style.display = 'flex';
-        inputNome.focus();
-    };
-
-    const fecharModal = () => {
-        modalOperador.style.display = 'none';
-    };
-
-    btnFecharModal?.addEventListener('click', fecharModal);
-    btnCancelarModal?.addEventListener('click', fecharModal);
-
-    modalOperador?.addEventListener('click', (e) => {
-        if (e.target === modalOperador) fecharModal();
-    });
-
-    // --- 2. Edição de Operador ---
-    document.querySelectorAll('.btn-edit').forEach(btn => {
-        btn.addEventListener('click', () => {
-            const id = btn.dataset.id;
-            const nome = btn.dataset.nome;
-            const funcao = btn.dataset.funcao;
-            const setorId = btn.dataset.setor;
-
-            inputId.value = id;
-            inputNome.value = nome;
-            inputFuncao.value = funcao || '';
-            selectSetorPadrao.value = setorId || '';
-
-            modalTitle.textContent = 'Editar Operador';
-            modalOperador.style.display = 'flex';
-        });
-    });
-
-    // --- 3. Submissão do Formulário (Salvar / Atualizar via REST) ---
-    formOperador?.addEventListener('submit', async (e) => {
-        e.preventDefault();
-
-        const id = inputId.value;
-        const isEdit = Boolean(id);
-
-        const payload = {
-            nome: inputNome.value.trim(),
-            funcao: inputFuncao.value.trim(),
-            setorPadraoId: selectSetorPadrao.value ? Number(selectSetorPadrao.value) : null
-        };
-
-        const url = isEdit ? `/api/operadores/${id}` : '/api/operadores';
-        const method = isEdit ? 'PUT' : 'POST';
-
-        try {
-            const response = await fetch(url, {
-                method: method,
-                headers: { 'Content-Type': 'application/json' },
-                body: JSON.stringify(payload)
-            });
-
-            if (response.ok) {
-                fecharModal();
-                window.location.reload(); // Recarrega para exibir a lista atualizada
-            } else {
-                alert('Erro ao salvar operador. Verifique os dados digitados.');
-            }
-        } catch (err) {
-            alert('Falha na comunicação com o servidor.');
-        }
-    });
-
-    // --- 4. Exclusão de Operador ---
-    document.querySelectorAll('.btn-delete').forEach(btn => {
-        btn.addEventListener('click', async () => {
-            const id = btn.dataset.id;
-            const nome = btn.dataset.nome;
-
-            if (confirm(`Deseja realmente excluir o operador "${nome}"?`)) {
-                try {
-                    const response = await fetch(`/api/operadores/${id}`, { method: 'DELETE' });
-
-                    if (response.ok) {
-                        window.location.reload();
-                    } else {
-                        alert('Não foi possível excluir o operador. Ele pode estar vinculado a ordens ativas.');
-                    }
-                } catch (err) {
-                    alert('Erro de conexão ao tentar excluir.');
-                }
-            }
-        });
-    });
-
-    // --- 5. Debounce no filtro de busca ---
+    // Corrigido o seletor para pegar a classe .search da input no HTML
+    const inputBusca = document.querySelector('.search');
     if (inputBusca) {
         let timer;
         inputBusca.addEventListener('input', () => {
             clearTimeout(timer);
-            timer = setTimeout(() => formFiltros.submit(), 500);
+            timer = setTimeout(() => {
+                inputBusca.closest('form').submit();
+            }, 500);
         });
     }
 });

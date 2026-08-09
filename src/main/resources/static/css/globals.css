@@ -39,10 +39,4 @@ body.page-usuario-login {
   cursor:pointer;
 }
 
-.logout-btn{
-  width:100%;
-  border:none;
-  background:none;
-  text-align:left;
-  font:inherit;
-}
+

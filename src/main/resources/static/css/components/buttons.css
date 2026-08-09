@@ -104,6 +104,43 @@ body.page-usuario-login .btn.success {
   transform: translateY(-1px);
 }
 
+
+
+.logout-form {
+  margin-top: 12px;
+  width: 100%;
+}
+
+.logout-btn {
+  width: 100%;
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  border: 1px solid transparent;
+  background-color: transparent;
+  color: var(--color-danger, #dc3545);
+  cursor: pointer;
+  text-align: left;
+  padding: 10px 12px;
+  border-radius: var(--radius-md, 8px);
+  font-size: 14px;
+  font-weight: 500;
+  font-family: inherit;
+  transition: background-color 0.2s ease, color 0.2s ease, border-color 0.2s ease;
+}
+
+/* Estado de hover suave acompanhando os demais botões/itens de menu */
+.logout-btn:hover {
+  background-color: var(--color-danger-light, rgba(220, 53, 69, 0.1));
+  color: var(--color-danger-hover, #bb2d3b);
+}
+
+/* Foco acessível para navegação por teclado */
+.logout-btn:focus-visible {
+  outline: 2px solid var(--color-primary);
+  outline-offset: 2px;
+}
+
 /* Agrupamento dos botões */
 
 

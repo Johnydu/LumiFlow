@@ -64,9 +64,22 @@
 
             <div class="profile-info">
                 <div class="pname" sec:authentication="principal.nomeCompleto"></div>
-                <div class="prole" sec:authentication="principal.nivelAcesso"></div>
+                <div class="nivel-tag" sec:authentication="principal.nivelAcesso"></div>
             </div>
         </div>
+
+        <form th:action="@{/logout}" method="post" class="logout-form">
+
+            <input type="hidden"
+                   th:name="${_csrf.parameterName}"
+                   th:value="${_csrf.token}" />
+
+            <button type="submit" class="menu-item logout-btn">
+                Sair
+            </button>
+
+        </form>
+
 
         <div class="app-version">
             v1.0.0

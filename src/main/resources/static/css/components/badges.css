@@ -27,7 +27,7 @@
   border: 1px solid rgba(97,87,255,0.3);
 }
 
-body.page-ordemproducao-detalhesordem .setor-tag {
+.setor-tag {
   display: inline-flex;
   font-size: 10px;
   padding: 3px 8px;
@@ -37,7 +37,7 @@ body.page-ordemproducao-detalhesordem .setor-tag {
   white-space: nowrap;
 }
 
-body.page-ordemproducao-listaordem .setor-tag {
+.setor-tag {
   display: inline-flex;
   font-size: 10px;
   padding: 3px 8px;
@@ -47,12 +47,11 @@ body.page-ordemproducao-listaordem .setor-tag {
   white-space: nowrap;
 }
 
-body.page-ordemproducao-listaordem .setor-tag.ok {
+.setor-tag.ok {
   background: var(--color-success-bg);
   color: var(--color-success-soft);
 }
-
-body.page-usuario-cadastrousuario .setor-tag {
+.setor-tag {
   display: inline-flex;
   font-size: 10px;
   padding: 3px 9px;
@@ -61,7 +60,7 @@ body.page-usuario-cadastrousuario .setor-tag {
   color: var(--color-muted);
 }
 
-body.page-setor-cadastrosetor .tag-maq {
+.tag-maq {
   display: inline-flex;
   font-size: 10px;
   padding: 3px 8px;
@@ -72,8 +71,8 @@ body.page-setor-cadastrosetor .tag-maq {
 }
 
 /* ============ SETOR TABS ============ */
-body.page-produto-cadastroprodutor .setor-tabs,
-body.page-maquina-cadastromaquinas .setor-tabs {
+.setor-tabs,
+.setor-tabs {
   display: flex;
   gap: 8px;
   flex-wrap: wrap;
@@ -81,8 +80,8 @@ body.page-maquina-cadastromaquinas .setor-tabs {
 }
 
 
-body.page-produto-cadastroprodutor .setor-tab,
-body.page-maquina-cadastromaquinas .setor-tab {
+.setor-tab,
+.setor-tab {
   padding: 6px 14px;
   border-radius: 20px;
   font-size: 12px;
@@ -91,21 +90,21 @@ body.page-maquina-cadastromaquinas .setor-tab {
   background: transparent;
   color: var(--color-muted);
 }
-body.page-produto-cadastroprodutor .setor-tab-active,
-body.page-maquina-cadastromaquinas .setor-tab.active {
+.setor-tab-active,
+.setor-tab.active {
   background: var(--color-primary);
   border-color: var(--color-primary);
   color: var(--color-text);
   font-weight: 500;
 }
 
-body.page-relatorio-relatoriotempo .setor-tabs {
+.setor-tabs {
   display: flex;
   gap: 8px;
   flex-wrap: wrap;
 }
 
-body.page-relatorio-relatoriotempo .setor-tab {
+.setor-tab {
   padding: 8px 18px;
   border-radius: 20px;
   font-size: 12px;
@@ -116,12 +115,12 @@ body.page-relatorio-relatoriotempo .setor-tab {
   transition: .2s;
 }
 
-body.page-relatorio-relatoriotempo .setor-tab:hover {
+.setor-tab:hover {
   color: var(--color-text);
   border-color: rgba(255,255,255,0.3);
 }
 
-body.page-relatorio-relatoriotempo .setor-tab.active {
+.setor-tab.active {
   background: var(--color-primary);
   border-color: var(--color-primary);
   color: var(--color-text);
@@ -129,40 +128,40 @@ body.page-relatorio-relatoriotempo .setor-tab.active {
 }
 
 /* ============ NIVEL TAG ============ */
-body.page-usuario-cadastrousuario .nivel-tag {
+.nivel-tag {
   display: inline-flex;
-  font-size: 10px;
+  font-size: 11px;
   padding: 3px 9px;
   border-radius: 20px;
   font-weight: 500;
 }
 
-body.page-usuario-cadastrousuario .n-sup {
+.n-sup {
   background: rgba(97,87,255,0.2);
   color: var(--color-primary-soft);
   border: 1px solid rgba(97,87,255,0.3);
 }
 
-body.page-usuario-cadastrousuario .n-ges {
+.n-ges {
   background: rgba(246,166,35,0.15);
   color: var(--color-warning);
   border: 1px solid rgba(246,166,35,0.2);
 }
 
-body.page-usuario-cadastrousuario .n-pcp {
+.n-pcp {
   background: rgba(15,110,86,0.2);
   color: var(--color-teal-light);
   border: 1px solid rgba(15,110,86,0.3);
 }
 
-body.page-usuario-cadastrousuario .n-ope {
+.n-ope {
   background: rgba(108,142,191,0.2);
   color: var(--color-blue);
   border: 1px solid rgba(108,142,191,0.3);
 }
 
 /* ============ ETAPA TAG ============ */
-body.page-ordemproducao-detalhesordem .etapa-tag {
+.etapa-tag {
   display: inline-flex;
   font-size: 10px;
   padding: 3px 8px;
@@ -174,13 +173,13 @@ body.page-ordemproducao-detalhesordem .etapa-tag {
 }
 
 /* ============ PRODUTO DESTAQUE BADGES ============ */
-body.page-ordemproducao-lancamento .produto-badges {
+.produto-badges {
   display: flex;
   gap: 8px;
   align-items: center;
 }
 
-body.page-ordemproducao-lancamento .badge-setor {
+.badge-setor {
   background: var(--color-primary-bg);
   color: var(--color-primary-light);
   font-size: 11px;
@@ -189,7 +188,7 @@ body.page-ordemproducao-lancamento .badge-setor {
   border: 1px solid var(--color-primary);
 }
 
-body.page-ordemproducao-lancamento .badge-disp {
+.badge-disp {
   background: rgba(246,166,35,0.15);
   color: var(--color-warning);
   font-size: 11px;
@@ -197,7 +196,7 @@ body.page-ordemproducao-lancamento .badge-disp {
   border-radius: 20px;
 }
 
-body.page-ordemproducao-lancamento .badge-etapa {
+.badge-etapa {
   background: var(--color-success-bg-soft);
   color: var(--color-success-soft);
   font-size: 11px;
@@ -207,7 +206,7 @@ body.page-ordemproducao-lancamento .badge-etapa {
 }
 
 /* ============ ROTEIRO PILLS ============ */
-body.page-ordemproducao-detalhesordem .roteiro {
+.roteiro {
   display: flex;
   align-items: center;
   gap: 0;
@@ -215,7 +214,7 @@ body.page-ordemproducao-detalhesordem .roteiro {
   gap: 6px;
 }
 
-body.page-ordemproducao-detalhesordem .setor-pill {
+.setor-pill {
   display: inline-flex;
   align-items: center;
   gap: 6px;
@@ -227,20 +226,20 @@ body.page-ordemproducao-detalhesordem .setor-pill {
   background: var(--color-field);
 }
 
-body.page-ordemproducao-detalhesordem .setor-pill.done {
+.setor-pill.done {
   background: var(--color-success-bg);
   color: var(--color-success-soft);
   border-color: var(--color-success);
 }
 
-body.page-ordemproducao-detalhesordem .setor-pill.atual {
+.setor-pill.atual {
   background: var(--color-primary-bg);
   color: var(--color-primary-light);
   border-color: var(--color-primary);
   font-weight: 600;
 }
 
-body.page-ordemproducao-detalhesordem .setor-arr {
+.setor-arr {
   color: var(--color-muted-6);
   font-size: 14px;
 }

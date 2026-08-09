@@ -78,7 +78,7 @@ public class SetorController {
     }
 
     @PostMapping("/{id}/editar")
-    public String editarSetor(@PathVariable ("id") long id,@Valid @ModelAttribute("setorDTO") SetorDTO setorDTO, BindingResult result,
+    public String editarSetor(@PathVariable ("id") Long id,@Valid @ModelAttribute("setorDTO") SetorDTO setorDTO, BindingResult result,
                             RedirectAttributes attributes) {
         if (result.hasErrors()) {
             attributes.addFlashAttribute("message","Preencha todos os campos corretamente");

@@ -62,7 +62,7 @@
                         <input type="text"
                                name="nome"
                                th:value="${param.nome}"
-                               class="operador-search"
+                               class="search"
                                placeholder="Buscar operador...">
                     </form>
 
@@ -81,7 +81,7 @@
                         <th>Nome</th>
                         <th>Função</th>
                         <th>Setor Padrão</th>
-                        <th style="width:150px">Ações</th>
+                        <th style="width:120px">Ações</th>
                     </tr>
                     </thead>
 
@@ -92,17 +92,17 @@
                         <td>
                             <div class="operador-info">
                                 <div class="operador-nome"
-                                     th:text="${operador.nome()}">
+                                     th:text="${operador.nome}">
                                 </div>
                             </div>
                         </td>
 
-                        <td class="num"
-                            th:text="${operador.funcao() != null && !operador.funcao().isBlank() ? operador.funcao() : '-'}">
+                        <td class="operador-funcao"
+                            th:text="${operador.funcao != null && !operador.funcao.isBlank() ? operador.funcao : '-'}">
                         </td>
 
                         <td class="operador-setor"
-                            th:text="${operador.setorPadraoNome() != null ? operador.setorPadraoNome() : 'Volante / Sem Setor'}">
+                            th:text="${operador.setorPadraoNome != null ? operador.setorPadraoNome : 'Volante / Sem Setor'}">
                         </td>
 
                         <td>
@@ -110,20 +110,19 @@
 
                                 <button type="button"
                                         class="btn-edit"
-                                        th:data-id="${operador.id()}"
-                                        th:data-nome="${operador.nome()}"
-                                        th:data-funcao="${operador.funcao()}"
-                                        th:data-setor-id="${operador.setorPadraoId()}"
+                                        th:data-id="${operador.id}"
+                                        th:data-nome="${operador.nome}"
+                                        th:data-funcao="${operador.funcao}"
+                                        th:data-setor-id="${operador.setorPadraoId}"
                                         onclick="handleEditarOperador(this)">
                                     ✏ Editar
                                 </button>
 
-                                <form th:action="@{/dashboard/operadores/{id}/excluir(id=${operador.id()})}"
-                                      method="post">
+                                <form th:action="@{/dashboard/operadores/{id}/excluir(id=${operador.id})}"
+                                      method="post"
+                                      style="display:inline;">
 
-                                    <input type="hidden"
-                                           th:name="${_csrf.parameterName}"
-                                           th:value="${_csrf.token}" />
+                                    <!-- th:action gera o input CSRF automaticamente -->
 
                                     <button type="submit"
                                             class="btn-del"
@@ -160,6 +159,8 @@
                   th:action="@{/dashboard/operadores}"
                   th:object="${operadorDTO}"
                   method="post">
+
+                <!-- th:action gera o input CSRF automaticamente -->
 
                 <input type="hidden"
                        id="id"
@@ -228,7 +229,7 @@
 
 </main>
 
-<script th:src="@{/js/cadastro-operador.js}"></script>
+<script th:src="@{/js/operadores.js}"></script>
 <script th:src="@{/js/sidebar.js}"></script>
 <script th:src="@{/js/alerts.js}"></script>
 

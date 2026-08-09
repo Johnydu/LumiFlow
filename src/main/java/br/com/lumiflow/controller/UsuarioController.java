@@ -52,8 +52,8 @@ public class UsuarioController {
      * Cria novo usuário
      */
     @PostMapping
-    public String novo(@Valid @ModelAttribute("usuarioDTO") UsuarioDTO usuarioDTO,
-                       BindingResult result, RedirectAttributes attributes) {
+    public String novoUsuario(@Valid @ModelAttribute("usuarioDTO") UsuarioDTO usuarioDTO,
+                              BindingResult result, RedirectAttributes attributes) {
         log.info("Requisição POST: Criar novo usuário. Login: {}", usuarioDTO.login());
         
         if (result.hasErrors()) {

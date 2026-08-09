@@ -3,21 +3,6 @@
    ======================================== */
 
 
-body.page-produto-cadastroproduto .produto-search {
-    width: 220px;
-    height: 36px;
-    padding: 0 12px;
-    border-radius: 10px;
-    border: 1px solid rgba(255, 255, 255, .1);
-    background: var(--color-field);
-    color: var(--color-text);
-    font-size: 12px;
-}
-
-body.page-produto-cadastroproduto .produto-search:focus {
-    outline: none;
-    border-color: var(--color-primary);
-}
 
 /* ========================================
    TABELA — OVERFLOW
