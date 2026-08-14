@@ -1,8 +1,9 @@
 package br.com.lumiflow.controller;
 
+
+import br.com.lumiflow.service.ChapaVidroService;
 import lombok.AllArgsConstructor;
 import org.springframework.stereotype.Controller;
-import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 
 @Controller
@@ -10,11 +11,6 @@ import org.springframework.web.bind.annotation.RequestMapping;
 @RequestMapping("/dashboard/vidracaria")
 public class VidracariaController {
 
-    @GetMapping
-    public String vidracaria(){
+    private final ChapaVidroService vidracariaSerivice;
 
-        return "vidracaria/Vidracaria";
-    }
-
-    
 }

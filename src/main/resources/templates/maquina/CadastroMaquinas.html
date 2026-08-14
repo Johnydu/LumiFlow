@@ -152,11 +152,13 @@
         <input type="hidden" th:field="*{id}"/>
 
         <div class="field">
-          <label>Nome da máquina <span>*</span></label>
+          <label for="nome">Nome da máquina <span>*</span></label>
 
           <input type="text"
+                 id="nome"
                  th:field="*{nome}"
-                 placeholder="Ex: Dobradeira Argus 1"/>
+                 class="form-control"
+                 placeholder="Ex: Dobradeira Argus 1" required/>
         </div>
 
         <div class="field">

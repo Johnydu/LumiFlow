@@ -69,6 +69,8 @@ public class OperadorService {
 
         validarNomeOperadorParaEdicao(operadorDTO.nome(), id);
 
+        operador.setNome(operadorDTO.nome().toUpperCase(Locale.ROOT));
+
         if (operadorDTO.funcao() != null && !operadorDTO.funcao().isBlank()) {
             operador.setFuncao(operadorDTO.funcao().trim().toUpperCase(Locale.ROOT));
         } else {

@@ -14,10 +14,12 @@ public class EtapaSetorService {
     private final EtapaSetorRepository etapaSetorRepository;
 
     public EtapaSetor buscarPorId(Long id) {
+
         return etapaSetorRepository.findById(id).orElse(null);
     }
 
     public List<EtapaSetor> listarPorSetorId(Long setorId) {
+
         return etapaSetorRepository.findBySetorId(setorId);
     }
 }

@@ -87,7 +87,8 @@ public class SecurityConfig {
                                 "/dashboard/setores/**",
                                 "/dashboard/maquinas/**",
                                 "/dashboard/produtos/**",
-                                "/dashboard/roteiros/**"
+                                "/dashboard/roteiros/**",
+                                "/dashboard/operadores/**"
                         ).hasAnyRole(ROLE_SUPORTE, ROLE_PCP_SUPERVISOR)
 
                         // ----------------------------------------
