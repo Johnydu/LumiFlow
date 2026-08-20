@@ -20,10 +20,12 @@
 <link rel="stylesheet" th:href="@{/css/utils.css}">
   <link rel="stylesheet" th:href="@{/css/error.css}">
   <link rel="stylesheet" th:href="@{/css/responsive.css}">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
 </head>
 
 <body class="page-usuario-login">
-<div th:replace="fragments/messages :: alerts"></div>
+<!-- Insira esta linha logo no início do container do formulário -->
+
 <div class="screen" id="screen">
   <div class="card" id="card">
 
@@ -81,6 +83,7 @@
     </div>
 
     <form th:action="@{/login}" method="post">
+      <div th:replace="~{fragments/messages :: alerts}"></div>
 
       <div class="field">
         <label for="user">Usuário</label>
@@ -136,6 +139,7 @@
 </div>
 
 <script th:src="@{/js/login.js}"></script>
+<script th:src="@{/js/alerts.js}"></script>
 
 </body>
 

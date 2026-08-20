@@ -1,123 +1,28 @@
 package br.com.lumiflow.service;
-
+import br.com.lumiflow.config.AppMessages;
 import br.com.lumiflow.dto.etapaSetor.EtapaSetorDTO;
 import br.com.lumiflow.dto.setor.SetorDTO;
 import br.com.lumiflow.dto.setor.SetorListagemDTO;
-import br.com.lumiflow.model.Setor;
-import br.com.lumiflow.model.EtapaSetor; // Certifique-se de importar o seu model de etapa
-import br.com.lumiflow.mapper.SetorMapper;
 import br.com.lumiflow.exception.BusinessException;
-import br.com.lumiflow.repository.EtapaSetorRepository; // <--- Importante
+import br.com.lumiflow.mapper.SetorMapper;
+import br.com.lumiflow.model.EtapaSetor;
+import br.com.lumiflow.model.Setor;
+import br.com.lumiflow.repository.EtapaSetorRepository;
 import br.com.lumiflow.repository.MaquinaRepository;
 import br.com.lumiflow.repository.SetorRepository;
 import lombok.AllArgsConstructor;
+import org.springframework.dao.DataIntegrityViolationException;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
-
 import java.util.List;
 import java.util.Locale;
-
-@Service
-@AllArgsConstructor
+@Service @AllArgsConstructor
 public class SetorService {
-
-    private final SetorRepository setorRepository;
-    private final EtapaSetorRepository etapaSetorRepository; // <--- Injetado aqui
-    private final SetorMapper setorMapper;
-    private final MaquinaRepository maquinaRepository;
-
-    public Setor buscarSetorPorId(Long idSetor) {
-        return setorRepository.findById(idSetor)
-                .orElseThrow(() -> new BusinessException("Setor não encontrado"));
-    }
-
-    @Transactional(readOnly = true)
-    public List<SetorListagemDTO> listarSetores() {
-        return setorRepository.findAllByOrderByNomeAsc().stream()
-                .map(setor -> new SetorListagemDTO(
-                        setor.getId(),
-                        setor.getNome(),
-                        setor.getPossuiEtapas(),
-                        maquinaRepository.countBySetorId(setor.getId())
-                )).toList();
-    }
-
-    @Transactional
-    public void novoSetor(SetorDTO setorDTO) {
-        if (setorRepository.findByNome(setorDTO.nome().toUpperCase()).isPresent()) {
-            throw new BusinessException("Já existe setor com esse nome");
-        }
-
-        Setor setor = setorMapper.toEntity(setorDTO);
-
-        Setor setorSalvo = setorRepository.save(setor);
-
-        // Se o DTO envia etapas e o setor possui etapas, salva elas
-        salvarEtapasDoSetor(setorSalvo, setorDTO);
-    }
-
-    @Transactional
-    public void excluirSetor(Long id) { // Nome corrigido de exluirSetor para excluirSetor
-        Setor setor = buscarSetorPorId(id);
-
-        // Opcional: Validação prévia se houver máquinas vinculadas
-        long maquinasCount = maquinaRepository.countBySetorId(id);
-        if (maquinasCount > 0) {
-            throw new BusinessException("Não é possível excluir este setor pois existem máquinas vinculadas a ele.");
-        }
-
-        try {
-            // Remove as etapas vinculadas primeiro para evitar violação de chave estrangeira
-            etapaSetorRepository.deleteAllBySetorId(id);
-            setorRepository.delete(setor);
-        } catch (BusinessException e) {
-            throw new BusinessException(
-                    "Não é possível excluir este setor pois ele está em uso em roteiros ou processos.");
-        }
-    }
-
-    @Transactional
-    public void editarSetor(long id, SetorDTO setorDTO) {
-        Setor setor = buscarSetorPorId(id);
-
-        // Validação de nome duplicado (se mudou o nome e já existe outro com esse nome)
-        setorRepository.findByNome(setorDTO.nome().toUpperCase()).ifPresent(s -> {
-            if (!s.getId().equals(id)) {
-                throw new BusinessException("Já existe outro setor com esse nome");
-            }
-        });
-
-        setor.setNome(setorDTO.nome().trim().toUpperCase(Locale.ROOT));
-        setor.setPossuiEtapas(setorDTO.possuiEtapas());
-
-        setorRepository.save(setor);
-
-        // Gerencia as etapas: se desmarcou que possui etapas, limpa do banco. Se possui, atualiza/insere as novas.
-        if (!Boolean.TRUE.equals(setorDTO.possuiEtapas())) {
-            etapaSetorRepository.deleteAllBySetorId(id);
-        } else {
-            // Remove as antigas e insere as novas enviadas pelo formulário
-            etapaSetorRepository.deleteAllBySetorId(id);
-            salvarEtapasDoSetor(setor, setorDTO);
-        }
-    }
-
-    // Método auxiliar para processar as etapas vindas do DTO
-    private void salvarEtapasDoSetor(Setor setor, SetorDTO setorDTO) {
-        if (setorDTO.etapas() != null && !setorDTO.etapas().isEmpty()) {
-            for (int i = 0; i < setorDTO.etapas().size(); i++) {
-                EtapaSetorDTO etapaDto = setorDTO.etapas().get(i);
-
-                EtapaSetor etapa = new EtapaSetor();
-                etapa.setNome(etapaDto.nome());
-                etapa.setSetor(setor);
-
-                // BLINDAGEM: Se a ordem veio do DTO, usa ela. Se veio nula, usa a posição sequencial (i + 1)
-                int ordemFinal = (etapaDto.ordem() != null) ? etapaDto.ordem() : (i + 1);
-                etapa.setOrdem(ordemFinal);
-
-                etapaSetorRepository.save(etapa);
-            }
-        }
-    }
+    private final SetorRepository setorRepository; private final EtapaSetorRepository etapaSetorRepository; private final SetorMapper setorMapper; private final MaquinaRepository maquinaRepository;
+    public Setor buscarSetorPorId(Long id) { return setorRepository.findById(id).orElseThrow(() -> new BusinessException(AppMessages.ERROR_SECTOR_NOTFOUND)); }
+    @Transactional(readOnly = true) public List<SetorListagemDTO> listarSetores() { return setorRepository.findAllByOrderByNomeAsc().stream().map(s -> new SetorListagemDTO(s.getId(), s.getNome(), s.getPossuiEtapas(), maquinaRepository.countBySetorId(s.getId()))).toList(); }
+    @Transactional public void novoSetor(SetorDTO dto) { if (setorRepository.findByNome(dto.nome().toUpperCase(Locale.ROOT)).isPresent()) throw new BusinessException(AppMessages.ERROR_SECTOR_NAME_DUPLICATE); Setor setor = setorRepository.save(setorMapper.toEntity(dto)); salvarEtapasDoSetor(setor, dto); }
+    @Transactional public void excluirSetor(Long id) { Setor setor = buscarSetorPorId(id); if (maquinaRepository.countBySetorId(id) > 0) throw new BusinessException(AppMessages.ERROR_SECTOR_HAS_MACHINES); try { etapaSetorRepository.deleteAllBySetorId(id); setorRepository.delete(setor); } catch (DataIntegrityViolationException ex) { throw new BusinessException(AppMessages.ERROR_SECTOR_IN_USE); } }
+    @Transactional public void editarSetor(long id, SetorDTO dto) { Setor setor = buscarSetorPorId(id); setorRepository.findByNome(dto.nome().toUpperCase(Locale.ROOT)).filter(s -> !s.getId().equals(id)).ifPresent(s -> { throw new BusinessException(AppMessages.ERROR_SECTOR_NAME_DUPLICATE); }); setor.setNome(dto.nome().trim().toUpperCase(Locale.ROOT)); setor.setPossuiEtapas(dto.possuiEtapas()); setorRepository.save(setor); etapaSetorRepository.deleteAllBySetorId(id); if (Boolean.TRUE.equals(dto.possuiEtapas())) salvarEtapasDoSetor(setor, dto); }
+    private void salvarEtapasDoSetor(Setor setor, SetorDTO dto) { if (dto.etapas() == null) return; for (int i = 0; i < dto.etapas().size(); i++) { EtapaSetorDTO etapaDto = dto.etapas().get(i); EtapaSetor etapa = new EtapaSetor(); etapa.setNome(etapaDto.nome()); etapa.setSetor(setor); etapa.setOrdem(etapaDto.ordem() == null ? i + 1 : etapaDto.ordem()); etapaSetorRepository.save(etapa); } }
 }

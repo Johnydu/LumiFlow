@@ -21,6 +21,7 @@
   <link rel="stylesheet" th:href="@{/css/components/alerts.css}">
   <link rel="stylesheet" th:href="@{/css/utils.css}">
   <link rel="stylesheet" th:href="@{/css/responsive.css}"/>
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
 </head>
 <body class="page-vidracaria-vidracaria">
 <div th:replace="fragments/messages :: alerts"></div>
@@ -68,6 +69,9 @@
     <!-- 3. FORMULÁRIO DE CONSUMO/SAÍDA -->
     <div id="tab-consumo" class="form-card">
       <form th:action="@{/dashboard/vidracaria/movimentar}" method="post">
+        <input type="hidden"
+               th:name="${_csrf.parameterName}"
+               th:value="${_csrf.token}" />
 
         <!-- Define o tipo como SAIDA -->
         <input type="hidden" name="tipoMovimentacao" value="SAIDA"/>
@@ -125,6 +129,9 @@
     <!-- 4. FORMULÁRIO DE ENTRADA -->
     <div id="tab-entrada" class="form-card" style="display:none">
       <form th:action="@{/dashboard/vidracaria/movimentar}" method="post">
+        <input type="hidden"
+               th:name="${_csrf.parameterName}"
+               th:value="${_csrf.token}" />
 
         <!-- Define o tipo como ENTRADA -->
         <input type="hidden" name="tipoMovimentacao" value="ENTRADA"/>
@@ -182,6 +189,9 @@
     <!-- FORM CADASTRAR NOVO VIDRO -->
     <div id="tab-cadastro" class="form-card" style="display:none">
       <form th:action="@{/dashboard/vidracaria/cadastrar-chapa}" method="post">
+        <input type="hidden"
+               th:name="${_csrf.parameterName}"
+               th:value="${_csrf.token}" />
 
         <div class="card-title">Cadastrar Novo Tipo/Modelo de Vidro</div>
         <div class="form-grid">

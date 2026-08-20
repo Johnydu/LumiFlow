@@ -1,53 +1,54 @@
 package br.com.lumiflow.config;
 
-/**
- * Centraliza as mensagens exibidas pela aplicação para manter consistência,
- * facilitar a manutenção e preparar o projeto para futuras traduções.
- */
+/** Centralized keys for all user-facing application messages. */
 public final class AppMessages {
-
-    private AppMessages() {
-    }
-
-    // SUCCESS
-    public static final String SUCCESS_USER_CREATED = "Usuário cadastrado com sucesso.";
-    public static final String SUCCESS_USER_UPDATED = "Usuário atualizado com sucesso.";
-    public static final String SUCCESS_USER_DELETED = "Usuário excluído com sucesso.";
-    public static final String SUCCESS_LOGIN = "Login realizado com sucesso.";
-    public static final String SUCCESS_LOGOUT = "Logout realizado com sucesso.";
-    public static final String SUCCESS_MACHINE_CREATED = "Máquina cadastrada com sucesso.";
-    public static final String SUCCESS_MACHINE_UPDATED = "Máquina atualizada com sucesso.";
-    public static final String SUCCESS_MACHINE_DELETED = "Máquina removida com sucesso.";
-    public static final String SUCCESS_OPERATOR_CREATED = "Operador cadastrado com sucesso.";
-    public static final String SUCCESS_OPERATOR_UPDATED = "Operador atualizado com sucesso.";
-    public static final String SUCCESS_OPERATOR_DELETED = "Operador excluído com sucesso.";
-    public static final String SUCCESS_PRODUCT_CREATED = "Produto cadastrado com sucesso.";
-    public static final String SUCCESS_PRODUCT_UPDATED = "Produto atualizado com sucesso.";
-    public static final String SUCCESS_PRODUCT_DELETED = "Produto excluído com sucesso.";
-    public static final String SUCCESS_SECTOR_CREATED = "Setor cadastrado com sucesso.";
-    public static final String SUCCESS_SECTOR_UPDATED = "Setor atualizado com sucesso.";
-    public static final String SUCCESS_SECTOR_DELETED = "Setor removido com sucesso.";
-    public static final String SUCCESS_ROUTE_CREATED = "Roteiro cadastrado com sucesso.";
-    public static final String SUCCESS_ROUTE_UPDATED = "Roteiro atualizado com sucesso.";
-    public static final String SUCCESS_ROUTE_DELETED = "Roteiro removido com sucesso.";
-    public static final String SUCCESS_GLASS_MOVEMENT_CREATED = "Movimentação registrada com sucesso.";
-    public static final String SUCCESS_GLASS_TYPE_CREATED = "Tipo de vidro cadastrado com sucesso.";
-
-    // ERROR
-    public static final String ERROR_USER_NOT_FOUND = "Usuário não encontrado.";
-    public static final String ERROR_USER_ALREADY_EXISTS = "Já existe um usuário com estes dados.";
-    public static final String ERROR_USER_INVALID_CREDENTIALS = "Usuário ou senha inválidos.";
-    public static final String ERROR_USER_INACTIVE = "Usuário inativo.";
-    public static final String ERROR_USER_PERMISSION_DENIED = "Você não possui permissão para esta ação.";
-    public static final String ERROR_MACHINE_NOT_FOUND = "Máquina não encontrada.";
-    public static final String ERROR_INTERNAL_SERVER = "Ocorreu um erro inesperado. A equipe técnica foi notificada.";
-    public static final String ERROR_UNAUTHORIZED = "Acesso não autorizado.";
-    public static final String ERROR_FORBIDDEN = "Acesso proibido.";
-    public static final String ERROR_VALIDATION_FAILED = "Preencha os campos corretamente.";
-    public static final String ERROR_DATABASE_CONNECTION = "Não foi possível conectar ao banco de dados.";
-
-    // INFO
-    public static final String INFO_NO_RECORDS = "Nenhum registro encontrado.";
-    public static final String INFO_CONFIRM_DELETE = "Confirma a exclusão deste registro?";
-    public static final String INFO_SESSION_EXPIRED = "Sua sessão expirou. Faça login novamente.";
+    private AppMessages() { }
+    public static final String SUCCESS_USER_CREATED = "success.user.created";
+    public static final String SUCCESS_USER_UPDATED = "success.user.updated";
+    public static final String SUCCESS_USER_DELETED = "success.user.deleted";
+    public static final String SUCCESS_USER_LOGIN = "success.user.login";
+    public static final String SUCCESS_USER_LOGOUT = "success.user.logout";
+    public static final String SUCCESS_PRODUCT_CREATED = "success.produto.created";
+    public static final String SUCCESS_PRODUCT_UPDATED = "success.produto.updated";
+    public static final String SUCCESS_PRODUCT_DELETED = "success.produto.deleted";
+    public static final String SUCCESS_MACHINE_CREATED = "success.machine.created";
+    public static final String SUCCESS_MACHINE_UPDATED = "success.machine.updated";
+    public static final String SUCCESS_MACHINE_DELETED = "success.machine.deleted";
+    public static final String SUCCESS_OPERATOR_CREATED = "success.operador.created";
+    public static final String SUCCESS_OPERATOR_UPDATED = "success.operador.updated";
+    public static final String SUCCESS_OPERATOR_DELETED = "success.operador.deleted";
+    public static final String SUCCESS_SECTOR_CREATED = "success.sector.created";
+    public static final String SUCCESS_SECTOR_UPDATED = "success.sector.updated";
+    public static final String SUCCESS_SECTOR_DELETED = "success.sector.deleted";
+    public static final String SUCCESS_ROUTE_CREATED = "success.route.created";
+    public static final String SUCCESS_ROUTE_UPDATED = "success.route.updated";
+    public static final String SUCCESS_ROUTE_DELETED = "success.route.deleted";
+    public static final String SUCCESS_GLASS_MOVEMENT_CREATED = "success.glass.movement.created";
+    public static final String SUCCESS_GLASS_TYPE_CREATED = "success.glass.type.created";
+    public static final String ERROR_USER_NOTFOUND = "error.user.notfound";
+    public static final String ERROR_USER_ALREADY_EXISTS = "error.user.already.exists";
+    public static final String ERROR_USER_LOGIN_INVALID = "error.user.login.invalid";
+    public static final String ERROR_USER_PASSWORD_WEAK = "error.user.password.weak";
+    public static final String ERROR_USER_INVALID_CREDENTIALS = "error.user.invalid.credentials";
+    public static final String ERROR_PRODUCT_NOTFOUND = "error.produto.notfound";
+    public static final String ERROR_PRODUCT_CODIGO_DUPLICATE = "error.produto.codigo.duplicate";
+    public static final String ERROR_PRODUCT_NOME_DUPLICATE = "error.produto.nome.duplicate";
+    public static final String ERROR_MACHINE_NOTFOUND = "error.machine.notfound";
+    public static final String ERROR_MACHINE_NAME_DUPLICATE = "error.machine.name.duplicate";
+    public static final String ERROR_OPERATOR_NOTFOUND = "error.operator.notfound";
+    public static final String ERROR_OPERATOR_NAME_DUPLICATE = "error.operator.name.duplicate";
+    public static final String ERROR_SECTOR_NOTFOUND = "error.sector.notfound";
+    public static final String ERROR_SECTOR_NAME_DUPLICATE = "error.sector.name.duplicate";
+    public static final String ERROR_SECTOR_HAS_MACHINES = "error.sector.has.machines";
+    public static final String ERROR_SECTOR_IN_USE = "error.sector.in.use";
+    public static final String ERROR_ACCESS_LEVEL_NOTFOUND = "error.access.level.notfound";
+    public static final String ERROR_ROUTE_ALREADY_EXISTS = "error.route.already.exists";
+    public static final String ERROR_ROUTE_PRODUCT_REQUIRED = "error.route.product.required";
+    public static final String ERROR_ROUTE_STEP_REQUIRED = "error.route.step.required";
+    public static final String ERROR_ROUTE_STEP_NOTFOUND = "error.route.step.notfound";
+    public static final String ERROR_GLASS_SHEET_NOTFOUND = "error.glass.sheet.notfound";
+    public static final String ERROR_GLASS_OPERATOR_NOTFOUND = "error.glass.operator.notfound";
+    public static final String ERROR_GLASS_TYPE_DUPLICATE = "error.glass.type.duplicate";
+    public static final String ERROR_VALIDATION_FAILED = "error.validation.failed";
+    public static final String ERROR_SYSTEM_INTERNAL = "error.system.internal";
 }
