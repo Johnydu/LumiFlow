@@ -1,5 +1,6 @@
 package br.com.lumiflow.controller;
 
+import br.com.lumiflow.config.AppMessages;
 import br.com.lumiflow.dto.operador.OperadorDTO;
 import br.com.lumiflow.exception.BusinessException;
 import br.com.lumiflow.service.OperadorService;
@@ -37,19 +38,16 @@ public class OperadorController {
                                RedirectAttributes attributes) {
         log.info("Requisição POST: Criar novo operador. Nome: {}", operadorDTO.nome());
         if (result.hasErrors()) {
-            attributes.addFlashAttribute("message", "Preencha os campos corretamente");
-            attributes.addFlashAttribute("messageType", "error");
+            attributes.addFlashAttribute("error", AppMessages.ERROR_VALIDATION_FAILED);
             return "redirect:/dashboard/operadores";
         }
 
         try {
             operadorService.novoOperador(operadorDTO);
-            attributes.addFlashAttribute("message", "Operador cadastrado com sucesso");
-            attributes.addFlashAttribute("messageType", "success");
+            attributes.addFlashAttribute("success", AppMessages.SUCCESS_OPERATOR_CREATED);
 
         } catch (BusinessException ex) {
-            attributes.addFlashAttribute("message", ex.getMessage());
-            attributes.addFlashAttribute("messageType", "error");
+            attributes.addFlashAttribute("error", ex.getMessage());
             log.error(ex.getMessage());
         }
         return  "redirect:/dashboard/operadores";
@@ -60,11 +58,9 @@ public class OperadorController {
 
         try {
             operadorService.excluirOperador(id);
-            attributes.addFlashAttribute("message","Operador excluido com sucesso");
-            attributes.addFlashAttribute("messageType", "success");
+            attributes.addFlashAttribute("success", AppMessages.SUCCESS_OPERATOR_DELETED);
         } catch (BusinessException ex) {
-            attributes.addFlashAttribute("message", ex.getMessage());
-            attributes.addFlashAttribute("messageType", "error");
+            attributes.addFlashAttribute("error", ex.getMessage());
         }
         return "redirect:/dashboard/operadores";
     }
@@ -73,18 +69,15 @@ public class OperadorController {
     public String editarOperador(@PathVariable long id, @Valid @ModelAttribute("operadorDTO") OperadorDTO operadorDTO,
                                  BindingResult result, RedirectAttributes attributes) {
         if (result.hasErrors()) {
-            attributes.addFlashAttribute("message", "Preencha os campos corretamente");
-            attributes.addFlashAttribute("messageType", "error");
+            attributes.addFlashAttribute("error", AppMessages.ERROR_VALIDATION_FAILED);
             return  "redirect:/dashboard/operadores";
         }
 
         try {
             operadorService.editarOperador(id,operadorDTO);
-            attributes.addFlashAttribute("message", "Operador atualizado com sucesso");
-            attributes.addFlashAttribute("messageType", "success");
+            attributes.addFlashAttribute("success", AppMessages.SUCCESS_OPERATOR_UPDATED);
         } catch (BusinessException e) {
-            attributes.addFlashAttribute("message", e.getMessage());
-            attributes.addFlashAttribute("messageType", "error");
+            attributes.addFlashAttribute("error", e.getMessage());
         }
         return "redirect:/dashboard/operadores";
     }

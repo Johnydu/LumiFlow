@@ -22,6 +22,7 @@
     <link rel="stylesheet" th:href="@{/css/responsive.css}">
 </head>
 <body class="page-roteiro-cadastroroteiros">
+<div th:replace="fragments/messages :: alerts"></div>
 
 <aside th:replace="~{fragments/sidebar :: sidebar(activePage='roteiro')}"></aside>
 
@@ -32,11 +33,6 @@
         '+ Novo Roteiro',
         'novoRoteiroForm()'
         )}">
-    </div>
-
-    <div th:if="${message}"
-         th:class="${messageType == 'success'} ? 'alert-success' : 'alert-error'">
-        <span th:text="${message}"></span>
     </div>
 
     <div th:if="${#lists.isEmpty(produtos)}" class="alert-error">

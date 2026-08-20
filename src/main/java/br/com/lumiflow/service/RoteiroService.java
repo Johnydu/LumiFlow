@@ -7,10 +7,9 @@ import br.com.lumiflow.model.Produto;
 import br.com.lumiflow.model.RoteiroProduto;
 import br.com.lumiflow.exception.BusinessException;
 import br.com.lumiflow.repository.RoteiroProdutoRepository;
-import jakarta.transaction.Transactional;
 import lombok.AllArgsConstructor;
 import org.springframework.stereotype.Service;
-
+import org.springframework.transaction.annotation.Transactional;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.stream.Collectors;
@@ -37,6 +36,7 @@ public class RoteiroService {
         return new RoteiroDTO(produtoId, passos);
     }
 
+    @Transactional(readOnly = true)
     public List<RoteiroListagemDTO> listarRoteiros() {
         return roteiroProdutoRepository.listarOrdenados()
                 .stream()
@@ -106,6 +106,7 @@ public class RoteiroService {
             throw new BusinessException("Adicione ao menos uma etapa ao roteiro");
         }
     }
+
 
     private void salvarPersistenciaRoteiro(Long produtoId, RoteiroDTO roteiroDTO) {
         var produto = produtoService.buscarProdutoPorId(produtoId);

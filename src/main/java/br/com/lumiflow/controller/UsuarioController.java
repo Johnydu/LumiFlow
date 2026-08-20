@@ -1,5 +1,6 @@
 package br.com.lumiflow.controller;
 
+import br.com.lumiflow.config.AppMessages;
 import br.com.lumiflow.dto.usuario.UsuarioDTO;
 import br.com.lumiflow.dto.usuario.UsuarioEdicaoDTO;
 import br.com.lumiflow.exception.BusinessException;
@@ -58,28 +59,24 @@ public class UsuarioController {
         
         if (result.hasErrors()) {
             log.warn("Validação falhou ao criar usuário: {}", usuarioDTO.login());
-            attributes.addFlashAttribute("message", "Preencha os campos corretamente");
-            attributes.addFlashAttribute("messageType", "error");
+            attributes.addFlashAttribute("error", AppMessages.ERROR_VALIDATION_FAILED);
             return "redirect:/dashboard/usuario";
         }
         
         try {
             usuarioService.novoUsuario(usuarioDTO);
-            attributes.addFlashAttribute("message", "Usuário cadastrado com sucesso");
-            attributes.addFlashAttribute("messageType", "success");
+            attributes.addFlashAttribute("success", AppMessages.SUCCESS_USER_CREATED);
             
             log.info("Usuário criado com sucesso via controller: {}", usuarioDTO.login());
             return "redirect:/dashboard/usuario";
             
         } catch (BusinessException ex) {
             log.warn("Erro ao criar usuário: {}. Mensagem: {}", usuarioDTO.login(), ex.getMessage());
-            attributes.addFlashAttribute("message", ex.getMessage());
-            attributes.addFlashAttribute("messageType", "error");
+            attributes.addFlashAttribute("error", ex.getMessage());
         } catch (Exception ex) {
             log.error("Erro inesperado ao criar usuário: {}. Mensagem: {}", 
                       usuarioDTO.login(), ex.getMessage(), ex);
-            attributes.addFlashAttribute("message", "Erro ao criar usuário");
-            attributes.addFlashAttribute("messageType", "error");
+            attributes.addFlashAttribute("error", AppMessages.ERROR_INTERNAL_SERVER);
         }
         
         return "redirect:/dashboard/usuario";
@@ -94,20 +91,17 @@ public class UsuarioController {
         
         try {
             usuarioService.excluirUsuario(id);
-            attributes.addFlashAttribute("message", "Usuário excluído com sucesso");
-            attributes.addFlashAttribute("messageType", "success");
+            attributes.addFlashAttribute("success", AppMessages.SUCCESS_USER_DELETED);
             
             log.info("Usuário deletado com sucesso via controller. ID: {}", id);
             
         } catch (BusinessException ex) {
             log.warn("Erro ao deletar usuário ID: {}. Mensagem: {}", id, ex.getMessage());
-            attributes.addFlashAttribute("message", ex.getMessage());
-            attributes.addFlashAttribute("messageType", "error");
+            attributes.addFlashAttribute("error", ex.getMessage());
         } catch (Exception ex) {
             log.error("Erro inesperado ao deletar usuário ID: {}. Mensagem: {}", 
                       id, ex.getMessage(), ex);
-            attributes.addFlashAttribute("message", "Erro ao deletar usuário");
-            attributes.addFlashAttribute("messageType", "error");
+            attributes.addFlashAttribute("error", AppMessages.ERROR_INTERNAL_SERVER);
         }
         
         return "redirect:/dashboard/usuario";
@@ -124,27 +118,23 @@ public class UsuarioController {
         
         if (result.hasErrors()) {
             log.warn("Validação falhou ao editar usuário ID: {}", id);
-            attributes.addFlashAttribute("message", "Preencha os campos corretamente");
-            attributes.addFlashAttribute("messageType", "error");
+            attributes.addFlashAttribute("error", AppMessages.ERROR_VALIDATION_FAILED);
             return "redirect:/dashboard/usuario";
         }
         
         try {
             usuarioService.editarUsuario(id, usuarioEdicaoDTO);
-            attributes.addFlashAttribute("message", "Usuário atualizado com sucesso");
-            attributes.addFlashAttribute("messageType", "success");
+            attributes.addFlashAttribute("success", AppMessages.SUCCESS_USER_UPDATED);
             
             log.info("Usuário atualizado com sucesso via controller. ID: {}", id);
             
         } catch (BusinessException ex) {
             log.warn("Erro ao editar usuário ID: {}. Mensagem: {}", id, ex.getMessage());
-            attributes.addFlashAttribute("message", ex.getMessage());
-            attributes.addFlashAttribute("messageType", "error");
+            attributes.addFlashAttribute("error", ex.getMessage());
         } catch (Exception ex) {
             log.error("Erro inesperado ao editar usuário ID: {}. Mensagem: {}", 
                       id, ex.getMessage(), ex);
-            attributes.addFlashAttribute("message", "Erro ao editar usuário");
-            attributes.addFlashAttribute("messageType", "error");
+            attributes.addFlashAttribute("error", AppMessages.ERROR_INTERNAL_SERVER);
         }
         
         return "redirect:/dashboard/usuario";

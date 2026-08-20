@@ -8,8 +8,10 @@ import br.com.lumiflow.repository.MaquinaRepository;
 import jakarta.validation.Valid;
 import lombok.AllArgsConstructor;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
+import java.util.Locale;
 
 @Service
 @AllArgsConstructor
@@ -20,12 +22,13 @@ public class MaquinaService {
     private final SetorService setorService;
 
 
-
+    @Transactional(readOnly = true)
     public List<MaquinaDTO> listarMaquinas(){
        return maquinaMapper.toDtoList(maquinaRepository.findAllByOrderByNomeAsc());
 
     }
 
+    @Transactional
     public void novaMaquina(@Valid MaquinaDTO maquinaDTO) {
         if(maquinaRepository.findByNome(maquinaDTO.nome()).isPresent()){
             throw new BusinessException("Já existe uma máquina cadastrada com esse nome '" +
@@ -39,6 +42,7 @@ public class MaquinaService {
     }
 
 
+    @Transactional
     public void deletarMaquina(long id) {
         Maquina maquina = maquinaRepository.findById(id).orElseThrow(
                 ()-> new BusinessException("Maquina não encontrada"));
@@ -46,6 +50,7 @@ public class MaquinaService {
         maquinaRepository.delete(maquina);
     }
 
+    @Transactional
     public void editarMaquina(Long id, MaquinaDTO maquinaDTO) {
         Maquina maquina = maquinaRepository.findById(id)
                 .orElseThrow(() ->
@@ -59,7 +64,7 @@ public class MaquinaService {
                     );
                 });
 
-        maquina.setNome(maquinaDTO.nome());
+        maquina.setNome(maquinaDTO.nome().trim().toUpperCase(Locale.ROOT));
         maquina.setSetor(setorService.buscarSetorPorId(maquinaDTO.setorId()));
 
         maquinaRepository.save(maquina);

@@ -4,6 +4,7 @@ import br.com.lumiflow.dto.maquina.MaquinaDTO;
 import br.com.lumiflow.model.Maquina;
 import org.mapstruct.Mapper;
 import org.mapstruct.Mapping;
+import org.mapstruct.Named;
 
 import java.util.List;
 
@@ -11,7 +12,15 @@ import java.util.List;
 public interface MaquinaMapper {
 
     @Mapping(target = "setor", ignore = true)
+    @Mapping(target = "nome", source = "nome", qualifiedByName = "normalizarNome")
     Maquina toEntity(MaquinaDTO maquinaDTO);
+
+    @Named("normalizarNome")
+    default String normalizarNome(String nome) {
+        return nome == null
+                ? null
+                : nome.trim().toUpperCase(java.util.Locale.ROOT);
+    }
 
 
     @Mapping(target = "setor", source = "setor.nome")

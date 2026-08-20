@@ -1,5 +1,6 @@
 package br.com.lumiflow.controller;
 
+import br.com.lumiflow.config.AppMessages;
 import br.com.lumiflow.dto.maquina.MaquinaDTO;
 import br.com.lumiflow.exception.BusinessException;
 import br.com.lumiflow.service.MaquinaService;
@@ -33,18 +34,15 @@ public class MaquinaController {
     public String novaMquina(@Valid @ModelAttribute("maquinaDTO") MaquinaDTO maquinaDTO, BindingResult result,
                              RedirectAttributes attributes) {
         if (result.hasErrors()) {
-            attributes.addFlashAttribute("message","Preencha todos os campos corretamente");
-            attributes.addFlashAttribute("messageType", "error");
+            attributes.addFlashAttribute("error", AppMessages.ERROR_VALIDATION_FAILED);
             return  "redirect:/dashboard/maquinas";
         }
         try {
             maquinaService.novaMaquina(maquinaDTO);
-            attributes.addFlashAttribute("message","Maquina cadastrada com sucesso");
-            attributes.addFlashAttribute("messageType", "success");
+            attributes.addFlashAttribute("success", AppMessages.SUCCESS_MACHINE_CREATED);
 
         } catch (BusinessException e) {
-            attributes.addFlashAttribute("message", e.getMessage());
-            attributes.addFlashAttribute("messageType", "error");
+            attributes.addFlashAttribute("error", e.getMessage());
         }
         return "redirect:/dashboard/maquinas";
 
@@ -55,11 +53,9 @@ public class MaquinaController {
 
         try {
             maquinaService.deletarMaquina(id);
-            attributes.addFlashAttribute("message","Maquina removida com sucesso");
-            attributes.addFlashAttribute("messageType", "success");
+            attributes.addFlashAttribute("success", AppMessages.SUCCESS_MACHINE_DELETED);
         } catch (BusinessException e) {
-            attributes.addFlashAttribute("message", e.getMessage());
-            attributes.addFlashAttribute("messageType", "error");
+            attributes.addFlashAttribute("error", e.getMessage());
         }
 
         return "redirect:/dashboard/maquinas";
@@ -70,17 +66,14 @@ public class MaquinaController {
                          @Valid @ModelAttribute("maquinaDTO") MaquinaDTO maquinaDTO,
                          BindingResult result, RedirectAttributes attributes) {
         if (result.hasErrors()) {
-            attributes.addFlashAttribute("message", "Preencha os campos corretamente");
-            attributes.addFlashAttribute("messageType", "error");
+            attributes.addFlashAttribute("error", AppMessages.ERROR_VALIDATION_FAILED);
             return "redirect:/dashboard/maquinas";
         }
         try {
             maquinaService.editarMaquina( id, maquinaDTO);
-            attributes.addFlashAttribute("message", "Maquina atualizada com sucesso");
-            attributes.addFlashAttribute("messageType", "success");
+            attributes.addFlashAttribute("success", AppMessages.SUCCESS_MACHINE_UPDATED);
         } catch (BusinessException e) {
-            attributes.addFlashAttribute("message", e.getMessage());
-            attributes.addFlashAttribute("messageType", "error");
+            attributes.addFlashAttribute("error", e.getMessage());
         }
         return "redirect:/dashboard/maquinas";
     }

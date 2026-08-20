@@ -23,6 +23,7 @@
 </head>
 
 <body class="page-ordemproducao-listaordem">
+<div th:replace="fragments/messages :: alerts"></div>
 
 <aside th:replace="~{fragments/sidebar :: sidebar(activePage='ordens')}"></aside>
 
@@ -33,11 +34,6 @@
         '+ Nova Ordem',
         'novaOrdemForm()'
     )}">
-  </div>
-
-  <div th:if="${message}"
-       th:class="${messageType == 'success'} ? 'alert-success' : 'alert-error'">
-    <span th:text="${message}"></span>
   </div>
 
   <div class="content">

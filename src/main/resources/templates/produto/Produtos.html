@@ -22,6 +22,7 @@
     <link rel="stylesheet" th:href="@{/css/responsive.css}">
 </head>
 <body class="page-produto-cadastroproduto">
+<div th:replace="fragments/messages :: alerts"></div>
 
 <!-- ================================ -->
 <!-- SIDEBAR                          -->
@@ -38,14 +39,6 @@
     '+ Novo Produto',
     'novoProdutoForm()'
 )}"></div>
-
-    <!-- ================================ -->
-    <!-- MENSAGENS DE FEEDBACK            -->
-    <!-- ================================ -->
-    <div th:if="${message}"
-         th:class="${messageType == 'success'} ? 'alert-success' : 'alert-error'">
-        <span th:text="${message}"></span>
-    </div>
 
     <div class="content">
 

@@ -6,6 +6,7 @@ import br.com.lumiflow.dto.usuario.UsuarioListaDTO;
 import br.com.lumiflow.model.Usuario;
 import org.mapstruct.Mapper;
 import org.mapstruct.Mapping;
+import org.mapstruct.Named;
 
 import java.util.List;
 
@@ -16,7 +17,15 @@ public interface UsuarioMapper {
     @Mapping(target = "senha", ignore = true)
     @Mapping(target = "nivelAcesso", ignore = true)
     @Mapping(target = "setor", ignore = true)
+    @Mapping(target = "nome", source = "nome", qualifiedByName = "normalizarNome")
     Usuario toEntity(UsuarioDTO usuarioDto);
+
+    @Named("normalizarNome")
+    default String normalizarNome(String nome) {
+        return nome == null
+                ? null
+                : nome.trim().toUpperCase(java.util.Locale.ROOT);
+    }
 
     @Mapping(target = "senha", ignore = true)
     @Mapping(target = "nivelAcesso", ignore = true)

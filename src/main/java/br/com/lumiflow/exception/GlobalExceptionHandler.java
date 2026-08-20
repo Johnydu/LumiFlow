@@ -1,5 +1,6 @@
 package br.com.lumiflow.exception;
 
+import br.com.lumiflow.config.AppMessages;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.ControllerAdvice;
@@ -35,7 +36,7 @@ public class GlobalExceptionHandler {
         log.warn("Recurso não encontrado. URI: {}, Mensagem: {}", 
                  requestUri, ex.getMessage());
 
-        model.addAttribute("erro", ex.getMessage());
+        model.addAttribute("erro", AppMessages.ERROR_USER_NOT_FOUND);
         return "error/404";
     }
 
@@ -116,8 +117,7 @@ public class GlobalExceptionHandler {
         log.error("Erro inesperado não tratado. URI: {}, Tipo: {}, Mensagem: {}", 
                   requestUri, exceptionType, ex.getMessage(), ex);
 
-        model.addAttribute("erro", 
-                "Ocorreu um erro inesperado. A equipe técnica foi notificada.");
+        model.addAttribute("erro", AppMessages.ERROR_INTERNAL_SERVER);
         
         return "error/500";
     }

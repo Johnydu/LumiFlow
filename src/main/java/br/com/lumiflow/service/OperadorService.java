@@ -41,6 +41,7 @@ public class OperadorService {
         return operadorRepository.findById(id).orElseThrow(()->new BusinessException("Operador nao encontrado"));
     }
 
+    @Transactional(readOnly = true)
     public List<OperadorListagemDTO> listarOperadores() {
 
        return operadorMapper.toListDto(operadorRepository.findAllByOrderByNomeAsc());
@@ -52,9 +53,13 @@ public class OperadorService {
 
         validarNomeOperador(operadorDTO.nome());
 
-        operadorRepository.save(operadorMapper.toEntity(operadorDTO));
+        Operador operador = operadorMapper.toEntity(operadorDTO);
+        operador.setSetorPadrao(setorService.buscarSetorPorId(operadorDTO.setorPadraoId()));
+
+        operadorRepository.save(operador);
     }
 
+    @Transactional
     public void excluirOperador(@Valid Long id) {
         buscarOperadorPorId(id);
 

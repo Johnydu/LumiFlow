@@ -21,7 +21,7 @@ public class ChapaVidro extends Auditoria {
     @Column(name = "tipo_vidro",length = 10,nullable = false)
     private TipoVidro tipoVidro;
 
-    @Enumerated(EnumType.STRING)
+
     @Column(name = "descricao",length = 10)
     private String descricao;
 

@@ -1,5 +1,6 @@
 package br.com.lumiflow.controller;
 
+import br.com.lumiflow.config.AppMessages;
 import br.com.lumiflow.dto.produto.ProdutoDTO;
 import br.com.lumiflow.exception.BusinessException;
 import br.com.lumiflow.service.ProdutoService;
@@ -41,18 +42,15 @@ public class ProdutoController {
     public String novoProduto(@Valid @ModelAttribute("produtoDTO") ProdutoDTO produtoDTO, BindingResult result,
                             RedirectAttributes attributes) {
         if (result.hasErrors()) {
-            attributes.addFlashAttribute("message","Preencha todos os campos corretamente");
-            attributes.addFlashAttribute("messageType", "error");
+            attributes.addFlashAttribute("error", AppMessages.ERROR_VALIDATION_FAILED);
             return  "redirect:/dashboard/produtos";
         }
         try {
             produtoService.novoProduto(produtoDTO);
-            attributes.addFlashAttribute("message","Produto cadastrado com sucesso");
-            attributes.addFlashAttribute("messageType", "success");
+            attributes.addFlashAttribute("success", AppMessages.SUCCESS_PRODUCT_CREATED);
 
         } catch (BusinessException e) {
-            attributes.addFlashAttribute("message", e.getMessage());
-            attributes.addFlashAttribute("messageType", "error");
+            attributes.addFlashAttribute("error", e.getMessage());
         }
         return "redirect:/dashboard/produtos";
 
@@ -63,12 +61,10 @@ public class ProdutoController {
 
         try {
             produtoService.deletarProduto(id);
-            attributes.addFlashAttribute("message","Produto excluido com sucesso");
-            attributes.addFlashAttribute("messageType", "success");
+            attributes.addFlashAttribute("success", AppMessages.SUCCESS_PRODUCT_DELETED);
         } catch (BusinessException e) {
 
-            attributes.addFlashAttribute("message", e.getMessage());
-            attributes.addFlashAttribute("messageType", "error");
+            attributes.addFlashAttribute("error", e.getMessage());
         }
 
         return  "redirect:/dashboard/produtos";
@@ -79,20 +75,17 @@ public class ProdutoController {
                                 BindingResult result, RedirectAttributes attributes
                                 ) {
         if (result.hasErrors()) {
-            attributes.addFlashAttribute("message","Preencha todos os campos corretamente");
-            attributes.addFlashAttribute("messageType", "error");
+            attributes.addFlashAttribute("error", AppMessages.ERROR_VALIDATION_FAILED);
             return  "redirect:/dashboard/produtos";
         }
 
         try {
             produtoService.editarProduto(id,produtoDTO);
-            attributes.addFlashAttribute("message","Produto editado com sucesso");
-            attributes.addFlashAttribute("messageType", "success");
+            attributes.addFlashAttribute("success", AppMessages.SUCCESS_PRODUCT_UPDATED);
         } catch (Exception e) {
             e.printStackTrace();
 
-            attributes.addFlashAttribute("message", e.getMessage());
-            attributes.addFlashAttribute("messageType", "error");
+            attributes.addFlashAttribute("error", e.getMessage());
         }
 
         return  "redirect:/dashboard/produtos";

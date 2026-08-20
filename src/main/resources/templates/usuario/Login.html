@@ -23,6 +23,7 @@
 </head>
 
 <body class="page-usuario-login">
+<div th:replace="fragments/messages :: alerts"></div>
 <div class="screen" id="screen">
   <div class="card" id="card">
 
@@ -127,14 +128,6 @@
       </button>
 
     </form>
-
-    <div th:if="${param.error}" class="msg error">
-      Usuário ou senha inválidos.
-    </div>
-
-    <div th:if="${param.logout}" class="msg success">
-      Logout realizado com sucesso.
-    </div>
 
     <div class="footer-note">
       Esqueceu sua senha? Contate o suporte.

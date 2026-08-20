@@ -20,6 +20,7 @@
   <link rel="stylesheet" th:href="@{/css/responsive.css}"/>
 </head>
 <body class="page-maquina-cadastromaquinas">
+<div th:replace="fragments/messages :: alerts"></div>
 
 <!-- SIDEBAR - MENU LATERAL           -->
 <aside th:replace="~{fragments/sidebar :: sidebar(activePage='maquinas')}"></aside>
@@ -32,11 +33,6 @@
     '+ Nova Maquina',
     'novaMaquinaForm()'
 )}"></div>
-
-  <div th:if="${message}"
-       th:class="${messageType == 'success'} ? 'alert-success' : 'alert-error'">
-    <span th:text="${message}"></span>
-  </div>
 
   <div class="content">
 

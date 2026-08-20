@@ -1,188 +1,268 @@
-
 <!DOCTYPE html>
 <html lang="pt-BR" xmlns:th="http://www.thymeleaf.org"
-     xmlns:sec="http://www.thymeleaf.org/extras/spring-security">
+      xmlns:sec="http://www.thymeleaf.org/extras/spring-security">
 <head>
-<meta charset="UTF-8"/>
-<meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <meta charset="UTF-8"/>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Vidraçaria - LumiFlow</title>
+
+  <!-- CSS -->
   <link rel="stylesheet" th:href="@{/css/variables.css}">
-<link rel="stylesheet" th:href="@{/css/globals.css}">
-<link rel="stylesheet" th:href="@{/css/sidebar.css}">
-<link rel="stylesheet" th:href="@{/css/topbar.css}">
-<link rel="stylesheet" th:href="@{/css/components/buttons.css}">
-<link rel="stylesheet" th:href="@{/css/components/tabs.css}">
-<link rel="stylesheet" th:href="@{/css/components/forms.css}">
-<link rel="stylesheet" th:href="@{/css/components/tables.css}">
-<link rel="stylesheet" th:href="@{/css/components/cards.css}">
-<link rel="stylesheet" th:href="@{/css/components/badges.css}">
-<link rel="stylesheet" th:href="@{/css/components/status.css}">
-<link rel="stylesheet" th:href="@{/css/components/alerts.css}">
-<link rel="stylesheet" th:href="@{/css/utils.css}">
-<link rel="stylesheet" th:href="@{/css/responsive.css}"/>
+  <link rel="stylesheet" th:href="@{/css/globals.css}">
+  <link rel="stylesheet" th:href="@{/css/sidebar.css}">
+  <link rel="stylesheet" th:href="@{/css/topbar.css}">
+  <link rel="stylesheet" th:href="@{/css/components/buttons.css}">
+  <link rel="stylesheet" th:href="@{/css/components/tabs.css}">
+  <link rel="stylesheet" th:href="@{/css/components/forms.css}">
+  <link rel="stylesheet" th:href="@{/css/components/tables.css}">
+  <link rel="stylesheet" th:href="@{/css/components/cards.css}">
+  <link rel="stylesheet" th:href="@{/css/components/badges.css}">
+  <link rel="stylesheet" th:href="@{/css/components/status.css}">
+  <link rel="stylesheet" th:href="@{/css/components/alerts.css}">
+  <link rel="stylesheet" th:href="@{/css/utils.css}">
+  <link rel="stylesheet" th:href="@{/css/responsive.css}"/>
 </head>
 <body class="page-vidracaria-vidracaria">
+<div th:replace="fragments/messages :: alerts"></div>
 
+<!-- SIDEBAR -->
 <aside th:replace="~{fragments/sidebar :: sidebar(activePage='vidracaria')}"></aside>
 
-
 <main class="main">
+
+  <!-- TOPBAR -->
   <div class="topbar">
     <div class="topbar-left">
-      <button class="menu-toggle"
-              onclick="toggleSidebar()">
-        ☰
-      </button>
-
-      <span class="topbar-title"
-            th:text="vidraçaria">
-      </span>
+      <button class="menu-toggle" onclick="toggleSidebar()">☰</button>
+      <span class="topbar-title">Vidraçaria</span>
     </div>
-   </div>
+  </div>
 
   <div class="content">
 
-    <!-- SALDO ATUAL -->
+    <!-- 1. SALDO ATUAL DINÂMICO -->
     <div class="saldo-grid">
-      <div class="saldo-card">
-        <div class="saldo-tipo">Incolor</div>
-        <div class="saldo-val" style="color:var(--color-blue)">20</div>
-        <div class="saldo-sub">chapas em estoque</div>
-        <div class="saldo-bar"><div class="saldo-fill" style="width:40%;background:var(--color-blue)"></div></div>
+      <div class="saldo-card" th:each="s : ${saldos}">
+        <div class="saldo-tipo" th:text="${s.tipoVidro}">Incolor</div>
+        <div class="saldo-val"
+             th:style="${s.abaixoDoEstoqueMinimo} ? 'color:var(--color-danger)' : 'color:var(--color-blue)'"
+             th:text="${s.estoqueAtual}">0</div>
+        <div class="saldo-sub">
+          chapas em estoque
+          <span th:if="${s.abaixoDoEstoqueMinimo}">⚠️</span>
+        </div>
       </div>
-      <div class="saldo-card">
-        <div class="saldo-tipo">Jateado</div>
-        <div class="saldo-val" style="color:var(--color-danger)">2</div>
-        <div class="saldo-sub">chapas em estoque ⚠️</div>
-        <div class="saldo-bar"><div class="saldo-fill" style="width:5%;background:var(--color-danger)"></div></div>
-      </div>
-      <div class="saldo-card">
-        <div class="saldo-tipo">Refletivo</div>
-        <div class="saldo-val" style="color:var(--color-mint)">5</div>
-        <div class="saldo-sub">chapas em estoque</div>
-        <div class="saldo-bar"><div class="saldo-fill" style="width:25%;background:var(--color-mint)"></div></div>
+
+      <div th:if="${#lists.isEmpty(saldos)}" style="color: var(--color-muted-5);">
+        Nenhuma chapa de vidro cadastrada.
       </div>
     </div>
 
-    <!-- ABAS -->
+    <!-- 2. ABAS -->
     <div class="tabs">
       <button class="tab active" onclick="showTab('consumo',this)">Registrar Consumo</button>
       <button class="tab entrada" onclick="showTab('entrada',this)">Registrar Entrada</button>
+      <button class="tab cadastro" onclick="showTab('cadastro',this)">+ Novo Vidro</button>
     </div>
 
-    <!-- FORM CONSUMO -->
+    <!-- 3. FORMULÁRIO DE CONSUMO/SAÍDA -->
     <div id="tab-consumo" class="form-card">
-      <div class="card-title">Consumo de chapas de vidro</div>
-      <div class="form-grid">
+      <form th:action="@{/dashboard/vidracaria/movimentar}" method="post">
+
+        <!-- Define o tipo como SAIDA -->
+        <input type="hidden" name="tipoMovimentacao" value="SAIDA"/>
+
+        <div class="card-title">Consumo de chapas de vidro</div>
+        <div class="form-grid">
+
+          <div class="field">
+            <label>Tipo de vidro <span>*</span></label>
+            <select name="chapaVidroId" required>
+              <option value="">Selecione o tipo</option>
+              <option th:each="c : ${chapas}"
+                      th:value="${c.id}"
+                      th:text="${c.tipoVidro + (c.descricao != null ? ' - ' + c.descricao : '')}">
+              </option>
+            </select>
+          </div>
+
+          <div class="field">
+            <label>Quantidade <span>*</span></label>
+            <input type="number" name="quantidade" min="1" placeholder="0" required/>
+          </div>
+
+          <div class="field">
+            <label>Data e hora</label>
+            <input type="datetime-local" name="dataHora"/>
+          </div>
+
+        </div>
+
+        <div class="field" style="margin-bottom:14px">
+          <label>Observação</label>
+          <input type="text" name="observacao" placeholder="Opcional..."/>
+        </div>
+
         <div class="field">
-          <label>Tipo de vidro <span>*</span></label>
-          <select>
-            <option>Selecione o tipo</option>
-            <option selected>Incolor</option>
-            <option>Jateado</option>
-            <option>Refletivo</option>
+          <label for="operadorConsumo">Operador / Responsável <span>*</span></label>
+          <select id="operadorConsumo" name="operadorId" required>
+            <option value="">Selecione o operador...</option>
+            <option th:each="op : ${operadores}"
+                    th:value="${op.id}"
+                    th:text="${op.nome + (op.funcao != null ? ' - ' + op.funcao : '') + (op.setorPadraoNome != null ? ' (' + op.setorPadraoNome + ')' : '')}">
+            </option>
           </select>
         </div>
-        <div class="field">
-          <label>Quantidade <span>*</span></label>
-          <input type="number" value="3" placeholder="0"/>
+
+        <div class="form-actions">
+          <button type="reset" class="btn-cancel">Cancelar</button>
+          <button type="submit" class="btn-submit active">Confirmar Consumo</button>
         </div>
-        <div class="field">
-          <label>Data e hora <span>*</span></label>
-          <input type="datetime-local" value="2026-05-30T14:30"/>
-        </div>
-      </div>
-      <div class="field" style="margin-bottom:14px">
-        <label>Observação</label>
-        <input type="text" placeholder="Opcional..."/>
-      </div>
-      <div class="form-actions">
-        <button class="btn-cancel">Cancelar</button>
-        <button class="btn-submit active">Confirmar Consumo</button>
-      </div>
+
+      </form>
     </div>
 
-    <!-- FORM ENTRADA -->
+    <!-- 4. FORMULÁRIO DE ENTRADA -->
     <div id="tab-entrada" class="form-card" style="display:none">
-      <div class="card-title">Entrada de chapas de vidro</div>
-      <div class="form-grid">
+      <form th:action="@{/dashboard/vidracaria/movimentar}" method="post">
+
+        <!-- Define o tipo como ENTRADA -->
+        <input type="hidden" name="tipoMovimentacao" value="ENTRADA"/>
+
+        <div class="card-title">Entrada de chapas de vidro</div>
+        <div class="form-grid">
+
+          <div class="field">
+            <label>Tipo de vidro <span>*</span></label>
+            <select name="chapaVidroId" required>
+              <option value="">Selecione o tipo</option>
+              <option th:each="c : ${chapas}"
+                      th:value="${c.id}"
+                      th:text="${c.tipoVidro + (c.descricao != null ? ' - ' + c.descricao : '')}">
+              </option>
+            </select>
+          </div>
+
+          <div class="field">
+            <label>Quantidade recebida <span>*</span></label>
+            <input type="number" name="quantidade" min="1" placeholder="0" required/>
+          </div>
+
+          <div class="field">
+            <label>Data e hora</label>
+            <input type="datetime-local" name="dataHora"/>
+          </div>
+
+        </div>
+
+        <div class="field" style="margin-bottom:14px">
+          <label>Observação</label>
+          <input type="text" name="observacao" placeholder="Ex: Nota fiscal 1234..."/>
+        </div>
+
         <div class="field">
-          <label>Tipo de vidro <span>*</span></label>
-          <select>
-            <option>Selecione o tipo</option>
-            <option>Incolor</option>
-            <option selected>Jateado</option>
-            <option>Refletivo</option>
+          <label for="operadorConsumo">Operador / Responsável <span>*</span></label>
+          <select id="operadorConsumo" name="operadorId" required>
+            <option value="">Selecione o operador...</option>
+            <option th:each="op : ${operadores}"
+                    th:value="${op.id}"
+                    th:text="${op.nome + (op.funcao != null ? ' - ' + op.funcao : '') + (op.setorPadraoNome != null ? ' (' + op.setorPadraoNome + ')' : '')}">
+            </option>
           </select>
         </div>
-        <div class="field">
-          <label>Quantidade recebida <span>*</span></label>
-          <input type="number" value="20" placeholder="0"/>
+
+        <div class="form-actions">
+          <button type="reset" class="btn-cancel">Cancelar</button>
+          <button type="submit" class="btn-submit entrada">Confirmar Entrada</button>
         </div>
-        <div class="field">
-          <label>Data e hora <span>*</span></label>
-          <input type="datetime-local" value="2026-05-30T08:00"/>
-        </div>
-      </div>
-      <div class="field" style="margin-bottom:14px">
-        <label>Observação</label>
-        <input type="text" placeholder="Ex: Nota fiscal 1234..."/>
-      </div>
-      <div class="form-actions">
-        <button class="btn-cancel">Cancelar</button>
-        <button class="btn-submit entrada">Confirmar Entrada</button>
-      </div>
+
+      </form>
     </div>
 
-    <!-- HISTÓRICO -->
+    <!-- FORM CADASTRAR NOVO VIDRO -->
+    <div id="tab-cadastro" class="form-card" style="display:none">
+      <form th:action="@{/dashboard/vidracaria/cadastrar-chapa}" method="post">
+
+        <div class="card-title">Cadastrar Novo Tipo/Modelo de Vidro</div>
+        <div class="form-grid">
+
+          <div class="field">
+            <label>Tipo de vidro <span>*</span></label>
+            <!-- Preenche com todas as opções do seu Enum TipoVidro -->
+            <select name="tipoVidro" required>
+              <option value="">Selecione o tipo</option>
+              <option th:each="tipo : ${T(br.com.lumiflow.model.enums.TipoVidro).values()}"
+                      th:value="${tipo}"
+                      th:text="${tipo}">
+              </option>
+            </select>
+          </div>
+
+          <div class="field">
+            <label>Estoque Mínimo (Alerta) <span>*</span></label>
+            <input type="number" name="estoqueMinimo" min="0" value="5" required/>
+          </div>
+
+          <div class="field">
+            <label>Descrição / Espessura</label>
+            <input type="text" name="descricao" placeholder="Ex: Chapa 4mm - 2200x3210"/>
+          </div>
+
+        </div>
+
+        <div class="form-actions" style="margin-top:15px">
+          <button type="reset" class="btn-cancel">Cancelar</button>
+          <button type="submit" class="btn-submit active">Salvar Novo Vidro</button>
+        </div>
+
+      </form>
+    </div>
+
+    <!-- 5. HISTÓRICO DINÂMICO -->
     <div class="panel">
       <div class="panel-header">
         Histórico
         <span class="panel-sub">entradas e consumos</span>
       </div>
+
       <table>
         <thead>
-          <tr>
-            <th>Tipo</th>
-            <th>Tipo de vidro</th>
-            <th style="width:80px">Qtd</th>
-            <th style="width:160px">Data e hora</th>
-            <th>Operador</th>
-            <th>Observação</th>
-          </tr>
+        <tr>
+          <th>Tipo</th>
+          <th>Tipo de vidro</th>
+          <th style="width:80px">Qtd</th>
+          <th style="width:160px">Data e hora</th>
+          <th>Operador</th>
+          <th>Observação</th>
+        </tr>
         </thead>
         <tbody>
-          <tr>
-            <td><span class="tipo-con">Consumo</span></td>
-            <td><span class="tipo-tag tipo-in">Incolor</span></td>
-            <td>3</td>
-            <td style="color:var(--color-muted);font-size:11px">30/05/2026 14:30</td>
-            <td>Maria</td>
-            <td style="color:var(--color-muted-5)">—</td>
-          </tr>
-          <tr>
-            <td><span class="tipo-ent">Entrada</span></td>
-            <td><span class="tipo-tag tipo-jt">Jateado</span></td>
-            <td>20</td>
-            <td style="color:var(--color-muted);font-size:11px">30/05/2026 08:00</td>
-            <td>Maria</td>
-            <td style="color:var(--color-muted-5)">NF 1234</td>
-          </tr>
-          <tr>
-            <td><span class="tipo-con">Consumo</span></td>
-            <td><span class="tipo-tag tipo-rf">Refletivo</span></td>
-            <td>2</td>
-            <td style="color:var(--color-muted);font-size:11px">29/05/2026 16:00</td>
-            <td>Maria</td>
-            <td style="color:var(--color-muted-5)">—</td>
-          </tr>
-          <tr>
-            <td><span class="tipo-con">Consumo</span></td>
-            <td><span class="tipo-tag tipo-jt">Jateado</span></td>
-            <td>5</td>
-            <td style="color:var(--color-muted);font-size:11px">29/05/2026 10:00</td>
-            <td>João</td>
-            <td style="color:var(--color-muted-5)">—</td>
-          </tr>
+
+        <tr th:each="h : ${historico}">
+          <td>
+              <span th:class="${h.tipoMovimentacao.name() == 'ENTRADA'} ? 'tipo-ent' : 'tipo-con'"
+                    th:text="${h.tipoMovimentacao.name() == 'ENTRADA'} ? 'Entrada' : 'Consumo'">
+              </span>
+          </td>
+          <td>
+            <span class="tipo-tag" th:text="${h.tipoVidro}"></span>
+          </td>
+          <td th:text="${h.quantidade}"></td>
+          <td style="color:var(--color-muted);font-size:11px"
+              th:text="${#temporals.format(h.dataHora, 'dd/MM/yyyy HH:mm')}">
+          </td>
+          <td th:text="${h.nomeUsuario}"></td>
+          <td style="color:var(--color-muted-5)"
+              th:text="${h.observacao != null && !h.observacao.isBlank() ? h.observacao : '—'}">
+          </td>
+        </tr>
+
+        <tr th:if="${#lists.isEmpty(historico)}">
+          <td colspan="6" style="text-align:center;color:var(--color-muted-5)">
+            Nenhuma movimentação registrada até o momento.
+          </td>
+        </tr>
+
         </tbody>
       </table>
     </div>
@@ -190,6 +270,7 @@
   </div>
 </main>
 
+<!-- SCRIPTS -->
 <script th:src="@{/js/vidracaria.js}"></script>
 <script th:src="@{/js/sidebar.js}"></script>
 <script th:src="@{/js/alerts.js}"></script>

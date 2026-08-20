@@ -1,5 +1,6 @@
 package br.com.lumiflow.controller;
 
+import br.com.lumiflow.config.AppMessages;
 import br.com.lumiflow.dto.roteiro.RoteiroDTO;
 import br.com.lumiflow.exception.BusinessException;
 import br.com.lumiflow.service.ProdutoService;
@@ -45,19 +46,16 @@ public class RoteiroController {
                          RedirectAttributes attributes) {
 
         if (result.hasErrors()) {
-            attributes.addFlashAttribute("message", "Preencha os campos corretamente");
-            attributes.addFlashAttribute("messageType", "error");
+            attributes.addFlashAttribute("error", AppMessages.ERROR_VALIDATION_FAILED);
             return "redirect:/dashboard/roteiros";
         }
 
         try {
             // Chama especificamente o método de criação (Responsabilidade Única)
             roteiroService.criar(roteiroDTO);
-            attributes.addFlashAttribute("message", "Roteiro cadastrado com sucesso");
-            attributes.addFlashAttribute("messageType", "success");
+            attributes.addFlashAttribute("success", AppMessages.SUCCESS_ROUTE_CREATED);
         } catch (BusinessException e) {
-            attributes.addFlashAttribute("message", e.getMessage());
-            attributes.addFlashAttribute("messageType", "error");
+            attributes.addFlashAttribute("error", e.getMessage());
         }
 
         return "redirect:/dashboard/roteiros";
@@ -70,19 +68,16 @@ public class RoteiroController {
                          RedirectAttributes attributes) {
 
         if (result.hasErrors()) {
-            attributes.addFlashAttribute("message", "Preencha os campos corretamente");
-            attributes.addFlashAttribute("messageType", "error");
+            attributes.addFlashAttribute("error", AppMessages.ERROR_VALIDATION_FAILED);
             return "redirect:/dashboard/roteiros";
         }
 
         try {
             // Chama especificamente o método de atualização isolado
             roteiroService.atualizar(produtoId, roteiroDTO);
-            attributes.addFlashAttribute("message", "Roteiro atualizado com sucesso");
-            attributes.addFlashAttribute("messageType", "success");
+            attributes.addFlashAttribute("success", AppMessages.SUCCESS_ROUTE_UPDATED);
         } catch (BusinessException e) {
-            attributes.addFlashAttribute("message", e.getMessage());
-            attributes.addFlashAttribute("messageType", "error");
+            attributes.addFlashAttribute("error", e.getMessage());
         }
 
         return "redirect:/dashboard/roteiros";
@@ -94,11 +89,9 @@ public class RoteiroController {
 
         try {
             roteiroService.excluirPorProdutoId(produtoId);
-            attributes.addFlashAttribute("message", "Roteiro removido com sucesso");
-            attributes.addFlashAttribute("messageType", "success");
+            attributes.addFlashAttribute("success", AppMessages.SUCCESS_ROUTE_DELETED);
         } catch (BusinessException e) {
-            attributes.addFlashAttribute("message", e.getMessage());
-            attributes.addFlashAttribute("messageType", "error");
+            attributes.addFlashAttribute("error", e.getMessage());
         }
 
         return "redirect:/dashboard/roteiros";

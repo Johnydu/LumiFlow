@@ -1,5 +1,6 @@
 package br.com.lumiflow.controller;
 
+import br.com.lumiflow.config.AppMessages;
 import br.com.lumiflow.dto.setor.SetorDTO;
 import br.com.lumiflow.exception.BusinessException;
 import br.com.lumiflow.service.SetorService;
@@ -35,18 +36,15 @@ public class SetorController {
             });
             // ------------------------------------
 
-            attributes.addFlashAttribute("message","Preencha todos os campos corretamente");
-            attributes.addFlashAttribute("messageType", "error");
+            attributes.addFlashAttribute("error", AppMessages.ERROR_VALIDATION_FAILED);
             return  "redirect:/dashboard/setores";
         }
         try {
             setorService.novoSetor(setorDTO);
-            attributes.addFlashAttribute("message","Setor cadastrada com sucesso");
-            attributes.addFlashAttribute("messageType", "success");
+            attributes.addFlashAttribute("success", AppMessages.SUCCESS_SECTOR_CREATED);
 
         } catch (BusinessException e) {
-            attributes.addFlashAttribute("message", e.getMessage());
-            attributes.addFlashAttribute("messageType", "error");
+            attributes.addFlashAttribute("error", e.getMessage());
         }
         return "redirect:/dashboard/setores";
 
@@ -61,17 +59,14 @@ public class SetorController {
             });
             // ------------------------------------
 
-            attributes.addFlashAttribute("message","Preencha todos os campos corretamente");
-            attributes.addFlashAttribute("messageType", "error");
+            attributes.addFlashAttribute("error", AppMessages.ERROR_VALIDATION_FAILED);
             return  "redirect:/dashboard/setores";
         }
         try {
             setorService.excluirSetor(id);
-            attributes.addFlashAttribute("message","Setor removido com sucesso");
-            attributes.addFlashAttribute("messageType", "success");
+            attributes.addFlashAttribute("success", AppMessages.SUCCESS_SECTOR_DELETED);
         } catch (BusinessException e) {
-            attributes.addFlashAttribute("message", e.getMessage());
-            attributes.addFlashAttribute("messageType", "error");
+            attributes.addFlashAttribute("error", e.getMessage());
         }
 
         return "redirect:/dashboard/setores";
@@ -81,18 +76,15 @@ public class SetorController {
     public String editarSetor(@PathVariable ("id") Long id,@Valid @ModelAttribute("setorDTO") SetorDTO setorDTO, BindingResult result,
                             RedirectAttributes attributes) {
         if (result.hasErrors()) {
-            attributes.addFlashAttribute("message","Preencha todos os campos corretamente");
-            attributes.addFlashAttribute("messageType", "error");
+            attributes.addFlashAttribute("error", AppMessages.ERROR_VALIDATION_FAILED);
             return  "redirect:/dashboard/setores";
         }
         try {
             setorService.editarSetor(id,setorDTO);
-            attributes.addFlashAttribute("message","Setor cadastrada com sucesso");
-            attributes.addFlashAttribute("messageType", "success");
+            attributes.addFlashAttribute("success", AppMessages.SUCCESS_SECTOR_UPDATED);
 
         } catch (BusinessException e) {
-            attributes.addFlashAttribute("message", e.getMessage());
-            attributes.addFlashAttribute("messageType", "error");
+            attributes.addFlashAttribute("error", e.getMessage());
         }
         return "redirect:/dashboard/setores";
 

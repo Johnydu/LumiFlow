@@ -15,6 +15,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
+import java.util.Locale;
 
 @Service
 @AllArgsConstructor
@@ -30,6 +31,7 @@ public class SetorService {
                 .orElseThrow(() -> new BusinessException("Setor não encontrado"));
     }
 
+    @Transactional(readOnly = true)
     public List<SetorListagemDTO> listarSetores() {
         return setorRepository.findAllByOrderByNomeAsc().stream()
                 .map(setor -> new SetorListagemDTO(
@@ -47,7 +49,6 @@ public class SetorService {
         }
 
         Setor setor = setorMapper.toEntity(setorDTO);
-        setor.setNome(setor.getNome().toUpperCase());
 
         Setor setorSalvo = setorRepository.save(setor);
 
@@ -86,7 +87,7 @@ public class SetorService {
             }
         });
 
-        setor.setNome(setorDTO.nome().toUpperCase());
+        setor.setNome(setorDTO.nome().trim().toUpperCase(Locale.ROOT));
         setor.setPossuiEtapas(setorDTO.possuiEtapas());
 
         setorRepository.save(setor);

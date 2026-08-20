@@ -4,9 +4,9 @@ import br.com.lumiflow.dto.usuario.UsuarioDTO;
 import br.com.lumiflow.dto.usuario.UsuarioEdicaoDTO;
 import br.com.lumiflow.dto.usuario.UsuarioListaDTO;
 import br.com.lumiflow.dto.usuario.UsuarioLogadoDTO;
-import br.com.lumiflow.model.Usuario;
-import br.com.lumiflow.mapper.UsuarioMapper;
 import br.com.lumiflow.exception.BusinessException;
+import br.com.lumiflow.mapper.UsuarioMapper;
+import br.com.lumiflow.model.Usuario;
 import br.com.lumiflow.repository.UsuarioRepository;
 import br.com.lumiflow.validation.LoginValidator;
 import jakarta.validation.Valid;
@@ -16,8 +16,10 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
+import java.util.Locale;
 
 @Slf4j
 @Service
@@ -65,6 +67,7 @@ public class UsuarioService {
     /**
      * Cria novo usuário com validações de negócio
      */
+    @Transactional
     public void novoUsuario(UsuarioDTO usuarioDTO) {
         log.info("Iniciando criação de novo usuário: {}", usuarioDTO.login());
         
@@ -104,6 +107,7 @@ public class UsuarioService {
     /**
      * Lista todos os usuários
      */
+    @Transactional(readOnly = true)
     public List<UsuarioListaDTO> listarTodos() {
         log.debug("Listando todos os usuários");
         
@@ -121,6 +125,7 @@ public class UsuarioService {
     /**
      * Exclui usuário por ID
      */
+    @Transactional
     public void excluirUsuario(Long id) {
         log.info("Excluindo usuário ID: {}", id);
         
@@ -142,6 +147,7 @@ public class UsuarioService {
     /**
      * Edita usuário existente
      */
+    @Transactional
     public void editarUsuario(Long id, UsuarioEdicaoDTO usuarioEdicaoDTO) {
         log.info("Editando usuário ID: {}", id);
         
@@ -166,7 +172,7 @@ public class UsuarioService {
                         throw new BusinessException("Já existe outro usuário com esse login");
                     });
 
-            usuario.setNome(usuarioEdicaoDTO.nome());
+            usuario.setNome(usuarioEdicaoDTO.nome().toUpperCase(Locale.ROOT));
             usuario.setLogin(usuarioEdicaoDTO.login().trim());
             usuario.setNivelAcesso(nivelAcessoService.buscarNivelAcessoPorId(usuarioEdicaoDTO.nivelAcessoId()));
             usuario.setSetor(usuarioEdicaoDTO.setorId() != null
