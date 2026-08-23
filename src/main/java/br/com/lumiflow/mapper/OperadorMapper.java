@@ -2,7 +2,7 @@ package br.com.lumiflow.mapper;
 
 import br.com.lumiflow.dto.operador.OperadorDTO;
 import br.com.lumiflow.dto.operador.OperadorListagemDTO;
-import br.com.lumiflow.model.Operador;
+import br.com.lumiflow.entity.Operador;
 import org.mapstruct.Mapper;
 import org.mapstruct.Mapping;
 import org.mapstruct.Named;

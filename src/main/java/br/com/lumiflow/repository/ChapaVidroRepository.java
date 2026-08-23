@@ -1,7 +1,7 @@
 package br.com.lumiflow.repository;
 
-import br.com.lumiflow.model.ChapaVidro;
-import br.com.lumiflow.model.enums.TipoVidro;
+import br.com.lumiflow.entity.ChapaVidro;
+import br.com.lumiflow.entity.enums.TipoVidro;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.stereotype.Repository;
 

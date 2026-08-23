@@ -1,7 +1,7 @@
 package br.com.lumiflow.mapper;
 
 import br.com.lumiflow.dto.nivelacesso.NivelAcessoDTO;
-import br.com.lumiflow.model.NivelAcesso;
+import br.com.lumiflow.entity.NivelAcesso;
 import org.mapstruct.Mapper;
 
 import java.util.List;

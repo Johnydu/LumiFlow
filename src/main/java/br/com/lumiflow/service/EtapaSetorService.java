@@ -1,6 +1,6 @@
 package br.com.lumiflow.service;
 
-import br.com.lumiflow.model.EtapaSetor;
+import br.com.lumiflow.entity.EtapaSetor;
 import br.com.lumiflow.repository.EtapaSetorRepository;
 import lombok.AllArgsConstructor;
 import org.springframework.stereotype.Service;

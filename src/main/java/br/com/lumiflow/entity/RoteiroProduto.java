@@ -1,4 +1,4 @@
-package br.com.lumiflow.model;
+package br.com.lumiflow.entity;
 
 import jakarta.persistence.*;
 import jakarta.validation.constraints.NotNull;

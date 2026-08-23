@@ -1,6 +1,6 @@
-package br.com.lumiflow.model;
+package br.com.lumiflow.entity;
 
-import br.com.lumiflow.model.enums.TipoMovimentacao;
+import br.com.lumiflow.entity.enums.TipoMovimentacao;
 import jakarta.persistence.*;
 import jakarta.validation.constraints.NotNull;
 import lombok.*;

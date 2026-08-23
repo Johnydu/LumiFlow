@@ -241,7 +241,7 @@ body.page-vidracaria-vidracaria .btn-submit.entrada {
 }
 
 /* ============ BTN VER ============ */
-body.page-ordemproducao-listaordem .btn-ver {
+.btn-ver {
   padding: 5px 12px;
   font-size: 10px;
   border-radius: 7px;
@@ -251,7 +251,7 @@ body.page-ordemproducao-listaordem .btn-ver {
   cursor: pointer;
 }
 
-body.page-ordemproducao-listaordem .btn-ver:hover {
+.btn-ver:hover {
   background: rgba(255,255,255,0.05);
 }
 

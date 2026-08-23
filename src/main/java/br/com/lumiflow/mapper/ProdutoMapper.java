@@ -2,7 +2,7 @@ package br.com.lumiflow.mapper;
 
 import br.com.lumiflow.dto.produto.ProdutoDTO;
 import br.com.lumiflow.dto.produto.ProdutoListagemDTO;
-import br.com.lumiflow.model.Produto;
+import br.com.lumiflow.entity.Produto;
 import org.mapstruct.Mapper;
 import org.mapstruct.Mapping;
 import org.mapstruct.Named;

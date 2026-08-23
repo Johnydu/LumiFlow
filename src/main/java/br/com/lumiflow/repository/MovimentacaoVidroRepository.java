@@ -1,7 +1,7 @@
 package br.com.lumiflow.repository;
 
-import br.com.lumiflow.model.MovimentacaoVidro;
-import br.com.lumiflow.model.enums.TipoMovimentacao;
+import br.com.lumiflow.entity.MovimentacaoVidro;
+import br.com.lumiflow.entity.enums.TipoMovimentacao;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.query.Param;

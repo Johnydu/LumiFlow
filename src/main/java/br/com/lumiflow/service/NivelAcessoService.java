@@ -4,7 +4,7 @@ import br.com.lumiflow.config.AppMessages;
 import br.com.lumiflow.dto.nivelacesso.NivelAcessoDTO;
 import br.com.lumiflow.exception.BusinessException;
 import br.com.lumiflow.mapper.NivelAcessoMapper;
-import br.com.lumiflow.model.NivelAcesso;
+import br.com.lumiflow.entity.NivelAcesso;
 import br.com.lumiflow.repository.NivelAcessoRepository;
 import lombok.AllArgsConstructor;
 import org.springframework.stereotype.Service;

@@ -4,7 +4,7 @@ import br.com.lumiflow.config.AppMessages;
 import br.com.lumiflow.dto.maquina.MaquinaDTO;
 import br.com.lumiflow.exception.BusinessException;
 import br.com.lumiflow.mapper.MaquinaMapper;
-import br.com.lumiflow.model.Maquina;
+import br.com.lumiflow.entity.Maquina;
 import br.com.lumiflow.repository.MaquinaRepository;
 import lombok.AllArgsConstructor;
 import org.springframework.stereotype.Service;

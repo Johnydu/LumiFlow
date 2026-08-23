@@ -3,7 +3,7 @@ import br.com.lumiflow.config.AppMessages;
 import br.com.lumiflow.dto.usuario.*;
 import br.com.lumiflow.exception.BusinessException;
 import br.com.lumiflow.mapper.UsuarioMapper;
-import br.com.lumiflow.model.Usuario;
+import br.com.lumiflow.entity.Usuario;
 import br.com.lumiflow.repository.UsuarioRepository;
 import br.com.lumiflow.validation.LoginValidator;
 import lombok.AllArgsConstructor;

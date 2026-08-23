@@ -1,6 +1,6 @@
 package br.com.lumiflow.repository;
 
-import br.com.lumiflow.model.RoteiroProduto;
+import br.com.lumiflow.entity.RoteiroProduto;
 import org.springframework.data.jpa.repository.*;
 import org.springframework.data.repository.query.Param;
 import org.springframework.transaction.annotation.Transactional;

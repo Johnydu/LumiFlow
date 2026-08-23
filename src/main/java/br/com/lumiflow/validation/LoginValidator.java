@@ -40,17 +40,9 @@ public final class LoginValidator {
      * Valida login.
      */
     public static boolean isValidLogin(String login) {
-
-        if (login == null) {
+        if (login == null || login.isBlank()) {
             return false;
         }
-
-        login = login.trim();
-
-        if (login.isBlank()) {
-            return false;
-        }
-
         return LOGIN_PATTERN.matcher(login).matches();
     }
 

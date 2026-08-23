@@ -1,7 +1,7 @@
 package br.com.lumiflow.mapper;
 
 import br.com.lumiflow.dto.maquina.MaquinaDTO;
-import br.com.lumiflow.model.Maquina;
+import br.com.lumiflow.entity.Maquina;
 import org.mapstruct.Mapper;
 import org.mapstruct.Mapping;
 import org.mapstruct.Named;

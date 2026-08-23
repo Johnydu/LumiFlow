@@ -1,6 +1,6 @@
 package br.com.lumiflow.security;
 
-import br.com.lumiflow.model.Usuario;
+import br.com.lumiflow.entity.Usuario;
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.security.core.userdetails.UserDetails;
