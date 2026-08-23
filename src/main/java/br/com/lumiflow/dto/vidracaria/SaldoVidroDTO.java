@@ -1,6 +1,6 @@
 package br.com.lumiflow.dto.vidracaria;
 
-import br.com.lumiflow.model.enums.TipoVidro;
+import br.com.lumiflow.entity.enums.TipoVidro;
 
 public record SaldoVidroDTO(
 

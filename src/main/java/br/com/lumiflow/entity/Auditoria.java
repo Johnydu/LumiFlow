@@ -1,4 +1,4 @@
-package br.com.lumiflow.model;
+package br.com.lumiflow.entity;
 
 import jakarta.persistence.Column;
 import jakarta.persistence.EntityListeners;

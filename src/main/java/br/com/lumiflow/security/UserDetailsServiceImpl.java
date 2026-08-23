@@ -1,6 +1,6 @@
 package br.com.lumiflow.security;
 
-import br.com.lumiflow.model.Usuario;
+import br.com.lumiflow.entity.Usuario;
 import br.com.lumiflow.repository.UsuarioRepository;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.core.userdetails.UserDetailsService;

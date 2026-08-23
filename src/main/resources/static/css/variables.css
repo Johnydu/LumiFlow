@@ -77,4 +77,11 @@
   /* ============ BORDERS ============ */
   --border-subtle: rgba(255,255,255,0.08);
   --border-strong: rgba(255,255,255,0.15);
+
+
+
+  /* ============ date - filter ============ */
+
+  --color-border-subtle:  #d1d5db
+
 }

@@ -1,7 +1,7 @@
 package br.com.lumiflow.dto.vidracaria;
 
-import br.com.lumiflow.model.enums.TipoMovimentacao;
-import br.com.lumiflow.model.enums.TipoVidro;
+import br.com.lumiflow.entity.enums.TipoMovimentacao;
+import br.com.lumiflow.entity.enums.TipoVidro;
 import java.time.LocalDateTime;
 
 public record HistoricoMovimentacaoDTO(

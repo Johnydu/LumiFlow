@@ -4,234 +4,225 @@
 
 /* ============ TABLE GENERIC ============ */
 table {
-  width: 100%;
-  border-collapse: collapse;
-  table-layout: auto;
+    width: 100%;
+    border-collapse: collapse;
+    table-layout: auto;
 }
 
 /* ============ TABLE HEADERS ============ */
-th{
-  padding: 22px;
-  text-align: left;
-  border-bottom: 1px solid rgba(255,255,255,0.05);
-  font-size: 12px;
-  color: var(--color-muted-5);
-  white-space: nowrap;
-  font-weight: normal;
-  overflow: hidden;
-  text-overflow: ellipsis;
-}
- .search {
-  width: 220px;
-  height: 36px;
-  padding: 0 12px;
-  border-radius: 10px;
-  border: 1px solid rgba(255, 255, 255, .1);
-  background: var(--color-field);
-  color: var(--color-text);
-  font-size: 12px;
+th {
+    padding: 22px;
+    text-align: left;
+    border-bottom: 1px solid rgba(255, 255, 255, 0.05);
+    font-size: 12px;
+    color: var(--color-muted-5);
+    white-space: nowrap;
+    font-weight: normal;
+    overflow: hidden;
+    text-overflow: ellipsis;
 }
 
- .search:focus {
-  outline: none;
-  border-color: var(--color-primary);
+.search {
+    width: 220px;
+    height: 36px;
+    padding: 0 12px;
+    border-radius: 10px;
+    border: 1px solid rgba(255, 255, 255, .1);
+    background: var(--color-field);
+    color: var(--color-text);
+    font-size: 12px;
+}
+
+.search:focus {
+    outline: none;
+    border-color: var(--color-primary);
 }
 
 th {
-  padding: 9px 14px;
-  text-align: left;
-  font-size: 12px;
-  color: var(--color-muted-5);
-  font-weight: 500;
-  border-bottom: 1px solid rgba(255,255,255,0.05);
-  background: var(--color-field);
-  text-transform: uppercase;
-  letter-spacing: .05em;
+    padding: 9px 14px;
+    text-align: left;
+    font-size: 12px;
+    color: var(--color-muted-5);
+    font-weight: 500;
+    border-bottom: 1px solid rgba(255, 255, 255, 0.05);
+    background: var(--color-field);
+    text-transform: uppercase;
+    letter-spacing: .05em;
 }
 
 /* ============ TABLE DATA CELLS ============ */
 td {
-  padding: 22px;
-  text-align: left;
-  border-bottom: 1px solid rgba(255,255,255,0.05);
-  font-size: 14px;
+    padding: 22px;
+    text-align: left;
+    border-bottom: 1px solid rgba(255, 255, 255, 0.05);
+    font-size: 14px;
 }
 
-body.page-maquina-cadastromaquinas td,
-body.page-ordemproducao-detalhesordem td,
-body.page-ordemproducao-lancamento td,
-body.page-ordemproducao-listaordem td,
-body.page-produto-cadastroproduto td,
-body.page-relatorio-relatoriotempo td,
-body.page-setor-cadastrosetor td,
-body.page-usuario-cadastrousuario td,
-body.page-operador-cadastrooperador td,
-body.page-vidracaria-vidracaria td {
-  padding: 11px 14px;
-  border-bottom: 1px solid rgba(255,255,255,0.05);
-  font-size: 12px;
-  vertical-align: middle;
+td {
+    padding: 11px 14px;
+    border-bottom: 1px solid rgba(255, 255, 255, 0.05);
+    font-size: 12px;
+    vertical-align: middle;
 }
 
 body.page-ordemproducao-detalhesordem td {
-  padding: 14px 16px;
-  border-bottom: 1px solid rgba(255,255,255,0.05);
-  font-size: 12px;
-  vertical-align: middle;
+    padding: 14px 16px;
+    border-bottom: 1px solid rgba(255, 255, 255, 0.05);
+    font-size: 12px;
+    vertical-align: middle;
 }
 
 body.page-vidracaria-vidracaria td {
-  padding: 12px 16px;
-  border-bottom: 1px solid rgba(255,255,255,0.05);
-  font-size: 12px;
+    padding: 12px 16px;
+    border-bottom: 1px solid rgba(255, 255, 255, 0.05);
+    font-size: 12px;
 }
 
 /* ============ TABLE ROW HOVER ============ */
 tr:last-child td {
-  border-bottom: none;
+    border-bottom: none;
 }
 
 body.page-maquina-cadastromaquinas tr:hover td,
 body.page-relatorio-relatoriotempo tr:hover td,
 body.page-usuario-cadastrousuario tr:hover td {
-  background: rgba(255,255,255,0.02);
+    background: rgba(255, 255, 255, 0.02);
 }
 
 body.page-ordemproducao-listaordem tr:hover td {
-  background: rgba(255,255,255,0.02);
-  cursor: pointer;
+    background: rgba(255, 255, 255, 0.02);
+    cursor: pointer;
 }
 
 
 /* ============ TABLE PROGRESS ============ */
 .table-progress {
-  width: 120px;
-  height: 10px;
-  background: var(--color-field);
-  border-radius: 20px;
-  overflow: hidden;
+    width: 120px;
+    height: 10px;
+    background: var(--color-field);
+    border-radius: 20px;
+    overflow: hidden;
 }
 
 .table-progress span {
-  display: block;
-  height: 100%;
-  background: var(--color-primary-strong);
+    display: block;
+    height: 100%;
+    background: var(--color-primary-strong);
 }
 
 /* ============ NUM CLASS (Monospace) ============ */
 .num {
-  font-family: monospace;
-  color: var(--color-muted);
-  font-size: 11px;
+    font-family: monospace;
+    color: var(--color-muted);
+    font-size: 11px;
 }
 
 body.page-ordemproducao-detalhesordem .num {
-  font-family: monospace;
-  color: var(--color-muted);
-  font-size: 11px;
+    font-family: monospace;
+    color: var(--color-muted);
+    font-size: 11px;
 }
 
 body.page-ordemproducao-listaordem .num {
-  font-family: monospace;
-  color: var(--color-muted);
-  font-size: 11px;
+    font-family: monospace;
+    color: var(--color-muted);
+    font-size: 11px;
 }
 
 /* ============ PROGRESS WRAP ============ */
-body.page-ordemproducao-listaordem .prog-wrap {
-  display: flex;
-  align-items: center;
-  gap: 6px;
+.prog-wrap {
+    display: flex;
+    align-items: center;
+    gap: 6px;
 }
 
-body.page-ordemproducao-listaordem .prog-track {
-  flex: 1;
-  height: 5px;
-  background: var(--color-track);
-  border-radius: 3px;
-  overflow: hidden;
-  min-width: 70px;
+.prog-track {
+    flex: 1;
+    height: 5px;
+    background: #111;
+    border-radius: 3px;
+    overflow: hidden;
+    min-width: 70px;
 }
 
-body.page-ordemproducao-listaordem .prog-fill {
-  height: 5px;
-  border-radius: 3px;
+.prog-fill {
+    height: 5px;
+    border-radius: 3px;
 }
 
-body.page-ordemproducao-listaordem .p-and {
-  background: var(--color-primary);
+.p-and {
+    background: #6157ff;
 }
 
-body.page-ordemproducao-listaordem .p-con {
-  background: var(--color-success);
+.p-con {
+    background: #3ccf4e;
 }
 
-body.page-ordemproducao-listaordem .p-pen {
-  background: var(--color-danger);
+.p-pen {
+    background: #ff4d4d;
 }
 
-body.page-ordemproducao-listaordem .prog-txt {
-  font-size: 10px;
-  color: var(--color-muted-4);
-  white-space: nowrap;
+.prog-txt {
+    font-size: 10px;
+    color: #666;
+    white-space: nowrap;
 }
 
 /* ============ ITEM PROGRESS WRAP ============ */
 body.page-ordemproducao-detalhesordem .p-wrap {
-  display: flex;
-  align-items: center;
-  gap: 6px;
+    display: flex;
+    align-items: center;
+    gap: 6px;
 }
 
 body.page-ordemproducao-detalhesordem .p-track {
-  flex: 1;
-  height: 5px;
-  background: var(--color-track);
-  border-radius: 3px;
-  overflow: hidden;
-  min-width: 80px;
+    flex: 1;
+    height: 5px;
+    background: var(--color-track);
+    border-radius: 3px;
+    overflow: hidden;
+    min-width: 80px;
 }
 
 body.page-ordemproducao-detalhesordem .p-fill {
-  height: 5px;
-  border-radius: 3px;
+    height: 5px;
+    border-radius: 3px;
 }
 
 body.page-ordemproducao-detalhesordem .pf-and {
-  background: var(--color-primary);
+    background: var(--color-primary);
 }
 
 body.page-ordemproducao-detalhesordem .pf-con {
-  background: var(--color-success);
+    background: var(--color-success);
 }
 
 body.page-ordemproducao-detalhesordem .pf-pen {
-  background: var(--color-danger);
+    background: var(--color-danger);
 }
 
 body.page-ordemproducao-detalhesordem .p-txt {
-  font-size: 10px;
-  color: var(--color-muted-4);
-  white-space: nowrap;
+    font-size: 10px;
+    color: var(--color-muted-4);
+    white-space: nowrap;
 }
-
 
 
 /* ============ SEARCH FIELD ============ */
 body.page-usuario-cadastrousuario .search {
-  height: 36px;
-  padding: 0 12px;
-  border-radius: 10px;
-  border: 1px solid rgba(255,255,255,0.1);
-  background: var(--color-field);
-  color: var(--color-text);
-  font-size: 12px;
-  width: 200px;
+    height: 36px;
+    padding: 0 12px;
+    border-radius: 10px;
+    border: 1px solid rgba(255, 255, 255, 0.1);
+    background: var(--color-field);
+    color: var(--color-text);
+    font-size: 12px;
+    width: 200px;
 }
 
 .table-actions {
-  display: flex;
-  align-items: center;
-  gap: 8px;
-  justify-content: flex-end;
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    justify-content: flex-end;
 }

@@ -1,6 +1,6 @@
-package br.com.lumiflow.model;
+package br.com.lumiflow.entity;
 
-import br.com.lumiflow.model.enums.Descricao;
+import br.com.lumiflow.entity.enums.Descricao;
 import jakarta.persistence.*;
 import lombok.*;
 

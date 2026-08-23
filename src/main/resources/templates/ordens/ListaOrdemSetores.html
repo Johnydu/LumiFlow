@@ -3,9 +3,7 @@
 <head>
     <meta charset="UTF-8"/>
     <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
-
     <title>Ordens por Setor - LumiFlow</title>
-
     <link rel="stylesheet" th:href="@{/css/variables.css}">
     <link rel="stylesheet" th:href="@{/css/globals.css}">
     <link rel="stylesheet" th:href="@{/css/sidebar.css}">
@@ -14,6 +12,7 @@
     <link rel="stylesheet" th:href="@{/css/components/forms.css}">
     <link rel="stylesheet" th:href="@{/css/components/tables.css}">
     <link rel="stylesheet" th:href="@{/css/components/cards.css}">
+    <link rel="stylesheet" th:href="@{/css/components/badges.css}">
     <link rel="stylesheet" th:href="@{/css/components/status.css}">
     <link rel="stylesheet" th:href="@{/css/components/alerts.css}">
     <link rel="stylesheet" th:href="@{/css/pages/ListaOrdemSetores.css}">
@@ -23,130 +22,120 @@
 </head>
 
 <body class="page-ordemproducao-listaordemsetores">
-<div th:replace="fragments/messages :: alerts"></div>
+<div th:replace="~{fragments/messages :: alerts}"></div>
 
+<!-- SIDEBAR -->
 <aside th:replace="~{fragments/sidebar :: sidebar(activePage='ordens')}"></aside>
 
-<div class="main-wrapper">
+<main class="main">
 
+    <!-- TOPBAR -->
     <div th:replace="~{fragments/topbar :: topbar(
         'Setores de Produção',
-        '+ Nova Ordem',
-        'novaOrdemForm()'
-    )}">
-    </div>
+        null,
+        null
+    )}"></div>
 
-    <main class="content">
+    <div class="content">
 
-        <div id="alertContainer"></div>
+        <!-- FILTROS UNIFICADOS -->
+        <form method="get" th:action="@{/dashboard/ordens/setores}" id="formFiltros" class="filtros">
+            <input type="text"
+                   name="busca"
+                   th:value="${param.busca}"
+                   class="filtro-input"
+                   placeholder="🔍 Buscar por setor..."
+                   autocomplete="off">
 
-        <!-- FILTROS -->
-        <form method="get" th:action="@{/dashboard/ordens/setores}" class="filtros" id="formFiltros">
-            <div class="search-input-wrapper">
-                <span class="search-icon">🔍</span>
-                <input class="filtro-input"
-                       type="text"
-                       name="busca"
-                       th:value="${param.busca}"
-                       placeholder="Buscar por setor ou operador..."
-                       autocomplete="off"
-                       maxlength="100"/>
-            </div>
-
-            <input class="filtro-date"
-                   type="date"
+            <input type="date"
                    name="data"
-                   th:value="${param.data}"/>
+                   th:value="${param.data}"
+                   class="filtro-date">
         </form>
 
-        <!-- TABELA PRINCIPAL DE SETORES -->
+        <!-- PANEL / LISTA -->
         <div class="panel">
             <div class="panel-header">
-                <span class="panel-title">Fila por Setor</span>
-                <span class="panel-count" th:text="${#lists.size(resumoSetores) + ' setor(es)'}">0 setor(es)</span>
+                <span class="panel-title">Ordens por Setor</span>
+                <span class="panel-count" th:text="${#lists.size(resumoSetores) + ' setor(es) encontrado(s)'}">0 setor(es)</span>
             </div>
 
             <table>
                 <thead>
                 <tr>
-                    <th>DATA</th>
+                    <th style="width:110px">DATA</th>
                     <th>SETOR</th>
-                    <th style="width: 280px;">OPERADORES DO DIA</th>
-                    <th>QTD. ORDENS</th>
-                    <th>PROGRESSO</th>
-                    <th class="text-center" style="width: 140px;">AÇÃO</th>
+                    <th style="width:700px;">OPERADORES</th>
+                    <th style="width:250px;">QTD. ORDENS</th>
+                    <th style="width:200px;">PROGRESSO</th>
+                    <th style="width:90px; text-align:center;">AÇÃO</th>
                 </tr>
                 </thead>
 
                 <tbody>
                 <tr th:each="item : ${resumoSetores}" th:data-setor-id="${item.setorId()}">
 
-                    <td class="data-col" th:text="${#temporals.format(item.data(), 'dd/MM/yyyy')}">
-                        06/08/2026
-                    </td>
+                    <td class="num" th:text="${#temporals.format(item.data(), 'dd/MM/yyyy')}">06/08/2026</td>
 
                     <td>
                         <span class="setor-tag" th:text="${item.setorNome()}">Pintura</span>
                     </td>
 
                     <!-- OPERADORES EDITÁVEIS INLINE -->
+                    <!-- OPERADORES FIXOS (APENAS LEITURA) -->
                     <td>
-                        <div class="operator-edit-wrapper">
-                            <input type="text"
-                                   class="input-operadores"
-                                   th:value="${item.operadores()}"
-                                   placeholder="Nome dos operadores..."
-                                   th:data-setor-id="${item.setorId()}"
-                                   autocomplete="off" />
-                            <button type="button" class="btn-save-operator" title="Salvar Operadores" style="display: none;">
-                                ✓
-                            </button>
-                        </div>
+                        <span th:text="${item.operadores() != null && !item.operadores().isEmpty() ? item.operadores() : 'Nenhum operador'}">
+                            Nome dos operadores
+                        </span>
                     </td>
 
-                    <td class="qtd-ordens-col">
+                    <td>
                         <span class="badge-count" th:text="${item.qtdOrdens() + ' OPs'}">0 OPs</span>
                     </td>
 
                     <td>
                         <div class="prog-wrap">
                             <div class="prog-track">
-                                <div class="prog-fill p-and"
-                                     th:style="'width:' + ${#numbers.formatDecimal(item.percentualConcluido(), 1, 2)} + '%'">
+                                <!-- BARRA DE PROGRESSO CORRIGIDA COM LARGURA E COR -->
+                                <div class="prog-fill"
+                                     th:style="'width:' + ${#numbers.formatDecimal(item.percentualConcluido(), 1, 2)} + '%; background: var(--color-primary, #6157ff);'">
                                 </div>
                             </div>
                             <span class="prog-txt"
                                   th:text="${item.ordensConcluidas() + '/' + item.qtdOrdens() + ' (' + #numbers.formatDecimal(item.percentualConcluido(), 1, 0) + '%)'}">
-                0/0 (0%)
-              </span>
+                                0/0 (0%)
+                            </span>
                         </div>
                     </td>
 
-                    <!-- BOTÃO DIRECCIONA PARA AS ORDENS DO SETOR -->
-                    <td class="text-center">
-                        <a th:href="@{/dashboard/ordens/setor/{id}(id=${item.setorId()})}" class="btn-acessar">
-                            Ver Ordens &rarr;
-                        </a>
+                    <!-- BOTÃO COM REDIRECIONAMENTO VIA JS -->
+                    <td style="text-align:center;">
+                        <button type="button"
+                                class="btn-ver"
+                                th:onclick="'window.location.href=\'' + @{/dashboard/ordens/setor/{id}(id=${item.setorId()})} + '\''">
+                            Ver
+                        </button>
                     </td>
 
                 </tr>
 
                 <tr th:if="${#lists.isEmpty(resumoSetores)}">
-                    <td colspan="6" class="empty-state">
+                    <td colspan="6" style="text-align:center; color:#888; padding: 3rem;">
                         Nenhum setor encontrado.
                     </td>
                 </tr>
+
                 </tbody>
             </table>
         </div>
 
-    </main>
+    </div>
 
-</div>
+</main>
 
 <script th:src="@{/js/sidebar.js}"></script>
 <script th:src="@{/js/alerts.js}"></script>
-<script th:src="@{/js/pages/ListaOrdemSetores.js}"></script>
+<script th:src="@{/js/lista-ordem-setores.js}"></script>
 
 </body>
 </html>

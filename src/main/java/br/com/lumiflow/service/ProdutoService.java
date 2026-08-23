@@ -5,7 +5,7 @@ import br.com.lumiflow.dto.produto.ProdutoDTO;
 import br.com.lumiflow.dto.produto.ProdutoListagemDTO;
 import br.com.lumiflow.exception.BusinessException;
 import br.com.lumiflow.mapper.ProdutoMapper;
-import br.com.lumiflow.model.Produto;
+import br.com.lumiflow.entity.Produto;
 import br.com.lumiflow.repository.ProdutoRepository;
 import jakarta.validation.constraints.NotNull;
 import lombok.AllArgsConstructor;

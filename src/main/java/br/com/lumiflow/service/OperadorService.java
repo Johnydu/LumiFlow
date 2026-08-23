@@ -5,7 +5,7 @@ import br.com.lumiflow.dto.operador.OperadorDTO;
 import br.com.lumiflow.dto.operador.OperadorListagemDTO;
 import br.com.lumiflow.exception.BusinessException;
 import br.com.lumiflow.mapper.OperadorMapper;
-import br.com.lumiflow.model.Operador;
+import br.com.lumiflow.entity.Operador;
 import br.com.lumiflow.repository.OperadorRepository;
 import lombok.AllArgsConstructor;
 import org.springframework.stereotype.Service;

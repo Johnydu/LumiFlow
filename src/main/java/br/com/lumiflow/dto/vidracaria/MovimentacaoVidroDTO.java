@@ -1,6 +1,6 @@
 package br.com.lumiflow.dto.vidracaria;
 
-import br.com.lumiflow.model.enums.TipoMovimentacao;
+import br.com.lumiflow.entity.enums.TipoMovimentacao;
 import jakarta.validation.constraints.NotNull;
 import jakarta.validation.constraints.Positive;
 import java.time.LocalDateTime;

@@ -5,7 +5,7 @@ import br.com.lumiflow.dto.roteiro.PassoRoteiroDTO;
 import br.com.lumiflow.dto.roteiro.RoteiroDTO;
 import br.com.lumiflow.dto.roteiro.RoteiroListagemDTO;
 import br.com.lumiflow.exception.BusinessException;
-import br.com.lumiflow.model.RoteiroProduto;
+import br.com.lumiflow.entity.RoteiroProduto;
 import br.com.lumiflow.repository.RoteiroProdutoRepository;
 import lombok.AllArgsConstructor;
 import org.springframework.stereotype.Service;

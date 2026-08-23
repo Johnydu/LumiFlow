@@ -1,6 +1,6 @@
 package br.com.lumiflow.repository;
 
-import br.com.lumiflow.model.Produto;
+import br.com.lumiflow.entity.Produto;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.stereotype.Repository;
 
