@@ -4,7 +4,6 @@ import br.com.lumiflow.dto.ordens.ResumoSetorDTO;
 import br.com.lumiflow.service.OrdemSetorService;
 import lombok.AllArgsConstructor;
 import org.springframework.format.annotation.DateTimeFormat;
-import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
@@ -13,7 +12,7 @@ import java.time.LocalDate;
 import java.util.List;
 
 @Controller
-@RequestMapping("/dashboard/ordens")
+@RequestMapping("/dashboard/ordens-setor")
 @AllArgsConstructor
 public class OrdemSetorController {
 

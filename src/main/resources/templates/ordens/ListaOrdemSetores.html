@@ -25,7 +25,7 @@
 <div th:replace="~{fragments/messages :: alerts}"></div>
 
 <!-- SIDEBAR -->
-<aside th:replace="~{fragments/sidebar :: sidebar(activePage='ordens')}"></aside>
+<aside th:replace="~{fragments/sidebar :: sidebar(activePage='ordens-setor')}"></aside>
 
 <main class="main">
 
@@ -81,8 +81,6 @@
                         <span class="setor-tag" th:text="${item.setorNome()}">Pintura</span>
                     </td>
 
-                    <!-- OPERADORES EDITÁVEIS INLINE -->
-                    <!-- OPERADORES FIXOS (APENAS LEITURA) -->
                     <td>
                         <span th:text="${item.operadores() != null && !item.operadores().isEmpty() ? item.operadores() : 'Nenhum operador'}">
                             Nome dos operadores
@@ -108,13 +106,13 @@
                         </div>
                     </td>
 
-                    <!-- BOTÃO COM REDIRECIONAMENTO VIA JS -->
                     <td style="text-align:center;">
-                        <button type="button"
-                                class="btn-ver"
-                                th:onclick="'window.location.href=\'' + @{/dashboard/ordens/setor/{id}(id=${item.setorId()})} + '\''">
+
+                    <td style="text-align:center;">
+                        <a th:href="@{/dashboard/ordens/setor/{id}(id=${item.setorId()})}" class="btn-ver">
                             Ver
-                        </button>
+                        </a>
+                    </td>
                     </td>
 
                 </tr>

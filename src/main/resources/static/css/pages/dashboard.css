@@ -1,0 +1,32 @@
+/* Container pai da aplicação */
+.app-container {
+    display: flex;
+    min-height: 100vh;
+    width: 100vw;
+    overflow-x: hidden; /* Evita rolagem horizontal e cortes */
+}
+
+/* Sidebar fixa ou com largura definida */
+aside {
+    width: 260px; /* Garanta a largura exata da sua sidebar */
+    flex-shrink: 0; /* Impede a sidebar de encolher */
+}
+
+/* Área principal ao lado da sidebar */
+main.main {
+    flex: 1;
+    min-width: 0; /* Permite que o container filho encolha sem estourar o layout */
+    display: flex;
+    flex-direction: column;
+    box-sizing: border-box;
+}
+
+/* Área de conteúdo do Dashboard */
+.content {
+    display: flex;
+    flex-direction: column;
+    gap: 1.5rem;
+    padding: 1.5rem 2rem; /* Aumenta o respiro lateral interno */
+    width: 100%;
+    box-sizing: border-box; /* Garante que o padding não estoure a largura total */
+}

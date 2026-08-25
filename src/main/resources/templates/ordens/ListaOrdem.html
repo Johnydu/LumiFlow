@@ -1,10 +1,9 @@
 <!DOCTYPE html>
 <html lang="pt-BR" xmlns:th="http://www.thymeleaf.org"
-     xmlns:sec="http://www.thymeleaf.org/extras/spring-security">
+      xmlns:sec="http://www.thymeleaf.org/extras/spring-security">
 <head>
   <meta charset="UTF-8"/>
   <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
-
   <title>Ordens de Produção - LumiFlow</title>
 
   <link rel="stylesheet" th:href="@{/css/variables.css}">
@@ -24,60 +23,50 @@
 </head>
 
 <body class="page-ordemproducao-listaordem">
-<div th:replace="fragments/messages :: alerts"></div>
 
+<div th:replace="~{fragments/messages :: alerts}"></div>
+
+<!-- SIDEBAR -->
 <aside th:replace="~{fragments/sidebar :: sidebar(activePage='ordens')}"></aside>
 
 <main class="main">
 
-  <div th:replace="~{fragments/topbar :: topbar(
-        'Ordens de Produção',
-        '+ Nova Ordem',
-        'novaOrdemForm()'
-    )}">
-  </div>
+  <!-- TOPBAR -->
+  <div th:replace="~{fragments/topbar :: topbar('Ordens de Produção', null, null)}"></div>
 
   <div class="content">
 
-    <!-- FILTROS (Com Busca com ícone, Status e Setor igual a imagem) -->
-    <form method="get" th:action="@{/dashboard/ordens}" class="filtros" id="formFiltros">
+    <!-- FILTROS UNIFICADOS (Atualizado para respeitar a URL com ou sem setor) -->
+    <form method="get"
+          th:action="${setorIdAtual != null ? '/dashboard/ordens/setor/' + setorIdAtual : '/dashboard/ordens'}"
+          class="filtros"
+          id="formFiltros">
 
       <div class="search-input-wrapper">
         <input class="filtro-input"
                type="text"
                name="busca"
-               th:value="${param.busca}"
+               th:value="${buscaAtual}"
                placeholder="🔍 Buscar número ou produto..."
+               autocomplete="off"
                onchange="document.getElementById('formFiltros').submit()"/>
       </div>
 
       <select class="filtro-select" name="status" onchange="document.getElementById('formFiltros').submit()">
         <option value="">Todos os status</option>
-        <option value="PENDENTE" th:selected="${param.status == 'PENDENTE'}">Pendente</option>
-        <option value="EM_ANDAMENTO" th:selected="${param.status == 'EM_ANDAMENTO'}">Em andamento</option>
-        <option value="CONCLUIDA" th:selected="${param.status == 'CONCLUIDA'}">Concluída</option>
+        <option value="PENDENTE" th:selected="${statusAtual == 'PENDENTE'}">Pendente</option>
+        <option value="EM_ANDAMENTO" th:selected="${statusAtual == 'EM_ANDAMENTO'}">Em andamento</option>
+        <option value="CONCLUIDA" th:selected="${statusAtual == 'CONCLUIDA'}">Concluída</option>
       </select>
-
-      <select class="filtro-select" name="setor" onchange="document.getElementById('formFiltros').submit()">
-        <option value="">Todos os setores</option>
-        <option th:each="setor : ${setores}"
-                th:value="${setor.id}"
-                th:text="${setor.nome}"
-                th:selected="${param.setor == #strings.toString(setor.id)}">
-        </option>
-      </select>
-
+      
     </form>
 
-    <!-- CARD / PANEL DA TABELA -->
+    <!-- PANEL / TABELA -->
     <div class="panel">
 
       <div class="panel-header">
-        <span class="panel-title">Ordens</span>
-
-        <span class="panel-count" th:text="${#lists.size(ordens) + ' ordens encontradas'}">
-            24 ordens encontradas
-        </span>
+        <span class="panel-title" th:text="${setorAtual != null && setorAtual != 'Geral' ? 'Ordens - ' + setorAtual : 'Ordens'}">Ordens</span>
+        <span class="panel-count" th:text="${totalOrdens + ' ordens encontradas'}">0 ordens encontradas</span>
       </div>
 
       <table>
@@ -97,42 +86,42 @@
         <tbody>
         <tr th:each="ordem : ${ordens}">
 
-          <td class="num" th:text="${ordem.numero()}">OP-001</td>
+          <td class="num" th:text="${ordem.numero}">OP-001</td>
 
-          <td class="produto-nome" th:text="${ordem.produtoNome()}">Arandela 12W</td>
+          <td class="produto-nome" th:text="${ordem.produto != null ? ordem.produto.nome : 'N/A'}">Arandela 12W</td>
 
-          <td th:text="${ordem.quantidade()}">100</td>
+          <td th:text="${ordem.quantidade}">100</td>
 
           <td>
             <div class="prog-wrap">
               <div class="prog-track">
                 <div class="prog-fill"
-                     th:classappend="${ordem.status().name() == 'CONCLUIDA'} ? 'p-con' : 'p-and'"
-                     th:style="'width:' + ${ordem.percentual()} + '%'">
+                     th:classappend="${#strings.toString(ordem.status) == 'CONCLUIDA'} ? 'p-con' : 'p-and'"
+                     th:style="'width:' + ${ordem.percentualConcluido != null ? ordem.percentualConcluido : 0} + '%'">
                 </div>
               </div>
-              <span class="prog-txt" th:text="${ordem.produzido() + '/' + ordem.quantidade()}">60/100</span>
+              <span class="prog-txt" th:text="${(ordem.quantidadeProduzida != null ? ordem.quantidadeProduzida : 0) + '/' + ordem.quantidade}">60/100</span>
             </div>
           </td>
 
           <td>
-            <span class="setor-tag" th:text="${ordem.setorAtual()}">Pintura</span>
+            <span class="setor-tag" th:text="${ordem.setor != null ? ordem.setor.nome : 'N/A'}">Pintura</span>
           </td>
 
-          <td th:text="${#temporals.format(ordem.criadoEm(),'dd/MM/yyyy')}">19/05/2026</td>
+          <td th:text="${#temporals.format(ordem.dataCriacao, 'dd/MM/yyyy')}">19/05/2026</td>
 
           <td>
-            <span th:if="${ordem.status().name() == 'PENDENTE'}" class="status s-pen">
+            <span th:if="${#strings.toString(ordem.status) == 'PENDENTE'}" class="status s-pen">
               <span class="s-dot"></span>
               Pendente
             </span>
 
-            <span th:if="${ordem.status().name() == 'EM_ANDAMENTO'}" class="status s-and">
+            <span th:if="${#strings.toString(ordem.status) == 'EM_ANDAMENTO'}" class="status s-and">
               <span class="s-dot"></span>
               Em andamento
             </span>
 
-            <span th:if="${ordem.status().name() == 'CONCLUIDA'}" class="status s-con">
+            <span th:if="${#strings.toString(ordem.status) == 'CONCLUIDA'}" class="status s-con">
               <span class="s-dot"></span>
               Concluída
             </span>
@@ -140,7 +129,7 @@
 
           <td style="text-align: center;">
             <div class="table-actions">
-              <a th:href="@{/dashboard/ordens/{id}(id=${ordem.id()})}" class="btn-ver">
+              <a th:href="@{/dashboard/ordens/{id}(id=${ordem.id})}" class="btn-ver">
                 Ver
               </a>
             </div>
@@ -156,18 +145,16 @@
         </tbody>
       </table>
 
-      <!-- RODAPÉ DE PAGINAÇÃO (Novo - exatamente igual a imagem) -->
+      <!-- RODAPÉ DE PAGINAÇÃO -->
       <div class="panel-footer" th:if="${!#lists.isEmpty(ordens)}">
-        <span class="pagination-info" th:text="'Mostrando 1–' + ${#lists.size(ordens)} + ' de ' + ${#lists.size(ordens)} + ' ordens'">
+        <span class="pagination-info" th:text="'Mostrando 1–' + ${totalOrdens} + ' de ' + ${totalOrdens} + ' ordens'">
           Mostrando 1–5 de 24 ordens
         </span>
 
         <div class="pagination">
-          <button class="page-btn nav-btn" disabled>&lsaquo;</button>
-          <button class="page-btn active">1</button>
-          <button class="page-btn">2</button>
-          <button class="page-btn">3</button>
-          <button class="page-btn nav-btn">&rsaquo;</button>
+          <button class="page-btn nav-btn" type="button" disabled>&lsaquo;</button>
+          <button class="page-btn active" type="button">1</button>
+          <button class="page-btn nav-btn" type="button" disabled>&rsaquo;</button>
         </div>
       </div>
 
@@ -177,6 +164,17 @@
 
 </main>
 
+<script>
+  function navegarParaSetor(nomeSetor) {
+    if (nomeSetor) {
+      window.location.href = '/dashboard/ordens/' + encodeURIComponent(nomeSetor);
+    } else {
+      window.location.href = '/dashboard/ordens';
+    }
+  }
+</script>
+
+<script th:src="@{/js/lista-ordem.js}"></script>
 <script th:src="@{/js/sidebar.js}"></script>
 <script th:src="@{/js/alerts.js}"></script>
 

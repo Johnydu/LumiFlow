@@ -1,287 +1,158 @@
 <!DOCTYPE html>
 <html lang="pt-BR" xmlns:th="http://www.thymeleaf.org"
-     xmlns:sec="http://www.thymeleaf.org/extras/spring-security">
+      xmlns:sec="http://www.thymeleaf.org/extras/spring-security">
 <head>
-  <meta charset="UTF-8" />
-  <!-- META TAG OBRIGATÓRIA PARA SUPORTE MOBILE -->
-  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
-  <title>LumiFlow Dashboard</title>
+    <meta charset="UTF-8"/>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+    <title>Dashboard - LumiFlow</title>
 
-  <!-- ========================================== -->
-  <!-- HTMX - Atualização automática sem reload   -->
-  <!-- ========================================== -->
-
-<link rel="stylesheet" th:href="@{/css/variables.css}">
-<link rel="stylesheet" th:href="@{/css/globals.css}">
-<link rel="stylesheet" th:href="@{/css/sidebar.css}">
-<link rel="stylesheet" th:href="@{/css/topbar.css}">
-<link rel="stylesheet" th:href="@{/css/components/buttons.css}">
-<link rel="stylesheet" th:href="@{/css/components/forms.css}">
-<link rel="stylesheet" th:href="@{/css/components/tables.css}">
-<link rel="stylesheet" th:href="@{/css/components/cards.css}">
-<link rel="stylesheet" th:href="@{/css/components/badges.css}">
-<link rel="stylesheet" th:href="@{/css/components/status.css}">
-<link rel="stylesheet" th:href="@{/css/components/alerts.css}">
-<link rel="stylesheet" th:href="@{/css/pages/dashboard.css}">
-<link rel="stylesheet" th:href="@{/css/pages/login.css}">
-<link rel="stylesheet" th:href="@{/css/pages/usuarios.css}">
-<link rel="stylesheet" th:href="@{/css/pages/maquinas.css}">
-<link rel="stylesheet" th:href="@{/css/pages/produtos.css}">
-<link rel="stylesheet" th:href="@{/css/pages/setores.css}">
-<link rel="stylesheet" th:href="@{/css/pages/ordens.css}">
-<link rel="stylesheet" th:href="@{/css/pages/relatorio.css}">
-<link rel="stylesheet" th:href="@{/css/pages/vidracaria.css}">
-<link rel="stylesheet" th:href="@{/css/pages/novaordem.css}">
-<link rel="stylesheet" th:href="@{/css/pages/listaordem.css}">
-<link rel="stylesheet" th:href="@{/css/utils.css}">
-<link rel="stylesheet" th:href="@{/css/responsive.css}"/>
+    <link rel="stylesheet" th:href="@{/css/topbar.css}">
+    <link rel="stylesheet" th:href="@{/css/variables.css}">
+    <link rel="stylesheet" th:href="@{/css/globals.css}">
+    <link rel="stylesheet" th:href="@{/css/sidebar.css}">
+    <link rel="stylesheet" th:href="@{/css/components/buttons.css}">
+    <link rel="stylesheet" th:href="@{/css/components/forms.css}">
+    <link rel="stylesheet" th:href="@{/css/components/tables.css}">
+    <link rel="stylesheet" th:href="@{/css/components/cards.css}">
+    <link rel="stylesheet" th:href="@{/css/components/badges.css}">
+    <link rel="stylesheet" th:href="@{/css/components/status.css}">
+    <link rel="stylesheet" th:href="@{/css/components/alerts.css}">
+    <link rel="stylesheet" th:href="@{/css/pages/dashboard.css}">
+    <link rel="stylesheet" th:href="@{/css/utils.css}">
+    <link rel="stylesheet" th:href="@{/css/responsive.css}">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
 </head>
-
 <body class="page-dashboard-dashboard">
-<div th:replace="fragments/messages :: alerts"></div>
+<div th:replace="~{fragments/messages :: alerts}"></div>
 
-  <!-- ========================================== -->
-  <!-- SIDEBAR - MENU LATERAL                     -->
-  <!-- ========================================== -->
+<div class="app-container" style="display: flex; min-height: 100vh;">
 
-  <aside th:replace="~{fragments/sidebar :: sidebar(activePage='dashboard')}"></aside>
-  <!-- ========================================== -->
-  <!-- CONTEÚDO PRINCIPAL                         -->
-  <!-- ========================================== -->
-  <main class="content">
+    <!-- SIDEBAR -->
+    <aside th:replace="~{fragments/sidebar :: sidebar(activePage='dashboard')}"></aside>
 
-    <!-- Barra superior com título e botão -->
-    <div th:replace="~{fragments/topbar :: topbar(
-    'Dashboard',
-    'Nova Ordem',
-    'novaOrdem()'
-)}"></div>
+    <!-- ÁREA PRINCIPAL -->
+    <main class="main" style="flex: 1; min-width: 0;">
 
-    <!-- ========================================== -->
-    <!-- CARDS DE ESTATÍSTICAS                      -->
-    <!-- Atualizados automaticamente via HTMX       -->
-    <!-- hx-get="/dashboard/cards" hx-trigger="every 30s" -->
-    <!-- ========================================== -->
-    <section class="cards"
-      hx-get="/dashboard/cards"
-      hx-trigger="every 30s"
-      hx-swap="innerHTML">
+        <!-- TOPBAR -->
+        <div th:replace="~{fragments/topbar :: topbar(
+        'Dashboard',
+        '+ Nova Ordem',
+        'novaOrdemForm()'
+    )}"></div>
 
-      <!-- Card: Total de listaDeOrdens -->
-      <div class="card">
-        <h3>TOTAL DE ORDENS</h3>
-        <!-- th:text="${totalOrdens}" -->
-        <div class="number">24</div>
-        <p>este mês</p>
-      </div>
+        <div class="content">
 
-      <!-- Card: Em andamento -->
-      <div class="card">
-        <h3>EM ANDAMENTO</h3>
-        <!-- th:text="${ordensAndamento}" -->
-        <div class="number orange">14</div>
-        <p>em produção agora</p>
-      </div>
-
-      <!-- Card: Concluídas hoje -->
-      <div class="card">
-        <h3>CONCLUÍDAS HOJE</h3>
-        <!-- th:text="${ordensConcluidas}" -->
-        <div class="number green">6</div>
-        <p>↑ 2 a mais que ontem</p>
-      </div>
-
-      <!-- Card: Pendentes -->
-      <div class="card">
-        <h3>PENDENTES</h3>
-        <!-- th:text="${ordensPendentes}" -->
-        <div class="number red">4</div>
-        <p>aguardando lançamento</p>
-      </div>
-
-    </section>
-
-    <!-- ========================================== -->
-    <!-- GRID PRINCIPAL - TABELA E SETORES          -->
-    <!-- ========================================== -->
-    <section class="dashboard-grid">
-
-      <!-- ========================================== -->
-      <!-- TABELA DE ORDENS EM ANDAMENTO              -->
-      <!-- Atualizada automaticamente via HTMX        -->
-      <!-- ========================================== -->
-      <div class="panel"
-        hx-get="/dashboard/tabela-ordens"
-        hx-trigger="every 30s"
-        hx-swap="innerHTML">
-
-        <div class="panel-header">Ordens em andamento</div>
-
-        <table>
-          <thead>
-            <tr>
-              <th>ORDEM</th>
-              <th>ITEM</th>
-              <th>QTD</th>
-              <th>PROGRESSO</th>
-              <th>SETOR</th>
-            </tr>
-          </thead>
-
-          <!-- th:each="ordem : ${listaDeOrdens}" -->
-          <tbody>
-
-            <!-- Linha da ordem OP-001 -->
-            <tr>
-              <td>OP-001</td>
-              <td>Arandela 12W</td>
-              <td>100</td>
-              <td>
-                <!-- Barra de progresso: width calculado por (qtdProduzida/quantidade)*100 -->
-                <div class="table-progress">
-                  <span style="width:60%"></span>
+            <!-- CARDS DE ESTATÍSTICAS -->
+            <div class="cards">
+                <div class="card">
+                    <h3>TOTAL DE ORDENS</h3>
+                    <div class="number" th:text="${totalOrdens ?: 0}">0</div>
+                    <p>este mês</p>
                 </div>
-              </td>
-              <td>
-                <!-- th:text="${ordem.setorAtual.nome}" -->
-                <span class="status status-purple">Pintura</span>
-              </td>
-            </tr>
 
-            <!-- Linha da ordem OP-002 -->
-            <tr>
-              <td>OP-002</td>
-              <td>Arandela 20W</td>
-              <td>50</td>
-              <td>
-                <div class="table-progress">
-                  <span style="width:40%"></span>
+                <div class="card">
+                    <h3>EM ANDAMENTO</h3>
+                    <div class="number orange" th:text="${ordensAndamento ?: 0}">0</div>
+                    <p>em produção agora</p>
                 </div>
-              </td>
-              <td>
-                <span class="status status-purple">Montagem</span>
-              </td>
-            </tr>
 
-            <!-- Linha da ordem OP-003 - Concluída -->
-            <tr>
-              <td>OP-003</td>
-              <td>Arandela 9W</td>
-              <td>80</td>
-              <td>
-                <div class="table-progress">
-                  <span style="width:100%; background:var(--color-success);"></span>
+                <div class="card">
+                    <h3>CONCLUÍDAS HOJE</h3>
+                    <div class="number green" th:text="${ordensConcluidas ?: 0}">0</div>
+                    <p>finalizadas hoje</p>
                 </div>
-              </td>
-              <td>
-                <!-- th:class="${ordem.status == 'Concluída'} ? 'status status-green' : 'status status-purple'" -->
-                <span class="status status-green">Embalagem</span>
-              </td>
-            </tr>
 
-            <!-- Linha da ordem OP-004 - Pendente -->
-            <tr>
-              <td>OP-004</td>
-              <td>Arandela 7W</td>
-              <td>60</td>
-              <td>
-                <div class="table-progress">
-                  <span style="width:0%"></span>
+                <div class="card">
+                    <h3>PENDENTES</h3>
+                    <div class="number red" th:text="${ordensPendentes ?: 0}">0</div>
+                    <p>aguardando lançamento</p>
                 </div>
-              </td>
-              <td>
-                <span class="status status-purple">Corte</span>
-              </td>
-            </tr>
+            </div>
 
-            <!-- Linha da ordem OP-005 -->
-            <tr>
-              <td>OP-005</td>
-              <td>Arandela 15W</td>
-              <td>120</td>
-              <td>
-                <div class="table-progress">
-                  <span style="width:80%"></span>
+            <!-- GRID PRINCIPAL (TABELA + SETORES) -->
+            <div class="dashboard-grid">
+
+                <!-- TABELA DE ORDENS PAGINADA -->
+                <div class="panel">
+                    <div class="panel-header">
+                        <span class="panel-title">Ordens em andamento</span>
+                        <span class="panel-count" th:text="${(paginaDeOrdens != null ? paginaDeOrdens.totalElements : 0) + ' ordem(ns)'}">0 ordem(ns)</span>
+                    </div>
+
+                    <table>
+                        <thead>
+                        <tr>
+                            <th>Ordem</th>
+                            <th>Item</th>
+                            <th>Qtd</th>
+                            <th>Progresso</th>
+                            <th>Setor</th>
+                        </tr>
+                        </thead>
+                        <tbody>
+                        <tr th:each="ordem : ${paginaDeOrdens?.content}">
+                            <td class="num" th:text="${ordem?.codigo ?: (ordem?.id != null ? 'OP-' + ordem.id : '-')}">-</td>
+                            <td th:text="${ordem?.produto?.nome ?: '-'}">-</td>
+                            <td class="num" th:text="${ordem?.quantidade ?: 0}">0</td>
+                            <td>
+                                <div class="table-progress">
+                                    <span th:style="'width:' + ${ordem?.progresso != null ? #numbers.formatDecimal(ordem.progresso, 1, 0) : 0} + '%; ' + (${ordem?.progresso != null && ordem.progresso >= 100} ? 'background:var(--color-success);' : '')"></span>
+                                </div>
+                            </td>
+                            <td>
+                                <span class="status"
+                                      th:classappend="${ordem?.status?.name() == 'CONCLUIDO' || (ordem?.progresso != null && ordem.progresso >= 100)} ? 'status-green' : 'status-purple'"
+                                      th:text="${ordem?.setorAtual?.nome ?: '-'}">
+                                    -
+                                </span>
+                            </td>
+                        </tr>
+
+                        <tr th:if="${paginaDeOrdens == null || paginaDeOrdens.isEmpty()}">
+                            <td colspan="5" style="text-align:center; color:var(--color-muted-5); padding: 2rem;">
+                                Nenhuma ordem em andamento no momento.
+                            </td>
+                        </tr>
+                        </tbody>
+                    </table>
                 </div>
-              </td>
-              <td>
-                <span class="status status-purple">Solda</span>
-              </td>
-            </tr>
 
-          </tbody>
-        </table>
+                <!-- ORDENS POR SETOR -->
+                <div class="panel">
+                    <div class="panel-header">
+                        <span class="panel-title">Ordens por setor</span>
+                    </div>
 
-      </div>
+                    <div class="sector-list">
+                        <div class="sector-item" th:each="setor : ${resumoSetores}">
+                            <div>
+                                <h4 th:text="${setor?.nome ?: 'Sem nome'}">Nome do Setor</h4>
+                                <p th:text="${(setor?.qtdOrdens ?: 0) + ' ordem(ns)'}">0 ordem(ns)</p>
+                            </div>
+                            <div class="sector-number"
+                                 th:classappend="${setor?.qtdOrdens ?: 0} > 0 ? 'orange' : ''"
+                                 th:text="${setor?.qtdOrdens ?: 0}">
+                                0
+                            </div>
+                        </div>
 
-      <!-- ========================================== -->
-      <!-- PAINEL DE ORDENS POR SETOR                 -->
-      <!-- Atualizado automaticamente via HTMX        -->
-      <!-- ========================================== -->
-      <div class="panel"
-        hx-get="/dashboard/ordens-setor"
-        hx-trigger="every 30s"
-        hx-swap="innerHTML">
+                        <div th:if="${resumoSetores == null || #lists.isEmpty(resumoSetores)}" style="text-align:center; color:var(--color-muted-5); padding: 2rem;">
+                            Nenhum setor encontrado.
+                        </div>
+                    </div>
+                </div>
 
-        <div class="panel-header">Ordens por setor</div>
-
-        <!-- th:each="setorId : ${setores}" -->
-        <div class="sector-list">
-
-          <!-- Item: Corte - Pendente -->
-          <div class="sector-item">
-            <div>
-              <h4>Corte</h4>
-              <p>1 pendente</p>
             </div>
-            <!-- th:text="${setorId.totalOrdens}" -->
-            <div class="sector-number red">1</div>
-          </div>
-
-          <!-- Item: Solda - Em andamento -->
-          <div class="sector-item">
-            <div>
-              <h4>Solda</h4>
-              <p>1 em andamento</p>
-            </div>
-            <div class="sector-number">1</div>
-          </div>
-
-          <!-- Item: Pintura - Em andamento -->
-          <div class="sector-item">
-            <div>
-              <h4>Pintura</h4>
-              <p>1 em andamento</p>
-            </div>
-            <div class="sector-number">1</div>
-          </div>
-
-          <!-- Item: Montagem - Em andamento -->
-          <div class="sector-item">
-            <div>
-              <h4>Montagem</h4>
-              <p>1 em andamento</p>
-            </div>
-            <div class="sector-number">1</div>
-          </div>
-
-          <!-- Item: Embalagem - Concluída -->
-          <div class="sector-item">
-            <div>
-              <h4>Embalagem</h4>
-              <p>1 concluída</p>
-            </div>
-            <div class="sector-number green">1</div>
-          </div>
 
         </div>
 
-      </div>
+    </main>
 
-    </section>
+</div>
 
-  </main>
-  <script th:src="@{/js/sidebar.js}"></script>
+<script th:src="@{/js/sidebar.js}"></script>
+<script th:src="@{/js/alerts.js}"></script>
+<script th:src="@{/js/dashboard.js}"></script>
 
 </body>
 </html>
