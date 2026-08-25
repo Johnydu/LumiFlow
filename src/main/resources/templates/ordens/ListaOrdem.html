@@ -1,6 +1,6 @@
 <!DOCTYPE html>
 <html lang="pt-BR" xmlns:th="http://www.thymeleaf.org"
-     xmlns:sec="http://www.thymeleaf.org/extras/spring-security">
+      xmlns:sec="http://www.thymeleaf.org/extras/spring-security">
 <head>
   <meta charset="UTF-8"/>
   <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
@@ -24,7 +24,7 @@
 </head>
 
 <body class="page-ordemproducao-listaordem">
-<div th:replace="fragments/messages :: alerts"></div>
+<div th:replace="~{fragments/messages :: alerts}"></div>
 
 <aside th:replace="~{fragments/sidebar :: sidebar(activePage='ordens')}"></aside>
 
@@ -39,32 +39,24 @@
 
   <div class="content">
 
-    <!-- FILTROS (Com Busca com ícone, Status e Setor igual a imagem) -->
+    <!-- FILTROS (Sem o select de setor) -->
     <form method="get" th:action="@{/dashboard/ordens}" class="filtros" id="formFiltros">
 
       <div class="search-input-wrapper">
+        <!-- HTML Atualizado no input de busca -->
         <input class="filtro-input"
                type="text"
                name="busca"
                th:value="${param.busca}"
                placeholder="🔍 Buscar número ou produto..."
-               onchange="document.getElementById('formFiltros').submit()"/>
+               autocomplete="off"/>
       </div>
 
       <select class="filtro-select" name="status" onchange="document.getElementById('formFiltros').submit()">
         <option value="">Todos os status</option>
         <option value="PENDENTE" th:selected="${param.status == 'PENDENTE'}">Pendente</option>
         <option value="EM_ANDAMENTO" th:selected="${param.status == 'EM_ANDAMENTO'}">Em andamento</option>
-        <option value="CONCLUIDA" th:selected="${param.status == 'CONCLUIDA'}">Concluída</option>
-      </select>
-
-      <select class="filtro-select" name="setor" onchange="document.getElementById('formFiltros').submit()">
-        <option value="">Todos os setores</option>
-        <option th:each="setor : ${setores}"
-                th:value="${setor.id}"
-                th:text="${setor.nome}"
-                th:selected="${param.setor == #strings.toString(setor.id)}">
-        </option>
+        <option value="CONCLUIDO" th:selected="${param.status == 'CONCLUIDO' || param.status == 'CONCLUIDA'}">Concluído</option>
       </select>
 
     </form>
@@ -75,8 +67,8 @@
       <div class="panel-header">
         <span class="panel-title">Ordens</span>
 
-        <span class="panel-count" th:text="${#lists.size(ordens) + ' ordens encontradas'}">
-            24 ordens encontradas
+        <span class="panel-count" th:text="${(ordens != null ? #lists.size(ordens) : 0) + ' ordens encontradas'}">
+            0 ordens encontradas
         </span>
       </div>
 
@@ -107,7 +99,7 @@
             <div class="prog-wrap">
               <div class="prog-track">
                 <div class="prog-fill"
-                     th:classappend="${ordem.status().name() == 'CONCLUIDA'} ? 'p-con' : 'p-and'"
+                     th:classappend="${ordem.status().name() == 'CONCLUIDO' || ordem.status().name() == 'CONCLUIDA'} ? 'p-con' : 'p-and'"
                      th:style="'width:' + ${ordem.percentual()} + '%'">
                 </div>
               </div>
@@ -132,7 +124,7 @@
               Em andamento
             </span>
 
-            <span th:if="${ordem.status().name() == 'CONCLUIDA'}" class="status s-con">
+            <span th:if="${ordem.status().name() == 'CONCLUIDO' || ordem.status().name() == 'CONCLUIDA'}" class="status s-con">
               <span class="s-dot"></span>
               Concluída
             </span>
@@ -148,7 +140,7 @@
 
         </tr>
 
-        <tr th:if="${#lists.isEmpty(ordens)}">
+        <tr th:if="${ordens == null || #lists.isEmpty(ordens)}">
           <td colspan="8" style="text-align:center; color:var(--color-muted-5); padding: 30px 0;">
             Nenhuma ordem encontrada.
           </td>
@@ -156,18 +148,16 @@
         </tbody>
       </table>
 
-      <!-- RODAPÉ DE PAGINAÇÃO (Novo - exatamente igual a imagem) -->
-      <div class="panel-footer" th:if="${!#lists.isEmpty(ordens)}">
+      <!-- RODAPÉ DE PAGINAÇÃO -->
+      <div class="panel-footer" th:if="${ordens != null && !#lists.isEmpty(ordens)}">
         <span class="pagination-info" th:text="'Mostrando 1–' + ${#lists.size(ordens)} + ' de ' + ${#lists.size(ordens)} + ' ordens'">
           Mostrando 1–5 de 24 ordens
         </span>
 
         <div class="pagination">
-          <button class="page-btn nav-btn" disabled>&lsaquo;</button>
-          <button class="page-btn active">1</button>
-          <button class="page-btn">2</button>
-          <button class="page-btn">3</button>
-          <button class="page-btn nav-btn">&rsaquo;</button>
+          <button class="page-btn nav-btn" type="button" disabled>&lsaquo;</button>
+          <button class="page-btn active" type="button">1</button>
+          <button class="page-btn nav-btn" type="button" disabled>&rsaquo;</button>
         </div>
       </div>
 
@@ -179,6 +169,7 @@
 
 <script th:src="@{/js/sidebar.js}"></script>
 <script th:src="@{/js/alerts.js}"></script>
+<script th:src="@{/js/lista-ordem.js}"></script>
 
 </body>
 </html>

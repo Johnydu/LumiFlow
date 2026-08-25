@@ -1,6 +1,7 @@
 package br.com.lumiflow.service;
 
 import br.com.lumiflow.config.AppMessages;
+import br.com.lumiflow.dto.dashboard.SetorResumoDTO;
 import br.com.lumiflow.dto.etapaSetor.EtapaSetorDTO;
 import br.com.lumiflow.dto.setor.SetorDTO;
 import br.com.lumiflow.dto.setor.SetorListagemDTO;
@@ -13,6 +14,7 @@ import br.com.lumiflow.repository.MaquinaRepository;
 import br.com.lumiflow.repository.SetorRepository;
 import lombok.AllArgsConstructor;
 import org.springframework.dao.DataIntegrityViolationException;
+import org.springframework.data.jpa.repository.Query;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -81,6 +83,7 @@ public class SetorService {
             etapaSetorRepository.save(etapa);
         }
     }
+
 
 
 }

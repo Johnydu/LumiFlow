@@ -5,6 +5,8 @@ import jakarta.persistence.*;
 import lombok.*;
 
 import java.time.LocalDateTime;
+import java.util.ArrayList;
+import java.util.List;
 
 @Entity
 @Table(name = "ordem_producao")
@@ -39,6 +41,9 @@ public class OrdemProducao extends Auditoria{
 
     @Column(name = "data_criacao", nullable = false)
     private LocalDateTime dataCriacao;
+
+    @OneToMany(mappedBy = "ordemProducao", fetch = FetchType.LAZY)
+    private List<OrdemSetor> ordensSetor = new ArrayList<>();
 
 
 }
