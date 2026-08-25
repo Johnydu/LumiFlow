@@ -15,14 +15,21 @@ function initFiltros() {
 
     const inputBusca = formFiltros.querySelector('input[name="busca"]');
 
-    // Submete o formulário com Debounce para evitar submits a cada tecla digitada
     if (inputBusca) {
+        // Se houver busca prévia na URL, posiciona o cursor ao final do texto
+        if (inputBusca.value) {
+            inputBusca.focus();
+            const val = inputBusca.value;
+            inputBusca.value = '';
+            inputBusca.value = val;
+        }
+
         let timeout = null;
         inputBusca.addEventListener('input', () => {
             clearTimeout(timeout);
             timeout = setTimeout(() => {
                 formFiltros.submit();
-            }, 450); // Aguarda 450ms após a última digitação
+            }, 500);
         });
     }
 }

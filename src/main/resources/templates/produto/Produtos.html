@@ -4,7 +4,7 @@
 <head>
     <meta charset="UTF-8"/>
     <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
-    <title>Dashboard - LumiFlow</title>
+    <title>Produtos - LumiFlow</title>
 
     <link rel="stylesheet" th:href="@{/css/topbar.css}">
     <link rel="stylesheet" th:href="@{/css/variables.css}">
@@ -17,18 +17,18 @@
     <link rel="stylesheet" th:href="@{/css/components/badges.css}">
     <link rel="stylesheet" th:href="@{/css/components/status.css}">
     <link rel="stylesheet" th:href="@{/css/components/alerts.css}">
-    <link rel="stylesheet" th:href="@{/css/pages/dashboard.css}">
+    <link rel="stylesheet" th:href="@{/css/pages/produtos.css}">
     <link rel="stylesheet" th:href="@{/css/utils.css}">
     <link rel="stylesheet" th:href="@{/css/responsive.css}">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
 </head>
-<body class="page-dashboard-dashboard">
-<div th:replace="~{fragments/messages :: alerts}"></div>
+<body class="page-produto-cadastroproduto">
+<div th:replace="fragments/messages :: alerts"></div>
 
 <!-- ================================ -->
 <!-- SIDEBAR                          -->
 <!-- ================================ -->
-<aside th:replace="~{fragments/sidebar :: sidebar(activePage='dashboard')}"></aside>
+<aside th:replace="~{fragments/sidebar :: sidebar(activePage='produtos')}"></aside>
 
 <main class="main">
 
@@ -36,127 +36,245 @@
     <!-- TOPBAR                           -->
     <!-- ================================ -->
     <div th:replace="~{fragments/topbar :: topbar(
-    'Dashboard',
-    '+ Nova Ordem',
-    'novaOrdemForm()'
+    'Produtos',
+    '+ Novo Produto',
+    'novoProdutoForm()'
 )}"></div>
 
     <div class="content">
 
-        <!-- CARDS DE ESTATÍSTICAS -->
-        <div class="cards">
-            <div class="card">
-                <h3>TOTAL DE ORDENS</h3>
-                <div class="number" th:text="${totalOrdens != null ? totalOrdens : 0}">0</div>
-                <p>este mês</p>
-            </div>
+        <!-- LISTA -->
+        <div class="lista">
 
-            <div class="card">
-                <h3>EM ANDAMENTO</h3>
-                <div class="number orange" th:text="${ordensAndamento != null ? ordensAndamento : 0}">0</div>
-                <p>em produção agora</p>
-            </div>
-
-            <div class="card">
-                <h3>CONCLUÍDAS HOJE</h3>
-                <div class="number green" th:text="${ordensConcluidas != null ? ordensConcluidas : 0}">0</div>
-                <p>finalizadas hoje</p>
-            </div>
-
-            <div class="card">
-                <h3>PENDENTES</h3>
-                <div class="number red" th:text="${ordensPendentes != null ? ordensPendentes : 0}">0</div>
-                <p>aguardando lançamento</p>
-            </div>
-        </div>
-
-        <!-- GRID PRINCIPAL (TABELA + SETORES) -->
-        <div class="dashboard-grid">
-
-            <!-- TABELA DE ORDENS EM ANDAMENTO -->
             <div class="panel">
+
                 <div class="panel-header">
-                    <span class="panel-title">Ordens em andamento</span>
-                    <span class="panel-count" th:text="${#lists.size(listaDeOrdens) + ' ordem(ns)'}">0 ordem(ns)</span>
+                    <form method="get" th:action="@{/dashboard/produtos}">
+                        <input type="text"
+                               name="nome"
+                               th:value="${param.nome}"
+                               class="search"
+                               placeholder="Buscar produto...">
+                    </form>
+
+                    <span class="panel-title">
+                        Produtos cadastrados
+                    </span>
+
+                    <span class="panel-count"
+                          th:text="${#lists.size(produtos) + ' produto(s)'}">
+                </span>
                 </div>
 
                 <table>
                     <thead>
                     <tr>
-                        <th>Ordem</th>
-                        <th>Item</th>
-                        <th>Qtd</th>
-                        <th>Progresso</th>
-                        <th>Setor</th>
+                        <th>Produto</th>
+                        <th>Código</th>
+                        <th>Descrição</th>
+                        <th style="width:150px">Ações</th>
                     </tr>
                     </thead>
+
                     <tbody>
-                    <tr th:each="ordem : ${listaDeOrdens}">
-                        <td class="num" th:text="${ordem.codigo != null ? ordem.codigo : ('OP-' + ordem.id)}">-</td>
-                        <td th:text="${ordem.produto != null ? ordem.produto.nome : '-'}">-</td>
-                        <td class="num" th:text="${ordem.quantidade != null ? ordem.quantidade : 0}">0</td>
+
+                    <tr th:each="produto : ${produtos}">
+
                         <td>
-                            <div class="table-progress">
-                                <span th:style="'width:' + ${ordem.progresso != null ? #numbers.formatDecimal(ordem.progresso, 1, 0) : 0} + '%; ' + (${ordem.progresso != null && ordem.progresso >= 100} ? 'background:var(--color-success);' : '')"></span>
+                            <div class="produto-info">
+                                <div class="produto-nome"
+                                     th:text="${produto.nome()}">
+                                </div>
                             </div>
                         </td>
+
+                        <td class="num"
+                            th:text="${produto.codigo()}">
+                        </td>
+
+                        <td class="produto-desc"
+                            th:text="${produto.descricao()}">
+                        </td>
+
                         <td>
-                            <span class="status"
-                                  th:classappend="${ordem.status == 'CONCLUIDO' || (ordem.progresso != null && ordem.progresso >= 100)} ? 'status-green' : 'status-purple'"
-                                  th:text="${ordem.setorAtual != null ? ordem.setorAtual.nome : '-'}">
-                                -
-                            </span>
+                            <div class="table-actions">
+
+                                <button type="button"
+                                        class="btn-edit"
+                                        th:data-id="${produto.id()}"
+                                        th:data-nome="${produto.nome()}"
+                                        th:data-codigo="${produto.codigo()}"
+                                        th:data-descricao="${produto.descricao()}"
+                                        onclick="handleEditarProduto(this)">
+                                    ✏ Editar
+                                </button>
+
+                                <form th:action="@{/dashboard/produtos/{id}/excluir(id=${produto.id()})}"
+                                      method="post">
+
+                                    <input type="hidden"
+                                           th:name="${_csrf.parameterName}"
+                                           th:value="${_csrf.token}"/>
+
+                                    <button type="submit"
+                                            class="btn-del"
+                                            onclick="return confirm('Tem certeza que deseja excluir este produto?');">
+                                        🗑 Excluir
+                                    </button>
+
+                                </form>
+
+                            </div>
+                        </td>
+
+                    </tr>
+
+                    <tr th:if="${#lists.isEmpty(produtos)}">
+                        <td colspan="4"
+                            style="text-align:center;color:var(--color-muted-5)">
+                            Nenhum produto cadastrado.
                         </td>
                     </tr>
 
-                    <tr th:if="${#lists.isEmpty(listaDeOrdens)}">
-                        <td colspan="5" style="text-align:center; color:var(--color-muted-5); padding: 2rem;">
-                            Nenhuma ordem em andamento no momento.
-                        </td>
-                    </tr>
                     </tbody>
                 </table>
-            </div>
 
-            <!-- ORDENS POR SETOR -->
-            <div class="panel">
-                <div class="panel-header">
-                    <span class="panel-title">Ordens por setor</span>
-                </div>
-
-                <div class="sector-list">
-                    <div class="sector-item" th:each="setor : ${resumoSetores}">
-                        <div>
-                            <h4 th:text="${setor.nome}">Nome do Setor</h4>
-                            <p th:text="${(setor.qtdOrdens != null ? setor.qtdOrdens : 0) + ' ordem(ns)'}">0 ordens</p>
-                        </div>
-                        <div class="sector-number"
-                             th:classappend="${setor.pendente} ? 'red' : (${setor.concluido} ? 'green' : '')"
-                             th:text="${setor.qtdOrdens != null ? setor.qtdOrdens : 0}">
-                            0
-                        </div>
-                    </div>
-
-                    <div th:if="${#lists.isEmpty(resumoSetores)}" style="text-align:center; color:var(--color-muted-5); padding: 2rem;">
-                        Nenhum setor encontrado.
-                    </div>
-                </div>
             </div>
 
         </div>
 
+        <!-- FORMULÁRIO -->
+        <div class="form-panel" id="form-panel" style="display:none">
+
+            <form class="form-card"
+                  id="produto-form"
+                  th:action="@{/dashboard/produtos}"
+                  th:object="${produtoDTO}"
+                  method="post">
+
+                <input type="hidden"
+                       th:name="${_csrf.parameterName}"
+                       th:value="${_csrf.token}" />
+
+                <input type="hidden"
+                       id="id"
+                       th:field="*{id}"/>
+
+                <div class="form-title" id="form-title">
+                    Novo produto
+                </div>
+
+                <div class="field">
+                    <label for="nome">
+                        Nome do produto <span>*</span>
+                    </label>
+
+                    <input type="text"
+                           id="nome"
+                           th:field="*{nome}"
+                           placeholder="Ex: Plafon">
+                </div>
+
+                <div class="field">
+                    <label for="codigo">
+                        Código <span>*</span>
+                    </label>
+
+                    <input type="text"
+                           id="codigo"
+                           th:field="*{codigo}"
+                           placeholder="Ex: 123456" required>
+                </div>
+
+                <div class="field">
+                    <label for="descricao">
+                        Descrição
+                    </label>
+
+                    <textarea id="descricao"
+                              th:field="*{descricao}"
+                              maxlength="500"
+                              rows="4"
+                              placeholder="Descrição do produto">
+                </textarea>
+                </div>
+
+                <div class="form-actions">
+                    <button type="button"
+                            class="btn-cancel"
+                            onclick="hideForm()">
+                        Cancelar
+                    </button>
+
+                    <button type="submit"
+                            class="btn-submit">
+                        Salvar
+                    </button>
+                </div>
+
+            </form>
+
+        </div>
+
     </div>
+    <!-- ABA ROTEIRO -->
+    <div id="tab-roteiro" style="display:none">
+
+        <form class="form-card"
+              id="roteiro-form"
+              th:action="@{/dashboard/produtos/roteiro}"
+              method="post">
+
+            <input type="hidden"
+                   th:name="${_csrf.parameterName}"
+                   th:value="${_csrf.token}" />
+
+            <input type="hidden"
+                   id="roteiro-produto-id"
+                   name="produtoId"/>
+
+            <div class="form-title">
+                Roteiro de Produção
+            </div>
+
+            <!-- PRÉVIA DO ROTEIRO -->
+            <div class="preview-box">
+                <div class="preview-label">Prévia do roteiro</div>
+                <div class="preview-pills" id="preview-pills">
+                            <span style="color:var(--color-muted-5);font-size:12px">
+                                Nenhum setor selecionado.
+                            </span>
+                </div>
+            </div>
+
+            <div class="form-actions">
+
+                <button type="button"
+                        class="btn-cancel"
+                        onclick="hideForm()">
+                    Cancelar
+                </button>
+
+                <button type="submit"
+                        class="btn-submit">
+                    Salvar Roteiro
+                </button>
+
+            </div>
+
+        </form>
+
+    </div>
+
+    </div>
+
 
 </main>
 
+<script th:src="@{/js/produto-secure.js}"></script>
+<script th:src="@{/js/cadastro-produto.js}"></script>
 <script th:src="@{/js/sidebar.js}"></script>
 <script th:src="@{/js/alerts.js}"></script>
-
-<script>
-    function novaOrdemForm() {
-        window.location.href = '/ordens/nova';
-    }
-</script>
 
 </body>
 </html>
