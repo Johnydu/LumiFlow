@@ -61,6 +61,14 @@ logs/archived/
 .env
 .env.*
 !.env.example
+*.pem
+*.key
+*.p12
+*.pfx
+*.jks
+*.keystore
+src/main/resources/application-local.properties
+src/main/resources/application-override.properties
 
 # ============================================================
 # Relatórios Locais

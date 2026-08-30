@@ -6,7 +6,6 @@
 .content {
     flex: 1;
     padding: 28px;
-    flex: 1;
     overflow-y: auto;
     display: flex;
     gap: 16px;
@@ -21,15 +20,7 @@ body.page-ordemproducao-novaordem .content {
     width: 100%;
 }
 
-body.page-relatorio-relatoriotempo .content {
-    flex: 1;
-    overflow-y: auto;
-    padding: 20px;
-    display: flex;
-    flex-direction: column;
-    gap: 14px;
-}
-
+body.page-relatorio-relatoriotempo .content,
 body.page-vidracaria-vidracaria .content {
     flex: 1;
     overflow-y: auto;
@@ -49,9 +40,13 @@ body.page-vidracaria-vidracaria .content {
 
 /* ============ TOPBAR ============ */
 .topbar {
+    background: var(--color-sidebar);
+    border-bottom: 1px solid rgba(255, 255, 255, 0.08);
+    padding: 14px 22px;
     display: flex;
     align-items: center;
     justify-content: space-between;
+    gap: 12px;
     margin-bottom: 26px;
 }
 
@@ -59,44 +54,7 @@ body.page-vidracaria-vidracaria .content {
     font-size: 40px;
 }
 
-
-.topbar {
-    background: var(--color-sidebar);
-    border-bottom: 1px solid rgba(255, 255, 255, 0.08);
-    padding: 14px 22px;
-    display: flex;
-    align-items: center;
-}
-
-.topbar {
-    background: var(--color-sidebar);
-    border-bottom: 1px solid rgba(255, 255, 255, 0.08);
-    padding: 14px 22px;
-    display: flex;
-    align-items: center;
-    gap: 12px;
-}
-
-.topbar {
-    background: var(--color-sidebar);
-    border-bottom: 1px solid rgba(255, 255, 255, 0.08);
-    padding: 14px 22px;
-    display: flex;
-    align-items: center;
-    justify-content: space-between;
-}
-
 /* ============ TOPBAR TITLE ============ */
-.topbar-title {
-    font-size: 18px;
-    font-weight: bold;
-}
-
-.topbar-title {
-    font-size: 18px;
-    font-weight: bold;
-}
-
 .topbar-title {
     font-size: 20px;
     font-weight: bold;
@@ -125,7 +83,6 @@ body.page-vidracaria-vidracaria .content {
 .btn-novo:hover {
     background: var(--color-surface-hover);
 }
-
 
 .btn-nova {
     height: 40px;

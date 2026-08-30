@@ -69,7 +69,7 @@ public class RoteiroController {
 
     private void carregarPagina(Model model) {
         model.addAttribute("roteiros", roteiroService.listarRoteiros());
-        model.addAttribute("produtos", produtoService.listarProdutosPorCodigo());
+        model.addAttribute("produtos", produtoService.listarProdutos());
         model.addAttribute("setores", setorService.listarSetores());
         if (!model.containsAttribute("roteiroDTO"))
             model.addAttribute("roteiroDTO", new RoteiroDTO(null, new ArrayList<>()));

@@ -33,31 +33,37 @@ public class UsuarioController {
     }
 
     @PostMapping
-    public String novoUsuario(@Valid @ModelAttribute("usuarioDTO") UsuarioDTO dto, BindingResult result, Model model, RedirectAttributes attributes, Locale locale) {
+    public String novoUsuario(@Valid @ModelAttribute("usuarioDTO") UsuarioDTO dto, BindingResult result,
+                              Model model, RedirectAttributes attributes, Locale locale) {
         if (result.hasErrors()) return erroValidacao(model, locale);
         usuarioService.novoUsuario(dto);
-        attributes.addFlashAttribute("success", messageSource.getMessage(AppMessages.SUCCESS_USER_CREATED, new Object[]{dto.login()}, locale));
+        attributes.addFlashAttribute("success", messageSource
+                .getMessage(AppMessages.SUCCESS_USER_CREATED, new Object[]{dto.login()}, locale));
         return "redirect:/dashboard/usuario";
     }
 
     @PostMapping("/{id}/excluir")
     public String deletarUsuario(@PathVariable Long id, RedirectAttributes attributes, Locale locale) {
         usuarioService.excluirUsuario(id);
-        attributes.addFlashAttribute("success", messageSource.getMessage(AppMessages.SUCCESS_USER_DELETED, null, locale));
+        attributes.addFlashAttribute("success", messageSource
+                .getMessage(AppMessages.SUCCESS_USER_DELETED, null, locale));
         return "redirect:/dashboard/usuario";
     }
 
     @PostMapping("/{id}/editar")
-    public String editar(@PathVariable Long id, @Valid @ModelAttribute("usuarioDTO") UsuarioEdicaoDTO dto, BindingResult result, Model model, RedirectAttributes attributes, Locale locale) {
+    public String editar(@PathVariable Long id, @Valid @ModelAttribute("usuarioDTO") UsuarioEdicaoDTO dto,
+                         BindingResult result, Model model, RedirectAttributes attributes, Locale locale) {
         if (result.hasErrors()) return erroValidacao(model, locale);
         usuarioService.editarUsuario(id, dto);
-        attributes.addFlashAttribute("success", messageSource.getMessage(AppMessages.SUCCESS_USER_UPDATED, new Object[]{dto.login()}, locale));
+        attributes.addFlashAttribute("success", messageSource
+                .getMessage(AppMessages.SUCCESS_USER_UPDATED, new Object[]{dto.login()}, locale));
         return "redirect:/dashboard/usuario";
     }
 
     private String erroValidacao(Model model, Locale locale) {
         carregarPagina(model);
-        model.addAttribute("error", messageSource.getMessage(AppMessages.ERROR_VALIDATION_FAILED, null, locale));
+        model.addAttribute("error", messageSource
+                .getMessage(AppMessages.ERROR_VALIDATION_FAILED, null, locale));
         return "usuario/ListaUsuario";
     }
 
@@ -66,6 +72,7 @@ public class UsuarioController {
         model.addAttribute("niveisAcesso", nivelAcessoService.listarTodos());
         model.addAttribute("setores", setorService.listarSetores());
         if (!model.containsAttribute("usuarioDTO"))
-            model.addAttribute("usuarioDTO", new UsuarioDTO(null, null, null, null, null, null));
+            model.addAttribute("usuarioDTO",
+                    new UsuarioDTO(null, null, null, null, null, null));
     }
 }

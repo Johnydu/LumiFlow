@@ -25,7 +25,7 @@ public class GlobalExceptionHandler {
 
         String mensagem = messageSource.getMessage(
                 ex.getMessageKey(),
-                ex.getParameters(),
+                ex.getArgs(),
                 locale
         );
         redirectAttributes.addFlashAttribute("error", mensagem);

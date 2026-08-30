@@ -8,7 +8,7 @@
   flex-shrink: 0;
 }
 
-body.page-produto-cadastroproduto .form-panel
+body.page-produto-cadastroproduto .form-panel,
 body.page-maquina-cadastromaquinas .form-panel,
 body.page-setor-cadastrosetor .form-panel,
 body.page-operador-cadastrooperador .form-panel,
@@ -16,8 +16,6 @@ body.page-usuario-cadastrousuario .form-panel {
   width: 320px;
   flex-shrink: 0;
 }
-
-
 
 /* ============ FORM CARD ============ */
 .form-card {
@@ -37,13 +35,6 @@ body.page-vidracaria-vidracaria .form-card {
   border-radius: 14px;
   padding: 22px;
   margin-bottom: 14px;
-}
-
-body.page-ordemproducao-lancamento .form-card {
-  background: var(--color-surface);
-  border: 1px solid rgba(255,255,255,0.08);
-  border-radius: 14px;
-  padding: 22px;
 }
 
 /* ============ FORM TITLE ============ */
@@ -76,16 +67,6 @@ body.page-vidracaria-vidracaria .card-title {
 body.page-usuario-login .field {
   width: 100%;
   margin-bottom: 14px;
-}
-
-body.page-ordemproducao-lancamento .field,
-body.page-ordemproducao-novaordem .field,
-body.page-produto-cadastroproduto .field,
-body.page-operador-cadastrooperador .field,
-body.page-vidracaria-vidracaria .field {
-  display: flex;
-  flex-direction: column;
-  gap: 6px;
 }
 
 /* ============ FIELD LABEL ============ */
@@ -143,50 +124,12 @@ body.page-usuario-login .field input:focus {
   border-color: var(--color-primary-muted);
 }
 
-body.page-ordemproducao-lancamento .field input,
-body.page-ordemproducao-lancamento .field select,
-body.page-ordemproducao-lancamento .field textarea,
-body.page-ordemproducao-novaordem .field input,
-body.page-ordemproducao-novaordem .field select,
-body.page-ordemproducao-novaordem .field textarea,
-body.page-produto-cadastroproduto .field input,
-body.page-operador-cadastrooperador .field input,
-body.page-operador-cadastrooperador .field select,
-body.page-produto-cadastroproduto .field select,
-body.page-produto-cadastroproduto .field textarea,
-body.page-vidracaria-vidracaria .field input,
-body.page-vidracaria-vidracaria .field select {
-  background: var(--color-field);
-  border: 1px solid rgba(255,255,255,0.1);
-  border-radius: 10px;
-  color: var(--color-text);
-  font-size: 13px;
-  padding: 10px 14px;
-  outline: none;
-}
-
-body.page-ordemproducao-lancamento .field input:focus,
-body.page-ordemproducao-lancamento .field select:focus,
-body.page-ordemproducao-lancamento .field textarea:focus,
-body.page-ordemproducao-novaordem .field input:focus,
-body.page-ordemproducao-novaordem .field select:focus,
-body.page-operador-cadastrooperador .field select:focus,
-body.page-operador-cadastrooperador .field input:focus,
-body.page-produto-cadastroproduto .field input:focus,
-body.page-produto-cadastroproduto .field select:focus,
-body.page-vidracaria-vidracaria .field input:focus,
-body.page-vidracaria-vidracaria .field select:focus {
-  border-color: var(--color-primary);
-}
-
 body.page-ordemproducao-lancamento .field textarea,
 body.page-ordemproducao-novaordem .field textarea,
 body.page-produto-cadastroproduto .field textarea {
   resize: none;
   height: 80px;
 }
-
-
 
 /* ============ HINT ============ */
 .hint {
@@ -216,9 +159,6 @@ body.page-vidracaria-vidracaria .form-actions {
 }
 
 body.page-ordemproducao-novaordem .form-actions {
-  display: flex;
-  justify-content: flex-end;
-  gap: 10px;
   margin-top: 6px;
 }
 
@@ -355,7 +295,6 @@ body.page-produto-cadastroproduto .preview-pills {
   flex: 0 0 34px !important;
 }
 
-/* O truque do width: 0 + flex: 1 impede que o select estoure o card */
 .etapa-item .etapa-select,
 .etapa-item select {
   flex: 1 !important;

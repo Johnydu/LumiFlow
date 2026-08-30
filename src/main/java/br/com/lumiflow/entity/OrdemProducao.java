@@ -27,6 +27,9 @@ public class OrdemProducao extends Auditoria{
     @Column(name = "quantidade",nullable = false)
     private Integer quantidade;
 
+    @Column(name = "observacao")
+    private String observacao;
+
     @Enumerated(EnumType.STRING)
     @Column(name = "status",nullable = false)
     private EstatusOrdemProducao status;

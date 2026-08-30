@@ -35,7 +35,8 @@ public class SetorService {
 
     @Transactional(readOnly = true)
     public List<SetorListagemDTO> listarSetores() {
-        return setorRepository.findAllByOrderByNomeAsc().stream().map(s -> new SetorListagemDTO(s.getId(), s.getNome(), s.getPossuiEtapas(), maquinaRepository.countBySetorId(s.getId()))).toList();
+        return setorRepository.findAllByOrderByNomeAsc().stream().map(s -> new SetorListagemDTO(s.getId(),
+                s.getNome(), s.getPossuiEtapas(), maquinaRepository.countBySetorId(s.getId()))).toList();
     }
 
     @Transactional
@@ -62,7 +63,8 @@ public class SetorService {
     @Transactional
     public void editarSetor(long id, SetorDTO dto) {
         Setor setor = buscarSetorPorId(id);
-        setorRepository.findByNome(dto.nome().toUpperCase(Locale.ROOT)).filter(s -> !s.getId().equals(id)).ifPresent(s -> {
+        setorRepository.findByNome(dto.nome().toUpperCase(Locale.ROOT)).filter(s -> !s.getId()
+                .equals(id)).ifPresent(s -> {
             throw new BusinessException(AppMessages.ERROR_SECTOR_NAME_DUPLICATE);
         });
         setor.setNome(dto.nome().trim().toUpperCase(Locale.ROOT));

@@ -1,99 +1,107 @@
-
 <!DOCTYPE html>
 <html lang="pt-BR" xmlns:th="http://www.thymeleaf.org"
-     xmlns:sec="http://www.thymeleaf.org/extras/spring-security">
+      xmlns:sec="http://www.thymeleaf.org/extras/spring-security">
 <head>
-<meta charset="UTF-8"/>
-<meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <meta charset="UTF-8"/>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Nova Ordem de Produção - LumiFlow</title>
+
   <link rel="stylesheet" th:href="@{/css/variables.css}">
-<link rel="stylesheet" th:href="@{/css/globals.css}">
-<link rel="stylesheet" th:href="@{/css/sidebar.css}">
-<link rel="stylesheet" th:href="@{/css/topbar.css}">
-<link rel="stylesheet" th:href="@{/css/components/buttons.css}">
-<link rel="stylesheet" th:href="@{/css/components/forms.css}">
-<link rel="stylesheet" th:href="@{/css/components/tables.css}">
-<link rel="stylesheet" th:href="@{/css/components/cards.css}">
-<link rel="stylesheet" th:href="@{/css/components/badges.css}">
-<link rel="stylesheet" th:href="@{/css/components/status.css}">
-<link rel="stylesheet" th:href="@{/css/components/alerts.css}">
-<link rel="stylesheet" th:href="@{/css/pages/dashboard.css}">
-<link rel="stylesheet" th:href="@{/css/pages/login.css}">
-<link rel="stylesheet" th:href="@{/css/pages/usuarios.css}">
-<link rel="stylesheet" th:href="@{/css/pages/maquinas.css}">
-<link rel="stylesheet" th:href="@{/css/pages/produtos.css}">
-<link rel="stylesheet" th:href="@{/css/pages/setores.css}">
-<link rel="stylesheet" th:href="@{/css/pages/ordens.css}">
-<link rel="stylesheet" th:href="@{/css/pages/relatorio.css}">
-<link rel="stylesheet" th:href="@{/css/pages/vidracaria.css}">
-<link rel="stylesheet" th:href="@{/css/pages/novaordem.css}">
-<link rel="stylesheet" th:href="@{/css/pages/listaordem.css}">
-<link rel="stylesheet" th:href="@{/css/utils.css}">
-<link rel="stylesheet" th:href="@{/css/responsive.css}"/>
-  <link rel="stylesheet" th:href="@{/css/error.css}">
+  <link rel="stylesheet" th:href="@{/css/globals.css}">
+  <link rel="stylesheet" th:href="@{/css/sidebar.css}">
+  <link rel="stylesheet" th:href="@{/css/topbar.css}">
+  <link rel="stylesheet" th:href="@{/css/components/buttons.css}">
+  <link rel="stylesheet" th:href="@{/css/components/forms.css}">
+  <link rel="stylesheet" th:href="@{/css/components/tables.css}">
+  <link rel="stylesheet" th:href="@{/css/components/cards.css}">
+  <link rel="stylesheet" th:href="@{/css/components/badges.css}">
+  <link rel="stylesheet" th:href="@{/css/components/status.css}">
+  <link rel="stylesheet" th:href="@{/css/components/alerts.css}">
+  <link rel="stylesheet" th:href="@{/css/pages/novaordem.css}">
+  <link rel="stylesheet" th:href="@{/css/utils.css}">
+  <link rel="stylesheet" th:href="@{/css/responsive.css}">
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
 </head>
-<body class="page-ordemproducao-novaordem">
-<div th:replace="fragments/messages :: alerts"></div>
 
-<aside th:replace="~{fragments/sidebar :: sidebar(activePage='NovaOrdem')}"></aside>
+<body class="page-ordemproducao-novaordem">
+
+<div th:replace="~{fragments/messages :: alerts}"></div>
+
+<aside th:replace="~{fragments/sidebar :: sidebar(activePage='ordens')}"></aside>
+
 <main class="main">
   <div class="topbar">
-    <button class="btn-back">← Voltar</button>
+    <a th:href="@{/dashboard/ordens}" class="btn-back" style="text-decoration: none; display: inline-flex; align-items: center; gap: 6px;">
+      ← Voltar
+    </a>
     <span class="topbar-title">Nova Ordem de Produção</span>
   </div>
 
   <div class="content">
 
-    <!-- DADOS DA ORDEM -->
-    <div class="form-card">
-      <div class="card-title">Dados da ordem</div>
-      <div class="form-grid" style="margin-bottom:14px">
-        <div class="field">
-          <label>Produto <span>*</span></label>
-          <select onchange="updateRoteiro(this.value)">
-            <option value="">Selecione o produto</option>
-            <option value="arandela12">Arandela 12W</option>
-            <option value="arandela20">Arandela 20W</option>
-            <option value="222pt">222PT</option>
-            <option value="327mr">327MR</option>
-          </select>
+    <form method="post" th:action="@{/dashboard/ordens}" id="formNovaOrdem">
+
+      <!-- DADOS DA ORDEM -->
+      <div class="form-card">
+        <div class="card-title">Dados da ordem</div>
+        <div class="form-grid" style="margin-bottom:14px">
+
+          <div class="field">
+            <label for="produtoId">Produto <span>*</span></label>
+            <select id="produtoId" name="produtoId" required onchange="updateRoteiro(this.value)">
+              <option value="">Selecione o produto</option>
+              <option th:each="p : ${produtos}"
+                      th:value="${p.id}"
+                      th:text="${p.nome}">
+                Arandela 12W
+              </option>
+            </select>
+          </div>
+
+          <div class="field">
+            <label for="quantidade">Quantidade <span>*</span></label>
+            <input type="number" id="quantidade" name="quantidade" min="1" placeholder="0" required/>
+            <span class="hint">Quantidade total a produzir.</span>
+          </div>
+
+          <div class="field">
+            <label for="dataCriacao">Data <span>*</span></label>
+            <input type="date" id="dataCriacao" name="dataCriacao"
+                   th:value="${#temporals.format(#temporals.createToday(), 'yyyy-MM-dd')}" required/>
+          </div>
+
+          <div class="field">
+            <label for="observacao">Observação</label>
+            <input type="text" id="observacao" name="observacao" placeholder="Opcional..."/>
+          </div>
+
         </div>
-        <div class="field">
-          <label>Quantidade <span>*</span></label>
-          <input type="number" placeholder="0"/>
-          <span class="hint">Quantidade total a produzir.</span>
-        </div>
-        <div class="field">
-          <label>Data <span>*</span></label>
-          <input type="date" value="2026-05-30"/>
-        </div>
-        <div class="field">
-          <label>Observação</label>
-          <input type="text" placeholder="Opcional..."/>
+
+        <!-- ROTEIRO AUTOMÁTICO -->
+        <div class="roteiro-card">
+          <div class="roteiro-label">Roteiro do produto</div>
+          <div class="roteiro-pills" id="roteiro-pills">
+            <span class="r-empty">Selecione um produto para ver o roteiro.</span>
+          </div>
+          <div class="roteiro-info" id="roteiro-info" style="display:none">
+            ℹ️ Roteiro carregado automaticamente do cadastro do produto.
+          </div>
         </div>
       </div>
 
-      <!-- ROTEIRO AUTOMÁTICO -->
-      <div class="roteiro-card">
-        <div class="roteiro-label">Roteiro do produto</div>
-        <div class="roteiro-pills" id="roteiro-pills">
-          <span class="r-empty">Selecione um produto para ver o roteiro.</span>
-        </div>
-        <div class="roteiro-info" id="roteiro-info" style="display:none">
-          ℹ️ Roteiro carregado automaticamente do cadastro do produto.
-        </div>
+      <div class="form-actions">
+        <a th:href="@{/dashboard/ordens}" class="btn-cancel" style="text-decoration: none;">Cancelar</a>
+        <button type="submit" class="btn-submit">Criar Ordem</button>
       </div>
-    </div>
 
-    <div class="form-actions">
-      <button class="btn-cancel">Cancelar</button>
-      <button class="btn-submit">Criar Ordem</button>
-    </div>
+    </form>
 
   </div>
 </main>
 
-<script th:src="@{/js/nova-ordem.js}"></script>
 <script th:src="@{/js/sidebar.js}"></script>
+<script th:src="@{/js/alerts.js}"></script>
+<script th:src="@{/js/nova-ordem.js}"></script>
+
 </body>
 </html>

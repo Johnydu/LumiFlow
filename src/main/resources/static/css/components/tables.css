@@ -11,13 +11,16 @@ table {
 
 /* ============ TABLE HEADERS ============ */
 th {
-    padding: 22px;
+    padding: 9px 14px;
     text-align: left;
-    border-bottom: 1px solid rgba(255, 255, 255, 0.05);
     font-size: 12px;
     color: var(--color-muted-5);
+    font-weight: 500;
+    border-bottom: 1px solid rgba(255, 255, 255, 0.05);
+    background: var(--color-field);
+    text-transform: uppercase;
+    letter-spacing: .05em;
     white-space: nowrap;
-    font-weight: normal;
     overflow: hidden;
     text-overflow: ellipsis;
 }
@@ -38,28 +41,10 @@ th {
     border-color: var(--color-primary);
 }
 
-th {
-    padding: 9px 14px;
-    text-align: left;
-    font-size: 12px;
-    color: var(--color-muted-5);
-    font-weight: 500;
-    border-bottom: 1px solid rgba(255, 255, 255, 0.05);
-    background: var(--color-field);
-    text-transform: uppercase;
-    letter-spacing: .05em;
-}
-
 /* ============ TABLE DATA CELLS ============ */
 td {
-    padding: 22px;
-    text-align: left;
-    border-bottom: 1px solid rgba(255, 255, 255, 0.05);
-    font-size: 14px;
-}
-
-td {
     padding: 11px 14px;
+    text-align: left;
     border-bottom: 1px solid rgba(255, 255, 255, 0.05);
     font-size: 12px;
     vertical-align: middle;
@@ -94,7 +79,6 @@ body.page-ordemproducao-listaordem tr:hover td {
     cursor: pointer;
 }
 
-
 /* ============ TABLE PROGRESS ============ */
 .table-progress {
     width: 120px;
@@ -112,18 +96,6 @@ body.page-ordemproducao-listaordem tr:hover td {
 
 /* ============ NUM CLASS (Monospace) ============ */
 .num {
-    font-family: monospace;
-    color: var(--color-muted);
-    font-size: 11px;
-}
-
-body.page-ordemproducao-detalhesordem .num {
-    font-family: monospace;
-    color: var(--color-muted);
-    font-size: 11px;
-}
-
-body.page-ordemproducao-listaordem .num {
     font-family: monospace;
     color: var(--color-muted);
     font-size: 11px;
@@ -168,7 +140,7 @@ body.page-ordemproducao-listaordem .num {
     white-space: nowrap;
 }
 
-/* ============ ITEM PROGRESS WRAP ============ */
+/* ============ ITEM PROGRESS WRAP (Detalhes Ordem) ============ */
 body.page-ordemproducao-detalhesordem .p-wrap {
     display: flex;
     align-items: center;
@@ -207,7 +179,6 @@ body.page-ordemproducao-detalhesordem .p-txt {
     white-space: nowrap;
 }
 
-
 /* ============ SEARCH FIELD ============ */
 body.page-usuario-cadastrousuario .search {
     height: 36px;
@@ -220,6 +191,7 @@ body.page-usuario-cadastrousuario .search {
     width: 200px;
 }
 
+/* ============ TABLE ACTIONS (Ver / Lançar / Liberar) ============ */
 .table-actions {
     display: flex;
     align-items: center;
