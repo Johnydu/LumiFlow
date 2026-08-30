@@ -57,5 +57,5 @@ function initProgressBarAnimation() {
  * Ação chamada pelo botão do Topbar "+ Nova Ordem"
  */
 function novaOrdemForm() {
-    window.location.href = '/dashboard/ordens/nova';
+    window.location.href = '/dashboard/ordens/novaOrdem';
 }

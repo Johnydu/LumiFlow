@@ -14,4 +14,10 @@ document.addEventListener("DOMContentLoaded", function () {
             // mas o "change" ou "blur" já resolve bem para datas e inputs.
         });
     }
+
+
 });
+
+function novaOrdemForm() {
+    window.location.href = '/dashboard/ordens/novaOrdem';
+}

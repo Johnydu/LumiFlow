@@ -40,7 +40,7 @@
     <div class="content">
 
         <!-- FILTROS (Sem o select de setor) -->
-        <form method="get" th:action="@{/dashboard/ordens}" class="filtros" id="formFiltros">
+        <form method="get" th:action="@{/dashboard/ordens-setor/{setorId}(setorId=${setorIdAtual})}" class="filtros" id="formFiltros">
 
             <div class="search-input-wrapper">
                 <!-- HTML Atualizado no input de busca -->
@@ -54,11 +54,10 @@
 
             <select class="filtro-select" name="status" onchange="document.getElementById('formFiltros').submit()">
                 <option value="">Todos os status</option>
-                <option value="PENDENTE" th:selected="${param.status == 'PENDENTE'}">Pendente</option>
+                <option value="DISPONIVEL" th:selected="${param.status == 'DISPONIVEL'}">Disponível</option>
+                <option value="LIBERADA" th:selected="${param.status == 'LIBERADA'}">Liberada</option>
                 <option value="EM_ANDAMENTO" th:selected="${param.status == 'EM_ANDAMENTO'}">Em andamento</option>
-                <option value="CONCLUIDO" th:selected="${param.status == 'CONCLUIDO' || param.status == 'CONCLUIDA'}">
-                    Concluído
-                </option>
+                <option value="CONCLUIDA" th:selected="${param.status == 'CONCLUIDA'}">Concluída</option>
             </select>
 
         </form>
@@ -79,10 +78,10 @@
                 <thead>
                 <tr>
                     <th>NÚMERO</th>
-                    <th>PRODUTO</th>
+                    <th>PRODUTO/CODIGO</th>
                     <th>QTD</th>
                     <th>PROGRESSO</th>
-                    <th>SETOR ATUAL</th>
+                    <th>OBSERVAÇÃO</th>
                     <th>DATA CRIAÇÃO</th>
                     <th>STATUS</th>
                     <th style="width:100px; text-align: center;">AÇÃO</th>
@@ -94,7 +93,7 @@
 
                     <td class="num" th:text="${ordem.numero()}"></td>
 
-                    <td class="produto-nome" th:text="${ordem.produtoNome()}"></td>
+                    <td class="produto-nome" th:text="${ordem.produtoNome() + ' - ' + ordem.produtoCodigo()}"></td>
 
                     <td th:text="${ordem.quantidade()}"></td>
 
@@ -111,7 +110,7 @@
                     </td>
 
                     <td>
-                        <span class="setor-tag" th:text="${ordem.setorAtual()}"></span>
+                        <span th:text="${ordem.observacao() != null && !ordem.observacao().isBlank() ? ordem.observacao() : '—'}"></span>
                     </td>
 
                     <td th:text="${#temporals.format(ordem.criadoEm(),'dd/MM/yyyy')}"></td>

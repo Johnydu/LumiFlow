@@ -37,3 +37,4 @@ function renderRoteiro(fluxo) {
 
   infoBox.style.display = 'block';
 }
+
