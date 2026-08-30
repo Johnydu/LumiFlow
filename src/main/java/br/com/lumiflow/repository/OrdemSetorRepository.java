@@ -41,5 +41,7 @@ public interface OrdemSetorRepository extends JpaRepository<OrdemSetor, Long> {
     List<OrdemSetor> findByOrdemProducaoIdOrderBySequenciaAsc(Long ordemProducaoId);
 
     Optional<OrdemSetor> findByOrdemProducaoIdAndSetorId(Long ordemProducaoId, Long setorId);
+
+    List<OrdemSetor> findBySetorIdAndOrdemProducaoIdIn(Long setorId, List<Long> ordemProducaoIds);
 }
 

@@ -15,7 +15,7 @@
            th:classappend="${activePage == 'dashboard'} ? 'active'"
            class="menu-item">Dashboard</a>
         <a th:href="@{/dashboard/ordens-setor}"
-           th:classappend="${activePage == 'ordens-setor'} ? 'active'"
+           th:classappend="${activePage == 'ordens-setor'} ? 'active' : ''"
            class="menu-item">Ordens</a>
         <a th:href="@{/dashboard/lancamento}"
            th:classappend="${activePage == 'lancamento'} ? 'active'"

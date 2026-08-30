@@ -92,43 +92,45 @@ body.page-usuario-login .field label {
 
 /* ============ FIELD INPUT/SELECT/TEXTAREA ============ */
 .field input,
-.field select {
+.field select,
+.field textarea {
   background: var(--color-field);
   border: 1px solid rgba(255,255,255,0.1);
   border-radius: 10px;
   color: var(--color-text);
+  font-family: inherit;
   font-size: 13px;
   padding: 10px 14px;
   outline: none;
   width: 100%;
+  box-sizing: border-box;
+  transition: border-color .2s ease-in-out, box-shadow .2s ease-in-out;
 }
 
 .field input:focus,
-.field select:focus {
+.field select:focus,
+.field textarea:focus {
   border-color: var(--color-primary);
+  box-shadow: 0 0 0 3px rgba(97, 87, 255, 0.15);
 }
 
-body.page-usuario-login .field input {
-  width: 100%;
-  padding: 10px 14px;
-  background: rgba(255,255,255,0.05);
-  border: 0.5px solid rgba(255,255,255,0.12);
-  border-radius: 8px;
-  color: var(--color-text);
-  font-size: 14px;
-  outline: none;
-  transition: border-color .2s;
+.field textarea::placeholder {
+  color: var(--color-muted-4);
+  font-size: 13px;
 }
 
-body.page-usuario-login .field input:focus {
-  border-color: var(--color-primary-muted);
+.field textarea {
+  resize: vertical;
+  min-height: 80px;
+  line-height: 1.5;
 }
 
-body.page-ordemproducao-lancamento .field textarea,
-body.page-ordemproducao-novaordem .field textarea,
-body.page-produto-cadastroproduto .field textarea {
+.field textarea:disabled,
+.field textarea[readonly] {
+  background: rgba(255,255,255,0.03);
+  color: var(--color-muted-4);
+  cursor: not-allowed;
   resize: none;
-  height: 80px;
 }
 
 /* ============ HINT ============ */

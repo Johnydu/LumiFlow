@@ -8,10 +8,11 @@ public record OrdemListagemDTO(
         Long id,
         String numero,
         String produtoNome,
+        String produtoCodigo,
         Integer quantidade,
         Integer produzido,
         Double percentual,
-        String setorAtual,
+        String observacao,
         LocalDateTime criadoEm,
         EstatusOrdemProducao status
 ) {

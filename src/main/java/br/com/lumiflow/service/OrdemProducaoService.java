@@ -21,6 +21,8 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
+import java.util.Map;
+import java.util.stream.Collectors;
 
 @Service
 @AllArgsConstructor
@@ -46,15 +48,27 @@ public class OrdemProducaoService {
 
         List<OrdemProducao> ordens = ordemProducaoRepository.buscarPorSetorIdEFiltros(setorId, busca, status);
 
+        if (ordens.isEmpty()) {
+            return List.of();
+        }
+
+        List<Long> ordemIds = ordens.stream().map(OrdemProducao::getId).toList();
+
+        Map<Long, OrdemSetor> ordemSetorPorOrdemId = ordemSetorRepository
+                .findBySetorIdAndOrdemProducaoIdIn(setorId, ordemIds)
+                .stream()
+                .collect(Collectors.toMap(os -> os.getOrdemProducao().getId(), os -> os));
+
         return ordens.stream()
-                .map(ordem -> montarOrdemListagemDTO(ordem, setorId))
+                .map(ordem -> montarOrdemListagemDTO(ordem,
+                        ordemSetorPorOrdemId.get(ordem.getId())))
                 .toList();
     }
 
-    private OrdemListagemDTO montarOrdemListagemDTO(OrdemProducao ordem, Long setorId) {
-        OrdemSetor ordemSetor = ordemSetorRepository
-                .findByOrdemProducaoIdAndSetorId(ordem.getId(), setorId)
-                .orElseThrow(() -> new BusinessException(AppMessages.ERROR_ORDER_SECTOR_NOTFOUND));
+    private OrdemListagemDTO montarOrdemListagemDTO(OrdemProducao ordem, OrdemSetor ordemSetor) {
+        if (ordemSetor == null) {
+            throw new BusinessException(AppMessages.ERROR_ORDER_SECTOR_NOTFOUND);
+        }
 
         Integer produzido = ordemSetor.getQtdProduzida();
         Double percentual = ordem.getQuantidade() == 0 ? 0.0
@@ -64,10 +78,11 @@ public class OrdemProducaoService {
                 ordem.getId(),
                 ordem.getNumero(),
                 ordem.getProduto().getNome(),
+                ordem.getProduto().getCodigo(),
                 ordem.getQuantidade(),
                 produzido,
                 percentual,
-                ordemSetor.getSetor().getNome(),
+                ordem.getObservacao(),
                 ordem.getCriadoEm(),
                 ordemSetor.getStatus()
         );
