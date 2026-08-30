@@ -6,6 +6,7 @@ import org.springframework.data.repository.query.Param;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
+import java.util.Optional;
 
 public interface RoteiroProdutoRepository extends JpaRepository<RoteiroProduto, Long> {
 
@@ -32,4 +33,6 @@ public interface RoteiroProdutoRepository extends JpaRepository<RoteiroProduto, 
            where r.produto.id = :produtoId
            """)
     void deletarPorProdutoId(@Param("produtoId") Long produtoId);
+
+    Optional<RoteiroProduto> findByProdutoIdAndSequencia(Long produtoId, Integer sequencia);
 }

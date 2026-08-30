@@ -25,7 +25,7 @@ public class DashboardService {
 
         Long andamento = ordemProducaoRepository.countByStatus(EstatusOrdemProducao.EM_ANDAMENTO);
         Long concluidas = ordemProducaoRepository.countByStatus(EstatusOrdemProducao.CONCLUIDA);
-        Long pendentes = ordemProducaoRepository.countByStatus(EstatusOrdemProducao.PENDENTE);
+        Long pendentes = ordemProducaoRepository.countByStatus(EstatusOrdemProducao.DISPONIVEL);
 
 
         return new DashboardResumoDTO(total, andamento, concluidas, pendentes);

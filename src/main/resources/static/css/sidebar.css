@@ -3,8 +3,8 @@
     ========================================== */
 .sidebar {
   width: 220px;
-  background: #11122c;
-  border-right: 1px solid rgba(255,255,255,0.08);
+  background: var(--color-sidebar);
+  border-right: 1px solid var(--border-subtle);
   padding: 20px;
   display: flex;
   flex-direction: column;
@@ -20,7 +20,7 @@
 
 /* Títulos das seções do menu */
 .menu-title {
-  color: #7b7b8f;
+  color: var(--color-muted-3);
   font-size: 11px;
   margin: 16px 0 8px;
   letter-spacing: 1px;
@@ -36,7 +36,7 @@
 /* Item individual do menu */
 .menu-item {
   height: 42px;
-  border: 1px solid rgba(255, 255, 255, 0.1);
+  border: 1px solid var(--border-subtle);
   border-radius: 10px;
   display: flex;
   align-items: center;
@@ -47,13 +47,13 @@
 }
 
 .menu-item:hover {
-  background: #1a1b3b;
+  background: var(--color-surface-hover);
 }
 
 /* Badge de notificação (ex: listaDeOrdens pendentes) */
 .badge {
   margin-left: auto;
-  background: #ff4f5e;
+  background: var(--color-danger-strong);
   width: 32px;
   height: 32px;
   border-radius: 50%;
@@ -67,7 +67,7 @@
 /* Perfil do usuário logado no rodapé do menu */
 .profile {
   margin-top: auto;
-  border-top: 1px solid rgba(255, 255, 255, 0.08);
+  border-top: 1px solid var(--border-subtle);
   padding-top: 14px;
   display: flex;
   align-items: center;
@@ -79,7 +79,7 @@
   width: 36px;
   height: 36px;
   border-radius: 50%;
-  background: #6157ff;
+  background: var(--color-primary);
   display: flex;
   align-items: center;
   justify-content: center;
@@ -95,8 +95,14 @@
   text-align: right;
   margin-top: 10px;
   font-size: 11px;
-  color: #999;
+  color: var(--color-muted-2);
 }
 
-.profile-info h4 { font-size: 24px; }
-.profile-info span { color: #8f8f9e; font-size: 18px; }
+.profile-info h4 {
+  font-size: 24px;
+}
+
+.profile-info span {
+  color: var(--color-muted-2);
+  font-size: 18px;
+}

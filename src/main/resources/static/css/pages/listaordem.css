@@ -38,10 +38,6 @@
     padding-top: 16px;
 }
 
-.pagination {
-    display: flex;
-    gap: 8px;
-}
 
 .empty-state {
     text-align: center;

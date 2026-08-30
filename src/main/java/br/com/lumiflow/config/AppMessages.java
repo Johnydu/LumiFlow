@@ -1,8 +1,12 @@
 package br.com.lumiflow.config;
 
-/** Centralized keys for all user-facing application messages. */
+/**
+ * Centralized keys for all user-facing application messages.
+ */
 public final class AppMessages {
-    private AppMessages() { }
+    private AppMessages() {
+    }
+
     public static final String SUCCESS_USER_CREATED = "success.user.created";
     public static final String SUCCESS_USER_UPDATED = "success.user.updated";
     public static final String SUCCESS_USER_DELETED = "success.user.deleted";
@@ -51,4 +55,15 @@ public final class AppMessages {
     public static final String ERROR_GLASS_TYPE_DUPLICATE = "error.glass.type.duplicate";
     public static final String ERROR_VALIDATION_FAILED = "error.validation.failed";
     public static final String ERROR_SYSTEM_INTERNAL = "error.system.internal";
+    public static final String ERROR_ORDEM_SETOR_NOTFOUND = "error.ordemsetor.notfound";
+    public static final String ERROR_APONTAMENTO_QUANTIDADE_ZERO = "error.apontamento.quantidade.zero";
+    public static final String ERROR_APONTAMENTO_QUANTIDADE_EXCEDE = "error.apontamento.quantidade.excede";
+    public static final String ERROR_APONTAMENTO_REFUGO_MOTIVO_OBRIGATORIO = "error.apontamento.refugo.motivo.obrigatorio";
+    public static final String ERROR_ROTEIRO_ETAPA_NAO_CRIADA = "error.roteiro.etapa.naocriada";
+    public static final String SUCCESS_APONTAMENTO_LANCADO = "success.apontamento.lancado";
+    public static final String SUCCESS_ORDER_CREATED = "success.order.created";
+    public static final String ERROR_PRODUCT_WITHOUT_ROUTE = "error.product.without.route";
+    public static final String ERROR_ORDER_SECTOR_NOTFOUND = "error.order.sector.notfound";
+    public static final String ERROR_ORDER_NOT_AVAILABLE = "error.order.not.available";
+    public static final String SUCCESS_ORDER_LIBERADA = "success.order.liberada";
 }

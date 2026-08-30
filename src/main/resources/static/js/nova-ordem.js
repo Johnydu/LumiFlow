@@ -1,21 +1,39 @@
-const roteiros = {
-  arandela12: ['Corte', 'Dobra', 'Solda', 'Pintura', 'Colagem', 'Acabamento'],
-  arandela20: ['Corte', 'Dobra', 'Solda', 'Lixa', 'Pintura', 'Colagem', 'Acabamento'],
-  '222pt': ['Corte', 'Dobra', 'Pintura', 'Montagem 2'],
-  '327mr': ['Corte', 'Dobra', 'Solda', 'Pintura', 'Acabamento'],
-};
+function updateRoteiro(produtoId) {
+  const pillsContainer = document.getElementById('roteiro-pills');
+  const infoBox = document.getElementById('roteiro-info');
 
-function updateRoteiro(val) {
-  const pills = document.getElementById('roteiro-pills');
-  const info = document.getElementById('roteiro-info');
-  if (!val || !roteiros[val]) {
-    pills.innerHTML = '<span class="r-empty">Selecione um produto para ver o roteiro.</span>';
-    info.style.display = 'none';
+  if (!produtoId) {
+    pillsContainer.innerHTML = '<span class="r-empty">Selecione um produto para ver o roteiro.</span>';
+    infoBox.style.display = 'none';
     return;
   }
-  const setores = roteiros[val];
-  pills.innerHTML = setores.map((s, i) =>
-    (i > 0 ? '<span class="r-arr">›</span>' : '') + `<span class="r-pill">${s}</span>`
-  ).join('');
-  info.style.display = 'flex';
+
+  fetch(`/api/roteiros/produto/${produtoId}`)
+      .then(response => {
+        if (!response.ok) throw new Error('Erro ao buscar roteiro');
+        return response.json();
+      })
+      .then(fluxo => renderRoteiro(fluxo))
+      .catch(error => {
+        console.error(error);
+        pillsContainer.innerHTML = '<span class="r-empty">Erro ao carregar o roteiro deste produto.</span>';
+        infoBox.style.display = 'none';
+      });
+}
+
+function renderRoteiro(fluxo) {
+  const pillsContainer = document.getElementById('roteiro-pills');
+  const infoBox = document.getElementById('roteiro-info');
+
+  if (!fluxo || fluxo.length === 0) {
+    pillsContainer.innerHTML = '<span class="r-empty">Este produto ainda não possui roteiro cadastrado.</span>';
+    infoBox.style.display = 'none';
+    return;
+  }
+
+  pillsContainer.innerHTML = fluxo
+      .map(etapa => `<span class="r-pill">${etapa}</span>`)
+      .join('<span class="r-arr">→</span>');
+
+  infoBox.style.display = 'block';
 }

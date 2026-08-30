@@ -28,36 +28,45 @@ public class SetorController {
     }
 
     @PostMapping
-    public String novoSetor(@Valid @ModelAttribute("setorDTO") SetorDTO dto, BindingResult result, Model model, RedirectAttributes attributes, Locale locale) {
+    public String novoSetor(@Valid @ModelAttribute("setorDTO") SetorDTO dto, BindingResult result
+            , Model model, RedirectAttributes attributes, Locale locale) {
+
         if (result.hasErrors()) return erroValidacao(model, locale);
+
         setorService.novoSetor(dto);
-        attributes.addFlashAttribute("success", messageSource.getMessage(AppMessages.SUCCESS_SECTOR_CREATED, new Object[]{dto.nome()}, locale));
+        attributes.addFlashAttribute("success", messageSource
+                .getMessage(AppMessages.SUCCESS_SECTOR_CREATED, new Object[]{dto.nome()}, locale));
         return "redirect:/dashboard/setores";
     }
 
     @PostMapping("{id}/excluir")
     public String excluirSetor(@PathVariable Long id, RedirectAttributes attributes, Locale locale) {
         setorService.excluirSetor(id);
-        attributes.addFlashAttribute("success", messageSource.getMessage(AppMessages.SUCCESS_SECTOR_DELETED, null, locale));
+        attributes.addFlashAttribute("success", messageSource
+                .getMessage(AppMessages.SUCCESS_SECTOR_DELETED, null, locale));
         return "redirect:/dashboard/setores";
     }
 
     @PostMapping("/{id}/editar")
-    public String editarSetor(@PathVariable Long id, @Valid @ModelAttribute("setorDTO") SetorDTO dto, BindingResult result, Model model, RedirectAttributes attributes, Locale locale) {
+    public String editarSetor(@PathVariable Long id, @Valid @ModelAttribute("setorDTO") SetorDTO dto,
+                              BindingResult result, Model model, RedirectAttributes attributes, Locale locale) {
         if (result.hasErrors()) return erroValidacao(model, locale);
         setorService.editarSetor(id, dto);
-        attributes.addFlashAttribute("success", messageSource.getMessage(AppMessages.SUCCESS_SECTOR_UPDATED, new Object[]{dto.nome()}, locale));
+        attributes.addFlashAttribute("success", messageSource
+                .getMessage(AppMessages.SUCCESS_SECTOR_UPDATED, new Object[]{dto.nome()}, locale));
         return "redirect:/dashboard/setores";
     }
 
     private String erroValidacao(Model model, Locale locale) {
         carregarPagina(model);
-        model.addAttribute("error", messageSource.getMessage(AppMessages.ERROR_VALIDATION_FAILED, null, locale));
+        model.addAttribute("error", messageSource
+                .getMessage(AppMessages.ERROR_VALIDATION_FAILED, null, locale));
         return "setor/Setores";
     }
 
     private void carregarPagina(Model model) {
         model.addAttribute("setores", setorService.listarSetores());
-        if (!model.containsAttribute("setorDTO")) model.addAttribute("setorDTO", new SetorDTO(null, null, null, null));
+        if (!model.containsAttribute("setorDTO")) model.addAttribute("setorDTO",
+                new SetorDTO(null, null, null, null));
     }
 }

@@ -55,4 +55,6 @@ public interface OrdemProducaoRepository extends JpaRepository<OrdemProducao, Lo
     Page<OrdemProducao> findAllOrdenadasPorEmAndamento(Pageable pageable);
 
 
+    @Query(value = "SELECT nextval('ordem_producao_numero_seq')", nativeQuery = true)
+    Long proximoNumeroSequencial();
 }

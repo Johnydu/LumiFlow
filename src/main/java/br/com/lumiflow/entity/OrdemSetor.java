@@ -1,6 +1,5 @@
 package br.com.lumiflow.entity;
-import br.com.lumiflow.entity.enums.EstatusOrdemSetor;
-
+import br.com.lumiflow.entity.enums.EstatusOrdemProducao;
 import jakarta.persistence.*;
 import lombok.*;
 
@@ -33,7 +32,7 @@ public class OrdemSetor extends Auditoria{
 
     @Enumerated(EnumType.STRING)
     @Column(name = "status",nullable = false)
-    private EstatusOrdemSetor status;
+    private EstatusOrdemProducao status;
 
     @Column(name = "inicio")
     private LocalDateTime inicio;

@@ -104,8 +104,7 @@ body.page-usuario-login .btn.success {
   transform: translateY(-1px);
 }
 
-
-
+/* ============ LOGOUT ============ */
 .logout-form {
   margin-top: 12px;
   width: 100%;
@@ -129,48 +128,18 @@ body.page-usuario-login .btn.success {
   transition: background-color 0.2s ease, color 0.2s ease, border-color 0.2s ease;
 }
 
-/* Estado de hover suave acompanhando os demais botões/itens de menu */
 .logout-btn:hover {
   background-color: var(--color-danger-light, rgba(220, 53, 69, 0.1));
   color: var(--color-danger-hover, #bb2d3b);
 }
 
-/* Foco acessível para navegação por teclado */
 .logout-btn:focus-visible {
   outline: 2px solid var(--color-primary);
   outline-offset: 2px;
 }
 
-/* Agrupamento dos botões */
-
-
-
 /* ============ BTN CANCEL ============ */
 .btn-cancel {
-  flex: 1;
-  padding: 10px;
-  border-radius: 10px;
-  border: 1px solid rgba(255,255,255,0.1);
-  background: transparent;
-  color: var(--color-muted);
-  font-size: 13px;
-  cursor: pointer;
-}
-
-body.page-usuario-login .btn-cancel {
-  padding: 10px 22px;
-  border-radius: 10px;
-  border: 1px solid rgba(255,255,255,0.1);
-  background: transparent;
-  color: var(--color-muted);
-  font-size: 13px;
-  cursor: pointer;
-}
-
-body.page-produto-cadastroproduto.btn-cancel,
-body.page-ordemproducao-lancamento .btn-cancel,
-body.page-ordemproducao-novaordem .btn-cancel,
-body.page-vidracaria-vidracaria .btn-cancel {
   padding: 10px 22px;
   border-radius: 10px;
   border: 1px solid rgba(255,255,255,0.1);
@@ -182,32 +151,6 @@ body.page-vidracaria-vidracaria .btn-cancel {
 
 /* ============ BTN SUBMIT ============ */
 .btn-submit {
-  flex: 1;
-  padding: 10px;
-  border-radius: 10px;
-  border: none;
-  background: var(--color-primary);
-  color: var(--color-text);
-  font-size: 13px;
-  cursor: pointer;
-  font-weight: 500;
-}
-
-body.page-usuario-login .btn-submit {
-  padding: 10px 22px;
-  border-radius: 10px;
-  border: none;
-  background: var(--color-primary);
-  color: var(--color-text);
-  font-size: 13px;
-  cursor: pointer;
-  font-weight: 500;
-}
-
-body.page-ordemproducao-lancamento .btn-submit,
-body.page-ordemproducao-novaordem .btn-submit,
-body.page-produto-cadastroproduto .btn-submit,
-body.page-vidracaria-vidracaria .btn-submit {
   padding: 10px 22px;
   border-radius: 10px;
   border: none;
@@ -256,7 +199,7 @@ body.page-vidracaria-vidracaria .btn-submit.entrada {
 }
 
 /* ============ BTN LANÇAR ============ */
-body.page-ordemproducao-detalhesordem .btn-lancar {
+.btn-lancar {
   padding: 6px 14px;
   font-size: 11px;
   border-radius: 8px;
@@ -267,12 +210,28 @@ body.page-ordemproducao-detalhesordem .btn-lancar {
   font-weight: 500;
 }
 
-body.page-ordemproducao-detalhesordem .btn-lancar:hover {
+.btn-lancar:hover {
+  background: var(--color-primary-hover);
+}
+
+/* ============ BTN LIBERAR ============ */
+.btn-liberar {
+  padding: 6px 14px;
+  font-size: 11px;
+  border-radius: 8px;
+  border: none;
+  background: var(--color-primary);
+  color: var(--color-text);
+  cursor: pointer;
+  font-weight: 500;
+}
+
+.btn-liberar:hover {
   background: var(--color-primary-hover);
 }
 
 /* ============ BTN DISABLED ============ */
-body.page-ordemproducao-detalhesordem .btn-dis {
+.btn-dis {
   padding: 6px 14px;
   font-size: 11px;
   border-radius: 8px;
@@ -311,7 +270,7 @@ body.page-setor-cadastrosetor .etapa-del {
 }
 
 /* ============ PAGINATION BUTTONS ============ */
-body.page-ordemproducao-listaordem .pag-btn {
+.pag-btn {
   width: 30px;
   height: 30px;
   border-radius: 7px;
@@ -325,26 +284,7 @@ body.page-ordemproducao-listaordem .pag-btn {
   justify-content: center;
 }
 
-body.page-ordemproducao-listaordem .pag-btn.active {
+.pag-btn.active {
   background: var(--color-primary);
   border-color: var(--color-primary);
 }
-
-body.page-relatorio-relatoriotempo .pag-btn {
-  width: 30px;
-  height: 30px;
-  border-radius: 7px;
-  border: 1px solid rgba(255,255,255,0.1);
-  background: transparent;
-  color: var(--color-text);
-  cursor: pointer;
-  font-size: 11px;
-}
-
-body.page-relatorio-relatoriotempo .pag-btn.active {
-  background: var(--color-primary);
-  border-color: var(--color-primary);
-}
-
-
-

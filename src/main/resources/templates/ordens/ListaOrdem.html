@@ -2,25 +2,25 @@
 <html lang="pt-BR" xmlns:th="http://www.thymeleaf.org"
       xmlns:sec="http://www.thymeleaf.org/extras/spring-security">
 <head>
-  <meta charset="UTF-8"/>
-  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+    <meta charset="UTF-8"/>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
 
-  <title>Ordens de Produção - LumiFlow</title>
+    <title>Ordens de Produção - LumiFlow</title>
 
-  <link rel="stylesheet" th:href="@{/css/variables.css}">
-  <link rel="stylesheet" th:href="@{/css/globals.css}">
-  <link rel="stylesheet" th:href="@{/css/sidebar.css}">
-  <link rel="stylesheet" th:href="@{/css/topbar.css}">
-  <link rel="stylesheet" th:href="@{/css/components/buttons.css}">
-  <link rel="stylesheet" th:href="@{/css/components/forms.css}">
-  <link rel="stylesheet" th:href="@{/css/components/tables.css}">
-  <link rel="stylesheet" th:href="@{/css/components/cards.css}">
-  <link rel="stylesheet" th:href="@{/css/components/status.css}">
-  <link rel="stylesheet" th:href="@{/css/components/alerts.css}">
-  <link rel="stylesheet" th:href="@{/css/pages/listaordem.css}">
-  <link rel="stylesheet" th:href="@{/css/utils.css}">
-  <link rel="stylesheet" th:href="@{/css/responsive.css}">
-  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <link rel="stylesheet" th:href="@{/css/variables.css}">
+    <link rel="stylesheet" th:href="@{/css/globals.css}">
+    <link rel="stylesheet" th:href="@{/css/sidebar.css}">
+    <link rel="stylesheet" th:href="@{/css/topbar.css}">
+    <link rel="stylesheet" th:href="@{/css/components/buttons.css}">
+    <link rel="stylesheet" th:href="@{/css/components/forms.css}">
+    <link rel="stylesheet" th:href="@{/css/components/tables.css}">
+    <link rel="stylesheet" th:href="@{/css/components/cards.css}">
+    <link rel="stylesheet" th:href="@{/css/components/status.css}">
+    <link rel="stylesheet" th:href="@{/css/components/alerts.css}">
+    <link rel="stylesheet" th:href="@{/css/pages/listaordem.css}">
+    <link rel="stylesheet" th:href="@{/css/utils.css}">
+    <link rel="stylesheet" th:href="@{/css/responsive.css}">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
 </head>
 
 <body class="page-ordemproducao-listaordem">
@@ -30,140 +30,160 @@
 
 <main class="main">
 
-  <div th:replace="~{fragments/topbar :: topbar(
+    <div th:replace="~{fragments/topbar :: topbar(
         'Ordens de Produção',
-        '+ Nova Ordem',
-        'novaOrdemForm()'
+        null,
+        null
     )}">
-  </div>
-
-  <div class="content">
-
-    <!-- FILTROS (Sem o select de setor) -->
-    <form method="get" th:action="@{/dashboard/ordens}" class="filtros" id="formFiltros">
-
-      <div class="search-input-wrapper">
-        <!-- HTML Atualizado no input de busca -->
-        <input class="filtro-input"
-               type="text"
-               name="busca"
-               th:value="${param.busca}"
-               placeholder="🔍 Buscar número ou produto..."
-               autocomplete="off"/>
-      </div>
-
-      <select class="filtro-select" name="status" onchange="document.getElementById('formFiltros').submit()">
-        <option value="">Todos os status</option>
-        <option value="PENDENTE" th:selected="${param.status == 'PENDENTE'}">Pendente</option>
-        <option value="EM_ANDAMENTO" th:selected="${param.status == 'EM_ANDAMENTO'}">Em andamento</option>
-        <option value="CONCLUIDO" th:selected="${param.status == 'CONCLUIDO' || param.status == 'CONCLUIDA'}">Concluído</option>
-      </select>
-
-    </form>
-
-    <!-- CARD / PANEL DA TABELA -->
-    <div class="panel">
-
-      <div class="panel-header">
-        <span class="panel-title">Ordens</span>
-
-        <span class="panel-count" th:text="${(ordens != null ? #lists.size(ordens) : 0) + ' ordens encontradas'}">
-            0 ordens encontradas
-        </span>
-      </div>
-
-      <table>
-        <thead>
-        <tr>
-          <th>NÚMERO</th>
-          <th>PRODUTO</th>
-          <th>QTD</th>
-          <th>PROGRESSO</th>
-          <th>SETOR ATUAL</th>
-          <th>DATA CRIAÇÃO</th>
-          <th>STATUS</th>
-          <th style="width:100px; text-align: center;">AÇÃO</th>
-        </tr>
-        </thead>
-
-        <tbody>
-        <tr th:each="ordem : ${ordens}">
-
-          <td class="num" th:text="${ordem.numero()}">OP-001</td>
-
-          <td class="produto-nome" th:text="${ordem.produtoNome()}">Arandela 12W</td>
-
-          <td th:text="${ordem.quantidade()}">100</td>
-
-          <td>
-            <div class="prog-wrap">
-              <div class="prog-track">
-                <div class="prog-fill"
-                     th:classappend="${ordem.status().name() == 'CONCLUIDO' || ordem.status().name() == 'CONCLUIDA'} ? 'p-con' : 'p-and'"
-                     th:style="'width:' + ${ordem.percentual()} + '%'">
-                </div>
-              </div>
-              <span class="prog-txt" th:text="${ordem.produzido() + '/' + ordem.quantidade()}">60/100</span>
-            </div>
-          </td>
-
-          <td>
-            <span class="setor-tag" th:text="${ordem.setorAtual()}">Pintura</span>
-          </td>
-
-          <td th:text="${#temporals.format(ordem.criadoEm(),'dd/MM/yyyy')}">19/05/2026</td>
-
-          <td>
-            <span th:if="${ordem.status().name() == 'PENDENTE'}" class="status s-pen">
-              <span class="s-dot"></span>
-              Pendente
-            </span>
-
-            <span th:if="${ordem.status().name() == 'EM_ANDAMENTO'}" class="status s-and">
-              <span class="s-dot"></span>
-              Em andamento
-            </span>
-
-            <span th:if="${ordem.status().name() == 'CONCLUIDO' || ordem.status().name() == 'CONCLUIDA'}" class="status s-con">
-              <span class="s-dot"></span>
-              Concluída
-            </span>
-          </td>
-
-          <td style="text-align: center;">
-            <div class="table-actions">
-              <a th:href="@{/dashboard/ordens/{id}(id=${ordem.id()})}" class="btn-ver">
-                Ver
-              </a>
-            </div>
-          </td>
-
-        </tr>
-
-        <tr th:if="${ordens == null || #lists.isEmpty(ordens)}">
-          <td colspan="8" style="text-align:center; color:var(--color-muted-5); padding: 30px 0;">
-            Nenhuma ordem encontrada.
-          </td>
-        </tr>
-        </tbody>
-      </table>
-
-      <!-- RODAPÉ DE PAGINAÇÃO -->
-      <div class="panel-footer" th:if="${ordens != null && !#lists.isEmpty(ordens)}">
-        <span class="pagination-info" th:text="'Mostrando 1–' + ${#lists.size(ordens)} + ' de ' + ${#lists.size(ordens)} + ' ordens'">
-          Mostrando 1–5 de 24 ordens
-        </span>
-
-        <div class="pagination">
-          <button class="page-btn nav-btn" type="button" disabled>&lsaquo;</button>
-          <button class="page-btn active" type="button">1</button>
-          <button class="page-btn nav-btn" type="button" disabled>&rsaquo;</button>
-        </div>
-      </div>
-
     </div>
 
-  </div>
+    <div class="content">
+
+        <!-- FILTROS (Sem o select de setor) -->
+        <form method="get" th:action="@{/dashboard/ordens}" class="filtros" id="formFiltros">
+
+            <div class="search-input-wrapper">
+                <!-- HTML Atualizado no input de busca -->
+                <input class="filtro-input"
+                       type="text"
+                       name="busca"
+                       th:value="${param.busca}"
+                       placeholder="🔍 Buscar número ou produto..."
+                       autocomplete="off"/>
+            </div>
+
+            <select class="filtro-select" name="status" onchange="document.getElementById('formFiltros').submit()">
+                <option value="">Todos os status</option>
+                <option value="PENDENTE" th:selected="${param.status == 'PENDENTE'}">Pendente</option>
+                <option value="EM_ANDAMENTO" th:selected="${param.status == 'EM_ANDAMENTO'}">Em andamento</option>
+                <option value="CONCLUIDO" th:selected="${param.status == 'CONCLUIDO' || param.status == 'CONCLUIDA'}">
+                    Concluído
+                </option>
+            </select>
+
+        </form>
+
+        <!-- CARD / PANEL DA TABELA -->
+        <div class="panel">
+
+            <div class="panel-header">
+                <span class="panel-title">Ordens</span>
+
+                <span class="panel-count"
+                      th:text="${(ordens != null ? #lists.size(ordens) : 0) + ' ordens encontradas'}">
+            0 ordens encontradas
+        </span>
+            </div>
+
+            <table>
+                <thead>
+                <tr>
+                    <th>NÚMERO</th>
+                    <th>PRODUTO</th>
+                    <th>QTD</th>
+                    <th>PROGRESSO</th>
+                    <th>SETOR ATUAL</th>
+                    <th>DATA CRIAÇÃO</th>
+                    <th>STATUS</th>
+                    <th style="width:100px; text-align: center;">AÇÃO</th>
+                </tr>
+                </thead>
+
+                <tbody>
+                <tr th:each="ordem : ${ordens}">
+
+                    <td class="num" th:text="${ordem.numero()}"></td>
+
+                    <td class="produto-nome" th:text="${ordem.produtoNome()}"></td>
+
+                    <td th:text="${ordem.quantidade()}"></td>
+
+                    <td>
+                        <div class="prog-wrap">
+                            <div class="prog-track">
+                                <div class="prog-fill"
+                                     th:classappend="${ordem.status().name() == 'CONCLUIDA'} ? 'p-con' : 'p-and'"
+                                     th:style="'width:' + ${ordem.percentual()} + '%'">
+                                </div>
+                            </div>
+                            <span class="prog-txt" th:text="${ordem.produzido() + '/' + ordem.quantidade()}"></span>
+                        </div>
+                    </td>
+
+                    <td>
+                        <span class="setor-tag" th:text="${ordem.setorAtual()}"></span>
+                    </td>
+
+                    <td th:text="${#temporals.format(ordem.criadoEm(),'dd/MM/yyyy')}"></td>
+                    <td>
+                        <span th:if="${ordem.status().name() == 'DISPONIVEL'}" class="status s-pen">
+                          <span class="s-dot"></span>
+                          Disponível
+                        </span>
+
+                                            <span th:if="${ordem.status().name() == 'LIBERADA'}"
+                                                  class="status s-lib">
+                          <span class="s-dot"></span>
+                          Liberada
+                        </span>
+
+                                            <span th:if="${ordem.status().name() == 'EM_ANDAMENTO'}"
+                                                  class="status s-and">
+                          <span class="s-dot"></span>
+                          Em andamento
+                        </span>
+
+                                            <span th:if="${ordem.status().name() == 'CONCLUIDA'}"
+                                                  class="status s-con">
+                          <span class="s-dot"></span>
+                          Concluída
+                        </span>
+                    </td>
+
+                    <td style="text-align: center;">
+                        <div class="table-actions">
+                            <form th:if="${ordem.status().name() == 'DISPONIVEL'}"
+                                  method="post"
+                                  th:action="@{/dashboard/ordens-setor/{setorId}/ordens/{ordemId}/liberar(setorId=${setorIdAtual}, ordemId=${ordem.id()})}"
+                                  style="display:inline;">
+                                <input type="hidden" th:name="${_csrf.parameterName}" th:value="${_csrf.token}"/>
+                                <button type="submit" class="btn-liberar">Liberar</button>
+                            </form>
+
+                            <a th:if="${ordem.status().name() == 'LIBERADA' || ordem.status().name() == 'EM_ANDAMENTO'}"
+                               th:href="@{/dashboard/ordens/{id}(id=${ordem.id()})/lancar}" class="btn-lancar">
+                                lançar
+                            </a>
+                        </div>
+                    </td>
+
+                </tr>
+
+                <tr th:if="${ordens == null || #lists.isEmpty(ordens)}">
+                    <td colspan="8" style="text-align:center; color:var(--color-muted-5); padding: 30px 0;">
+                        Nenhuma ordem encontrada.
+                    </td>
+                </tr>
+                </tbody>
+            </table>
+
+            <!-- RODAPÉ DE PAGINAÇÃO -->
+            <div class="paginacao" th:if="${ordens != null && !#lists.isEmpty(ordens)}">
+                <span class="pag-info"
+                      th:text="'Mostrando 1–' + ${#lists.size(ordens)} + ' de ' + ${#lists.size(ordens)} +
+                       ' ordens'">
+                </span>
+
+                <div class="pag-btns">
+                    <button class="pag-btn" type="button" disabled>&lsaquo;</button>
+                    <button class="pag-btn active" type="button">1</button>
+                    <button class="pag-btn" type="button" disabled>&rsaquo;</button>
+                </div>
+            </div>
+
+        </div>
+
+    </div>
 
 </main>
 

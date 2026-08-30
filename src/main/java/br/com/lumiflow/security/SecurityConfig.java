@@ -1,5 +1,6 @@
 package br.com.lumiflow.security;
 
+import lombok.AllArgsConstructor;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.security.authentication.AuthenticationManager;
@@ -22,7 +23,7 @@ import org.springframework.security.web.SecurityFilterChain;
  * - Configurar o logout
  * - Registrar o BCrypt como encoder de senhas
  * ============================================================
- *
+ * <p>
  * IMPORTANTE: os requestMatchers específicos (com hasRole/hasAnyRole)
  * precisam vir ANTES das regras genéricas (ex: "/dashboard/**"),
  * porque o Spring Security aplica a PRIMEIRA regra que casar com a URL.
@@ -32,8 +33,11 @@ import org.springframework.security.web.SecurityFilterChain;
  */
 @Configuration
 @EnableWebSecurity
-@EnableMethodSecurity // permite usar @PreAuthorize nos controllers
+@EnableMethodSecurity
+@AllArgsConstructor// permite usar @PreAuthorize nos controllers
 public class SecurityConfig {
+
+    private final CustomAuthenticationSuccessHandler customAuthenticationSuccessHandler;
 
     // ============================================================
     // ROLES — evita duplicação de literais espalhadas pela config
@@ -42,6 +46,7 @@ public class SecurityConfig {
     private static final String ROLE_PCP_SUPERVISOR = "PCP_SUPERVISOR";
     private static final String ROLE_GESTAO = "GESTAO";
     private static final String LOGIN_PAGE = "/login";
+
 
     // Observação: não precisamos injetar UserDetailsServiceImpl aqui.
     // Como ele é a única implementação de UserDetailsService no contexto,
@@ -60,74 +65,79 @@ public class SecurityConfig {
                 // ----------------------------------------
                 .authorizeHttpRequests(auth -> auth
 
-                        // Recursos estáticos — liberados para todos
-                        .requestMatchers(
-                                "/css/**",
-                                "/js/**",
-                                "/images/**",
-                                "/style.css",
-                                "/webjars/**"
-                        ).permitAll()
+                                // Recursos estáticos — liberados para todos
+                                .requestMatchers(
+                                        "/css/**",
+                                        "/js/**",
+                                        "/images/**",
+                                        "/style.css",
+                                        "/webjars/**"
+                                ).permitAll()
 
-                        // Tela de login — pública
-                        .requestMatchers(LOGIN_PAGE, LOGIN_PAGE + "?error").permitAll()
+                                // Tela de login — pública
+                                .requestMatchers(LOGIN_PAGE, LOGIN_PAGE + "?error").permitAll()
 
-                        // ----------------------------------------
-                        // ROTAS EXCLUSIVAS DO SUPORTE
-                        // ----------------------------------------
-                        .requestMatchers(
-                                "/dashboard/usuario/**",
-                                "/dashboard/configuracoes/**"
-                        ).hasRole(ROLE_SUPORTE)
+                                // ----------------------------------------
+                                // ROTAS EXCLUSIVAS DO SUPORTE
+                                // ----------------------------------------
+                                .requestMatchers(
+                                        "/dashboard/usuario/**",
+                                        "/dashboard/configuracoes/**"
+                                ).hasRole(ROLE_SUPORTE)
 
-                        // ----------------------------------------
-                        // ROTAS DE CADASTRO — SUPORTE E PCP
-                        // ----------------------------------------
-                        .requestMatchers(
-                                "/dashboard/setores/**",
-                                "/dashboard/maquinas/**",
-                                "/dashboard/produtos/**",
-                                "/dashboard/roteiros/**",
-                                "/dashboard/operadores/**"
-                        ).hasAnyRole(ROLE_SUPORTE, ROLE_PCP_SUPERVISOR)
+                                // ----------------------------------------
+                                // ROTAS DE CADASTRO — SUPORTE E PCP
+                                // ----------------------------------------
+                                .requestMatchers(
+                                        "/dashboard/setores/**",
+                                        "/dashboard/maquinas/**",
+                                        "/dashboard/produtos/**",
+                                        "/dashboard/roteiros/**",
+                                        "/dashboard/operadores/**"
+                                ).hasAnyRole(ROLE_SUPORTE, ROLE_PCP_SUPERVISOR)
 
-                        // ----------------------------------------
-                        // CRIAÇÃO DE ORDENS — SUPORTE E PCP
-                        // ----------------------------------------
-                        .requestMatchers(
-                                "/dashboard/ordens/nova",
-                                "/dashboard/ordens/salvar"
-                        ).hasAnyRole(ROLE_SUPORTE, ROLE_PCP_SUPERVISOR)
+                                // ----------------------------------------
+                                // CRIAÇÃO DE ORDENS — SUPORTE E PCP
+                                // ----------------------------------------
+                                .requestMatchers(
+                                        "/dashboard/ordens/nova",
+                                        "/dashboard/ordens/salvar"
+                                ).hasAnyRole(ROLE_SUPORTE, ROLE_PCP_SUPERVISOR)
 
-                        // ----------------------------------------
-                        // VISUALIZAÇÃO DE ORDENS — TODOS
-                        // ----------------------------------------
-                        .requestMatchers("/dashboard/ordens/**").authenticated()
+                                // ----------------------------------------
+                                // VISUALIZAÇÃO DE ORDENS — TODOS
+                                // ----------------------------------------
+                                .requestMatchers("/dashboard/ordens-setor/**").authenticated()
 
-                        // ----------------------------------------
-                        // LANÇAMENTOS — TODOS OS LOGADOS
-                        // ----------------------------------------
-                        .requestMatchers("/dashboard/lancamentos/**").authenticated()
+                                // ----------------------------------------
+                                // LANÇAMENTOS — TODOS OS LOGADOS
+                                // ----------------------------------------
+                                .requestMatchers("/dashboard/lancamentos/**").authenticated()
 
-                        // ----------------------------------------
-                        // VIDRAÇARIA — TODOS OS LOGADOS
-                        // ----------------------------------------
-                        .requestMatchers("/dashboard/vidracaria/**").authenticated()
+                                // ----------------------------------------
+                                // VIDRAÇARIA — TODOS OS LOGADOS
+                                // ----------------------------------------
+                                .requestMatchers("/dashboard/vidracaria/**").authenticated()
 
-                        // ----------------------------------------
-                        // RELATÓRIOS — SUPORTE, GESTÃO E PCP
-                        // ----------------------------------------
-                        .requestMatchers("/dashboard/relatorios/**")
-                        .hasAnyRole(ROLE_SUPORTE, ROLE_GESTAO, ROLE_PCP_SUPERVISOR)
+                                // ----------------------------------------
+                                // RELATÓRIOS — SUPORTE, GESTÃO E PCP
+                                // ----------------------------------------
+                                .requestMatchers("/dashboard/relatorios/**")
+                                .hasAnyRole(ROLE_SUPORTE, ROLE_GESTAO, ROLE_PCP_SUPERVISOR)
 
-                        // ----------------------------------------
-                        // DASHBOARD — TODOS OS LOGADOS (regra genérica,
-                        // precisa vir por último, depois das específicas acima)
-                        // ----------------------------------------
-                        .requestMatchers("/dashboard/**").authenticated()
+                                // ----------------------------------------
+                                // DASHBOARD (tela raiz) — SOMENTE PCP E GESTÃO
+                                // ----------------------------------------
+                                .requestMatchers("/dashboard").hasAnyRole(ROLE_PCP_SUPERVISOR, ROLE_GESTAO)
 
-                        // Qualquer outra rota exige autenticação
-                        .anyRequest().authenticated()
+                                // ----------------------------------------
+                                // DASHBOARD — TODOS OS LOGADOS (regra genérica,
+                                // precisa vir por último, depois das específicas acima)
+                                // ----------------------------------------
+                                .requestMatchers("/dashboard/**").authenticated()
+
+                                // Qualquer outra rota exige autenticação
+                                .anyRequest().authenticated()
                 )
 
                 // ----------------------------------------
@@ -138,7 +148,7 @@ public class SecurityConfig {
                         .loginProcessingUrl(LOGIN_PAGE)            // URL que processa o POST do formulário
                         .usernameParameter("login")                // nome do campo no HTML (th:field="*{login}")
                         .passwordParameter("senha")                // nome do campo no HTML (th:field="*{senha}")
-                        .defaultSuccessUrl("/dashboard", true)     // redireciona após login bem-sucedido
+                        .successHandler(customAuthenticationSuccessHandler)    // redireciona após login bem-sucedido
                         .failureUrl(LOGIN_PAGE + "?error=true")    // redireciona em caso de erro
                         .permitAll()
                 )
@@ -158,10 +168,6 @@ public class SecurityConfig {
                 )
                 .csrf(Customizer.withDefaults());
 
-                // ----------------------------------------
-                // DESATIVA CSRF PARA HTMX (requisições parciais)
-                // Se preferir manter CSRF, configure o token no HTML
-                // ----------------------------------------;
 
         return http.build();
     }

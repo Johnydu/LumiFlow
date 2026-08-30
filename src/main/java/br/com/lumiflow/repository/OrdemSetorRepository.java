@@ -7,12 +7,13 @@ import org.springframework.data.repository.query.Param;
 import org.springframework.stereotype.Repository;
 
 import java.util.List;
+import java.util.Optional;
 
 @Repository
 public interface OrdemSetorRepository extends JpaRepository<OrdemSetor, Long> {
 
     @Query("""
-        SELECT 
+        SELECT
             s.id,
             s.nome,
             COUNT(os.id),
@@ -24,4 +25,21 @@ public interface OrdemSetorRepository extends JpaRepository<OrdemSetor, Long> {
         ORDER BY s.nome ASC
     """)
     List<Object[]> buscarResumoSetores(@Param("busca") String busca);
+
+    @Query("""
+        SELECT os FROM OrdemSetor os
+        WHERE os.setor.id = :setorId
+        AND os.qtdPendente > 0
+        ORDER BY os.criadoEm ASC
+        """)
+    List<OrdemSetor> findDisponiveisPorSetor(@Param("setorId") Long setorId);
+
+    // Busca a etapa específica de uma ordem em um setor (pra achar "a próxima")
+    Optional<OrdemSetor> findByOrdemProducaoIdAndSequencia(Long ordemProducaoId, Integer sequencia);
+
+    // Todas as etapas de uma ordem (pra verificar se ela terminou tudo)
+    List<OrdemSetor> findByOrdemProducaoIdOrderBySequenciaAsc(Long ordemProducaoId);
+
+    Optional<OrdemSetor> findByOrdemProducaoIdAndSetorId(Long ordemProducaoId, Long setorId);
 }
+

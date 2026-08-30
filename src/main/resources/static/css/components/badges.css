@@ -20,36 +20,6 @@
 .setor-tag {
     display: inline-flex;
     font-size: 10px;
-    padding: 3px 9px;
-    border-radius: 20px;
-    background: var(--color-primary-bg);
-    color: var(--color-primary-light);
-    border: 1px solid rgba(97, 87, 255, 0.3);
-}
-
-.setor-tag {
-    display: inline-flex;
-    font-size: 10px;
-    padding: 3px 8px;
-    border-radius: 20px;
-    background: var(--color-primary-bg);
-    color: var(--color-primary-light);
-    white-space: nowrap;
-}
-
-.setor-tag {
-    display: inline-flex;
-    font-size: 10px;
-    padding: 3px 8px;
-    border-radius: 20px;
-    background: var(--color-primary-bg);
-    color: var(--color-primary-light);
-    white-space: nowrap;
-}
-
-.setor-tag{
-    display: inline-flex;
-    font-size: 10px;
     padding: 3px 8px;
     border-radius: 20px;
     background: #2b254d;
@@ -74,38 +44,11 @@
 }
 
 /* ============ SETOR TABS ============ */
-.setor-tabs,
 .setor-tabs {
     display: flex;
     gap: 8px;
     flex-wrap: wrap;
     margin-bottom: 14px;
-}
-
-
-.setor-tab,
-.setor-tab {
-    padding: 6px 14px;
-    border-radius: 20px;
-    font-size: 12px;
-    cursor: pointer;
-    border: 1px solid rgba(255, 255, 255, 0.1);
-    background: transparent;
-    color: var(--color-muted);
-}
-
-.setor-tab-active,
-.setor-tab.active {
-    background: var(--color-primary);
-    border-color: var(--color-primary);
-    color: var(--color-text);
-    font-weight: 500;
-}
-
-.setor-tabs {
-    display: flex;
-    gap: 8px;
-    flex-wrap: wrap;
 }
 
 .setor-tab {
@@ -213,7 +156,6 @@
 .roteiro {
     display: flex;
     align-items: center;
-    gap: 0;
     flex-wrap: wrap;
     gap: 6px;
 }
@@ -248,20 +190,7 @@
     font-size: 14px;
 }
 
-body.page-ordemproducao-novaordem .r-pill {
-    font-size: 11px;
-    padding: 5px 12px;
-    border-radius: 20px;
-    background: var(--color-primary-bg);
-    color: var(--color-primary-light);
-    border: 1px solid var(--color-primary);
-}
-
-body.page-ordemproducao-novaordem .r-arr {
-    color: var(--color-muted-7);
-    font-size: 13px;
-}
-
+body.page-ordemproducao-novaordem .r-pill,
 body.page-produto-cadastroproduto .r-pill {
     font-size: 11px;
     padding: 5px 12px;
@@ -271,6 +200,7 @@ body.page-produto-cadastroproduto .r-pill {
     border: 1px solid var(--color-primary);
 }
 
+body.page-ordemproducao-novaordem .r-arr,
 body.page-produto-cadastroproduto .r-arr {
     color: var(--color-muted-7);
     font-size: 13px;
