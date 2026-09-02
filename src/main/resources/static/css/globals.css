@@ -6,7 +6,7 @@ html, body {
 }
 
 body {
-  background: url('/images/fundo-login.jpg') no-repeat center center fixed var(--color-background, #070d1d) !important;
+  background: url('/images/fundo.webp') no-repeat center center fixed var(--color-background, #070d1d) !important;
   background-size: cover !important;
   color: var(--color-text) !important;
   display: flex;
