@@ -8,6 +8,7 @@ import br.com.lumiflow.repository.OrdemProducaoRepository;
 import br.com.lumiflow.repository.SetorRepository;
 import lombok.AllArgsConstructor;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
 
@@ -19,6 +20,7 @@ public class DashboardService {
     private final SetorRepository setorRepository;
 
 
+    @Transactional(readOnly = true)
     public DashboardResumoDTO obterResumoEstatisticas(){
 
         Long total= ordemProducaoRepository.count();
@@ -32,6 +34,7 @@ public class DashboardService {
     }
 
 
+    @Transactional(readOnly = true)
     public List<SetorResumoDTO> obterResumoSetores() {
         return setorRepository.obterResumoOrdensPorSetor();
     }

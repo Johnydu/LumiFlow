@@ -82,6 +82,32 @@
 
   /* ============ date - filter ============ */
 
-  --color-border-subtle:  #d1d5db
+  --color-border-subtle:  #d1d5db;
 
+  /* ============ BUTTONS - SOLID FLAT SYSTEM (Sem Neon) ============ */
+  --btn-height: 32px;
+  --btn-font-size: 11px;
+
+  /* Editar (Azul calmo e fosco) */
+  --btn-edit-bg: #1e293b;
+  --btn-edit-border: #334155;
+  --btn-edit-color: #93c5fd;
+
+  /* Excluir (Vermelho fechado e sóbrio)[cite: 3] */
+  --btn-del-bg: #2b161a;
+  --btn-del-border: #4c2229;
+  --btn-del-color: #fca5a5;
+
+  /* Liberar / Ver (Verde neutro e calmo) */
+  --btn-success-bg: #132e25;
+  --btn-success-border: #1b4d3e;
+  --btn-success-color: #6ee7b7;
+
+  /* Lançar (Cinza ardósia neutro) */
+  --btn-neutral-bg: #1f2937;
+  --btn-neutral-border: #374151;
+  --btn-neutral-color: #d1d5db;
+
+  --shadow-glass: 0 8px 32px rgba(0, 0, 0, 0.37);
+  --radius-xl: 20px;
 }

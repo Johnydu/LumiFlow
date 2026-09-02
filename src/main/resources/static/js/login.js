@@ -1,49 +1,52 @@
-document.addEventListener('DOMContentLoaded', () => {
-  const userInput = document.getElementById('user');
-  const passInput = document.getElementById('pass');
+/* ============================================================
+   LumiFlow - Tela de Login
+   Arquivo de scripts (login.js)
+   ============================================================ */
 
-  function lightOn() {
-    document.getElementById('bulb-fill')
-      .setAttribute('fill', '#FFF5C0');
-    document.getElementById('bulb-border')
-      .setAttribute('stroke', '#FFD700');
-    document.getElementById('inner-glow')
-      .setAttribute('fill', 'rgba(255,220,50,0.6)');
-    document.getElementById('filament')
-      .setAttribute('opacity', '1');
-    document.getElementById('glow')
-      .classList.add('on');
-    document.getElementById('screen')
-      .classList.add('on');
-    document.getElementById('card')
-      .classList.add('on');
+// Função global para alternar a visibilidade da senha usando o FontAwesome
+function togglePasswordVisibility() {
+  const passwordInput = document.getElementById('password');
+  const toggleIcon = document.getElementById('toggleIcon');
+
+  if (!passwordInput || !toggleIcon) return;
+
+  if (passwordInput.type === 'password') {
+    passwordInput.type = 'text';
+    toggleIcon.classList.remove('fa-eye');
+    toggleIcon.classList.add('fa-eye-slash');
+  } else {
+    passwordInput.type = 'password';
+    toggleIcon.classList.remove('fa-eye-slash');
+    toggleIcon.classList.add('fa-eye');
   }
+}
 
-  function lightOff() {
-    document.getElementById('bulb-fill')
-      .setAttribute('fill', '#1a1a2e');
-    document.getElementById('bulb-border')
-      .setAttribute('stroke', '#444');
-    document.getElementById('inner-glow')
-      .setAttribute('fill', 'rgba(255,220,50,0)');
-    document.getElementById('filament')
-      .setAttribute('opacity', '0');
-    document.getElementById('glow')
-      .classList.remove('on');
-    document.getElementById('screen')
-      .classList.remove('on');
-    document.getElementById('card')
-      .classList.remove('on');
-  }
+(function () {
+  "use strict";
 
-  function verificarCampos() {
-    if (userInput.value.trim().length > 0 && passInput.value.trim().length > 0) {
-      lightOn();
-    } else {
-      lightOff();
+  document.addEventListener("DOMContentLoaded", function () {
+    // Captura correta baseada nos IDs reais do HTML
+    var userInput = document.getElementById("username");
+    var passInput = document.getElementById("password");
+
+    // Captura o container principal do card de login
+    var cardContainer = document.querySelector(".login-card-container");
+
+    /* ---- Efeito "acender": destaca o card quando os campos estão preenchidos ---- */
+    function verificarCampos() {
+      if (!cardContainer || !userInput || !passInput) return;
+
+      var preenchido =
+          userInput.value.trim().length > 0 &&
+          passInput.value.trim().length > 0;
+
+      cardContainer.classList.toggle("ready", preenchido);
     }
-  }
 
-  userInput.addEventListener('input', verificarCampos);
-  passInput.addEventListener('input', verificarCampos);
-});
+    if (userInput && passInput) {
+      userInput.addEventListener("input", verificarCampos);
+      passInput.addEventListener("input", verificarCampos);
+      verificarCampos(); // Estado inicial ao carregar a página
+    }
+  });
+})();

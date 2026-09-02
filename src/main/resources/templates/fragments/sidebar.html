@@ -2,87 +2,91 @@
        id="sidebar" class="sidebar"
        xmlns:sec="http://www.thymeleaf.org/extras/spring-security">
 
-    <div class="logo">LumiFlow</div>
-
-    <!-- Botão de fechar posicionado no topo, logo acima de GERAL -->
-    <button class="menu-toggle sidebar-close" onclick="toggleSidebar()">
-        ☰
-    </button>
-
-    <div class="menu-title">GERAL</div>
-    <div class="menu">
-        <a th:href="@{/dashboard}"
-           th:classappend="${activePage == 'dashboard'} ? 'active'"
-           class="menu-item">Dashboard</a>
-        <a th:href="@{/dashboard/ordens-setor}"
-           th:classappend="${activePage == 'ordens-setor'} ? 'active' : ''"
-           class="menu-item">Ordens</a>
-        <a th:href="@{/dashboard/lancamento}"
-           th:classappend="${activePage == 'lancamento'} ? 'active'"
-           class="menu-item">Lançamentos</a>
-        <a th:href="@{/dashboard/relatorio}"
-           th:classappend="${activePage == 'relatorio'} ? 'active'"
-           class="menu-item">Relatórios</a>
-        <a th:href="@{/dashboard/vidracaria}"
-           th:classappend="${activePage == 'vidracaria'} ? 'active'"
-           class="menu-item">Vidraçaria</a>
+    <!-- Topo da Sidebar: Logo e Botão de Fechar Responsivo -->
+    <div class="sidebar-header">
+        <div class="logo">LumiFlow</div>
+        <button class="menu-toggle sidebar-close" onclick="toggleSidebar()" aria-label="Fechar Menu">
+            ☰
+        </button>
     </div>
 
-    <div class="menu-title">CADASTROS</div>
-    <div class="menu">
-        <a th:href="@{/dashboard/produtos}"
-           th:classappend="${activePage == 'produtos'} ? 'active'"
-           class="menu-item">Produtos</a>
-        <a th:href="@{/dashboard/setores}"
-           th:classappend="${activePage == 'setores'} ? 'active'"
-           class="menu-item">Setores</a>
-        <a th:href="@{/dashboard/maquinas}"
-           th:classappend="${activePage == 'maquinas'} ? 'active'"
-           class="menu-item">Máquinas</a>
-        <a th:href="@{/dashboard/roteiros}"
-           th:classappend="${activePage == 'roteiros'} ? 'active'"
-           class="menu-item">Roteiros</a>
-        <a th:href="@{/dashboard/operadores}"
-           th:classappend="${activePage == 'operadores'} ? 'active'"
-           class="menu-item">Operadores</a>
-        <a th:href="@{/dashboard/usuario}"
-           th:classappend="${activePage == 'usuario'} ? 'active'"
-           class="menu-item">Usuários</a>
-    </div>
+    <!-- Navegação Principal -->
+    <nav class="sidebar-nav">
 
-    <div class="menu-title">SISTEMA</div>
-    <div class="menu">
-        <a th:href="@{/dashboard/configuracao}"
-           th:classappend="${activePage == 'configuracao'} ? 'active'"
-           class="menu-item">Configurações</a>
-    </div>
+        <div class="menu-title">GERAL</div>
+        <div class="menu">
+            <a th:href="@{/dashboard}"
+               th:classappend="${activePage == 'dashboard'} ? 'active'"
+               class="menu-item">Dashboard</a>
+            <a th:href="@{/dashboard/ordens-setor}"
+               th:classappend="${activePage == 'ordens-setor'} ? 'active' : ''"
+               class="menu-item">Ordens</a>
+            <a th:href="@{/dashboard/lancamento}"
+               th:classappend="${activePage == 'lancamento'} ? 'active'"
+               class="menu-item">Lançamentos</a>
+            <a th:href="@{/dashboard/relatorio}"
+               th:classappend="${activePage == 'relatorio'} ? 'active'"
+               class="menu-item">Relatórios</a>
+            <a th:href="@{/dashboard/vidracaria}"
+               th:classappend="${activePage == 'vidracaria'} ? 'active'"
+               class="menu-item">Vidraçaria</a>
+        </div>
 
-    <!-- Perfil do usuário logado -->
+        <div class="menu-title">CADASTROS</div>
+        <div class="menu">
+            <a th:href="@{/dashboard/produtos}"
+               th:classappend="${activePage == 'produtos'} ? 'active'"
+               class="menu-item">Produtos</a>
+            <a th:href="@{/dashboard/setores}"
+               th:classappend="${activePage == 'setores'} ? 'active'"
+               class="menu-item">Setores</a>
+            <a th:href="@{/dashboard/maquinas}"
+               th:classappend="${activePage == 'maquinas'} ? 'active'"
+               class="menu-item">Máquinas</a>
+            <a th:href="@{/dashboard/roteiros}"
+               th:classappend="${activePage == 'roteiros'} ? 'active'"
+               class="menu-item">Roteiros</a>
+            <a th:href="@{/dashboard/operadores}"
+               th:classappend="${activePage == 'operadores'} ? 'active'"
+               class="menu-item">Operadores</a>
+            <a th:href="@{/dashboard/usuario}"
+               th:classappend="${activePage == 'usuario'} ? 'active'"
+               class="menu-item">Usuários</a>
+        </div>
+
+        <div class="menu-title">SISTEMA</div>
+        <div class="menu">
+            <a th:href="@{/dashboard/configuracao}"
+               th:classappend="${activePage == 'configuracao'} ? 'active'"
+               class="menu-item">Configurações</a>
+
+            <form th:action="@{/logout}" method="post" class="logout-form">
+                <input type="hidden"
+                       th:name="${_csrf.parameterName}"
+                       th:value="${_csrf.token}"/>
+                <button type="submit" class="menu-item logout-btn">
+                    Sair do Sistema
+                </button>
+            </form>
+        </div>
+
+
+    </nav>
+
+
+    <!-- Rodapé: Perfil do usuário e Ações -->
     <div class="sidebar-footer">
         <div class="profile">
-            <div class="avatar" sec:authentication="principal.iniciais"></div>
-
+            <div class="avatar" sec:authentication="principal.iniciais">US</div>
             <div class="profile-info">
-                <div class="pname" sec:authentication="principal.nomeCompleto"></div>
-                <div class="nivel-tag" sec:authentication="principal.nivelAcesso"></div>
+                <div class="pname" sec:authentication="principal.nomeCompleto">Usuário</div>
+                <div class="nivel-tag" sec:authentication="principal.nivelAcesso">Nível</div>
             </div>
         </div>
 
-        <form th:action="@{/logout}" method="post" class="logout-form">
-
-            <input type="hidden"
-                   th:name="${_csrf.parameterName}"
-                   th:value="${_csrf.token}" />
-
-            <button type="submit" class="menu-item logout-btn">
-                Sair
-            </button>
-
-        </form>
-
 
         <div class="app-version">
-            v1.0.0
+            LumiFlow v1.0.0
         </div>
     </div>
 
