@@ -25,13 +25,13 @@ public class UsuarioService {
     private final NivelAcessoService nivelAcessoService;
     private final SetorService setorService;
 
-    public void validarLogin(String login) {
+    private void validarLogin(String login) {
         if (!LoginValidator.isValidLogin(login)) throw new BusinessException(AppMessages.ERROR_USER_LOGIN_INVALID);
         if (usuarioRepository.findByLogin(login.trim()).isPresent())
             throw new BusinessException(AppMessages.ERROR_USER_ALREADY_EXISTS);
     }
 
-    public Usuario validarUsuarioPorId(Long id) {
+    private Usuario validarUsuarioPorId(Long id) {
         return usuarioRepository.findById(id).orElseThrow(() -> new BusinessException(AppMessages.ERROR_USER_NOTFOUND));
     }
 

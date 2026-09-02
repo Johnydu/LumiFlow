@@ -1,5 +1,5 @@
 /* ========================================
-   TOPBAR.CSS
+   TOPBAR.CSS - LumiFlow Design System
    ======================================== */
 
 /* ============ CONTENT AREA ============ */
@@ -37,145 +37,172 @@ body.page-vidracaria-vidracaria .content {
     overflow: hidden;
 }
 
-/* ============ TOPBAR ============ */
+/* ============ TOPBAR (Estilo Vidro Super Translúcido) ============ */
 .topbar {
-    background: var(--color-sidebar);
-    border-bottom: 1px solid rgba(255, 255, 255, 0.08);
-    padding: 14px 22px;
-    display: flex;
-    align-items: center;
-    justify-content: space-between;
-    gap: 12px;
-    margin-bottom: 26px;
+    background: rgba(7, 13, 29, 0.25) !important;
+    backdrop-filter: blur(16px) !important;
+    -webkit-backdrop-filter: blur(16px) !important;
+    border-bottom: 1px solid rgba(255, 255, 255, 0.08) !important;
+    padding: 16px 24px !important;
+    display: flex !important;
+    align-items: center !important;
+    justify-content: space-between !important;
+    gap: 12px !important;
+    margin-bottom: 24px !important;
+    box-sizing: border-box !important;
+    width: 100% !important;
 }
 
 .topbar h1 {
-    font-size: 40px;
+    font-size: 32px !important;
+    color: var(--color-text) !important;
 }
 
 /* ============ TOPBAR TITLE ============ */
 .topbar-title {
-    font-size: 20px;
-    font-weight: bold;
+    font-size: 18px !important;
+    font-weight: 600 !important;
+    color: var(--color-text) !important;
 }
 
 /* ============ TOPBAR RIGHT (Relatório) ============ */
 .topbar-right {
-    display: flex;
-    gap: 10px;
-    align-items: center;
+    display: flex !important;
+    gap: 10px !important;
+    align-items: center !important;
 }
 
-/* ============ BTN NOVO / BTN NOVA ============ */
+/* ============ BTN NOVO / BTN NOVA (Padronizado com o sistema) ============ */
 .btn-novo {
-    height: 40px;
-    padding: 0 20px;
-    border-radius: 10px;
-    border: none;
-    background: var(--color-primary);
-    color: var(--color-text);
-    font-size: 13px;
-    cursor: pointer;
+    height: 38px !important;
+    padding: 0 18px !important;
+    border-radius: 8px !important;
+    border: 1px solid var(--border-subtle) !important;
+    background: var(--color-primary) !important;
+    color: var(--color-text) !important;
+    font-size: 13px !important;
+    font-weight: 500 !important;
+    cursor: pointer !important;
+    transition: all 0.2s ease !important;
+    box-shadow: 0 0 12px var(--color-primary-soft) !important;
 }
 
 .btn-novo:hover {
-    background: var(--color-surface-hover);
+    background: var(--color-primary-hover) !important;
+    border-color: var(--color-primary) !important;
+    transform: translateY(-1px);
 }
 
 /* ============ BTN BACK ============ */
 .btn-back {
-    height: 36px;
-    padding: 0 16px;
-    border-radius: 10px;
-    border: 1px solid rgba(255, 255, 255, 0.15);
-    background: transparent;
-    color: var(--color-text);
-    font-size: 12px;
-    cursor: pointer;
+    height: 36px !important;
+    padding: 0 16px !important;
+    border-radius: 8px !important;
+    border: 1px solid rgba(255, 255, 255, 0.08) !important;
+    background: rgba(255, 255, 255, 0.03) !important;
+    color: var(--color-text) !important;
+    font-size: 12px !important;
+    cursor: pointer !important;
+}
+
+.btn-back:hover {
+    background: rgba(255, 255, 255, 0.08) !important;
 }
 
 /* ============ OP NUM (Ordem de Produção) ============ */
 .op-num {
-    font-size: 13px;
-    color: var(--color-muted);
-    font-family: monospace;
+    font-size: 13px !important;
+    color: var(--color-muted) !important;
+    font-family: monospace !important;
 }
 
 /* ============ BTN EXPORT (Relatório) ============ */
 .btn-export {
-    height: 36px;
-    padding: 0 16px;
-    border-radius: 10px;
-    border: 1px solid rgba(255, 255, 255, 0.15);
-    background: transparent;
-    color: var(--color-text);
-    font-size: 12px;
-    cursor: pointer;
+    height: 36px !important;
+    padding: 0 16px !important;
+    border-radius: 8px !important;
+    border: 1px solid rgba(255, 255, 255, 0.08) !important;
+    background: rgba(255, 255, 255, 0.03) !important;
+    color: var(--color-text) !important;
+    font-size: 12px !important;
+    cursor: pointer !important;
+}
+
+.btn-export:hover {
+    background: rgba(255, 255, 255, 0.08) !important;
 }
 
 /* ============ FILTRO SELECT (Relatório) ============ */
 .filtro-select {
-    height: 36px;
-    padding: 0 12px;
-    border-radius: 10px;
-    border: 1px solid rgba(255, 255, 255, 0.1);
-    background: var(--color-surface-2);
-    color: var(--color-text);
-    font-size: 12px;
+    height: 36px !important;
+    padding: 0 12px !important;
+    border-radius: 8px !important;
+    border: 1px solid rgba(255, 255, 255, 0.08) !important;
+    background: rgba(7, 13, 29, 0.4) !important;
+    color: var(--color-text) !important;
+    font-size: 12px !important;
 }
 
 /* ============ LISTA FLEX CONTAINER ============ */
 .lista {
-    flex: 1;
-    display: flex;
-    flex-direction: column;
-    gap: 14px;
+    flex: 1 !important;
+    display: flex !important;
+    flex-direction: column !important;
+    gap: 14px !important;
 }
 
 /* ============ FILTROS ============ */
 .filtros {
-    display: flex;
-    gap: 10px;
-    margin-bottom: 16px;
-    flex-wrap: wrap;
+    display: flex !important;
+    gap: 10px !important;
+    margin-bottom: 16px !important;
+    flex-wrap: wrap !important;
 }
 
 .filtro-input, .filtro-select {
-    height: 40px;
-    padding: 0 14px;
-    border-radius: 10px;
-    border: 1px solid rgba(255, 255, 255, 0.1);
-    background: #1a1a2e;
-    color: #fff;
-    font-size: 12px;
+    height: 40px !important;
+    padding: 0 14px !important;
+    border-radius: 8px !important;
+    border: 1px solid rgba(255, 255, 255, 0.08) !important;
+    background: rgba(7, 13, 29, 0.4) !important;
+    color: var(--color-text) !important;
+    font-size: 12px !important;
 }
 
 .filtro-input {
-    min-width: 200px;
+    min-width: 200px !important;
 }
 
 .filtro-select {
-    min-width: 150px;
+    min-width: 150px !important;
 }
 
 /* ========================================
-   TOPBAR FRAGMENT
+   TOPBAR FRAGMENT EXTRAS
    ======================================== */
 
 .topbar-left {
-    display: flex;
-    align-items: center;
-    gap: 12px;
+    display: flex !important;
+    align-items: center !important;
+    gap: 12px !important;
 }
 
 .menu-toggle {
-    display: none;
-    width: 40px;
-    height: 40px;
-    border: none;
-    border-radius: 10px;
-    background: var(--color-primary);
-    color: #fff;
-    font-size: 20px;
-    cursor: pointer;
+    display: none !important; /* Exibido via responsivo se necessário */
+    width: 38px !important;
+    height: 38px !important;
+    border: 1px solid rgba(255, 255, 255, 0.08) !important;
+    border-radius: 8px !important;
+    background: rgba(255, 255, 255, 0.03) !important;
+    color: var(--color-text) !important;
+    font-size: 18px !important;
+    cursor: pointer !important;
+    align-items: center !important;
+    justify-content: center !important;
+}
+
+.menu-toggle:hover {
+    background: rgba(255, 255, 255, 0.08) !important;
+    border-color: var(--color-primary) !important;
+    color: var(--color-primary) !important;
 }

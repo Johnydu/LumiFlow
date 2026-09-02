@@ -8,11 +8,21 @@ import br.com.lumiflow.entity.NivelAcesso;
 import br.com.lumiflow.repository.NivelAcessoRepository;
 import lombok.AllArgsConstructor;
 import org.springframework.stereotype.Service;
+
 import java.util.List;
 
-@Service @AllArgsConstructor
+@Service
+@AllArgsConstructor
 public class NivelAcessoService {
-    private final NivelAcessoRepository nivelAcessoRepository; private final NivelAcessoMapper nivelAcessoMapper;
-    public NivelAcesso buscarNivelAcessoPorId(Long id) { return nivelAcessoRepository.findById(id).orElseThrow(() -> new BusinessException(AppMessages.ERROR_ACCESS_LEVEL_NOTFOUND)); }
-    public List<NivelAcessoDTO> listarTodos() { return nivelAcessoMapper.toListDTO(nivelAcessoRepository.findAll()); }
+    private final NivelAcessoRepository nivelAcessoRepository;
+    private final NivelAcessoMapper nivelAcessoMapper;
+
+    public NivelAcesso buscarNivelAcessoPorId(Long id) {
+        return nivelAcessoRepository.findById(id)
+                .orElseThrow(() -> new BusinessException(AppMessages.ERROR_ACCESS_LEVEL_NOTFOUND));
+    }
+
+    public List<NivelAcessoDTO> listarTodos() {
+        return nivelAcessoMapper.toListDTO(nivelAcessoRepository.findAll());
+    }
 }

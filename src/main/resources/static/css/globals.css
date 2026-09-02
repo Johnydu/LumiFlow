@@ -1,42 +1,31 @@
-/* ========================================
-   GLOBALS.CSS
-   ======================================== */
-
-/* ============ UNIVERSAL RESET ============ */
-* {
-  margin: 0;
-  padding: 0;
-  box-sizing: border-box;
-  font-family: Arial, Helvetica, sans-serif;
+/* ============ BODY E ALTURA GLOBAL ============ */
+html, body {
+  height: 100vh;
+  height: 100%;
+  overflow: hidden; /* Evita scroll duplo na página toda */
 }
 
-/* ============ BODY ============ */
 body {
-  background: var(--color-bg);
-  color: var(--color-text);
+  background: url('/images/fundo-login.jpg') no-repeat center center fixed var(--color-background, #070d1d) !important;
+  background-size: cover !important;
+  color: var(--color-text) !important;
   display: flex;
-  min-height: 100vh;
+  flex-direction: row;
 }
 
-body.page-usuario-login * {
+/* Garante que o container principal ocupe 100% da tela e gerencie o scroll interno */
+.main {
+  flex: 1;
+  height: 100vh;
+  display: flex;
+  flex-direction: column;
+  overflow: hidden;
+}
+
+/* O conteúdo rola apenas por dentro, sem expandir a página para baixo */
+.content {
+  flex: 1;
+  overflow-y: auto;
+  padding: 24px;
   box-sizing: border-box;
-  margin: 0;
-  padding: 0;
 }
-
-body.page-usuario-login {
-  background: var(--color-bg-soft);
-}
-.logo{
-  text-decoration:none;
-  color:inherit;
-  display:block;
-}
-
-.menu-item{
-  text-decoration:none;
-  color:inherit;
-  cursor:pointer;
-}
-
-

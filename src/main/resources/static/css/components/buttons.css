@@ -1,143 +1,66 @@
 /* ========================================
-   COMPONENTS/BUTTONS.CSS
-   ======================================== */
-
-/* ============ GENERIC BUTTON ============ */
-.btn {
-  height: 64px;
-  padding: 0 30px;
-  border-radius: 18px;
-  border: 1px solid rgba(255,255,255,0.15);
-  background: transparent;
-  color: var(--color-text);
-  font-size: 22px;
-  cursor: pointer;
-  transition: 0.2s;
-}
-
-.btn:hover {
-  background: var(--color-surface-hover);
-}
-
-/* ============ LOGIN BUTTON ============ */
-body.page-usuario-login .btn {
-  width: 100%;
-  padding: 12px;
-  background: var(--color-primary-muted);
-  color: var(--color-text);
-  border: none;
-  border-radius: 8px;
-  font-size: 14px;
-  font-weight: 600;
-  cursor: pointer;
-  margin-top: 6px;
-  transition: background .2s, transform .1s;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  gap: 8px;
-}
-
-body.page-usuario-login .btn:hover {
-  background: var(--color-primary-dark);
-}
-
-body.page-usuario-login .btn:active {
-  transform: scale(0.98);
-}
-
-body.page-usuario-login .btn.success {
-  background: var(--color-warning-dark);
-}
-
-/* ========================================
-   ACTION BUTTONS PADRÃO LUMIFLOW
+   ACTION BUTTONS - COMPACTOS E FOSCOS (Sem Neon)
    ======================================== */
 
 .btn-edit,
-.btn-del {
-  min-width: 90px;
-  height: 38px;
-  padding: 0 18px;
-
-  border-radius: 12px;
-  border: 1px solid;
-
-  font-size: 12px;
-  font-weight: 600;
-  letter-spacing: .3px;
-
-  display: inline-flex;
-  align-items: center;
-  justify-content: center;
-  gap: 6px;
-
-  cursor: pointer;
-  transition: all .25s ease;
+.btn-del,
+.btn-ver,
+.btn-liberar,
+.btn-lancar {
+  min-width: unset !important;
+  height: var(--btn-height) !important;
+  padding: 0 12px !important;
+  border-radius: 6px !important;
+  border: 1px solid !important;
+  font-size: var(--btn-font-size) !important;
+  font-weight: 500 !important;
+  letter-spacing: .2px !important;
+  display: inline-flex !important;
+  align-items: center !important;
+  justify-content: center !important;
+  gap: 5px !important;
+  cursor: pointer !important;
+  transition: background 0.15s ease, border-color 0.15s ease !important;
+  box-shadow: none !important;
+  text-shadow: none !important;
 }
 
 /* EDITAR */
-
 .btn-edit {
-  background: rgba(59,130,246,.10);
-  border-color: rgba(59,130,246,.25);
-  color: #93c5fd;
+  background: var(--btn-edit-bg) !important;
+  border-color: var(--btn-edit-border) !important;
+  color: var(--btn-edit-color) !important;
 }
-
 .btn-edit:hover {
-  background: rgba(59,130,246,.18);
-  border-color: rgba(59,130,246,.45);
-  transform: translateY(-1px);
+  background: #334155 !important;
+  border-color: #475569 !important;
 }
 
 /* EXCLUIR */
-
 .btn-del {
-  background: rgba(239,68,68,.10);
-  border-color: rgba(239,68,68,.25);
-  color: #fca5a5;
+  background: var(--btn-del-bg) !important;
+  border-color: var(--btn-del-border) !important;
+  color: var(--btn-del-color) !important;
 }
-
 .btn-del:hover {
-  background: rgba(239,68,68,.18);
-  border-color: rgba(239,68,68,.45);
-  transform: translateY(-1px);
+  background: #3d1e24 !important;
+  border-color: #612c35 !important;
 }
 
-/* ============ LOGOUT ============ */
-.logout-form {
-  margin-top: 12px;
-  width: 100%;
+/* LIBERAR E VER */
+.btn-liberar,
+.btn-lancar,
+.btn-ver {
+  background: var(--btn-success-bg) !important;
+  border-color: var(--btn-success-border) !important;
+  color: var(--btn-success-color) !important;
 }
-
-.logout-btn {
-  width: 100%;
-  display: flex;
-  align-items: center;
-  gap: 8px;
-  border: 1px solid transparent;
-  background-color: transparent;
-  color: var(--color-danger, #dc3545);
-  cursor: pointer;
-  text-align: left;
-  padding: 10px 12px;
-  border-radius: var(--radius-md, 8px);
-  font-size: 14px;
-  font-weight: 500;
-  font-family: inherit;
-  transition: background-color 0.2s ease, color 0.2s ease, border-color 0.2s ease;
+.btn-liberar:hover,
+.btn-lancar:hover,
+.btn-ver:hover {
+  background: #1b4d3e !important;
+  border-color: #236853 !important;
 }
-
-.logout-btn:hover {
-  background-color: var(--color-danger-light, rgba(220, 53, 69, 0.1));
-  color: var(--color-danger-hover, #bb2d3b);
-}
-
-.logout-btn:focus-visible {
-  outline: 2px solid var(--color-primary);
-  outline-offset: 2px;
-}
-
 /* ============ BTN CANCEL ============ */
 .btn-cancel {
   padding: 10px 22px;
@@ -147,6 +70,10 @@ body.page-usuario-login .btn.success {
   color: var(--color-muted);
   font-size: 13px;
   cursor: pointer;
+}
+.logout-btn:focus-visible {
+  outline: 2px solid var(--color-primary);
+  outline-offset: 2px;
 }
 
 /* ============ BTN SUBMIT ============ */
@@ -160,115 +87,6 @@ body.page-usuario-login .btn.success {
   cursor: pointer;
   font-weight: 500;
 }
-
-body.page-ordemproducao-novaordem .btn-submit:hover {
-  background: var(--color-primary-hover);
-}
-
-body.page-produto-cadastroproduto .btn-submit:hover {
-  background: var(--color-primary-hover);
-}
-
-body.page-ordemproducao-lancamento .btn-submit.refugo {
-  background: var(--color-danger);
-}
-
-body.page-ordemproducao-lancamento .btn-submit.retrab {
-  background: var(--color-warning);
-  color: var(--color-track);
-}
-
-body.page-vidracaria-vidracaria .btn-submit.entrada {
-  background: var(--color-success);
-  color: var(--color-track);
-}
-
-/* ============ BTN VER ============ */
-.btn-ver {
-  padding: 5px 12px;
-  font-size: 10px;
-  border-radius: 7px;
-  border: 1px solid rgba(255,255,255,0.15);
-  background: transparent;
-  color: var(--color-text);
-  cursor: pointer;
-}
-
-.btn-ver:hover {
-  background: rgba(255,255,255,0.05);
-}
-
-/* ============ BTN LANÇAR ============ */
-.btn-lancar {
-  padding: 6px 14px;
-  font-size: 11px;
-  border-radius: 8px;
-  border: none;
-  background: var(--color-primary);
-  color: var(--color-text);
-  cursor: pointer;
-  font-weight: 500;
-}
-
-.btn-lancar:hover {
-  background: var(--color-primary-hover);
-}
-
-/* ============ BTN LIBERAR ============ */
-.btn-liberar {
-  padding: 6px 14px;
-  font-size: 11px;
-  border-radius: 8px;
-  border: none;
-  background: var(--color-primary);
-  color: var(--color-text);
-  cursor: pointer;
-  font-weight: 500;
-}
-
-.btn-liberar:hover {
-  background: var(--color-primary-hover);
-}
-
-/* ============ BTN DISABLED ============ */
-.btn-dis {
-  padding: 6px 14px;
-  font-size: 11px;
-  border-radius: 8px;
-  border: 1px solid rgba(255,255,255,0.1);
-  background: transparent;
-  color: var(--color-muted-6);
-  cursor: default;
-}
-
-/* ============ BTN ADD ETAPA ============ */
-body.page-setor-cadastrosetor .btn-add-etapa {
-  width: 100%;
-  padding: 8px;
-  border-radius: 8px;
-  border: 1px dashed rgba(255,255,255,0.15);
-  background: transparent;
-  color: var(--color-muted);
-  font-size: 12px;
-  cursor: pointer;
-  margin-bottom: 14px;
-}
-
-body.page-setor-cadastrosetor .btn-add-etapa:hover {
-  border-color: var(--color-primary);
-  color: var(--color-primary);
-}
-
-/* ============ BTN ETAPA DELETE ============ */
-body.page-setor-cadastrosetor .etapa-del {
-  background: none;
-  border: none;
-  color: var(--color-danger);
-  cursor: pointer;
-  font-size: 14px;
-  padding: 0 4px;
-}
-
 /* ============ PAGINATION BUTTONS ============ */
 .pag-btn {
   width: 30px;
@@ -288,3 +106,12 @@ body.page-setor-cadastrosetor .etapa-del {
   background: var(--color-primary);
   border-color: var(--color-primary);
 }
+
+
+
+
+body.page-vidracaria-vidracaria .btn-submit.entrada {
+  background: var(--color-success);
+  color: var(--color-track);
+}
+

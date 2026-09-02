@@ -1,5 +1,5 @@
 /* ========================================
-   PAGES/ROTEIROS.CSS
+   PAGES/ROTEIROS.CSS - Vidro Translúcido
    ======================================== */
 
 body.page-roteiro-cadastroroteiros {
@@ -31,7 +31,9 @@ body.page-roteiro-cadastroroteiros .main {
    ============================== */
 
 body.page-roteiro-cadastroroteiros .panel {
-    background: var(--color-surface);
+    background: rgba(7, 13, 29, 0.35) !important;
+    backdrop-filter: blur(16px) !important;
+    -webkit-backdrop-filter: blur(16px) !important;
     border: 1px solid rgba(255,255,255,0.08);
     border-radius: 18px;
     overflow: hidden;
@@ -74,7 +76,9 @@ body.page-roteiro-cadastroroteiros .form-panel {
 }
 
 body.page-roteiro-cadastroroteiros .form-card {
-    background: var(--color-surface);
+    background: rgba(7, 13, 29, 0.35) !important;
+    backdrop-filter: blur(16px) !important;
+    -webkit-backdrop-filter: blur(16px) !important;
     border: 1px solid rgba(255,255,255,0.08);
     border-radius: 18px;
     padding: 20px;
@@ -108,19 +112,25 @@ body.page-roteiro-cadastroroteiros .field label span {
 
 body.page-roteiro-cadastroroteiros .field input,
 body.page-roteiro-cadastroroteiros .field select {
-    background: var(--color-field);
-    border: 1px solid rgba(255,255,255,0.1);
+    background: rgba(7, 13, 29, 0.3) !important;
+    backdrop-filter: blur(12px) !important;
+    -webkit-backdrop-filter: blur(12px) !important;
+    border: 1px solid rgba(255,255,255,0.12) !important;
     border-radius: 10px;
-    color: var(--color-text);
+    color: #ffffff !important;
     font-size: 13px;
     padding: 10px 14px;
     outline: none;
     width: 100%;
+    box-sizing: border-box;
+    transition: border-color .2s ease-in-out, box-shadow .2s ease-in-out, background .2s ease-in-out;
 }
 
 body.page-roteiro-cadastroroteiros .field input:focus,
 body.page-roteiro-cadastroroteiros .field select:focus {
-    border-color: var(--color-primary);
+    background: rgba(7, 13, 29, 0.5) !important;
+    border-color: var(--color-primary, #6157ff) !important;
+    box-shadow: 0 0 0 3px rgba(97, 87, 255, 0.15);
 }
 
 body.page-roteiro-cadastroroteiros .hint {
@@ -134,87 +144,109 @@ body.page-roteiro-cadastroroteiros .hint {
    ============================== */
 
 body.page-roteiro-cadastroroteiros .etapas-list {
-    display: flex;
-    flex-direction: column;
-    gap: 10px;
+    display: flex !important;
+    flex-direction: column !important;
+    gap: 12px !important;
+    width: 100% !important;
 }
 
 body.page-roteiro-cadastroroteiros .etapa-item {
-    display: grid;
-    grid-template-columns: 42px minmax(0, 1fr) auto; /* minmax(0, 1fr) impede que o grid estoure a largura */
-    gap: 8px;
-    align-items: center;
-    background: var(--color-field);
-    border: 1px solid rgba(255,255,255,0.08);
+    display: flex !important;
+    flex-direction: row !important;
+    align-items: center !important;
+    justify-content: space-between !important;
+    gap: 8px !important;
+    width: 100% !important;
+    box-sizing: border-box !important;
+    background: rgba(7, 13, 29, 0.3) !important;
+    backdrop-filter: blur(12px) !important;
+    -webkit-backdrop-filter: blur(12px) !important;
+    border: 1px solid rgba(255,255,255,0.1) !important;
     border-radius: 12px;
     padding: 10px;
 }
 
 body.page-roteiro-cadastroroteiros .etapa-num {
-    display: inline-flex;
-    align-items: center;
-    justify-content: center;
-    width: 34px;
-    height: 34px;
-    border-radius: 50%;
-    background: rgba(97,87,255,0.15);
-    color: var(--color-primary-soft);
-    font-size: 12px;
-    font-weight: 700;
-    flex-shrink: 0;
+    display: inline-flex !important;
+    align-items: center !important;
+    justify-content: center !important;
+    width: 34px !important;
+    height: 34px !important;
+    border-radius: 50% !important;
+    background: rgba(97,87,255,0.2) !important;
+    color: #ffffff !important;
+    font-size: 12px !important;
+    font-weight: 700 !important;
+    flex: 0 0 34px !important;
 }
 
 body.page-roteiro-cadastroroteiros .etapa-select {
-    background: var(--color-surface);
-    border: 1px solid rgba(255,255,255,0.1);
+    flex: 1 !important;
+    width: 100% !important;
+    min-width: 0 !important;
+    box-sizing: border-box !important;
+    background: rgba(7, 13, 29, 0.4) !important;
+    backdrop-filter: blur(8px) !important;
+    -webkit-backdrop-filter: blur(8px) !important;
+    border: 1px solid rgba(255,255,255,0.12) !important;
     border-radius: 10px;
-    color: var(--color-text);
+    color: #ffffff !important;
     font-size: 13px;
     padding: 10px 12px;
     outline: none;
-    width: 100%;
-    min-width: 0; /* Impede que o select ignore os limites do grid */
-    box-sizing: border-box;
+}
+
+body.page-roteiro-cadastroroteiros .etapa-select:focus {
+    border-color: var(--color-primary, #6157ff) !important;
 }
 
 body.page-roteiro-cadastroroteiros .etapa-actions {
-    display: flex;
-    align-items: center;
-    gap: 6px;
+    flex: 0 0 auto !important;
+    display: flex !important;
+    align-items: center !important;
+    gap: 6px !important;
 }
 
 body.page-roteiro-cadastroroteiros .etapa-move,
 body.page-roteiro-cadastroroteiros .etapa-del {
-    width: 30px;
-    height: 30px;
-    border: 1px solid rgba(255,255,255,0.1);
-    background: transparent;
-    color: var(--color-text);
+    width: 32px;
+    height: 32px;
+    border: 1px solid rgba(255,255,255,0.12);
+    background: rgba(255,255,255,0.05);
+    color: #ffffff;
     border-radius: 8px;
     cursor: pointer;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
     transition: .2s;
 }
 
 body.page-roteiro-cadastroroteiros .etapa-move:hover,
 body.page-roteiro-cadastroroteiros .etapa-del:hover {
-    background: rgba(255,255,255,0.05);
+    background: rgba(255,255,255,0.15);
+    border-color: rgba(255,255,255,0.25);
 }
 
 body.page-roteiro-cadastroroteiros .btn-add-etapa {
     width: 100%;
     margin-top: 10px;
-    padding: 10px 12px;
+    padding: 11px 14px;
     border-radius: 10px;
-    border: 1px dashed rgba(255,255,255,0.18);
-    background: transparent;
-    color: var(--color-text);
+    border: 1px dashed rgba(255,255,255,0.2);
+    background: rgba(255, 255, 255, 0.03);
+    backdrop-filter: blur(8px);
+    -webkit-backdrop-filter: blur(8px);
+    color: #ffffff;
     cursor: pointer;
     transition: .2s;
     font-size: 13px;
+    font-weight: 500;
 }
 
 body.page-roteiro-cadastroroteiros .btn-add-etapa:hover {
-    background: rgba(255,255,255,0.04);
+    background: rgba(255,255,255,0.08);
+    border-color: var(--color-primary, #6157ff);
 }
 
 /* ==============================
@@ -233,53 +265,34 @@ body.page-roteiro-cadastroroteiros .btn-submit {
     height: 46px;
     border-radius: 12px;
     cursor: pointer;
+    font-weight: 600;
+    font-size: 13px;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    backdrop-filter: blur(12px);
+    -webkit-backdrop-filter: blur(12px);
+    transition: all 0.2s ease-in-out;
 }
 
 body.page-roteiro-cadastroroteiros .btn-cancel {
-    border: 1px solid rgba(255,255,255,.1);
-    background: transparent;
-    color: var(--color-text);
+    border: 1px solid rgba(255,255,255,0.12);
+    background: rgba(255, 255, 255, 0.05);
+    color: var(--color-muted, #94a3b8);
+}
+
+body.page-roteiro-cadastroroteiros .btn-cancel:hover {
+    background: rgba(255, 255, 255, 0.1);
+    color: #ffffff;
 }
 
 body.page-roteiro-cadastroroteiros .btn-submit {
-    border: none;
-    background: var(--color-primary);
+    border: 1px solid rgba(255, 255, 255, 0.15);
+    background: var(--color-primary, #6157ff);
     color: white;
 }
 
-/* ==========================================================
-   BLINDAGEM CONTRA CONFLITOS GLOBAIS - ETAPAS ROTEIRO
-   ========================================================== */
-body.page-roteiro-cadastroroteiros .etapas-list {
-    display: flex !important;
-    flex-direction: column !important;
-    gap: 12px !important;
-    width: 100% !important;
-}
-
-body.page-roteiro-cadastroroteiros .etapas-list .etapa-item {
-    display: flex !important;
-    flex-direction: row !important;
-    align-items: center !important;
-    justify-content: space-between !important;
-    gap: 8px !important;
-    width: 100% !important;
-    box-sizing: border-box !important;
-}
-
-body.page-roteiro-cadastroroteiros .etapas-list .etapa-item .etapa-num {
-    flex: 0 0 34px !important;
-}
-
-body.page-roteiro-cadastroroteiros .etapas-list .etapa-item .etapa-select {
-    flex: 1 !important;
-    width: 100% !important;
-    min-width: 0 !important;
-    box-sizing: border-box !important;
-}
-
-body.page-roteiro-cadastroroteiros .etapas-list .etapa-item .etapa-actions {
-    flex: 0 0 auto !important;
-    display: flex !important;
-    gap: 6px !important;
+body.page-roteiro-cadastroroteiros .btn-submit:hover {
+    filter: brightness(1.15);
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.3);
 }

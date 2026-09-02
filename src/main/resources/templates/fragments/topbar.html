@@ -1,11 +1,11 @@
 <th:block xmlns:th="http://www.thymeleaf.org"
           th:fragment="topbar(titulo, textoBotao, acaoBotao)">
 
-    <div class="topbar">
-
+    <header class="topbar">
         <div class="topbar-left">
             <button class="menu-toggle"
-                    onclick="toggleSidebar()">
+                    onclick="toggleSidebar()"
+                    aria-label="Abrir Menu">
                 ☰
             </button>
 
@@ -19,7 +19,6 @@
                 th:text="${textoBotao}"
                 th:attr="onclick=${acaoBotao}">
         </button>
-
-    </div>
+    </header>
 
 </th:block>

@@ -51,7 +51,7 @@
 
   /* ============ MENU TOGGLE ============ */
   .menu-toggle {
-    display: flex;
+    display: flex !important;
     align-items: center;
     justify-content: center;
     width: 40px;
@@ -64,6 +64,7 @@
     cursor: pointer;
     flex-shrink: 0;
   }
+
   .sidebar-close {
     display: flex !important;
   }
@@ -145,6 +146,37 @@
 
 @media (max-width: 768px) {
 
+  /* ============ TELA DE LOGIN ============ */
+  body.login-body {
+    padding: 12px !important;
+    box-sizing: border-box !important;
+    width: 100% !important;
+    overflow-x: hidden !important;
+  }
+
+  .login-card-container {
+    display: flex !important;
+    flex-direction: column !important;
+    width: 100% !important;
+    max-width: 100% !important;
+    min-height: auto !important;
+    border-radius: 16px !important;
+    margin: 0 !important;
+    box-sizing: border-box !important;
+  }
+
+  .login-brand-panel {
+    display: none !important;
+  }
+
+  .login-form-panel {
+    width: 100% !important;
+    max-width: 100% !important;
+    padding: 24px 16px !important;
+    box-sizing: border-box !important;
+    background: rgba(7, 13, 29, 0.98) !important;
+  }
+
   /* ============ MAIN ============ */
   .main {
     width: 100%;
@@ -220,6 +252,7 @@
     text-align: center !important;
     box-sizing: border-box !important;
   }
+
   /* ============ FORMULÁRIO ============ */
   .form-card {
     padding: 16px !important;
@@ -272,5 +305,57 @@
   /* ============ SETORES GRID ============ */
   body.page-produto-cadastroproduto .setores-grid {
     grid-template-columns: 1fr !important;
+  }
+}
+
+
+/* ========================================
+   MOBILE PEQUENO — até 480px
+   ======================================== */
+
+@media (max-width: 480px) {
+  /* ============ LOGIN ============ */
+  body.login-body {
+    padding: 6px !important;
+  }
+
+  .login-form-panel {
+    padding: 16px 10px !important;
+  }
+
+  /* ============ TIPOGRAFIA E TOPO ============ */
+  .topbar-title {
+    font-size: 14px !important;
+  }
+
+  .topbar {
+    padding: 10px 12px !important;
+  }
+
+  /* ============ CONTEÚDO E PADDING ============ */
+  .content {
+    padding: 8px !important;
+  }
+
+  /* ============ TABELAS E BOTÕES DE AÇÃO ============ */
+  td, th {
+    padding: 8px 6px !important;
+    font-size: 10px !important;
+  }
+
+  .table-actions button,
+  .table-actions .btn-edit,
+  .table-actions .btn-del,
+  .btn-novo,
+  .btn-nova {
+    height: 34px !important;
+    font-size: 11px !important;
+    padding: 0 10px !important;
+  }
+
+  /* ============ CARDS DO DASHBOARD ============ */
+  .cards {
+    grid-template-columns: 1fr !important;
+    gap: 8px !important;
   }
 }
