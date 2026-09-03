@@ -1,0 +1,41 @@
+/* ========================================
+   PAGES/LANCAMENTO.CSS (Ajustes de Responsividade)
+   ======================================== */
+
+body.page-ordemproducao-lancamento .content {
+    width: 100%;
+    box-sizing: border-box;
+}
+
+body.page-ordemproducao-lancamento .form-card {
+    width: 100%;
+    box-sizing: border-box;
+}
+
+/* Grid de 2 colunas responsivo */
+body.page-ordemproducao-lancamento .form-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(240px, 1fr));
+    gap: 18px;
+    width: 100%;
+    box-sizing: border-box;
+    margin-bottom: 14px;
+}
+
+/* Grid de 3 colunas responsivo (Data, Hora, Observação) */
+body.page-ordemproducao-lancamento .form-grid-3 {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+    gap: 18px;
+    width: 100%;
+    box-sizing: border-box;
+    margin-bottom: 14px;
+}
+
+/* Garante que inputs, selects e textareas preencham o espaço com segurança */
+body.page-ordemproducao-lancamento .field input,
+body.page-ordemproducao-lancamento .field select,
+body.page-ordemproducao-lancamento .field textarea {
+    width: 100%;
+    box-sizing: border-box;
+}

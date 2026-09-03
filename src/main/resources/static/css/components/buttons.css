@@ -1,5 +1,5 @@
 /* ========================================
-   ACTION BUTTONS - COMPACTOS E FOSCOS (Sem Neon)
+   ACTION BUTTONS - SÓLIDOS E SEM SUBLINHADO
    ======================================== */
 
 .btn-edit,
@@ -23,44 +23,55 @@
   transition: background 0.15s ease, border-color 0.15s ease !important;
   box-shadow: none !important;
   text-shadow: none !important;
+  text-decoration: none !important; /* Remove qualquer sublinhado */
 }
 
-/* EDITAR */
+/* EDITAR (Azul-acinzentado forte e sólido) */
 .btn-edit {
-  background: var(--btn-edit-bg) !important;
-  border-color: var(--btn-edit-border) !important;
-  color: var(--btn-edit-color) !important;
+  background: #475569 !important;
+  border-color: #64748b !important;
+  color: #ffffff !important;
 }
 .btn-edit:hover {
   background: #334155 !important;
   border-color: #475569 !important;
 }
 
-/* EXCLUIR */
+/* EXCLUIR (Vermelho forte e sólido) */
 .btn-del {
-  background: var(--btn-del-bg) !important;
-  border-color: var(--btn-del-border) !important;
-  color: var(--btn-del-color) !important;
+  background: #dc2626 !important;
+  border-color: #ef4444 !important;
+  color: #ffffff !important;
 }
 .btn-del:hover {
-  background: #3d1e24 !important;
-  border-color: #612c35 !important;
+  background: #b91c1c !important;
+  border-color: #dc2626 !important;
 }
 
-/* LIBERAR E VER */
+/* LIBERAR E VER (Verde forte/sucesso) */
 .btn-liberar,
-.btn-lancar,
 .btn-ver {
-  background: var(--btn-success-bg) !important;
-  border-color: var(--btn-success-border) !important;
-  color: var(--btn-success-color) !important;
+  background: #16a34a !important;
+  border-color: #22c55e !important;
+  color: #ffffff !important;
 }
 .btn-liberar:hover,
-.btn-lancar:hover,
 .btn-ver:hover {
-  background: #1b4d3e !important;
-  border-color: #236853 !important;
+  background: #15803d !important;
+  border-color: #16a34a !important;
 }
+
+/* LANÇAR (Azul forte, sólido e destacado) */
+.btn-lancar {
+  background: #2563eb !important;
+  border-color: #3b82f6 !important;
+  color: #ffffff !important;
+}
+.btn-lancar:hover {
+  background: #1d4ed8 !important;
+  border-color: #2563eb !important;
+}
+
 /* ============ BTN CANCEL ============ */
 .btn-cancel {
   padding: 10px 22px;
@@ -70,6 +81,7 @@
   color: var(--color-muted);
   font-size: 13px;
   cursor: pointer;
+  text-decoration: none !important;
 }
 .logout-btn:focus-visible {
   outline: 2px solid var(--color-primary);
@@ -86,7 +98,9 @@
   font-size: 13px;
   cursor: pointer;
   font-weight: 500;
+  text-decoration: none !important;
 }
+
 /* ============ PAGINATION BUTTONS ============ */
 .pag-btn {
   width: 30px;
@@ -100,6 +114,7 @@
   display: flex;
   align-items: center;
   justify-content: center;
+  text-decoration: none !important;
 }
 
 .pag-btn.active {
@@ -107,11 +122,7 @@
   border-color: var(--color-primary);
 }
 
-
-
-
 body.page-vidracaria-vidracaria .btn-submit.entrada {
   background: var(--color-success);
   color: var(--color-track);
 }
-

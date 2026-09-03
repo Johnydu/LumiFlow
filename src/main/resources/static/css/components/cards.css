@@ -59,12 +59,7 @@ body.page-usuario-login .card.on {
 }
 
 /* ============ FORM CARD (Correção de Opacidade) ============ */
-.form-card,
-body.page-ordemproducao-lancamento .form-card,
-body.page-ordemproducao-novaordem .form-card,
-body.page-produto-cadastroproduto .form-card,
-body.page-operador-cadastrooperador .form-card,
-body.page-vidracaria-vidracaria .form-card {
+.form-card {
   background: rgba(7, 13, 29, 0.35) !important;
   backdrop-filter: blur(16px) !important;
   -webkit-backdrop-filter: blur(16px) !important;
@@ -161,16 +156,7 @@ body.page-vidracaria-vidracaria .saldo-fill {
   overflow: hidden;
 }
 
-body.page-maquina-cadastromaquinas .panel,
-body.page-ordemproducao-detalhesordem .panel,
-body.page-ordemproducao-lancamento .panel,
-body.page-ordemproducao-listaordem .panel,
-body.page-produto-cadastroproduto .panel,
-body.page-relatorio-relatoriotempo .panel,
-body.page-setor-cadastrosetor .panel,
-body.page-usuario-cadastrousuario .panel,
-body.page-operador-cadastrooperador .panel,
-body.page-vidracaria-vidracaria .panel {
+.panel {
   background: rgba(7, 13, 29, 0.25) !important;
   backdrop-filter: blur(16px) !important;
   -webkit-backdrop-filter: blur(16px) !important;
@@ -187,11 +173,7 @@ body.page-vidracaria-vidracaria .panel {
   font-weight: bold;
 }
 
-body.page-maquina-cadastromaquinas .panel-header,
-body.page-produto-cadastroproduto .panel-header,
-body.page-operador-cadastrooperador .panel-header,
-body.page-setor-cadastrosetor .panel-header,
-body.page-usuario-cadastrousuario .panel-header {
+.panel-header {
   padding: 14px 18px;
   border-bottom: 1px solid rgba(255,255,255,0.08);
   display: flex;

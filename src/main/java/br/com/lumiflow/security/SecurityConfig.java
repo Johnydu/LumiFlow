@@ -129,7 +129,8 @@ public class SecurityConfig {
                                 // ----------------------------------------
                                 // DASHBOARD (tela raiz) — SOMENTE PCP E GESTÃO
                                 // ----------------------------------------
-                                .requestMatchers("/dashboard").hasAnyRole(ROLE_PCP_SUPERVISOR, ROLE_GESTAO)
+                                .requestMatchers("/dashboard").hasAnyRole(ROLE_PCP_SUPERVISOR,
+                                ROLE_GESTAO,ROLE_SUPORTE)
 
                                 // ----------------------------------------
                                 // DASHBOARD — TODOS OS LOGADOS (regra genérica,

@@ -6,18 +6,26 @@ body.page-ordemproducao-novaordem .content {
   display: block;
   width: 100%;
   padding: 32px 40px;
+  box-sizing: border-box; /* Essencial para o padding não estourar a largura */
 }
 
 body.page-ordemproducao-novaordem .content form {
   display: block;
   width: 100%;
+  box-sizing: border-box;
 }
 
 body.page-ordemproducao-novaordem .form-card {
   width: 100%;
   padding: 32px;
+  box-sizing: border-box; /* Impede que o padding transborde o card para fora da tela */
 }
 
 body.page-ordemproducao-novaordem .form-grid {
+  display: grid;
+  /* Cria colunas flexíveis que quebram automaticamente de forma responsiva */
+  grid-template-columns: repeat(auto-fit, minmax(240px, 1fr));
   gap: 18px;
+  width: 100%;
+  box-sizing: border-box;
 }
