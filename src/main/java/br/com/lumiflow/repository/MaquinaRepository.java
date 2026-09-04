@@ -12,6 +12,10 @@ import java.util.Optional;
 public interface MaquinaRepository extends JpaRepository<Maquina, Long> {
 
     Optional<Maquina> findByNome(String nome);
+
     List<Maquina> findAllByOrderByNomeAsc();
+
     Integer countBySetorId(Long setorId);
+
+    List<Maquina> findBySetorIdOrderByNomeAsc(Long setorId);
 }

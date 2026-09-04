@@ -3,162 +3,162 @@
     ========================================== */
 aside#sidebar.sidebar,
 .sidebar {
-  width: 260px !important;
-  background: rgba(7, 13, 29, 0.25) !important; /* Super translúcido para a imagem de fundo aparecer bem */
-  backdrop-filter: blur(16px) !important;
-  -webkit-backdrop-filter: blur(16px) !important;
-  border-right: 1px solid rgba(255, 255, 255, 0.08) !important;
-  padding: 20px !important;
-  display: flex !important;
-  flex-direction: column !important;
-  justify-content: space-between !important;
-  box-sizing: border-box !important;
+  width: 260px;
+  background: rgba(7, 13, 29, 0.25); /* Super translúcido para a imagem de fundo aparecer bem */
+  backdrop-filter: blur(16px);
+  -webkit-backdrop-filter: blur(16px);
+  border-right: 1px solid rgba(255, 255, 255, 0.08);
+  padding: 20px;
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+  box-sizing: border-box;
 }
 
 /* Logo do sistema */
 .sidebar .logo {
-  font-size: 24px !important;
-  font-weight: bold !important;
-  margin-bottom: 16px !important;
-  color: var(--color-text) !important;
-  letter-spacing: 0.5px !important;
+  font-size: 24px;
+  font-weight: bold;
+  margin-bottom: 16px;
+  color: var(--color-text);
+  letter-spacing: 0.5px;
 }
 
 /* Botão de fechar (mobile) */
 .sidebar .sidebar-close {
-  background: transparent !important;
-  border: 1px solid var(--border-subtle) !important;
-  color: var(--color-text) !important;
-  border-radius: 8px !important;
-  padding: 6px 10px !important;
-  cursor: pointer !important;
-  margin-bottom: 10px !important;
+  background: transparent;
+  border: 1px solid var(--border-subtle);
+  color: var(--color-text);
+  border-radius: 8px;
+  padding: 6px 10px;
+  cursor: pointer;
+  margin-bottom: 10px;
   display: none;
 }
 
 /* Títulos das seções do menu */
 .sidebar .menu-title {
-  color: var(--color-muted-3) !important;
-  font-size: 10px !important;
-  margin: 14px 0 6px !important;
-  letter-spacing: 1.2px !important;
-  font-weight: 700 !important;
+  color: var(--color-muted-3);
+  font-size: 10px;
+  margin: 14px 0 6px;
+  letter-spacing: 1.2px;
+  font-weight: 700;
 }
 
 /* Lista de itens do menu */
 .sidebar .menu {
-  display: flex !important;
-  flex-direction: column !important;
-  gap: 6px !important;
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
 }
 
 /* Links do menu com fundo translúcido suave e borda sutil */
 .sidebar .menu-item {
-  height: 38px !important;
-  border: 1px solid rgba(255, 255, 255, 0.08) !important;
-  background: rgba(255, 255, 255, 0.03) !important; /* Leve corpo translúcido */
-  border-radius: 8px !important;
-  display: flex !important;
-  align-items: center !important;
-  padding: 0 12px !important;
-  font-size: 13px !important;
-  color: var(--color-text) !important;
-  text-decoration: none !important;
-  cursor: pointer !important;
-  transition: all 0.2s ease !important;
+  height: 38px;
+  border: 1px solid rgba(255, 255, 255, 0.08);
+  background: rgba(255, 255, 255, 0.03); /* Leve corpo translúcido */
+  border-radius: 8px;
+  display: flex;
+  align-items: center;
+  padding: 0 12px;
+  font-size: 13px;
+  color: var(--color-text);
+  text-decoration: none;
+  cursor: pointer;
+  transition: all 0.2s ease;
 }
 
 /* Hover e Estado Ativo */
 .sidebar .menu-item:hover {
-  background: rgba(255, 255, 255, 0.08) !important;
-  border-color: rgba(255, 255, 255, 0.2) !important;
-  color: var(--color-primary-hover) !important;
+  background: rgba(255, 255, 255, 0.08);
+  border-color: rgba(255, 255, 255, 0.2);
+  color: var(--color-primary-hover);
 }
 
 .sidebar .menu-item.active {
-  background: var(--color-primary-bg) !important;
-  color: var(--color-text) !important;
-  border-color: var(--color-primary) !important;
-  font-weight: 600 !important;
-  box-shadow: 0 0 12px var(--color-primary-soft) !important;
+  background: var(--color-primary-bg);
+  color: var(--color-text);
+  border-color: var(--color-primary);
+  font-weight: 600;
+  box-shadow: 0 0 12px var(--color-primary-soft);
 }
 
 /* Rodapé do Perfil e Botão Sair */
 .sidebar .sidebar-footer {
-  margin-top: auto !important;
-  padding-top: 12px !important;
-  border-top: 1px solid rgba(255, 255, 255, 0.08) !important;
+  margin-top: auto;
+  padding-top: 12px;
+  border-top: 1px solid rgba(255, 255, 255, 0.08);
 }
 
 .sidebar .profile {
-  display: flex !important;
-  align-items: center !important;
-  gap: 10px !important;
-  margin-bottom: 10px !important;
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  margin-bottom: 10px;
 }
 
 /* Avatar do usuário */
 .sidebar .avatar {
-  width: 34px !important;
-  height: 34px !important;
-  border-radius: 50% !important;
-  background: var(--color-primary) !important;
-  display: flex !important;
-  align-items: center !important;
-  justify-content: center !important;
-  font-weight: bold !important;
-  font-size: 12px !important;
-  color: var(--color-text) !important;
+  width: 34px;
+  height: 34px;
+  border-radius: 50%;
+  background: var(--color-primary);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-weight: bold;
+  font-size: 12px;
+  color: var(--color-text);
 }
 
 .sidebar .profile-info {
-  display: flex !important;
-  flex-direction: column !important;
-  overflow: hidden !important;
+  display: flex;
+  flex-direction: column;
+  overflow: hidden;
 }
 
 .sidebar .profile-info .pname {
-  font-size: 13px !important;
-  font-weight: 600 !important;
-  color: var(--color-text) !important;
-  white-space: nowrap !important;
-  overflow: hidden !important;
-  text-overflow: ellipsis !important;
+  font-size: 13px;
+  font-weight: 600;
+  color: var(--color-text);
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
 }
 
 .sidebar .profile-info .nivel-tag {
-  font-size: 11px !important;
-  color: var(--color-muted-2) !important;
+  font-size: 11px;
+  color: var(--color-muted-2);
 }
 
 /* Botão de Sair translúcido */
 .sidebar .logout-form {
-  margin: 0 !important;
-  width: 100% !important;
+  margin: 0;
+  width: 100%;
 }
 
 .sidebar .logout-btn {
-  width: 100% !important;
-  height: 36px !important;
-  color: var(--color-danger) !important;
-  background: rgba(255, 255, 255, 0.03) !important;
-  border: 1px solid rgba(255, 255, 255, 0.08) !important;
-  border-radius: 8px !important;
-  justify-content: flex-start !important;
-  padding: 0 12px !important;
-  font-size: 13px !important;
+  width: 100%;
+  height: 36px;
+  color: var(--color-danger);
+  background: rgba(255, 255, 255, 0.03);
+  border: 1px solid rgba(255, 255, 255, 0.08);
+  border-radius: 8px;
+  justify-content: flex-start;
+  padding: 0 12px;
+  font-size: 13px;
 }
 
 .sidebar .logout-btn:hover {
-  background: rgba(239, 68, 68, 0.15) !important;
-  border-color: rgba(239, 68, 68, 0.3) !important;
-  color: var(--color-danger-hover) !important;
+  background: rgba(239, 68, 68, 0.15);
+  border-color: rgba(239, 68, 68, 0.3);
+  color: var(--color-danger-hover);
 }
 
 /* Versão do App */
 .sidebar .app-version {
-  text-align: center !important;
-  margin-top: 8px !important;
-  font-size: 10px !important;
-  color: var(--color-muted-3) !important;
+  text-align: center;
+  margin-top: 8px;
+  font-size: 10px;
+  color: var(--color-muted-3);
 }

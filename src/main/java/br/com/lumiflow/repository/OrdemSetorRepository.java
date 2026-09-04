@@ -1,6 +1,7 @@
 package br.com.lumiflow.repository;
 
 import br.com.lumiflow.entity.OrdemSetor;
+import br.com.lumiflow.entity.enums.EstatusOrdemProducao;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.query.Param;
@@ -43,5 +44,7 @@ public interface OrdemSetorRepository extends JpaRepository<OrdemSetor, Long> {
     Optional<OrdemSetor> findByOrdemProducaoIdAndSetorId(Long ordemProducaoId, Long setorId);
 
     List<OrdemSetor> findBySetorIdAndOrdemProducaoIdIn(Long setorId, List<Long> ordemProducaoIds);
+
+    Optional<OrdemSetor> findByOrdemProducaoIdAndStatusIn(Long ordemProducaoId, List<EstatusOrdemProducao> status);
 }
 

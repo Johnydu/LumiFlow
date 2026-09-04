@@ -39,6 +39,11 @@
   body.page-ordemproducao-detalhesordem .info-cards {
     grid-template-columns: repeat(2, 1fr);
   }
+
+  /* ============ LOGIN ============ */
+  .login-card {
+    max-width: 900px;
+  }
 }
 
 
@@ -136,6 +141,19 @@
   .panel {
     overflow-x: auto;
   }
+
+  /* ============ LOGIN ============ */
+  .login-side {
+    display: none;
+  }
+
+  .login-card {
+    max-width: 480px;
+  }
+
+  .login-form-side {
+    padding: 40px 36px;
+  }
 }
 
 
@@ -147,34 +165,17 @@
 @media (max-width: 768px) {
 
   /* ============ TELA DE LOGIN ============ */
-  body.login-body {
-    padding: 12px !important;
-    box-sizing: border-box !important;
-    width: 100% !important;
-    overflow-x: hidden !important;
+  .login-shell {
+    padding: 16px !important;
   }
 
-  .login-card-container {
-    display: flex !important;
-    flex-direction: column !important;
-    width: 100% !important;
-    max-width: 100% !important;
-    min-height: auto !important;
+  .login-card {
     border-radius: 16px !important;
-    margin: 0 !important;
-    box-sizing: border-box !important;
-  }
-
-  .login-brand-panel {
-    display: none !important;
-  }
-
-  .login-form-panel {
-    width: 100% !important;
     max-width: 100% !important;
-    padding: 24px 16px !important;
-    box-sizing: border-box !important;
-    background: rgba(7, 13, 29, 0.98) !important;
+  }
+
+  .login-form-side {
+    padding: 32px 24px !important;
   }
 
   /* ============ MAIN ============ */
@@ -242,8 +243,12 @@
   }
 
   .table-actions button,
+  .table-actions a,
   .table-actions .btn-edit,
-  .table-actions .btn-del {
+  .table-actions .btn-del,
+  .table-actions .btn-liberar,
+  .table-actions .btn-lancar,
+  .table-actions .btn-ver {
     display: flex !important;
     width: 100% !important;
     min-width: 100% !important;
@@ -253,12 +258,27 @@
     box-sizing: border-box !important;
   }
 
+  /* ============ FILTROS ============ */
+  .filtros {
+    flex-direction: column !important;
+    align-items: stretch !important;
+    gap: 8px !important;
+  }
+
+  .filtro-input,
+  .filtro-select,
+  .search-input-wrapper {
+    width: 100% !important;
+    min-width: 100% !important;
+  }
+
   /* ============ FORMULÁRIO ============ */
   .form-card {
     padding: 16px !important;
   }
 
-  .form-grid {
+  .form-grid,
+  .form-grid-3 {
     grid-template-columns: 1fr !important;
   }
 
@@ -269,6 +289,17 @@
   .btn-cancel,
   .btn-submit {
     width: 100%;
+  }
+
+  /* ============ PRODUTO DESTACADO (Lançamento) ============ */
+  .produto-destaque {
+    flex-direction: column;
+    align-items: flex-start !important;
+    gap: 12px;
+  }
+
+  .produto-badges {
+    flex-wrap: wrap;
   }
 
   /* ============ DASHBOARD ============ */
@@ -295,6 +326,7 @@
   .tabs {
     padding: 10px 10px 0 !important;
     gap: 4px;
+    flex-wrap: wrap;
   }
 
   .tab {
@@ -306,6 +338,19 @@
   body.page-produto-cadastroproduto .setores-grid {
     grid-template-columns: 1fr !important;
   }
+
+  /* ============ ROTEIRO / PILLS ============ */
+  .roteiro-pills,
+  .preview-pills {
+    flex-wrap: wrap;
+  }
+
+  /* ============ SECTOR LIST (Ordens por setor) ============ */
+  .sector-item {
+    flex-direction: column;
+    align-items: flex-start !important;
+    gap: 8px;
+  }
 }
 
 
@@ -314,13 +359,18 @@
    ======================================== */
 
 @media (max-width: 480px) {
+
   /* ============ LOGIN ============ */
-  body.login-body {
-    padding: 6px !important;
+  .login-shell {
+    padding: 8px !important;
   }
 
-  .login-form-panel {
-    padding: 16px 10px !important;
+  .login-form-side {
+    padding: 24px 18px !important;
+  }
+
+  .welcome-block h1 {
+    font-size: 21px !important;
   }
 
   /* ============ TIPOGRAFIA E TOPO ============ */
@@ -344,6 +394,7 @@
   }
 
   .table-actions button,
+  .table-actions a,
   .table-actions .btn-edit,
   .table-actions .btn-del,
   .btn-novo,
@@ -357,5 +408,10 @@
   .cards {
     grid-template-columns: 1fr !important;
     gap: 8px !important;
+  }
+
+  /* ============ PRODUTO DESTACADO ============ */
+  .produto-nome {
+    font-size: 17px !important;
   }
 }

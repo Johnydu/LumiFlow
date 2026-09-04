@@ -1,47 +1,37 @@
-
 <!DOCTYPE html>
 <html lang="pt-BR" xmlns:th="http://www.thymeleaf.org"
-     xmlns:sec="http://www.thymeleaf.org/extras/spring-security">
+      xmlns:sec="http://www.thymeleaf.org/extras/spring-security">
 <head>
-<meta charset="UTF-8"/>
-<meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <meta charset="UTF-8"/>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Lançamento - LumiFlow</title>
   <link rel="stylesheet" th:href="@{/css/variables.css}">
-<link rel="stylesheet" th:href="@{/css/globals.css}">
-<link rel="stylesheet" th:href="@{/css/sidebar.css}">
-<link rel="stylesheet" th:href="@{/css/topbar.css}">
-<link rel="stylesheet" th:href="@{/css/components/buttons.css}">
-<link rel="stylesheet" th:href="@{/css/components/forms.css}">
-<link rel="stylesheet" th:href="@{/css/components/tables.css}">
-<link rel="stylesheet" th:href="@{/css/components/cards.css}">
-<link rel="stylesheet" th:href="@{/css/components/badges.css}">
-<link rel="stylesheet" th:href="@{/css/components/status.css}">
-<link rel="stylesheet" th:href="@{/css/components/alerts.css}">
-<link rel="stylesheet" th:href="@{/css/pages/dashboard.css}">
-<link rel="stylesheet" th:href="@{/css/pages/login.css}">
-<link rel="stylesheet" th:href="@{/css/pages/usuarios.css}">
-<link rel="stylesheet" th:href="@{/css/pages/maquinas.css}">
-<link rel="stylesheet" th:href="@{/css/pages/produtos.css}">
-<link rel="stylesheet" th:href="@{/css/pages/setores.css}">
-<link rel="stylesheet" th:href="@{/css/pages/ordens.css}">
-<link rel="stylesheet" th:href="@{/css/pages/relatorio.css}">
-<link rel="stylesheet" th:href="@{/css/pages/vidracaria.css}">
-<link rel="stylesheet" th:href="@{/css/pages/novaordem.css}">
-<link rel="stylesheet" th:href="@{/css/pages/listaordem.css}">
-<link rel="stylesheet" th:href="@{/css/utils.css}">
-<link rel="stylesheet" th:href="@{/css/responsive.css}"/>
-  <link rel="stylesheet" th:href="@{/css/error.css}">
+  <link rel="stylesheet" th:href="@{/css/globals.css}">
+  <link rel="stylesheet" th:href="@{/css/sidebar.css}">
+  <link rel="stylesheet" th:href="@{/css/topbar.css}">
+  <link rel="stylesheet" th:href="@{/css/components/buttons.css}">
+  <link rel="stylesheet" th:href="@{/css/components/forms.css}">
+  <link rel="stylesheet" th:href="@{/css/components/cards.css}">
+  <link rel="stylesheet" th:href="@{/css/components/status.css}">
+  <link rel="stylesheet" th:href="@{/css/components/badges.css}">
+  <link rel="stylesheet" th:href="@{/css/components/tables.css}">
+  <link rel="stylesheet" th:href="@{/css/components/alerts.css}">
+  <link rel="stylesheet" th:href="@{/css/components/tabs.css}">
+  <link rel="stylesheet" th:href="@{/css/pages/Lancamento.css}">
+  <link rel="stylesheet" th:href="@{/css/responsive.css}"/>
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
 </head>
 <body class="page-ordemproducao-lancamento">
-<div th:replace="fragments/messages :: alerts"></div>
+<div th:replace="~{fragments/messages :: alerts}"></div>
 
-<!-- SIDEBAR -->
-<aside th:replace="~{fragments/sidebar :: sidebar(activePage='Lancamento')}"></aside>
-<!-- MAIN -->
+<aside th:replace="~{fragments/sidebar :: sidebar(activePage='ordens-setor')}"></aside>
+
 <main class="main">
-  <div class="topbar">
-    <button class="btn-back">← Voltar</button>
-    <span class="topbar-title">Lançamento</span>
+  <div th:replace="~{fragments/topbar :: topbar(
+        'LANÇAR PRODUÇÃO',
+        'VOLTAR',
+        'voltarPagina()'
+    )}">
   </div>
 
   <div class="content">
@@ -49,148 +39,163 @@
     <!-- PRODUTO DESTACADO -->
     <div class="produto-destaque">
       <div>
-        <div class="produto-nome">Arandela 12W</div>
-        <div class="produto-op">OP-001</div>
+        <div class="produto-nome" th:text="${ordem.produto.nome}">Arandela 12W</div>
+        <div class="produto-op" th:text="${ordem.numero}">OP-001</div>
       </div>
       <div class="produto-badges">
-        <span class="badge-etapa">2ª Dobra</span>
-        <span class="badge-setor">Dobra</span>
-        <span class="badge-disp">40 disp.</span>
+        <span class="badge-etapa" th:if="${ordemSetor.sequencia != null}"
+              th:text="'Etapa ' + ${ordemSetor.sequencia}">2ª Dobra</span>
+        <span class="badge-setor" th:text="${ordemSetor.setor.nome}">Dobra</span>
+        <span class="badge-disp" th:text="${ordemSetor.qtdPendente} + ' disp.'">40 disp.</span>
       </div>
     </div>
 
     <!-- ABAS -->
     <div class="tabs">
-      <button class="tab active" id="tab-btn-prod" onclick="showTab('producao')">Produção</button>
-      <button class="tab" id="tab-btn-ref" onclick="showTab('refugo')">Refugo</button>
-      <button class="tab" id="tab-btn-ret" onclick="showTab('retrabalho')">Retrabalho</button>
+      <button class="tab active" id="tab-btn-prod" type="button" onclick="showTab('producao')">Produção</button>
+      <button class="tab" id="tab-btn-ref" type="button" onclick="showTab('refugo')">Refugo</button>
+      <button class="tab" id="tab-btn-ret" type="button" onclick="showTab('retrabalho')">Retrabalho</button>
     </div>
 
     <!-- FORM PRODUÇÃO -->
     <div id="tab-producao" class="form-card">
-      <div class="form-grid">
-        <div class="field">
-          <label>Máquina <span>*</span></label>
-          <select>
-            <option>Selecione a máquina</option>
-            <option>Dobradeira Argus 1</option>
-            <option selected>Dobradeira Argus 2</option>
-            <option>Dobradeira Manual 1</option>
-            <option>Dobradeira Manual 2</option>
-          </select>
+      <form method="post" th:action="@{/dashboard/ordens/{ordemId}/lancar/producao(ordemId=${ordem.id})}"
+            th:object="${producaoDTO}">
+        <input type="hidden" th:name="${_csrf.parameterName}" th:value="${_csrf.token}"/>
+
+        <div class="form-grid">
+          <div class="field">
+            <label>Máquina <span>*</span></label>
+            <select th:field="*{maquinaId}">
+              <option value="">Selecione a máquina</option>
+              <option th:each="m : ${maquinas}" th:value="${m.id}" th:text="${m.nome}"></option>
+            </select>
+          </div>
+          <div class="field">
+            <label>Quantidade produzida <span>*</span></label>
+            <input type="number" th:field="*{quantidade}" min="1" th:max="${ordemSetor.qtdPendente}" placeholder="0"/>
+            <span class="hint warn" th:text="'Máximo: ' + ${ordemSetor.qtdPendente} + ' unid.'">Máximo: 40 unid.</span>
+          </div>
         </div>
-        <div class="field">
-          <label>Quantidade produzida <span>*</span></label>
-          <input type="number" value="40" placeholder="0"/>
-          <span class="hint warn">Máximo: 40 unid.</span>
-        </div>
-      </div>
-      <div class="form-grid-3">
-        <div class="field">
-          <label>Data <span>*</span></label>
-          <input type="date" value="2026-05-30"/>
-        </div>
-        <div class="field">
-          <label>Hora <span>*</span></label>
-          <input type="time" value="14:30"/>
-        </div>
-        <div class="field">
+
+        <div class="field" style="margin-bottom:14px">
           <label>Observação</label>
-          <input type="text" placeholder="Opcional..."/>
+          <input type="text" th:field="*{observacao}" placeholder="Opcional..."/>
         </div>
-      </div>
-      <div class="form-actions">
-        <button class="btn-cancel">Cancelar</button>
-        <button class="btn-submit">Confirmar</button>
-      </div>
+
+        <div class="form-actions">
+          <a th:href="@{/dashboard/ordens-setor/{setorId}(setorId=${ordemSetor.setor.id})}"
+             class="btn-cancel" style="text-decoration:none;">Cancelar</a>
+          <button type="submit" class="btn-submit">Confirmar</button>
+        </div>
+      </form>
     </div>
 
     <!-- FORM REFUGO -->
     <div id="tab-refugo" class="form-card" style="display:none">
-      <div class="form-grid">
-        <div class="field">
-          <label>Quantidade refugada <span>*</span></label>
-          <input type="number" placeholder="0"/>
+      <form method="post" th:action="@{/dashboard/ordens/{ordemId}/lancar/refugo(ordemId=${ordem.id})}"
+            th:object="${refugoDTO}">
+        <input type="hidden" th:name="${_csrf.parameterName}" th:value="${_csrf.token}"/>
+
+        <div class="form-grid">
+          <div class="field">
+            <label>Quantidade refugada <span>*</span></label>
+            <input type="number" th:field="*{quantidade}" min="1" placeholder="0"/>
+          </div>
+          <div class="field">
+            <label>Setor de origem do erro <span>*</span></label>
+            <select th:field="*{setorOrigemId}">
+              <option value="">Selecione o setor</option>
+              <option th:each="s : ${setores}" th:value="${s.id}" th:text="${s.nome}"></option>
+            </select>
+          </div>
         </div>
-        <div class="field">
-          <label>Setor de origem do erro <span>*</span></label>
-          <select>
-            <option>Selecione o setor</option>
-            <option>Corte</option>
-            <option selected>Dobra</option>
-            <option>Solda</option>
-            <option>Pintura</option>
-          </select>
+
+        <div class="form-grid">
+          <div class="field">
+            <label>Destino <span>*</span></label>
+            <select th:field="*{destino}">
+              <option value="">Selecione</option>
+              <option value="RETRABALHO">Retrabalho</option>
+              <option value="DESCARTE">Descarte</option>
+            </select>
+          </div>
         </div>
-      </div>
-      <div class="form-grid">
-        <div class="field">
-          <label>Destino <span>*</span></label>
-          <select>
-            <option>Selecione</option>
-            <option>Retrabalho</option>
-            <option>Descarte</option>
-          </select>
+
+        <div class="field" style="margin-bottom:14px">
+          <label>Motivo <span>*</span></label>
+          <textarea th:field="*{motivo}" placeholder="Descreva o motivo do refugo..."></textarea>
         </div>
-        <div class="field">
-          <label>Data e hora <span>*</span></label>
-          <input type="datetime-local" value="2026-05-30T14:30"/>
+
+        <div class="form-actions">
+          <a th:href="@{/dashboard/ordens-setor/{setorId}(setorId=${ordemSetor.setor.id})}"
+             class="btn-cancel" style="text-decoration:none;">Cancelar</a>
+          <button type="submit" class="btn-submit refugo">Confirmar Refugo</button>
         </div>
-      </div>
-      <div class="field" style="margin-bottom:14px">
-        <label>Motivo <span>*</span></label>
-        <textarea placeholder="Descreva o motivo do refugo..."></textarea>
-      </div>
-      <div class="form-actions">
-        <button class="btn-cancel">Cancelar</button>
-        <button class="btn-submit refugo">Confirmar Refugo</button>
-      </div>
+      </form>
     </div>
 
     <!-- FORM RETRABALHO -->
     <div id="tab-retrabalho" class="form-card" style="display:none">
-      <div class="form-grid">
-        <div class="field">
-          <label>Refugo vinculado <span>*</span></label>
-          <select>
-            <option>Selecione o refugo</option>
-            <option selected>REF-003 · 5 unid. · Solda irregular</option>
-            <option>REF-005 · 2 unid. · Corte fora de medida</option>
-          </select>
+      <form method="post" th:action="@{/dashboard/ordens/{ordemId}/lancar/retrabalho(ordemId=${ordem.id})}"
+            th:object="${retrabalhoDTO}">
+        <input type="hidden" th:name="${_csrf.parameterName}" th:value="${_csrf.token}"/>
+
+        <div class="form-grid">
+          <div class="field">
+            <label>Refugo vinculado <span>*</span></label>
+            <select th:field="*{refugoId}">
+              <option value="">Selecione o refugo</option>
+              <option th:each="r : ${refugosParaRetrabalho}" th:value="${r.id}"
+                      th:text="'REF-' +
+                       ${#numbers.formatInteger(r.id, 3)}
+                       + ' · ' + ${r.qtdRefugo} + ' unid. · ' + ${r.motivo}"></option>
+            </select>
+          </div>
+          <div class="field">
+            <label>Máquina <span>*</span></label>
+            <select th:field="*{maquinaId}">
+              <option value="">Selecione a máquina</option>
+              <option th:each="m : ${maquinas}" th:value="${m.id}" th:text="${m.nome}"></option>
+            </select>
+          </div>
         </div>
-        <div class="field">
-          <label>Máquina <span>*</span></label>
-          <select>
-            <option>Selecione a máquina</option>
-            <option selected>Dobradeira Argus 1</option>
-            <option>Dobradeira Argus 2</option>
-          </select>
+
+        <div class="form-grid">
+          <div class="field">
+            <label>Quantidade refeita <span>*</span></label>
+            <input type="number" th:field="*{quantidade}" min="1" placeholder="0"/>
+          </div>
         </div>
-      </div>
-      <div class="form-grid">
-        <div class="field">
-          <label>Quantidade refeita <span>*</span></label>
-          <input type="number" placeholder="0"/>
+
+        <div class="field" style="margin-bottom:14px">
+          <label>Observação</label>
+          <textarea th:field="*{observacao}" placeholder="Descreva o que foi corrigido..."></textarea>
         </div>
-        <div class="field">
-          <label>Data e hora <span>*</span></label>
-          <input type="datetime-local" value="2026-05-30T14:30"/>
+
+        <div class="form-actions">
+          <a th:href="@{/dashboard/ordens-setor/{setorId}(setorId=${ordemSetor.setor.id})}"
+             class="btn-cancel" style="text-decoration:none;">Cancelar</a>
+          <button type="submit" class="btn-submit retrab">Confirmar Retrabalho</button>
         </div>
-      </div>
-      <div class="field" style="margin-bottom:14px">
-        <label>Observação</label>
-        <textarea placeholder="Descreva o que foi corrigido..."></textarea>
-      </div>
-      <div class="form-actions">
-        <button class="btn-cancel">Cancelar</button>
-        <button class="btn-submit retrab">Confirmar Retrabalho</button>
-      </div>
+      </form>
     </div>
 
   </div>
 </main>
 
-<script th:src="@{/js/lancamento.js}"></script>
+<script>
+  const abaComErro = /*[[${#fields.hasErrors('producaoDTO.*') ? 'producao' :
+                            (#fields.hasErrors('refugoDTO.*') ? 'refugo' :
+                            (#fields.hasErrors('retrabalhoDTO.*') ? 'retrabalho' : null))}]]*/ null;
+</script>
+<script>
+  function voltarPagina() {
+    window.location.href = '[[@{/dashboard/ordens-setor/{setorId}(setorId=${ordemSetor.setor.id})}]]';
+  }
+</script>
 <script th:src="@{/js/sidebar.js}"></script>
+<script th:src="@{/js/alerts.js}"></script>
+<script th:src="@{/js/lancamento.js}"></script>
 </body>
 </html>

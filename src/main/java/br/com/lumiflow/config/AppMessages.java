@@ -66,4 +66,9 @@ public final class AppMessages {
     public static final String ERROR_ORDER_SECTOR_NOTFOUND = "error.order.sector.notfound";
     public static final String ERROR_ORDER_NOT_AVAILABLE = "error.order.not.available";
     public static final String SUCCESS_ORDER_LIBERADA = "success.order.liberada";
+    public static final String ERROR_LAUNCH_EXCEEDS_PENDING = "error.launch.exceeds.pending";
+    public static final String ERROR_REFUGO_NOTFOUND = "error.refugo.notfound";
+    public static final String SUCCESS_LAUNCH_REGISTERED = "success.launch.registered";
+    public static final String SUCCESS_REFUGO_REGISTERED = "success.refugo.registered";
+    public static final String SUCCESS_RETRABALHO_REGISTERED = "success.retrabalho.registered";
 }

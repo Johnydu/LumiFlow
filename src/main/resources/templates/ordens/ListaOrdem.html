@@ -150,7 +150,7 @@
                             </form>
 
                             <a th:if="${ordem.status().name() == 'LIBERADA' || ordem.status().name() == 'EM_ANDAMENTO'}"
-                               th:href="@{/dashboard/ordens/{id}(id=${ordem.id()})/lancar}" class="btn-lancar">
+                               th:href="@{/dashboard/ordens/{id}/lancar(id=${ordem.id()})}" class="btn-lancar">
                                 lançar
                             </a>
                         </div>
