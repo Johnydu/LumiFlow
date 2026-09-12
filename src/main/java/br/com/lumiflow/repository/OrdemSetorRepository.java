@@ -18,7 +18,7 @@ public interface OrdemSetorRepository extends JpaRepository<OrdemSetor, Long> {
             s.id,
             s.nome,
             COUNT(os.id),
-            SUM(CASE WHEN os.status = 'FINALIZADO' THEN 1 ELSE 0 END)
+            SUM(CASE WHEN os.status = 'CONCLUIDA' THEN 1 ELSE 0 END)
         FROM Setor s
         LEFT JOIN OrdemSetor os ON os.setor.id = s.id
         WHERE (:busca IS NULL OR LOWER(s.nome) LIKE LOWER(CONCAT('%', CAST(:busca AS string), '%')))
@@ -27,24 +27,33 @@ public interface OrdemSetorRepository extends JpaRepository<OrdemSetor, Long> {
     """)
     List<Object[]> buscarResumoSetores(@Param("busca") String busca);
 
+
+    Optional<OrdemSetor> findByOrdemProducaoIdAndSetorIdAndStatus(Long ordemProducaoId, Long setorId, EstatusOrdemProducao status);
+
     @Query("""
-        SELECT os FROM OrdemSetor os
-        WHERE os.setor.id = :setorId
-        AND os.qtdPendente > 0
-        ORDER BY os.criadoEm ASC
-        """)
-    List<OrdemSetor> findDisponiveisPorSetor(@Param("setorId") Long setorId);
+    SELECT DISTINCT os FROM OrdemSetor os
+    JOIN os.ordemProducao o
+    JOIN o.produto p
+    WHERE os.setor.id = :setorId
+      AND (:busca IS NULL OR :busca = '' OR 
+           LOWER(o.numero) LIKE LOWER(CONCAT('%', :busca, '%')) OR 
+           LOWER(p.nome) LIKE LOWER(CONCAT('%', :busca, '%')))
+      AND (:status IS NULL OR :status = '' OR CAST(os.status AS string) = :status)
+    ORDER BY os.criadoEm DESC, os.sequencia ASC
+""")
+    List<OrdemSetor> buscarPorSetorIdEFiltros(@Param("setorId") Long setorId,
+                                              @Param("busca") String busca,
+                                              @Param("status") String status);
 
-    // Busca a etapa específica de uma ordem em um setor (pra achar "a próxima")
-    Optional<OrdemSetor> findByOrdemProducaoIdAndSequencia(Long ordemProducaoId, Integer sequencia);
 
-    // Todas as etapas de uma ordem (pra verificar se ela terminou tudo)
-    List<OrdemSetor> findByOrdemProducaoIdOrderBySequenciaAsc(Long ordemProducaoId);
-
-    Optional<OrdemSetor> findByOrdemProducaoIdAndSetorId(Long ordemProducaoId, Long setorId);
-
-    List<OrdemSetor> findBySetorIdAndOrdemProducaoIdIn(Long setorId, List<Long> ordemProducaoIds);
-
-    Optional<OrdemSetor> findByOrdemProducaoIdAndStatusIn(Long ordemProducaoId, List<EstatusOrdemProducao> status);
+    @Query("""
+    SELECT os FROM OrdemSetor os
+    WHERE os.ordemProducao.id = :ordemProducaoId
+      AND os.sequencia = :sequencia
+      AND ((:variante IS NULL AND os.variante IS NULL) OR os.variante = :variante)
+""")
+    Optional<OrdemSetor> findByOrdemProducaoIdAndSequenciaAndVariante(
+            @Param("ordemProducaoId") Long ordemProducaoId,
+            @Param("sequencia") Integer sequencia,
+            @Param("variante") String variante);
 }
-

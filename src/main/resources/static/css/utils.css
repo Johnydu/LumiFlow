@@ -1,17 +1,6 @@
 /* ========================================
    UTILS.CSS
    ======================================== */
-
-/* ============ COLOR UTILITIES ============ */
-.orange {
-  color: var(--color-warning);
-}
-
-.green {
-  color: var(--color-success);
-}
-
-.red {
-  color: var(--color-danger);
-}
-
+.orange { color: var(--color-warning); }
+.green { color: var(--color-success); }
+.red { color: var(--color-danger); }

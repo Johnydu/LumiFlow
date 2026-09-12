@@ -5,13 +5,15 @@ import org.springframework.data.jpa.repository.*;
 import org.springframework.data.repository.query.Param;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.util.Collection;
 import java.util.List;
 import java.util.Optional;
 
 public interface RoteiroProdutoRepository extends JpaRepository<RoteiroProduto, Long> {
 
     @Query("""
-           select r
+
+            select r
            from RoteiroProduto r
            order by r.produto.nome asc, r.sequencia asc
            """)
@@ -34,5 +36,17 @@ public interface RoteiroProdutoRepository extends JpaRepository<RoteiroProduto, 
            """)
     void deletarPorProdutoId(@Param("produtoId") Long produtoId);
 
-    Optional<RoteiroProduto> findByProdutoIdAndSequencia(Long produtoId, Integer sequencia);
+    Optional<RoteiroProduto> findFirstByProdutoIdAndSequencia(Long produtoId, Integer sequencia);
+
+    List<RoteiroProduto> findByProdutoIdIn(Collection<Long> produtoIds);
+
+    @Query("""
+    SELECT r FROM RoteiroProduto r
+    WHERE r.produto.id = :produtoId
+      AND r.sequencia > :sequenciaAtual
+    ORDER BY r.sequencia ASC
+    LIMIT 1
+""")
+    Optional<RoteiroProduto> findProximoPasso(@Param("produtoId") Long produtoId,
+                                              @Param("sequenciaAtual") Integer sequenciaAtual);
 }

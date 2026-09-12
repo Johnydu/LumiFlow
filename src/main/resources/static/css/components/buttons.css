@@ -126,3 +126,30 @@ body.page-vidracaria-vidracaria .btn-submit.entrada {
   background: var(--color-success);
   color: var(--color-track);
 }
+
+/* Estilo para o Botão Dividir */
+.btn-dividir {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  padding: 6px 12px;
+  font-size: 0.85rem;
+  font-weight: 500;
+  font-family: inherit;
+  color: var(--color-warning-text, #856404);
+  background-color: var(--color-warning-bg, #fff3cd);
+  border: 1px solid var(--color-warning-border, #ffeeba);
+  border-radius: var(--border-radius-sm, 4px);
+  cursor: pointer;
+  transition: background-color 0.2s ease, border-color 0.2s ease;
+  text-decoration: none;
+}
+
+.btn-dividir:hover {
+  background-color: var(--color-warning-hover, #ffe8a1);
+  border-color: var(--color-warning-border-hover, #ffeeba);
+}
+
+.btn-dividir:active {
+  transform: translateY(1px);
+}

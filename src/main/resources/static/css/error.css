@@ -1,3 +1,7 @@
+/* ========================================
+   GLOBALS.CSS
+   ======================================== */
+
 .error-container {
     min-height: 100vh;
     background: var(--color-bg);
@@ -14,27 +18,15 @@
 .error-container h1 {
     font-size: 96px;
     color: var(--color-primary);
+    margin: 0;
 }
 
 .error-container h2 {
     font-size: 32px;
+    margin: 0;
 }
 
 .error-container p {
     max-width: 500px;
     color: var(--color-muted);
-}
-
-.btn-voltar {
-    margin-top: 12px;
-    padding: 12px 24px;
-    border-radius: 12px;
-    background: var(--color-primary);
-    color: white;
-    text-decoration: none;
-    transition: .2s;
-}
-
-.btn-voltar:hover {
-    opacity: .9;
 }

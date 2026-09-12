@@ -1,0 +1,1 @@
+ALTER TABLE ordem_setor ADD COLUMN variante VARCHAR(50);

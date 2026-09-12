@@ -36,8 +36,8 @@ public class Lancamento {
     private Maquina maquina;
 
     @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "usuario_id", nullable = false)
-    private Usuario usuario;
+    @JoinColumn(name = "operador_id", nullable = false)
+    private Operador operador;
 
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "etapa_setor_id")

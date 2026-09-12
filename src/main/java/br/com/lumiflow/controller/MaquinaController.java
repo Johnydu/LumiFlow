@@ -30,31 +30,37 @@ public class MaquinaController {
     }
 
     @PostMapping
-    public String novaMaquina(@Valid @ModelAttribute("maquinaDTO") MaquinaDTO dto, BindingResult result, Model model, RedirectAttributes attributes, Locale locale) {
+    public String novaMaquina(@Valid @ModelAttribute("maquinaDTO") MaquinaDTO dto, BindingResult result,
+                              Model model, RedirectAttributes attributes, Locale locale) {
         if (result.hasErrors()) return erroValidacao(model, locale);
         maquinaService.novaMaquina(dto);
-        attributes.addFlashAttribute("success", messageSource.getMessage(AppMessages.SUCCESS_MACHINE_CREATED, new Object[]{dto.nome()}, locale));
+        attributes.addFlashAttribute("success",
+                messageSource.getMessage(AppMessages.SUCCESS_MACHINE_CREATED, new Object[]{dto.nome()}, locale));
         return "redirect:/dashboard/maquinas";
     }
 
     @PostMapping("/{id}/excluir")
     public String deletarMaquina(@PathVariable long id, RedirectAttributes attributes, Locale locale) {
         maquinaService.deletarMaquina(id);
-        attributes.addFlashAttribute("success", messageSource.getMessage(AppMessages.SUCCESS_MACHINE_DELETED, null, locale));
+        attributes.addFlashAttribute("success",
+                messageSource.getMessage(AppMessages.SUCCESS_MACHINE_DELETED, null, locale));
         return "redirect:/dashboard/maquinas";
     }
 
     @PostMapping("/{id}/editar")
-    public String editar(@PathVariable Long id, @Valid @ModelAttribute("maquinaDTO") MaquinaDTO dto, BindingResult result, Model model, RedirectAttributes attributes, Locale locale) {
+    public String editar(@PathVariable Long id, @Valid @ModelAttribute("maquinaDTO") MaquinaDTO dto,
+                         BindingResult result, Model model, RedirectAttributes attributes, Locale locale) {
         if (result.hasErrors()) return erroValidacao(model, locale);
         maquinaService.editarMaquina(id, dto);
-        attributes.addFlashAttribute("success", messageSource.getMessage(AppMessages.SUCCESS_MACHINE_UPDATED, new Object[]{dto.nome()}, locale));
+        attributes.addFlashAttribute("success",
+                messageSource.getMessage(AppMessages.SUCCESS_MACHINE_UPDATED, new Object[]{dto.nome()}, locale));
         return "redirect:/dashboard/maquinas";
     }
 
     private String erroValidacao(Model model, Locale locale) {
         carregarPagina(model);
-        model.addAttribute("error", messageSource.getMessage(AppMessages.ERROR_VALIDATION_FAILED, null, locale));
+        model.addAttribute("error",
+                messageSource.getMessage(AppMessages.ERROR_VALIDATION_FAILED, null, locale));
         return "maquina/CadastroMaquinas";
     }
 
@@ -62,6 +68,7 @@ public class MaquinaController {
         model.addAttribute("maquinas", maquinaService.listarMaquinas());
         model.addAttribute("setores", setorService.listarSetores());
         if (!model.containsAttribute("maquinaDTO"))
-            model.addAttribute("maquinaDTO", new MaquinaDTO(null, null, null, null));
+            model.addAttribute("maquinaDTO",
+                    new MaquinaDTO(null, null, null, null));
     }
 }

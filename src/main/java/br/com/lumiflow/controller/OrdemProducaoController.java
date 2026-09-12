@@ -1,14 +1,10 @@
 package br.com.lumiflow.controller;
 
 import br.com.lumiflow.config.AppMessages;
-import br.com.lumiflow.dto.ordens.OrdemFiltroDTO;
 import br.com.lumiflow.dto.ordens.OrdemProducaoDTO;
-import br.com.lumiflow.entity.OrdemProducao;
-import br.com.lumiflow.entity.Setor;
 import br.com.lumiflow.security.UsuarioDetails;
 import br.com.lumiflow.service.OrdemProducaoService;
 import br.com.lumiflow.service.ProdutoService;
-import br.com.lumiflow.service.SetorService;
 import jakarta.validation.Valid;
 import lombok.AllArgsConstructor;
 import org.springframework.context.MessageSource;

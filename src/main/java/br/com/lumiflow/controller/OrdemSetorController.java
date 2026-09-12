@@ -1,20 +1,23 @@
 package br.com.lumiflow.controller;
 
 import br.com.lumiflow.config.AppMessages;
+import br.com.lumiflow.dto.ordens.DividirEtapaDTO;
 import br.com.lumiflow.dto.ordens.OrdemFiltroDTO;
 import br.com.lumiflow.dto.ordens.OrdemListagemDTO;
 import br.com.lumiflow.dto.ordens.ResumoSetorDTO;
+import br.com.lumiflow.dto.setor.SetorDTO;
 import br.com.lumiflow.entity.Setor;
-import br.com.lumiflow.security.CustomAuthenticationSuccessHandler;
 import br.com.lumiflow.service.OrdemProducaoService;
 import br.com.lumiflow.service.OrdemSetorService;
 import br.com.lumiflow.service.SetorService;
+import jakarta.validation.Valid;
 import lombok.AllArgsConstructor;
 import org.springframework.context.MessageSource;
 import org.springframework.format.annotation.DateTimeFormat;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
+import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
@@ -64,13 +67,32 @@ public class OrdemSetorController {
     }
 
     @PreAuthorize("hasAnyRole('PCP_SUPERVISOR', 'GESTAO')")
-    @PostMapping("/{setorId}/ordens/{ordemId}/liberar")
-    public String liberarOrdem(@PathVariable Long setorId, @PathVariable Long ordemId,
+    @PostMapping("/{setorId}/ordens/{ordemSetorId}/liberar")
+    public String liberarOrdem(@PathVariable Long setorId, @PathVariable Long ordemSetorId,
                                RedirectAttributes attributes, Locale locale) {
 
-        ordemProducaoService.liberarOrdem(ordemId, setorId);
+        ordemProducaoService.liberarOrdem(ordemSetorId);
         attributes.addFlashAttribute("success", messageSource
                 .getMessage(AppMessages.SUCCESS_ORDER_LIBERADA, null, locale));
+
+        return "redirect:/dashboard/ordens-setor/" + setorId;
+    }
+
+    @PreAuthorize("hasAnyRole('PCP_SUPERVISOR', 'GESTAO')")
+    @PostMapping("/{setorId}/ordens/{ordemSetorId}/dividir")
+    public String dividirEtapa(@PathVariable Long setorId, @PathVariable Long ordemSetorId,
+                               @Valid @ModelAttribute("dividirDTO") DividirEtapaDTO dto, BindingResult result,
+                               RedirectAttributes attributes, Locale locale) {
+
+        if (result.hasErrors()) {
+            attributes.addFlashAttribute("error", messageSource
+                    .getMessage(AppMessages.ERROR_VALIDATION_FAILED, null, locale));
+            return "redirect:/dashboard/ordens-setor/" + setorId;
+        }
+
+        ordemProducaoService.dividirEtapa(ordemSetorId, dto);
+        attributes.addFlashAttribute("success", messageSource
+                .getMessage(AppMessages.SUCCESS_ORDER_DIVIDED, null, locale));
 
         return "redirect:/dashboard/ordens-setor/" + setorId;
     }

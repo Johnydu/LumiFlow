@@ -7,6 +7,9 @@ public record LancamentoProducaoDTO(
         @NotNull(message = "A máquina é obrigatória")
         Long maquinaId,
 
+        @NotNull(message = "O operador é obrigatório")
+        Long operadorId,
+
         @NotNull(message = "A quantidade é obrigatória")
         @Min(value = 1, message = "A quantidade deve ser maior que zero")
         Integer quantidade,

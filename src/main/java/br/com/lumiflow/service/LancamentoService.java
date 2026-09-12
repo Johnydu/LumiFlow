@@ -1,4 +1,4 @@
-package br.com.lumiflow.service.producao;
+package br.com.lumiflow.service;
 
 import br.com.lumiflow.config.AppMessages;
 import br.com.lumiflow.dto.lancamento.LancamentoProducaoDTO;
@@ -9,7 +9,6 @@ import br.com.lumiflow.entity.enums.DestinoRefugo;
 import br.com.lumiflow.entity.enums.EstatusOrdemProducao;
 import br.com.lumiflow.exception.BusinessException;
 import br.com.lumiflow.repository.*;
-import br.com.lumiflow.service.SetorService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -30,18 +29,34 @@ public class LancamentoService {
     private final MaquinaRepository maquinaRepository;
     private final RoteiroProdutoRepository roteiroProdutoRepository;
     private final SetorService setorService;
+    private final OperadorRepository operadorRepository;
 
     @Transactional(readOnly = true)
-    public OrdemSetor buscarEtapaAtivaPorOrdemProducaoId(Long ordemProducaoId) {
-        return ordemSetorRepository
-                .findByOrdemProducaoIdAndStatusIn(ordemProducaoId,
-                        List.of(EstatusOrdemProducao.LIBERADA, EstatusOrdemProducao.EM_ANDAMENTO))
+    public OrdemSetor buscarEtapaAtiva(Long ordemSetorId) {
+        OrdemSetor ordemSetor = ordemSetorRepository.findById(ordemSetorId)
                 .orElseThrow(() -> new BusinessException(AppMessages.ERROR_ORDER_NOT_AVAILABLE));
+
+        if (ordemSetor.getStatus() != EstatusOrdemProducao.LIBERADA
+                && ordemSetor.getStatus() != EstatusOrdemProducao.EM_ANDAMENTO) {
+            throw new BusinessException(AppMessages.ERROR_ORDER_NOT_AVAILABLE);
+        }
+
+        return ordemSetor;
+    }
+
+    @Transactional(readOnly = true)
+    public List<Maquina> listarMaquinasDoSetor(Long setorId) {
+        return maquinaRepository.findBySetorIdOrderByNomeAsc(setorId);
+    }
+
+    @Transactional(readOnly = true)
+    public List<Operador> listarOperadoresDoSetor(Long setorId) {
+        return operadorRepository.findBySetorPadraoId(setorId);
     }
 
     @Transactional
-    public void lancarProducao(Long ordemProducaoId, LancamentoProducaoDTO dto, Usuario usuarioLogado) {
-        OrdemSetor ordemSetor = buscarEtapaAtivaPorOrdemProducaoId(ordemProducaoId);
+    public OrdemSetor lancarProducao(Long ordemSetorId, LancamentoProducaoDTO dto) {
+        OrdemSetor ordemSetor = buscarEtapaAtiva(ordemSetorId);
 
         if (dto.quantidade() > ordemSetor.getQtdPendente()) {
             throw new BusinessException(AppMessages.ERROR_LAUNCH_EXCEEDS_PENDING);
@@ -50,8 +65,12 @@ public class LancamentoService {
         Maquina maquina = maquinaRepository.findById(dto.maquinaId())
                 .orElseThrow(() -> new BusinessException(AppMessages.ERROR_MACHINE_NOTFOUND));
 
+        Operador operador = operadorRepository.findById(dto.operadorId())
+                .orElseThrow(() -> new BusinessException(AppMessages.ERROR_OPERATOR_NOTFOUND));
+
         EtapaSetor etapaSetor = roteiroProdutoRepository
-                .findByProdutoIdAndSequencia(ordemSetor.getOrdemProducao().getProduto().getId(), ordemSetor.getSequencia())
+                .findFirstByProdutoIdAndSequencia(ordemSetor.getOrdemProducao().getProduto().getId(),
+                        ordemSetor.getSequencia())
                 .map(RoteiroProduto::getEtapaSetor)
                 .orElse(null);
 
@@ -60,7 +79,7 @@ public class LancamentoService {
         lancamento.setObservacao(dto.observacao());
         lancamento.setOrdemSetor(ordemSetor);
         lancamento.setMaquina(maquina);
-        lancamento.setUsuario(usuarioLogado);
+        lancamento.setOperador(operador);
         lancamento.setEtapaSetor(etapaSetor);
         lancamentoRepository.save(lancamento);
 
@@ -81,15 +100,15 @@ public class LancamentoService {
         }
 
         ordemSetorRepository.save(ordemSetor);
+
+        return ordemSetor;
     }
 
     private void avancarParaProximaEtapa(OrdemSetor ordemSetorAtual, Integer quantidadeLancada) {
         OrdemProducao ordem = ordemSetorAtual.getOrdemProducao();
-        List<RoteiroProduto> roteiro = roteiroProdutoRepository.buscarPorProdutoId(ordem.getProduto().getId());
 
-        RoteiroProduto proximoPasso = roteiro.stream()
-                .filter(p -> p.getSequencia() > ordemSetorAtual.getSequencia())
-                .min(Comparator.comparing(RoteiroProduto::getSequencia))
+        RoteiroProduto proximoPasso = roteiroProdutoRepository
+                .findProximoPasso(ordem.getProduto().getId(), ordemSetorAtual.getSequencia())
                 .orElse(null);
 
         if (proximoPasso == null) {
@@ -100,8 +119,10 @@ public class LancamentoService {
             return;
         }
 
+        String variante = ordemSetorAtual.getVariante();
+
         OrdemSetor proximaEtapa = ordemSetorRepository
-                .findByOrdemProducaoIdAndSequencia(ordem.getId(), proximoPasso.getSequencia())
+                .findByOrdemProducaoIdAndSequenciaAndVariante(ordem.getId(), proximoPasso.getSequencia(), variante)
                 .orElse(null);
 
         if (proximaEtapa == null) {
@@ -109,6 +130,7 @@ public class LancamentoService {
             proximaEtapa.setOrdemProducao(ordem);
             proximaEtapa.setSetor(proximoPasso.getSetor());
             proximaEtapa.setSequencia(proximoPasso.getSequencia());
+            proximaEtapa.setVariante(variante);
             proximaEtapa.setQtdRecebida(0);
             proximaEtapa.setQtdProduzida(0);
             proximaEtapa.setQtdPendente(0);
@@ -121,8 +143,8 @@ public class LancamentoService {
     }
 
     @Transactional
-    public void registrarRefugo(Long ordemProducaoId, RefugoDTO dto, Usuario usuarioLogado) {
-        OrdemSetor ordemSetor = buscarEtapaAtivaPorOrdemProducaoId(ordemProducaoId);
+    public void registrarRefugo(Long ordemSetorId, RefugoDTO dto, Usuario usuarioLogado) {
+        OrdemSetor ordemSetor = buscarEtapaAtiva(ordemSetorId);
         Setor setorOrigem = setorService.buscarSetorPorId(dto.setorOrigemId());
 
         Refugo refugo = new Refugo();
@@ -160,5 +182,15 @@ public class LancamentoService {
         retrabalho.setUsuario(usuarioLogado);
 
         retrabalhoRepository.save(retrabalho);
+    }
+
+    @Transactional(readOnly = true)
+    public String buscarNomeEtapa(OrdemSetor ordemSetor) {
+        return roteiroProdutoRepository
+                .findFirstByProdutoIdAndSequencia(ordemSetor.getOrdemProducao().getProduto().getId(),
+                        ordemSetor.getSequencia())
+                .map(RoteiroProduto::getEtapaSetor)
+                .map(EtapaSetor::getNome)
+                .orElse(null);
     }
 }

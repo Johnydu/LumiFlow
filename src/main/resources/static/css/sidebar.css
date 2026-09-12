@@ -1,10 +1,9 @@
 /* ==========================================
-       SIDEBAR - MENU LATERAL (Vidro Super Translúcido)
-    ========================================== */
-aside#sidebar.sidebar,
+   SIDEBAR.CSS
+   ========================================== */
 .sidebar {
   width: 260px;
-  background: rgba(7, 13, 29, 0.25); /* Super translúcido para a imagem de fundo aparecer bem */
+  background: rgba(7, 13, 29, 0.25);
   backdrop-filter: blur(16px);
   -webkit-backdrop-filter: blur(16px);
   border-right: 1px solid rgba(255, 255, 255, 0.08);
@@ -12,10 +11,8 @@ aside#sidebar.sidebar,
   display: flex;
   flex-direction: column;
   justify-content: space-between;
-  box-sizing: border-box;
 }
 
-/* Logo do sistema */
 .sidebar .logo {
   font-size: 24px;
   font-weight: bold;
@@ -24,8 +21,7 @@ aside#sidebar.sidebar,
   letter-spacing: 0.5px;
 }
 
-/* Botão de fechar (mobile) */
-.sidebar .sidebar-close {
+.sidebar-close {
   background: transparent;
   border: 1px solid var(--border-subtle);
   color: var(--color-text);
@@ -36,7 +32,6 @@ aside#sidebar.sidebar,
   display: none;
 }
 
-/* Títulos das seções do menu */
 .sidebar .menu-title {
   color: var(--color-muted-3);
   font-size: 10px;
@@ -45,18 +40,16 @@ aside#sidebar.sidebar,
   font-weight: 700;
 }
 
-/* Lista de itens do menu */
 .sidebar .menu {
   display: flex;
   flex-direction: column;
   gap: 6px;
 }
 
-/* Links do menu com fundo translúcido suave e borda sutil */
 .sidebar .menu-item {
   height: 38px;
   border: 1px solid rgba(255, 255, 255, 0.08);
-  background: rgba(255, 255, 255, 0.03); /* Leve corpo translúcido */
+  background: rgba(255, 255, 255, 0.03);
   border-radius: 8px;
   display: flex;
   align-items: center;
@@ -68,7 +61,6 @@ aside#sidebar.sidebar,
   transition: all 0.2s ease;
 }
 
-/* Hover e Estado Ativo */
 .sidebar .menu-item:hover {
   background: rgba(255, 255, 255, 0.08);
   border-color: rgba(255, 255, 255, 0.2);
@@ -83,7 +75,6 @@ aside#sidebar.sidebar,
   box-shadow: 0 0 12px var(--color-primary-soft);
 }
 
-/* Rodapé do Perfil e Botão Sair */
 .sidebar .sidebar-footer {
   margin-top: auto;
   padding-top: 12px;
@@ -97,7 +88,6 @@ aside#sidebar.sidebar,
   margin-bottom: 10px;
 }
 
-/* Avatar do usuário */
 .sidebar .avatar {
   width: 34px;
   height: 34px;
@@ -131,7 +121,6 @@ aside#sidebar.sidebar,
   color: var(--color-muted-2);
 }
 
-/* Botão de Sair translúcido */
 .sidebar .logout-form {
   margin: 0;
   width: 100%;
@@ -147,6 +136,7 @@ aside#sidebar.sidebar,
   justify-content: flex-start;
   padding: 0 12px;
   font-size: 13px;
+  cursor: pointer;
 }
 
 .sidebar .logout-btn:hover {
@@ -155,7 +145,6 @@ aside#sidebar.sidebar,
   color: var(--color-danger-hover);
 }
 
-/* Versão do App */
 .sidebar .app-version {
   text-align: center;
   margin-top: 8px;

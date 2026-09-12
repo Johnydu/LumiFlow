@@ -1,6 +1,7 @@
 /**
  * LumiFlow - Módulo da Lista de Ordens de Produção
  */
+
 document.addEventListener('DOMContentLoaded', () => {
     initFiltros();
     initProgressBarAnimation();
@@ -59,3 +60,84 @@ function initProgressBarAnimation() {
 function novaOrdemForm() {
     window.location.href = '/dashboard/ordens/novaOrdem';
 }
+
+let contadorLinhas = 0;
+let qtdTotalDivisao = 0;
+
+function abrirModalDivisao(ordemSetorId, quantidadeTotal, produtoNome) {
+    document.getElementById('modalDivisao').style.display = 'flex';
+    document.getElementById('modalProdutoNome').textContent = produtoNome;
+    document.getElementById('modalQtdTotal').textContent = quantidadeTotal;
+    document.getElementById('qtdEsperada').textContent = quantidadeTotal;
+
+    // Conversão garantida para número inteiro para evitar falha de comparação
+    qtdTotalDivisao = parseInt(quantidadeTotal) || 0;
+
+    contadorLinhas = 0;
+    document.getElementById('linhasDivisao').innerHTML = '';
+
+    // Pega o ID do setor direto do atributo data-setor-id do body
+    const setorId = document.body.getAttribute('data-setor-id');
+
+    document.getElementById('formDivisao').action =
+        `/dashboard/ordens-setor/${setorId}/ordens/${ordemSetorId}/dividir`;
+
+    adicionarLinhaDivisao();
+    adicionarLinhaDivisao();
+
+    // Executa a validação inicial com as linhas vazias (0)
+    atualizarSoma();
+}
+
+function fecharModalDivisao() {
+    document.getElementById('modalDivisao').style.display = 'none';
+}
+
+function adicionarLinhaDivisao() {
+    const container = document.getElementById('linhasDivisao');
+    const index = contadorLinhas++;
+
+    const linha = document.createElement('div');
+    linha.className = 'linha-divisao';
+    linha.id = 'linha-' + index;
+    linha.innerHTML = `
+        <input type="text" name="divisoes[${index}].variante" placeholder="Ex: Branco, PT..." 
+        required class="input-variante"/>
+        <input type="number" name="divisoes[${index}].quantidade" placeholder="Qtd" min="1" 
+        required class="input-qtd" oninput="atualizarSoma()"/>
+        <button type="button" class="btn-remove-linha" onclick="removerLinha(${index})">&times;</button>
+    `;
+
+    container.appendChild(linha);
+}
+
+function removerLinha(index) {
+    const linha = document.getElementById('linha-' + index);
+    if (linha) linha.remove();
+    atualizarSoma();
+}
+
+function atualizarSoma() {
+    const inputs = document.querySelectorAll('.input-qtd');
+    let soma = 0;
+    inputs.forEach(input => soma += parseInt(input.value) || 0);
+
+    document.getElementById('somaAtual').textContent = soma;
+
+    const restanteInfo = document.getElementById('restanteInfo');
+    if (restanteInfo) {
+        restanteInfo.textContent = soma < qtdTotalDivisao
+            ? `Restante (${qtdTotalDivisao - soma}) ficará sem variante definida`
+            : '';
+    }
+
+    const btnConfirmar = document.getElementById('btnConfirmarDivisao');
+    if (soma > 0 && soma <= qtdTotalDivisao) {
+        btnConfirmar.disabled = false;
+        document.getElementById('somaAtual').style.color = 'var(--color-success)';
+    } else {
+        btnConfirmar.disabled = true;
+        document.getElementById('somaAtual').style.color = 'var(--color-danger)';
+    }
+}
+

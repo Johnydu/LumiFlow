@@ -49,4 +49,7 @@ public class OrdemSetor extends Auditoria{
     @JoinColumn(name = "setor_id", nullable = false)
     private Setor setor;
 
+    @Column(name = "variante")
+    private String variante;
+
 }

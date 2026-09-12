@@ -71,4 +71,6 @@ public final class AppMessages {
     public static final String SUCCESS_LAUNCH_REGISTERED = "success.launch.registered";
     public static final String SUCCESS_REFUGO_REGISTERED = "success.refugo.registered";
     public static final String SUCCESS_RETRABALHO_REGISTERED = "success.retrabalho.registered";
+    public static final String ERROR_DIVISION_SUM_MISMATCH = "error.division.sum.mismatch";
+    public static final String SUCCESS_ORDER_DIVIDED = "success.order.divided";
 }

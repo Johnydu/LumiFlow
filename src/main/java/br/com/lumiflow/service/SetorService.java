@@ -30,7 +30,8 @@ public class SetorService {
     private final MaquinaRepository maquinaRepository;
 
     public Setor buscarSetorPorId(Long id) {
-        return setorRepository.findById(id).orElseThrow(() -> new BusinessException(AppMessages.ERROR_SECTOR_NOTFOUND));
+        return setorRepository.findById(id)
+                .orElseThrow(() -> new BusinessException(AppMessages.ERROR_SECTOR_NOTFOUND));
     }
 
     @Transactional(readOnly = true)

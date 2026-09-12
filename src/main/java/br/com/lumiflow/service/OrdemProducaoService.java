@@ -1,15 +1,11 @@
 package br.com.lumiflow.service;
 
 import br.com.lumiflow.config.AppMessages;
-import br.com.lumiflow.dto.ordens.OrdemFiltroDTO;
-import br.com.lumiflow.dto.ordens.OrdemListagemDTO;
-import br.com.lumiflow.dto.ordens.OrdemProducaoDTO;
-import br.com.lumiflow.entity.OrdemProducao;
-import br.com.lumiflow.entity.OrdemSetor;
-import br.com.lumiflow.entity.RoteiroProduto;
-import br.com.lumiflow.entity.Usuario;
+import br.com.lumiflow.dto.ordens.*;
+import br.com.lumiflow.entity.*;
 import br.com.lumiflow.entity.enums.EstatusOrdemProducao;
 import br.com.lumiflow.exception.BusinessException;
+import br.com.lumiflow.mapper.OrdemProducaoMapper;
 import br.com.lumiflow.repository.OrdemProducaoRepository;
 import br.com.lumiflow.repository.OrdemSetorRepository;
 import br.com.lumiflow.repository.RoteiroProdutoRepository;
@@ -21,8 +17,11 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
+import java.util.Locale;
 import java.util.Map;
+import java.util.Set;
 import java.util.stream.Collectors;
+
 
 @Service
 @AllArgsConstructor
@@ -32,54 +31,60 @@ public class OrdemProducaoService {
     private final ProdutoService produtoService;
     private final RoteiroProdutoRepository roteiroProdutoRepository;
     private final OrdemSetorRepository ordemSetorRepository;
+    private final OrdemProducaoMapper ordemProducaoMapper;
 
-    @Transactional(readOnly = true)
-    public List<OrdemProducao> listarPorFiltros(OrdemFiltroDTO filtro) {
-        String busca = (filtro.busca() != null && !filtro.busca().isBlank()) ? filtro.busca().trim() : null;
-        String status = (filtro.status() != null && !filtro.status().isBlank()) ? filtro.status().trim() : null;
 
-        return ordemProducaoRepository.buscarComFiltros(busca, status);
-    }
 
     @Transactional(readOnly = true)
     public List<OrdemListagemDTO> listarPorSetorIdEFiltros(Long setorId, OrdemFiltroDTO filtro) {
         String busca = (filtro.busca() != null && !filtro.busca().isBlank()) ? filtro.busca().trim() : null;
         String status = (filtro.status() != null && !filtro.status().isBlank()) ? filtro.status().trim() : null;
 
-        List<OrdemProducao> ordens = ordemProducaoRepository.buscarPorSetorIdEFiltros(setorId, busca, status);
+        List<OrdemSetor> etapas = ordemSetorRepository.buscarPorSetorIdEFiltros(setorId, busca, status);
 
-        if (ordens.isEmpty()) {
+        if (etapas.isEmpty()) {
             return List.of();
         }
 
-        List<Long> ordemIds = ordens.stream().map(OrdemProducao::getId).toList();
+        Set<Long> produtoIds = etapas.stream()
+                .map(os -> os.getOrdemProducao().getProduto().getId())
+                .collect(Collectors.toSet());
 
-        Map<Long, OrdemSetor> ordemSetorPorOrdemId = ordemSetorRepository
-                .findBySetorIdAndOrdemProducaoIdIn(setorId, ordemIds)
+        Map<String, String> etapaNomePorProdutoESequencia = roteiroProdutoRepository
+                .findByProdutoIdIn(produtoIds)
                 .stream()
-                .collect(Collectors.toMap(os -> os.getOrdemProducao().getId(), os -> os));
+                .filter(rp -> rp.getEtapaSetor() != null)
+                .collect(Collectors.toMap(
+                        rp -> rp.getProduto().getId() + "-" + rp.getSequencia(),
+                        rp -> rp.getEtapaSetor().getNome(),
+                        (a, b) -> a // em caso de chave duplicada, mantém a primeira
+                ));
 
-        return ordens.stream()
-                .map(ordem -> montarOrdemListagemDTO(ordem,
-                        ordemSetorPorOrdemId.get(ordem.getId())))
+        return etapas.stream()
+                .map(os -> montarOrdemListagemDTO(os, etapaNomePorProdutoESequencia))
                 .toList();
     }
 
-    private OrdemListagemDTO montarOrdemListagemDTO(OrdemProducao ordem, OrdemSetor ordemSetor) {
-        if (ordemSetor == null) {
-            throw new BusinessException(AppMessages.ERROR_ORDER_SECTOR_NOTFOUND);
-        }
+    private OrdemListagemDTO montarOrdemListagemDTO(OrdemSetor ordemSetor, Map<String,
+            String> etapaNomePorProdutoESequencia) {
 
+        OrdemProducao ordem = ordemSetor.getOrdemProducao();
+        Integer totalEtapa = ordemSetor.getQtdRecebida();
         Integer produzido = ordemSetor.getQtdProduzida();
-        Double percentual = ordem.getQuantidade() == 0 ? 0.0
-                : (produzido * 100.0) / ordem.getQuantidade();
+        Double percentual = totalEtapa == 0 ? 0.0 : (produzido * 100.0) / totalEtapa;
+
+        String chave = ordem.getProduto().getId() + "-" + ordemSetor.getSequencia();
+        String etapaNome = etapaNomePorProdutoESequencia.get(chave);
 
         return new OrdemListagemDTO(
                 ordem.getId(),
+                ordemSetor.getId(),
                 ordem.getNumero(),
                 ordem.getProduto().getNome(),
                 ordem.getProduto().getCodigo(),
-                ordem.getQuantidade(),
+                ordemSetor.getVariante(),
+                etapaNome,
+                totalEtapa,
                 produzido,
                 percentual,
                 ordem.getObservacao(),
@@ -88,9 +93,10 @@ public class OrdemProducaoService {
         );
     }
 
-    public Page<OrdemProducao> listarOrdens(int pagina, int tamanho) {
+    public Page<OrdemProducaoDTO> listarOrdens(int pagina, int tamanho) {
         Pageable pageable = PageRequest.of(pagina, tamanho);
-        return ordemProducaoRepository.findAllOrdenadasPorEmAndamento(pageable);
+        return ordemProducaoRepository.findAllOrdenadasPorEmAndamento(pageable)
+                .map(ordemProducaoMapper::toDTO);
     }
 
     @Transactional
@@ -138,9 +144,8 @@ public class OrdemProducaoService {
     }
 
     @Transactional
-    public void liberarOrdem(Long ordemProducaoId, Long setorId) {
-        OrdemSetor ordemSetor = ordemSetorRepository
-                .findByOrdemProducaoIdAndSetorId(ordemProducaoId, setorId)
+    public void liberarOrdem(Long ordemSetorId) {
+        OrdemSetor ordemSetor = ordemSetorRepository.findById(ordemSetorId)
                 .orElseThrow(() -> new BusinessException(AppMessages.ERROR_ORDER_SECTOR_NOTFOUND));
 
         if (ordemSetor.getStatus() != EstatusOrdemProducao.DISPONIVEL) {
@@ -149,5 +154,50 @@ public class OrdemProducaoService {
 
         ordemSetor.setStatus(EstatusOrdemProducao.LIBERADA);
         ordemSetorRepository.save(ordemSetor);
+    }
+
+    @Transactional
+    public void dividirEtapa(Long ordemSetorId, DividirEtapaDTO dto) {
+        OrdemSetor ordemOriginal = ordemSetorRepository.findById(ordemSetorId)
+                .orElseThrow(() -> new BusinessException(AppMessages.ERROR_ORDER_SECTOR_NOTFOUND));
+
+        if (ordemOriginal.getStatus() != EstatusOrdemProducao.DISPONIVEL) {
+            throw new BusinessException(AppMessages.ERROR_ORDER_NOT_AVAILABLE);
+        }
+
+        int somaDivisoes = dto.divisoes().stream().mapToInt(DivisaoItemDTO::quantidade).sum();
+
+        if (somaDivisoes > ordemOriginal.getQtdPendente()) {
+            throw new BusinessException(AppMessages.ERROR_DIVISION_SUM_MISMATCH);
+        }
+
+        OrdemProducao ordem = ordemOriginal.getOrdemProducao();
+        Setor setor = ordemOriginal.getSetor();
+        Integer sequencia = ordemOriginal.getSequencia();
+
+        for (DivisaoItemDTO item : dto.divisoes()) {
+            OrdemSetor novaEtapa = new OrdemSetor();
+            novaEtapa.setOrdemProducao(ordem);
+            novaEtapa.setSetor(setor);
+            novaEtapa.setSequencia(sequencia);
+            novaEtapa.setVariante(item.variante().toUpperCase(Locale.ROOT));
+            novaEtapa.setQtdRecebida(item.quantidade());
+            novaEtapa.setQtdProduzida(0);
+            novaEtapa.setQtdPendente(item.quantidade());
+            novaEtapa.setStatus(EstatusOrdemProducao.DISPONIVEL);
+            ordemSetorRepository.save(novaEtapa);
+        }
+
+        int restante = ordemOriginal.getQtdPendente() - somaDivisoes;
+
+        if (restante > 0) {
+            // Sobra fica como uma linha "sem variante" — o próprio registro original é reaproveitado
+            ordemOriginal.setQtdRecebida(restante);
+            ordemOriginal.setQtdPendente(restante);
+            ordemOriginal.setVariante(null);
+            ordemSetorRepository.save(ordemOriginal);
+        } else {
+            ordemSetorRepository.delete(ordemOriginal);
+        }
     }
 }

@@ -30,31 +30,37 @@ public class OperadorController {
     }
 
     @PostMapping
-    public String novoOperador(@Valid @ModelAttribute("operadorDTO") OperadorDTO dto, BindingResult result, Model model, RedirectAttributes attributes, Locale locale) {
+    public String novoOperador(@Valid @ModelAttribute("operadorDTO") OperadorDTO dto, BindingResult result,
+                               Model model, RedirectAttributes attributes, Locale locale) {
         if (result.hasErrors()) return erroValidacao(model, locale);
         operadorService.novoOperador(dto);
-        attributes.addFlashAttribute("success", messageSource.getMessage(AppMessages.SUCCESS_OPERATOR_CREATED, new Object[]{dto.nome()}, locale));
+        attributes.addFlashAttribute("success",
+                messageSource.getMessage(AppMessages.SUCCESS_OPERATOR_CREATED, new Object[]{dto.nome()}, locale));
         return "redirect:/dashboard/operadores";
     }
 
     @PostMapping("/{id}/excluir")
     public String excluirOperador(@PathVariable Long id, RedirectAttributes attributes, Locale locale) {
         operadorService.excluirOperador(id);
-        attributes.addFlashAttribute("success", messageSource.getMessage(AppMessages.SUCCESS_OPERATOR_DELETED, null, locale));
+        attributes.addFlashAttribute("success",
+                messageSource.getMessage(AppMessages.SUCCESS_OPERATOR_DELETED, null, locale));
         return "redirect:/dashboard/operadores";
     }
 
     @PostMapping("/{id}/editar")
-    public String editarOperador(@PathVariable long id, @Valid @ModelAttribute("operadorDTO") OperadorDTO dto, BindingResult result, Model model, RedirectAttributes attributes, Locale locale) {
+    public String editarOperador(@PathVariable long id, @Valid @ModelAttribute("operadorDTO") OperadorDTO dto,
+                                 BindingResult result, Model model, RedirectAttributes attributes, Locale locale) {
         if (result.hasErrors()) return erroValidacao(model, locale);
         operadorService.editarOperador(id, dto);
-        attributes.addFlashAttribute("success", messageSource.getMessage(AppMessages.SUCCESS_OPERATOR_UPDATED, new Object[]{dto.nome()}, locale));
+        attributes.addFlashAttribute("success",
+                messageSource.getMessage(AppMessages.SUCCESS_OPERATOR_UPDATED, new Object[]{dto.nome()}, locale));
         return "redirect:/dashboard/operadores";
     }
 
     private String erroValidacao(Model model, Locale locale) {
         carregarPagina(model);
-        model.addAttribute("error", messageSource.getMessage(AppMessages.ERROR_VALIDATION_FAILED, null, locale));
+        model.addAttribute("error",
+                messageSource.getMessage(AppMessages.ERROR_VALIDATION_FAILED, null, locale));
         return "operador/Operadores";
     }
 
@@ -62,6 +68,7 @@ public class OperadorController {
         model.addAttribute("operadores", operadorService.listarOperadores());
         model.addAttribute("listaSetores", setorService.listarSetores());
         if (!model.containsAttribute("operadorDTO"))
-            model.addAttribute("operadorDTO", new OperadorDTO(null, null, null, null));
+            model.addAttribute("operadorDTO",
+                    new OperadorDTO(null, null, null, null));
     }
 }

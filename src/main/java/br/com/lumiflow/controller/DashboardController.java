@@ -2,6 +2,7 @@ package br.com.lumiflow.controller;
 
 import br.com.lumiflow.dto.dashboard.DashboardResumoDTO;
 import br.com.lumiflow.dto.dashboard.SetorResumoDTO;
+import br.com.lumiflow.dto.ordens.OrdemProducaoDTO;
 import br.com.lumiflow.entity.OrdemProducao;
 import br.com.lumiflow.service.DashboardService;
 import br.com.lumiflow.service.OrdemProducaoService;
@@ -25,7 +26,7 @@ public class DashboardController {
     @GetMapping
     private String carregarMetricas(Model model) {
         DashboardResumoDTO resumoDTO = dashboardService.obterResumoEstatisticas();
-        Page<OrdemProducao> paginaOrdens = ordemProducaoService.listarOrdens(0, 10);
+        Page<OrdemProducaoDTO> paginaOrdens = ordemProducaoService.listarOrdens(0, 10);
         List<SetorResumoDTO> resumoSetores = dashboardService.obterResumoSetores();
 
         model.addAttribute("totalOrdens", resumoDTO.totalOrdens() );

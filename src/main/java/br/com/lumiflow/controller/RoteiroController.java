@@ -39,31 +39,37 @@ public class RoteiroController {
     }
 
     @PostMapping
-    public String salvar(@Valid @ModelAttribute("roteiroDTO") RoteiroDTO dto, BindingResult result, Model model, RedirectAttributes attributes, Locale locale) {
+    public String salvar(@Valid @ModelAttribute("roteiroDTO") RoteiroDTO dto, BindingResult result,
+                         Model model, RedirectAttributes attributes, Locale locale) {
         if (result.hasErrors()) return erroValidacao(model, locale);
         roteiroService.criar(dto);
-        attributes.addFlashAttribute("success", messageSource.getMessage(AppMessages.SUCCESS_ROUTE_CREATED, null, locale));
+        attributes.addFlashAttribute("success",
+                messageSource.getMessage(AppMessages.SUCCESS_ROUTE_CREATED, null, locale));
         return "redirect:/dashboard/roteiros";
     }
 
     @PostMapping("/{produtoId}/editar")
-    public String editar(@PathVariable Long produtoId, @Valid @ModelAttribute("roteiroDTO") RoteiroDTO dto, BindingResult result, Model model, RedirectAttributes attributes, Locale locale) {
+    public String editar(@PathVariable Long produtoId, @Valid @ModelAttribute("roteiroDTO") RoteiroDTO dto,
+                         BindingResult result, Model model, RedirectAttributes attributes, Locale locale) {
         if (result.hasErrors()) return erroValidacao(model, locale);
         roteiroService.atualizar(produtoId, dto);
-        attributes.addFlashAttribute("success", messageSource.getMessage(AppMessages.SUCCESS_ROUTE_UPDATED, null, locale));
+        attributes.addFlashAttribute("success",
+                messageSource.getMessage(AppMessages.SUCCESS_ROUTE_UPDATED, null, locale));
         return "redirect:/dashboard/roteiros";
     }
 
     @PostMapping("/{produtoId}/excluir")
     public String excluir(@PathVariable Long produtoId, RedirectAttributes attributes, Locale locale) {
         roteiroService.excluirPorProdutoId(produtoId);
-        attributes.addFlashAttribute("success", messageSource.getMessage(AppMessages.SUCCESS_ROUTE_DELETED, null, locale));
+        attributes.addFlashAttribute("success",
+                messageSource.getMessage(AppMessages.SUCCESS_ROUTE_DELETED, null, locale));
         return "redirect:/dashboard/roteiros";
     }
 
     private String erroValidacao(Model model, Locale locale) {
         carregarPagina(model);
-        model.addAttribute("error", messageSource.getMessage(AppMessages.ERROR_VALIDATION_FAILED, null, locale));
+        model.addAttribute("error",
+                messageSource.getMessage(AppMessages.ERROR_VALIDATION_FAILED, null, locale));
         return "roteiro/Roteiros";
     }
 

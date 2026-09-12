@@ -3,6 +3,7 @@ package br.com.lumiflow.exception;
 import br.com.lumiflow.config.AppMessages;
 import jakarta.servlet.http.HttpServletRequest;
 import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.context.MessageSource;
 import org.springframework.web.bind.annotation.ControllerAdvice;
 import org.springframework.web.bind.annotation.ExceptionHandler;
@@ -12,6 +13,7 @@ import java.util.Locale;
 
 @ControllerAdvice
 @RequiredArgsConstructor
+@Slf4j
 public class GlobalExceptionHandler {
 
     private final MessageSource messageSource;
@@ -30,10 +32,7 @@ public class GlobalExceptionHandler {
         );
         redirectAttributes.addFlashAttribute("error", mensagem);
 
-        // Pega a URL da página onde o usuário estava antes de disparar a exceção
         String referer = request.getHeader("Referer");
-
-        // Se existir a página anterior, redireciona para ela; caso contrário, vai para o dashboard
         return referer != null ? "redirect:" + referer : "redirect:/dashboard";
     }
 
@@ -43,6 +42,8 @@ public class GlobalExceptionHandler {
             RedirectAttributes redirectAttributes,
             HttpServletRequest request,
             Locale locale) {
+
+        log.error("Erro não tratado na requisição [{}]: {}", request.getRequestURI(), ex.getMessage(), ex);
 
         String mensagem = messageSource.getMessage(
                 AppMessages.ERROR_SYSTEM_INTERNAL,
