@@ -1,150 +1,147 @@
-/* Layout Global de Conteúdo */
-.main-wrapper {
-    display: flex;
-    flex-direction: column;
-    flex: 1;
-    margin-left: 260px; /* Largura padrão da sidebar */
-    min-height: 100vh;
-}
-
-.content {
-    display: flex;
-    flex-direction: column;
-    gap: 20px;
-    padding: 24px;
-    width: 100%;
-}
-
-.filtros {
-    display: flex;
-    gap: 16px;
-    align-items: center;
-    width: 100%;
-}
+/* ========================================
+   LISTA DE ORDENS
+   ======================================== */
 
 .search-input-wrapper {
-    flex: 1;
-    position: relative;
-}
-
-.panel {
-    width: 100%;
+  position: relative;
+  flex: 1;
 }
 
 .panel-footer {
-    display: flex;
-    justify-content: space-between;
-    align-items: center;
-    padding-top: 16px;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding-top: var(--space-4);
 }
 
+body.page-ordemproducao-listaordem .panel-title {
+  font-size: var(--font-size-lg);
+}
+
+body.page-ordemproducao-listaordem .paginacao {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: var(--space-3) var(--space-5);
+  border-top: 1px solid var(--border-subtle);
+}
+
+body.page-ordemproducao-listaordem .pag-info {
+  font-size: var(--font-size-xs);
+}
+
+body.page-ordemproducao-listaordem .pag-btns {
+  display: flex;
+  gap: var(--space-1);
+}
 
 .empty-state {
-    text-align: center;
-    color: var(--color-muted-5);
-    padding: 40px 0;
+  padding: var(--space-10) 0;
+  color: var(--color-muted-5);
+  text-align: center;
 }
 
 .modal-overlay {
-    position: fixed;
-    inset: 0;
-    background: rgba(0,0,0,0.6);
-    z-index: 10000;
-    align-items: center;
-    justify-content: center;
+  position: fixed;
+  inset: 0;
+  z-index: 10000;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: var(--space-5);
+  background: var(--surface-overlay);
 }
 
 .modal-box {
-    background: var(--color-surface);
-    border: 1px solid rgba(255,255,255,0.1);
-    border-radius: 14px;
-    width: 100%;
-    max-width: 480px;
-    padding: 22px;
+  width: 100%;
+  max-width: 480px;
+  padding: var(--space-5);
+  border: 1px solid var(--border-strong);
+  border-radius: var(--radius-xl);
+  background: var(--color-surface);
 }
 
 .modal-header {
-    display: flex;
-    justify-content: space-between;
-    align-items: center;
-    margin-bottom: 16px;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  margin-bottom: var(--space-4);
 }
 
 .modal-title {
-    font-size: 16px;
-    font-weight: bold;
+  font-size: var(--font-size-xl);
+  font-weight: var(--font-weight-bold);
 }
 
 .modal-close {
-    background: transparent;
-    border: none;
-    color: var(--color-muted);
-    font-size: 20px;
-    cursor: pointer;
+  border: 0;
+  background: transparent;
+  color: var(--color-muted);
+  font-size: var(--font-size-2xl);
+  cursor: pointer;
 }
 
 .modal-info {
-    font-size: 13px;
-    color: var(--color-muted);
-    margin-bottom: 14px;
+  margin-bottom: var(--space-4);
+  color: var(--color-muted);
+  font-size: var(--font-size-md);
 }
 
 .linha-divisao {
-    display: flex;
-    gap: 8px;
-    margin-bottom: 10px;
-    align-items: center;
+  display: flex;
+  align-items: center;
+  gap: var(--space-2);
+  margin-bottom: var(--space-3);
+}
+
+.linha-divisao .input-variante,
+.linha-divisao .input-qtd {
+  padding: var(--space-2) var(--space-3);
+  border: 1px solid var(--border-strong);
+  border-radius: var(--radius-md);
+  background: var(--color-field);
+  color: var(--color-text);
+  font-size: var(--font-size-md);
 }
 
 .linha-divisao .input-variante {
-    flex: 1;
-    padding: 8px 12px;
-    background: var(--color-field);
-    border: 1px solid rgba(255,255,255,0.1);
-    border-radius: 8px;
-    color: var(--color-text);
-    font-size: 13px;
+  flex: 1;
+  min-width: 0;
 }
 
 .linha-divisao .input-qtd {
-    width: 90px;
-    padding: 8px 12px;
-    background: var(--color-field);
-    border: 1px solid rgba(255,255,255,0.1);
-    border-radius: 8px;
-    color: var(--color-text);
-    font-size: 13px;
+  width: 90px;
 }
 
 .btn-remove-linha {
-    background: transparent;
-    border: none;
-    color: var(--color-danger);
-    font-size: 18px;
-    cursor: pointer;
+  border: 0;
+  background: transparent;
+  color: var(--color-danger);
+  font-size: var(--font-size-xl);
+  cursor: pointer;
 }
 
 .btn-add-divisao {
-    background: transparent;
-    border: 1px dashed rgba(255,255,255,0.2);
-    border-radius: 8px;
-    padding: 8px 14px;
-    color: var(--color-muted);
-    font-size: 12px;
-    cursor: pointer;
-    width: 100%;
-    margin-bottom: 12px;
+  width: 100%;
+  margin-bottom: var(--space-3);
+  padding: var(--space-2) var(--space-3);
+  border: 1px dashed var(--border-strong);
+  border-radius: var(--radius-md);
+  background: transparent;
+  color: var(--color-muted);
+  font-size: var(--font-size-sm);
+  cursor: pointer;
 }
 
 .modal-resumo {
-    font-size: 13px;
-    font-weight: 600;
-    text-align: right;
+  font-size: var(--font-size-md);
+  font-weight: var(--font-weight-semibold);
+  text-align: right;
 }
 
 .modal-actions {
-    display: flex;
-    justify-content: flex-end;
-    gap: 10px;
-    margin-top: 18px;
+  display: flex;
+  justify-content: flex-end;
+  gap: var(--space-3);
+  margin-top: var(--space-5);
 }

@@ -64,4 +64,19 @@ public class VidracariaController {
         model.addAttribute("historico", vidracariaService.listarHistorico());
         model.addAttribute("operadores", operadorService.listarOperadores());
     }
+
+    @GetMapping("/filtrar-historico")
+    public String filtrarHistoricoAjax(
+            @RequestParam(required = false) String tipoMovimentacao,
+            @RequestParam(required = false) String tipoVidroFiltro,
+            Model model) {
+
+        String tipoMov = (tipoMovimentacao != null && tipoMovimentacao.isBlank()) ? null : tipoMovimentacao;
+        String tipoVidro = (tipoVidroFiltro != null && tipoVidroFiltro.isBlank()) ? null : tipoVidroFiltro;
+
+        model.addAttribute("historico", vidracariaService.listarHistoricoFiltrado(tipoMov, tipoVidro));
+
+        // Aponta diretamente para o arquivo isolado do fragmento
+        return "vidracaria/tabela-historico-movimentacao-vidro :: tabela";
+    }
 }

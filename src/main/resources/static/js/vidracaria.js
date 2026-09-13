@@ -36,6 +36,9 @@ const VidracariaModule = (() => {
   const initFormProtections = () => {
     const forms = document.querySelectorAll('form');
     forms.forEach(form => {
+      // Ignora o formulário de filtros para não desabilitar o botão incorretamente
+      if (form.id === 'filter-form') return;
+
       form.addEventListener('submit', (event) => {
         const submitBtn = form.querySelector('button[type="submit"]');
         if (submitBtn) {
@@ -47,9 +50,59 @@ const VidracariaModule = (() => {
     });
   };
 
+  /**
+   * Inicializa o comportamento dos filtros do histórico via AJAX
+   */
+  const initHistoricoFilters = () => {
+    const selectTipoMov = document.getElementById("filtroTipoMov");
+    const selectTipoVidro = document.getElementById("filtroTipoVidro");
+    const btnLimpar = document.getElementById("btn-limpar"); // CORRIGIDO PARA O ID CORRETO
+    const wrapper = document.getElementById("tabela-historico-wrapper");
+
+    if (!wrapper) return;
+
+    const atualizarTabela = () => {
+      const tipoMov = selectTipoMov ? selectTipoMov.value : "";
+      const tipoVidro = selectTipoVidro ? selectTipoVidro.value : "";
+
+      const params = new URLSearchParams();
+      if (tipoMov) params.append("tipoMovimentacao", tipoMov);
+      if (tipoVidro) params.append("tipoVidroFiltro", tipoVidro);
+
+      fetch(`/dashboard/vidracaria/filtrar-historico?${params.toString()}`)
+          .then(response => {
+            if (!response.ok) throw new Error("Erro na requisição dos filtros");
+            return response.text();
+          })
+          .then(html => {
+            wrapper.innerHTML = html;
+          })
+          .catch(error => console.error("Erro ao atualizar histórico:", error));
+    };
+
+    // Eventos de alteração nos selects
+    if (selectTipoMov) {
+      selectTipoMov.addEventListener("change", atualizarTabela);
+    }
+    if (selectTipoVidro) {
+      selectTipoVidro.addEventListener("change", atualizarTabela);
+    }
+
+    // Ação do botão limpar filtros
+    if (btnLimpar) {
+      btnLimpar.addEventListener("click", (e) => {
+        e.preventDefault(); // Evita qualquer comportamento padrão de submit
+        if (selectTipoMov) selectTipoMov.value = "";
+        if (selectTipoVidro) selectTipoVidro.value = "";
+        atualizarTabela();
+      });
+    }
+  };
+
   // Inicialização ao carregar o DOM
   document.addEventListener('DOMContentLoaded', () => {
     initFormProtections();
+    initHistoricoFilters();
   });
 
   return {

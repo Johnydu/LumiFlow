@@ -1,417 +1,319 @@
-/* ========================================
-   RESPONSIVE.CSS
-   Breakpoints: Desktop → Tablet → Mobile
-   1200px | 900px | 768px | 480px
-   ======================================== */
+/*
+ * RESPONSIVE.CSS
+ * Os únicos overrides de viewport ficam centralizados aqui.
+ */
 
-
-/* ========================================
-   TABLET — até 1200px
-   Layout em coluna, grid simplificado
-   ======================================== */
-
-@media (max-width: 1200px) {
-
-  /* ============ LAYOUT ============ */
+@media (max-width: 1024px) {
   .content {
-    flex-direction: column;
+    padding: var(--space-5);
   }
 
-  .form-panel {
-    width: 100%;
-  }
-
-  /* ============ DASHBOARD ============ */
-  .cards {
-    grid-template-columns: repeat(2, 1fr);
+  .cards,
+  body.page-relatorio-relatoriotempo .kpi-grid {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
   }
 
   .dashboard-grid {
     grid-template-columns: 1fr;
   }
 
-  /* ============ KPI GRID ============ */
-  body.page-relatorio-relatoriotempo .kpi-grid {
-    grid-template-columns: repeat(2, 1fr);
+  body.page-ordemproducao-detalhesordem .info-cards,
+  body.page-vidracaria-vidracaria .saldo-grid {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
   }
 
-  /* ============ INFO CARDS ============ */
-  body.page-ordemproducao-detalhesordem .info-cards {
-    grid-template-columns: repeat(2, 1fr);
+  body.page-roteiro-cadastroroteiros .form-panel,
+  .form-panel {
+    position: static;
+    width: 100%;
   }
 
-  /* ============ LOGIN ============ */
-  .login-card {
-    max-width: 900px;
+  body.page-roteiro-cadastroroteiros .content,
+  body.page-ordemproducao-lancamento .content {
+    max-width: none;
   }
 }
 
-
-/* ========================================
-   TABLET PEQUENO / HAMBÚRGUER — até 900px
-   Sidebar vira menu deslizante
-   ======================================== */
-
-@media (max-width: 900px) {
-
-  /* ============ MENU TOGGLE ============ */
-  .menu-toggle {
-    display: flex !important;
-    align-items: center;
-    justify-content: center;
-    width: 40px;
-    height: 40px;
-    border: none;
-    border-radius: 10px;
-    background: var(--color-primary);
-    color: #fff;
-    font-size: 20px;
-    cursor: pointer;
-    flex-shrink: 0;
-  }
-
-  .sidebar-close {
-    display: flex !important;
-  }
-
-  .logo-container {
-    display: flex !important;
-    justify-content: space-between !important;
-    align-items: center !important;
-    padding: 10px 15px !important;
-  }
-
-  /* ============ SIDEBAR ============ */
+@media (max-width: 768px) {
   .sidebar {
     position: fixed;
-    top: 0;
-    left: -260px;
-    width: 240px;
-    height: 100vh;
+    inset: 0 auto 0 0;
     z-index: 9999;
-    transition: left .3s ease;
+    width: min(82vw, var(--sidebar-width));
+    transform: translateX(-100%);
+    transition: transform 180ms ease;
     overflow-y: auto;
   }
 
   .sidebar.open {
-    left: 0;
+    transform: translateX(0);
   }
 
-  /* ============ OVERLAY ============ */
+  .sidebar-close,
+  .menu-toggle {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+  }
+
   .sidebar-overlay {
     display: none;
     position: fixed;
     inset: 0;
-    background: rgba(0, 0, 0, .5);
     z-index: 9998;
+    background: var(--surface-overlay);
   }
 
   .sidebar-overlay.open {
     display: block;
   }
 
-  /* ============ TOPBAR ============ */
+  body.sidebar-open {
+    overflow: hidden;
+  }
+
   .topbar {
-    padding: 12px 16px !important;
-    gap: 10px;
+    min-height: 60px;
+    margin-bottom: 0;
+    padding: var(--space-3) var(--space-4);
   }
 
   .topbar-title {
-    font-size: 16px !important;
+    font-size: var(--font-size-lg);
   }
 
   .btn-novo,
   .btn-nova {
-    height: 36px !important;
-    padding: 0 14px !important;
-    font-size: 12px !important;
+    flex-shrink: 0;
+    min-height: var(--control-height-md);
+    padding-inline: var(--space-3);
   }
 
-  /* ============ LAYOUT ============ */
   .content {
+    width: 100%;
+    padding: var(--space-4);
+    gap: var(--space-4);
+  }
+
+  .filtros {
     flex-direction: column;
-    gap: 12px;
+    align-items: stretch;
+    gap: var(--space-2);
   }
 
-  .form-panel {
+  .search-input-wrapper,
+  .filtro-input,
+  .filtro-select,
+  .filtro-date {
     width: 100%;
+    min-width: 0;
   }
 
-  /* ============ TABELA ============ */
   .panel {
+    max-width: 100%;
     overflow-x: auto;
+    -webkit-overflow-scrolling: touch;
   }
 
-  /* ============ LOGIN ============ */
-  .login-side {
-    display: none;
+  .panel > table {
+    min-width: 760px;
   }
 
-  .login-card {
-    max-width: 480px;
+  th,
+  td {
+    padding: var(--space-3) var(--space-2);
+    font-size: var(--font-size-xs);
+    white-space: nowrap;
   }
 
-  .login-form-side {
-    padding: 40px 36px;
-  }
-}
-
-
-/* ========================================
-   MOBILE — até 768px
-   Layout totalmente em coluna, tabela com scroll
-   ======================================== */
-
-@media (max-width: 768px) {
-
-  /* ============ TELA DE LOGIN ============ */
-  .login-shell {
-    padding: 16px !important;
-  }
-
-  .login-card {
-    border-radius: 16px !important;
-    max-width: 100% !important;
-  }
-
-  .login-form-side {
-    padding: 32px 24px !important;
-  }
-
-  /* ============ MAIN ============ */
-  .main {
-    width: 100%;
-    box-sizing: border-box;
-  }
-
-  /* ============ CONTENT ============ */
-  .content {
-    padding: 12px !important;
-    flex-direction: column;
-    gap: 10px;
-  }
-
-  /* ============ PANEL ============ */
-  .panel {
-    width: 100%;
-    box-sizing: border-box;
-    overflow-x: auto;
-  }
-
-  /* ============ PANEL HEADER ============ */
   .panel-header {
+    min-width: 0;
     flex-wrap: wrap;
-    gap: 8px;
-    padding: 12px 14px !important;
-  }
-
-  /* ============ TABELA ============ */
-  table {
-    min-width: 100% !important;
-    width: 100% !important;
-  }
-
-  td, th {
-    padding: 10px 8px !important;
-    font-size: 11px !important;
-  }
-
-  /* ============ BOTÕES DE AÇÃO (FORÇAR EXIBIÇÃO) ============ */
-  td:last-child {
-    display: flex !important;
-    flex-direction: column !important;
-    align-items: stretch !important;
-    gap: 8px !important;
-    width: 100% !important;
-    white-space: normal !important;
-    overflow: visible !important;
-    box-sizing: border-box !important;
+    padding: var(--space-3) var(--space-4);
   }
 
   .table-actions {
-    display: flex !important;
-    flex-direction: column !important;
-    align-items: stretch !important;
-    gap: 8px !important;
-    width: 100% !important;
+    justify-content: flex-start;
+    flex-wrap: nowrap;
   }
 
   .table-actions form {
-    display: block !important;
-    width: 100% !important;
-    margin: 0 !important;
+    display: contents;
   }
 
-  .table-actions button,
   .table-actions a,
-  .table-actions .btn-edit,
-  .table-actions .btn-del,
-  .table-actions .btn-liberar,
-  .table-actions .btn-lancar,
-  .table-actions .btn-ver {
-    display: flex !important;
-    width: 100% !important;
-    min-width: 100% !important;
-    justify-content: center !important;
-    align-items: center !important;
-    text-align: center !important;
-    box-sizing: border-box !important;
+  .table-actions button {
+    flex: 0 0 auto;
   }
 
-  /* ============ FILTROS ============ */
-  .filtros {
-    flex-direction: column !important;
-    align-items: stretch !important;
-    gap: 8px !important;
-  }
-
-  .filtro-input,
-  .filtro-select,
-  .search-input-wrapper {
-    width: 100% !important;
-    min-width: 100% !important;
-  }
-
-  /* ============ FORMULÁRIO ============ */
   .form-card {
-    padding: 16px !important;
+    width: 100%;
+    padding: var(--space-4);
   }
 
   .form-grid,
-  .form-grid-3 {
-    grid-template-columns: 1fr !important;
-  }
-
-  .form-actions {
-    flex-direction: column;
-  }
-
-  .btn-cancel,
-  .btn-submit {
-    width: 100%;
-  }
-
-  /* ============ PRODUTO DESTACADO (Lançamento) ============ */
-  .produto-destaque {
-    flex-direction: column;
-    align-items: flex-start !important;
-    gap: 12px;
-  }
-
-  .produto-badges {
-    flex-wrap: wrap;
-  }
-
-  /* ============ DASHBOARD ============ */
-  .cards {
-    grid-template-columns: 1fr;
-  }
-
-  /* ============ KPI GRID ============ */
-  body.page-relatorio-relatoriotempo .kpi-grid {
-    grid-template-columns: repeat(2, 1fr);
-  }
-
-  /* ============ INFO CARDS ============ */
-  body.page-ordemproducao-detalhesordem .info-cards {
-    grid-template-columns: 1fr 1fr;
-  }
-
-  /* ============ SALDO CARDS ============ */
-  body.page-vidracaria-vidracaria .saldo-grid {
-    grid-template-columns: 1fr;
-  }
-
-  /* ============ ABAS (TABS) ============ */
-  .tabs {
-    padding: 10px 10px 0 !important;
-    gap: 4px;
-    flex-wrap: wrap;
-  }
-
-  .tab {
-    padding: 6px 10px !important;
-    font-size: 11px !important;
-  }
-
-  /* ============ SETORES GRID ============ */
+  .form-grid-3,
+  body.page-vidracaria-vidracaria .form-grid,
   body.page-produto-cadastroproduto .setores-grid {
-    grid-template-columns: 1fr !important;
+    grid-template-columns: 1fr;
   }
 
-  /* ============ ROTEIRO / PILLS ============ */
+  .form-actions,
+  .modal-actions {
+    flex-wrap: wrap;
+  }
+
+  .form-actions > *,
+  .modal-actions > * {
+    flex: 1 1 160px;
+  }
+
+  .cards,
+  body.page-relatorio-relatoriotempo .kpi-grid,
+  body.page-ordemproducao-detalhesordem .info-cards,
+  body.page-vidracaria-vidracaria .saldo-grid {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+  }
+
+  .card {
+    padding: var(--space-5);
+  }
+
+  .login-body .login-brand-panel {
+    display: none;
+  }
+
+  .login-shell {
+    padding: var(--space-4);
+  }
+
+  .login-card,
+  .login-card-container {
+    width: 100%;
+    max-width: 520px;
+    min-height: 0;
+  }
+
+  .login-form-side,
+  .login-form-panel {
+    padding: var(--space-8) var(--space-6);
+  }
+
+  .tabs,
+  .produto-badges,
   .roteiro-pills,
   .preview-pills {
     flex-wrap: wrap;
   }
 
-  /* ============ SECTOR LIST (Ordens por setor) ============ */
+  .produto-destaque,
   .sector-item {
     flex-direction: column;
-    align-items: flex-start !important;
-    gap: 8px;
+    align-items: flex-start;
+    gap: var(--space-3);
+  }
+
+  .modal-overlay {
+    padding: var(--space-4);
+  }
+
+  .modal-box {
+    max-height: calc(100vh - 2 * var(--space-4));
+    overflow-y: auto;
+  }
+
+  .linha-divisao {
+    flex-wrap: wrap;
+    align-items: stretch;
+  }
+
+  .linha-divisao .input-variante {
+    min-width: 0;
+    flex: 1 1 180px;
   }
 }
 
-
-/* ========================================
-   MOBILE PEQUENO — até 480px
-   ======================================== */
-
 @media (max-width: 480px) {
-
-  /* ============ LOGIN ============ */
-  .login-shell {
-    padding: 8px !important;
-  }
-
-  .login-form-side {
-    padding: 24px 18px !important;
-  }
-
-  .welcome-block h1 {
-    font-size: 21px !important;
-  }
-
-  /* ============ TIPOGRAFIA E TOPO ============ */
-  .topbar-title {
-    font-size: 14px !important;
+  .content {
+    padding: var(--space-3);
   }
 
   .topbar {
-    padding: 10px 12px !important;
+    gap: var(--space-2);
   }
 
-  /* ============ CONTEÚDO E PADDING ============ */
-  .content {
-    padding: 8px !important;
+  .topbar-title {
+    font-size: var(--font-size-md);
   }
 
-  /* ============ TABELAS E BOTÕES DE AÇÃO ============ */
-  td, th {
-    padding: 8px 6px !important;
-    font-size: 10px !important;
-  }
-
-  .table-actions button,
-  .table-actions a,
-  .table-actions .btn-edit,
-  .table-actions .btn-del,
   .btn-novo,
   .btn-nova {
-    height: 34px !important;
-    font-size: 11px !important;
-    padding: 0 10px !important;
+    max-width: 42vw;
+    overflow: hidden;
+    padding-inline: var(--space-2);
+    text-overflow: ellipsis;
+    white-space: nowrap;
   }
 
-  /* ============ CARDS DO DASHBOARD ============ */
-  .cards {
-    grid-template-columns: 1fr !important;
-    gap: 8px !important;
+  .cards,
+  body.page-relatorio-relatoriotempo .kpi-grid,
+  body.page-ordemproducao-detalhesordem .info-cards,
+  body.page-vidracaria-vidracaria .saldo-grid {
+    grid-template-columns: 1fr;
   }
 
-  /* ============ PRODUTO DESTACADO ============ */
-  .produto-nome {
-    font-size: 17px !important;
+  .card,
+  .form-card {
+    padding: var(--space-4);
+  }
+
+  .card .number {
+    font-size: 2.25rem;
+  }
+
+  .panel-header {
+    align-items: flex-start;
+    flex-direction: column;
+  }
+
+  .panel > table {
+    min-width: 680px;
+  }
+
+  th,
+  td {
+    padding: var(--space-2);
+  }
+
+  .table-actions a,
+  .table-actions button {
+    min-height: 34px;
+    padding-inline: var(--space-2);
+  }
+
+  .login-shell {
+    padding: var(--space-2);
+  }
+
+  .login-form-side,
+  .login-form-panel {
+    padding: var(--space-6) var(--space-4);
+  }
+
+  .modal-overlay {
+    padding: var(--space-2);
+  }
+
+  .modal-box {
+    padding: var(--space-4);
+  }
+
+  .modal-actions {
+    flex-direction: column-reverse;
+  }
+
+  .modal-actions > * {
+    width: 100%;
+    flex-basis: auto;
   }
 }

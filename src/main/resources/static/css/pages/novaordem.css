@@ -5,7 +5,7 @@
 body.page-ordemproducao-novaordem .content {
   display: block;
   width: 100%;
-  padding: 32px 40px;
+  padding: var(--space-8) var(--space-10);
   box-sizing: border-box; /* Essencial para o padding não estourar a largura */
 }
 
@@ -17,7 +17,7 @@ body.page-ordemproducao-novaordem .content form {
 
 body.page-ordemproducao-novaordem .form-card {
   width: 100%;
-  padding: 32px;
+  padding: var(--space-8);
   box-sizing: border-box; /* Impede que o padding transborde o card para fora da tela */
 }
 
@@ -25,7 +25,35 @@ body.page-ordemproducao-novaordem .form-grid {
   display: grid;
   /* Cria colunas flexíveis que quebram automaticamente de forma responsiva */
   grid-template-columns: repeat(auto-fit, minmax(240px, 1fr));
-  gap: 18px;
+  gap: var(--space-5);
   width: 100%;
   box-sizing: border-box;
+}
+
+body.page-ordemproducao-novaordem .roteiro-card {
+  padding: var(--space-4);
+  border: 1px solid var(--border-subtle);
+  border-radius: var(--radius-xl);
+  background: var(--surface-subtle);
+}
+
+body.page-ordemproducao-novaordem .roteiro-label {
+  margin-bottom: var(--space-3);
+  color: var(--color-muted-5);
+  font-size: var(--font-size-xs);
+  letter-spacing: 0.05em;
+  text-transform: uppercase;
+}
+
+body.page-ordemproducao-novaordem .r-empty,
+body.page-ordemproducao-novaordem .roteiro-info {
+  color: var(--color-muted-6);
+  font-size: var(--font-size-sm);
+}
+
+body.page-ordemproducao-novaordem .roteiro-info {
+  display: flex;
+  align-items: center;
+  gap: var(--space-2);
+  margin-top: var(--space-3);
 }

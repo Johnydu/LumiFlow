@@ -33,6 +33,39 @@ function initFiltros() {
             }, 500);
         });
     }
+
+    // Configura o filtro de status para rodar via JS de forma instantânea
+    const selectStatus = document.getElementById('filtroStatus');
+    if (selectStatus) {
+        selectStatus.addEventListener('change', () => {
+            filtrarPorStatus(selectStatus.value);
+        });
+    }
+}
+
+/**
+ * Filtra as linhas da tabela instantaneamente pelo status selecionado (Resolve o bug do "Todos os status")
+ */
+function filtrarPorStatus(statusSelecionado) {
+    const linhas = document.querySelectorAll('table tbody tr[data-status]');
+    let contadorVisiveis = 0;
+
+    linhas.forEach(linha => {
+        const statusLinha = linha.getAttribute('data-status');
+
+        if (statusSelecionado === '' || statusLinha === statusSelecionado) {
+            linha.style.display = '';
+            contadorVisiveis++;
+        } else {
+            linha.style.display = 'none';
+        }
+    });
+
+    // Atualiza o contador de ordens no cabeçalho do painel de forma dinâmica
+    const painelCount = document.querySelector('.panel-count');
+    if (painelCount) {
+        painelCount.textContent = `${contadorVisiveis} ordens encontradas`;
+    }
 }
 
 /**
@@ -140,4 +173,3 @@ function atualizarSoma() {
         document.getElementById('somaAtual').style.color = 'var(--color-danger)';
     }
 }
-

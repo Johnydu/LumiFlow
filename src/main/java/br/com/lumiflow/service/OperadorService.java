@@ -66,4 +66,18 @@ public class OperadorService {
         operador.setSetorPadrao(dto.setorPadraoId() == null ? null : setorService.buscarSetorPorId(dto.setorPadraoId()));
         operadorRepository.save(operador);
     }
+
+    @Transactional(readOnly = true)
+    public List<OperadorListagemDTO> buscarOperadores(String nome, Long setorId) {
+        // Trata strings vazias vindas do form
+        String termoBusca = (nome == null || nome.isBlank()) ? null : nome.trim();
+
+        // Se ambos forem nulos ou vazios, retorna todos
+        if (termoBusca == null && setorId == null) {
+            return listarOperadores();
+        }
+
+        List<Operador> operadores = operadorRepository.buscarPorNomeESetor(termoBusca, setorId);
+        return operadorMapper.toListDto(operadores);
+    }
 }

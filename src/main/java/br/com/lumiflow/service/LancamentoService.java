@@ -14,7 +14,6 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.time.LocalDateTime;
-import java.util.Comparator;
 import java.util.List;
 
 @Service
@@ -32,9 +31,13 @@ public class LancamentoService {
     private final OperadorRepository operadorRepository;
 
     @Transactional(readOnly = true)
-    public OrdemSetor buscarEtapaAtiva(Long ordemSetorId) {
+    public OrdemSetor buscarEtapaAtiva(Long ordemId, Long ordemSetorId) {
         OrdemSetor ordemSetor = ordemSetorRepository.findById(ordemSetorId)
                 .orElseThrow(() -> new BusinessException(AppMessages.ERROR_ORDER_NOT_AVAILABLE));
+
+        if (!ordemSetor.getOrdemProducao().getId().equals(ordemId)) {
+            throw new BusinessException(AppMessages.ERROR_ORDER_NOT_AVAILABLE);
+        }
 
         if (ordemSetor.getStatus() != EstatusOrdemProducao.LIBERADA
                 && ordemSetor.getStatus() != EstatusOrdemProducao.EM_ANDAMENTO) {
@@ -55,17 +58,19 @@ public class LancamentoService {
     }
 
     @Transactional
-    public OrdemSetor lancarProducao(Long ordemSetorId, LancamentoProducaoDTO dto) {
-        OrdemSetor ordemSetor = buscarEtapaAtiva(ordemSetorId);
+    public OrdemSetor lancarProducao(Long ordemId,Long ordemSetorId, LancamentoProducaoDTO dto) {
+        OrdemSetor ordemSetor = buscarEtapaAtiva(ordemId,ordemSetorId);
 
         if (dto.quantidade() > ordemSetor.getQtdPendente()) {
             throw new BusinessException(AppMessages.ERROR_LAUNCH_EXCEEDS_PENDING);
         }
 
         Maquina maquina = maquinaRepository.findById(dto.maquinaId())
+                .filter(m -> m.getSetor().getId().equals(ordemSetor.getSetor().getId()))
                 .orElseThrow(() -> new BusinessException(AppMessages.ERROR_MACHINE_NOTFOUND));
 
         Operador operador = operadorRepository.findById(dto.operadorId())
+                .filter(o -> o.getSetorPadrao().getId().equals(ordemSetor.getSetor().getId()))
                 .orElseThrow(() -> new BusinessException(AppMessages.ERROR_OPERATOR_NOTFOUND));
 
         EtapaSetor etapaSetor = roteiroProdutoRepository
@@ -143,8 +148,8 @@ public class LancamentoService {
     }
 
     @Transactional
-    public void registrarRefugo(Long ordemSetorId, RefugoDTO dto, Usuario usuarioLogado) {
-        OrdemSetor ordemSetor = buscarEtapaAtiva(ordemSetorId);
+    public void registrarRefugo(Long ordemId, Long ordemSetorId, RefugoDTO dto, Usuario usuarioLogado) {
+        OrdemSetor ordemSetor = buscarEtapaAtiva(ordemId, ordemSetorId);
         Setor setorOrigem = setorService.buscarSetorPorId(dto.setorOrigemId());
 
         Refugo refugo = new Refugo();
@@ -166,9 +171,13 @@ public class LancamentoService {
     }
 
     @Transactional
-    public void registrarRetrabalho(RetrabalhoDTO dto, Usuario usuarioLogado) {
+    public void registrarRetrabalho(Long ordemId, RetrabalhoDTO dto, Usuario usuarioLogado) {
         Refugo refugo = refugoRepository.findById(dto.refugoId())
                 .orElseThrow(() -> new BusinessException(AppMessages.ERROR_REFUGO_NOTFOUND));
+
+        if (!refugo.getOrdemSetor().getOrdemProducao().getId().equals(ordemId)) {
+            throw new BusinessException(AppMessages.ERROR_REFUGO_NOTFOUND);
+        }
 
         Maquina maquina = maquinaRepository.findById(dto.maquinaId())
                 .orElseThrow(() -> new BusinessException(AppMessages.ERROR_MACHINE_NOTFOUND));

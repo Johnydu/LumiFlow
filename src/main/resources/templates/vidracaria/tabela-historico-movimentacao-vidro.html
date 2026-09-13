@@ -1,0 +1,40 @@
+<table class="history-table" th:fragment="tabela">
+    <thead>
+    <tr>
+        <th>Tipo</th>
+        <th>Tipo de vidro</th>
+        <th style="width:80px">Qtd</th>
+        <th style="width:160px">Data e hora</th>
+        <th>Operador</th>
+        <th>Observação</th>
+    </tr>
+    </thead>
+    <tbody>
+
+    <tr th:each="h : ${historico}">
+        <td>
+        <span th:class="${h.tipoMovimentacao.name() == 'ENTRADA'} ? 'tipo-ent' : 'tipo-con'"
+              th:text="${h.tipoMovimentacao.name() == 'ENTRADA'} ? 'Entrada' : 'Consumo'">
+        </span>
+        </td>
+        <td>
+            <span class="tipo-tag" th:text="${h.tipoVidro}"></span>
+        </td>
+        <td th:text="${h.quantidade}"></td>
+        <td style="color:var(--color-muted);font-size:11px"
+            th:text="${#temporals.format(h.dataHora, 'dd/MM/yyyy HH:mm')}">
+        </td>
+        <td th:text="${h.nomeUsuario}"></td>
+        <td style="color:var(--color-muted-5)"
+            th:text="${h.observacao != null && !h.observacao.isBlank() ? h.observacao : '—'}">
+        </td>
+    </tr>
+
+    <tr th:if="${#lists.isEmpty(historico)}">
+        <td colspan="6" style="text-align:center;color:var(--color-muted-5)">
+            Nenhuma movimentação registrada até o momento.
+        </td>
+    </tr>
+
+    </tbody>
+</table>

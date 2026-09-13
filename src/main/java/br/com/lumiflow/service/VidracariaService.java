@@ -5,6 +5,7 @@ import br.com.lumiflow.dto.vidracaria.ChapaVidroDTO;
 import br.com.lumiflow.dto.vidracaria.HistoricoMovimentacaoDTO;
 import br.com.lumiflow.dto.vidracaria.MovimentacaoVidroDTO;
 import br.com.lumiflow.dto.vidracaria.SaldoVidroDTO;
+import br.com.lumiflow.entity.enums.TipoVidro;
 import br.com.lumiflow.exception.BusinessException;
 import br.com.lumiflow.mapper.ChapaVidroMapper;
 import br.com.lumiflow.entity.ChapaVidro;
@@ -54,6 +55,38 @@ public class VidracariaService {
                         m.getOperador().getNome(),
                         m.getObservacao())).toList();
     }
+
+    @Transactional(readOnly = true)
+    public List<HistoricoMovimentacaoDTO> listarHistoricoFiltrado(String tipoMovStr, String tipoVidroStr) {
+        TipoMovimentacao tipoMov = null;
+        if (tipoMovStr != null && !tipoMovStr.isBlank()) {
+            try {
+                tipoMov = TipoMovimentacao.valueOf(tipoMovStr);
+            } catch (IllegalArgumentException ignored) {}
+        }
+
+        TipoVidro tipoVidro = null;
+        if (tipoVidroStr != null && !tipoVidroStr.isBlank()) {
+            try {
+                tipoVidro = TipoVidro.valueOf(tipoVidroStr);
+            } catch (IllegalArgumentException ignored) {}
+        }
+
+        List<MovimentacaoVidro> movimentacoes = movimentacaoVidroRepository.filtrarHistorico(tipoMov, tipoVidro);
+
+        return movimentacoes.stream()
+                .map(m -> new HistoricoMovimentacaoDTO(
+                        m.getId(),
+                        m.getTipoMovimentacao(),
+                        m.getChapaVidro().getTipoVidro(),
+                        m.getChapaVidro().getDescricao(),
+                        m.getQuantidade(),
+                        m.getDataHora(),
+                        m.getOperador() == null ? "Sistema" : m.getOperador().getNome(),
+                        m.getObservacao()
+                )).toList();
+    }
+
 
     @Transactional
     public void registrarMovimentacao(MovimentacaoVidroDTO dto) {

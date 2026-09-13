@@ -65,6 +65,15 @@ public class ProdutoService {
         produto.setDescricao(dto.descricao());
         produtoRepository.save(produto);
     }
+    @Transactional(readOnly = true)
+    public List<ProdutoListagemDTO> buscarProdutos(String termo) {
+        if (termo == null || termo.isBlank()) {
+            return listarProdutos();
+        }
+        // Executa a busca flexível no repositório e mapeia para a lista de DTOs
+        List<Produto> produtos = produtoRepository.findByNomeContainingIgnoreCaseOrCodigoContainingIgnoreCase(termo, termo);
+        return produtoMapper.toListagemDTO(produtos);
+    }
 
 
 

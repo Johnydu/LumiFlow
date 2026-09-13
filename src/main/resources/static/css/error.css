@@ -10,19 +10,19 @@
     flex-direction: column;
     justify-content: center;
     align-items: center;
-    gap: 16px;
+    gap: var(--space-4);
     text-align: center;
-    padding: 24px;
+    padding: var(--space-6);
 }
 
 .error-container h1 {
-    font-size: 96px;
+    font-size: 6rem;
     color: var(--color-primary);
     margin: 0;
 }
 
 .error-container h2 {
-    font-size: 32px;
+    font-size: var(--font-size-3xl);
     margin: 0;
 }
 

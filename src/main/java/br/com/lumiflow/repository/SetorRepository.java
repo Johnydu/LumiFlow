@@ -27,4 +27,6 @@ public interface SetorRepository extends JpaRepository<Setor,Long> {
         ORDER BY COUNT(DISTINCT os.ordemProducao.id) DESC
     """)
     List<SetorResumoDTO> obterResumoOrdensPorSetor();
+
+    List<Setor> findByNomeContainingIgnoreCaseOrderByNomeAsc(String nome);
 }

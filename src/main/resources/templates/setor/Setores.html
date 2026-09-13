@@ -18,6 +18,7 @@
   <link rel="stylesheet" th:href="@{/css/components/badges.css}">
   <link rel="stylesheet" th:href="@{/css/components/status.css}">
   <link rel="stylesheet" th:href="@{/css/components/alerts.css}">
+  <link rel="stylesheet" th:href="@{/css/pages/setores.css}">
   <link rel="stylesheet" th:href="@{/css/utils.css}">
   <link rel="stylesheet" th:href="@{/css/responsive.css}">
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
@@ -36,15 +37,23 @@
 
   <div class="content">
 
-    <div class="lista">
+    <!-- Formulário de busca dinâmica por AJAX -->
+    <form method="get" th:action="@{/dashboard/setores}" class="filter-form">
+      <input type="text"
+             name="nome"
+             th:value="${param.nome}"
+             class="search"
+             placeholder="Buscar setor por nome...">
+    </form>
+
+    <div class="lista" th:fragment="listaSetores">
 
       <div class="panel">
-
         <div class="panel-header">
           <span class="panel-title">Setores cadastrados</span>
           <span class="panel-count"
                 th:text="${#lists.size(setores) + ' setor(es)'}">
-          </span>
+                    </span>
         </div>
 
         <table>
@@ -52,28 +61,29 @@
           <tr>
             <th>Setor</th>
             <th>Máquinas</th>
-            <th>Etapas</th>
+            <th>Etapas do Setor</th>
             <th style="width:120px">Ações</th>
           </tr>
           </thead>
           <tbody>
           <tr th:each="setor : ${setores}">
-            <!-- Removidos os parênteses () dos acessos ao DTO -->
             <td style="font-weight:500" th:text="${setor.nome}"></td>
             <td>
-                <span class="tag-maq"
-                      th:text="${setor.quantidadeMaquinas + ' máquina(s)'}">
-                </span>
+                            <span class="tag-maq"
+                                  th:text="${setor.quantidadeMaquinas + ' máquina(s)'}">
+                            </span>
             </td>
             <td>
-                <span th:if="${setor.possuiEtapas}"
-                      style="color:var(--color-primary);font-size:12px">
-                  Possui etapas
-                </span>
-              <span th:unless="${setor.possuiEtapas}"
-                    style="color:var(--color-muted-5);font-size:12px">
-                  Não possui
-                </span>
+              <div class="etapas-cell-container">
+                                <span th:each="etapa : ${setor.etapas}"
+                                      class="tag-etapa"
+                                      th:text="${etapa.nome}">
+                                </span>
+                <span th:if="${#lists.isEmpty(setor.etapas)}"
+                      style="color: var(--color-muted-5); font-size: 12px;">
+                                    Nenhuma etapa
+                                </span>
+              </div>
             </td>
             <td>
               <div class="table-actions">
@@ -81,7 +91,6 @@
                         class="btn-edit"
                         th:data-id="${setor.id}"
                         th:data-nome="${setor.nome}"
-                        th:data-possui="${setor.possuiEtapas}"
                         onclick="editarSetorDoBotao(this)">
                   ✏ Editar
                 </button>
@@ -90,7 +99,7 @@
                       style="display:inline">
                   <input type="hidden"
                          th:name="${_csrf.parameterName}"
-                         th:value="${_csrf.token}" />
+                         th:value="${_csrf.token}"/>
 
                   <button type="submit"
                           class="btn-del"
@@ -122,7 +131,7 @@
 
         <input type="hidden"
                th:name="${_csrf.parameterName}"
-               th:value="${_csrf.token}" />
+               th:value="${_csrf.token}"/>
 
         <input type="hidden" th:field="*{id}"/>
 
@@ -130,23 +139,13 @@
 
         <div class="field">
           <label for="nome">Nome do Setor</label>
-          <input type="text" id="nome" th:field="*{nome}" class="form-control" placeholder="Ex: Costura, Acabamento..." required />
+          <input type="text" id="nome" th:field="*{nome}" class="form-control"
+                 placeholder="Ex: Costura, Acabamento..." required/>
         </div>
 
-        <div class="field">
-          <label for="possui-etapas-select">Possui etapas de produção?</label>
-          <select th:field="*{possuiEtapas}"
-                  id="possui-etapas-select"
-                  class="form-control"
-                  onchange="toggleEtapasContainer()">
-            <option th:value="true">Sim</option>
-            <option th:value="false">Não</option>
-          </select>
-        </div>
-
-        <!-- Container dinâmico das etapas do setor -->
-        <div class="field" id="container-etapas-setor" style="display:none;">
-          <label>Etapas/Processos do Setor</label>
+        <!-- Container fixo e visível das etapas do setor -->
+        <div class="field" id="container-etapas-setor" style="display:block;">
+          <label>Etapas/Processos do Setor <span>*</span></label>
           <div class="etapas-list" id="etapas-setor-list">
             <!-- Preenchido via JavaScript -->
           </div>

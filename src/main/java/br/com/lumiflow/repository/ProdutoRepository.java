@@ -18,6 +18,8 @@ public interface ProdutoRepository extends JpaRepository<Produto, Long> {
      Boolean  existsByCodigo(String codigo);
 
     Boolean existsByNome(String nome);
+
+    List<Produto> findByNomeContainingIgnoreCaseOrCodigoContainingIgnoreCase(String nome, String codigo);
 }
 
 

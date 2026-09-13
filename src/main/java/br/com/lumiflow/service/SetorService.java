@@ -1,7 +1,6 @@
 package br.com.lumiflow.service;
 
 import br.com.lumiflow.config.AppMessages;
-import br.com.lumiflow.dto.dashboard.SetorResumoDTO;
 import br.com.lumiflow.dto.etapaSetor.EtapaSetorDTO;
 import br.com.lumiflow.dto.setor.SetorDTO;
 import br.com.lumiflow.dto.setor.SetorListagemDTO;
@@ -14,7 +13,6 @@ import br.com.lumiflow.repository.MaquinaRepository;
 import br.com.lumiflow.repository.SetorRepository;
 import lombok.AllArgsConstructor;
 import org.springframework.dao.DataIntegrityViolationException;
-import org.springframework.data.jpa.repository.Query;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -36,14 +34,20 @@ public class SetorService {
 
     @Transactional(readOnly = true)
     public List<SetorListagemDTO> listarSetores() {
-        return setorRepository.findAllByOrderByNomeAsc().stream().map(s -> new SetorListagemDTO(s.getId(),
-                s.getNome(), s.getPossuiEtapas(), maquinaRepository.countBySetorId(s.getId()))).toList();
+        List<Setor> setores = setorRepository.findAllByOrderByNomeAsc();
+        return setores.stream().map(s -> new SetorListagemDTO(
+                s.getId(),
+                s.getNome(),
+                maquinaRepository.countBySetorId(s.getId()),
+                setorMapper.toEtapaDtoList(s.getEtapas())
+        )).toList();
     }
 
     @Transactional
     public void novoSetor(SetorDTO dto) {
         if (setorRepository.findByNome(dto.nome().toUpperCase(Locale.ROOT)).isPresent())
             throw new BusinessException(AppMessages.ERROR_SECTOR_NAME_DUPLICATE);
+
         Setor setor = setorRepository.save(setorMapper.toEntity(dto));
         salvarEtapasDoSetor(setor, dto);
     }
@@ -69,24 +73,40 @@ public class SetorService {
             throw new BusinessException(AppMessages.ERROR_SECTOR_NAME_DUPLICATE);
         });
         setor.setNome(dto.nome().trim().toUpperCase(Locale.ROOT));
-        setor.setPossuiEtapas(dto.possuiEtapas());
+
+        // Remove o campo obsoleto possuiEtapas e salva as etapas dinamicamente enviadas
         setorRepository.save(setor);
+
         etapaSetorRepository.deleteAllBySetorId(id);
-        if (Boolean.TRUE.equals(dto.possuiEtapas())) salvarEtapasDoSetor(setor, dto);
+        salvarEtapasDoSetor(setor, dto);
     }
 
     private void salvarEtapasDoSetor(Setor setor, SetorDTO dto) {
-        if (dto.etapas() == null) return;
+        if (dto.etapas() == null || dto.etapas().isEmpty()) return;
         for (int i = 0; i < dto.etapas().size(); i++) {
             EtapaSetorDTO etapaDto = dto.etapas().get(i);
+            if (etapaDto.nome() == null || etapaDto.nome().isBlank()) continue;
+
             EtapaSetor etapa = new EtapaSetor();
-            etapa.setNome(etapaDto.nome());
+            etapa.setNome(etapaDto.nome().trim());
             etapa.setSetor(setor);
             etapa.setOrdem(etapaDto.ordem() == null ? i + 1 : etapaDto.ordem());
             etapaSetorRepository.save(etapa);
         }
     }
 
+    @Transactional(readOnly = true)
+    public List<SetorListagemDTO> buscarPorNome(String nome) {
+        if (nome == null || nome.isBlank()) {
+            return listarSetores();
+        }
 
-
+        List<Setor> setores = setorRepository.findByNomeContainingIgnoreCaseOrderByNomeAsc(nome.trim());
+        return setores.stream().map(s -> new SetorListagemDTO(
+                s.getId(),
+                s.getNome(),
+                maquinaRepository.countBySetorId(s.getId()),
+                setorMapper.toEtapaDtoList(s.getEtapas())
+        )).toList();
+    }
 }

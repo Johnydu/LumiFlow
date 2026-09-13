@@ -42,20 +42,21 @@
 )}"></div>
 
     <div class="content">
+        <form method="get" th:action="@{/dashboard/produtos}" id="form-busca-produto">
+            <input type="text"
+                   name="nome"
+                   th:value="${param.nome}"
+                   class="search"
+                   placeholder="🔍 Buscar por nome ou código...">
+        </form>
 
-        <!-- LISTA -->
-        <div class="lista">
+        <!-- INÍCIO DO FRAGMENTO DA LISTA -->
+        <div class="lista" th:fragment="tabelaProdutos">
 
             <div class="panel">
 
                 <div class="panel-header">
-                    <form method="get" th:action="@{/dashboard/produtos}">
-                        <input type="text"
-                               name="nome"
-                               th:value="${param.nome}"
-                               class="search"
-                               placeholder="Buscar produto...">
-                    </form>
+
 
                     <span class="panel-title">
                         Produtos cadastrados
@@ -63,7 +64,7 @@
 
                     <span class="panel-count"
                           th:text="${#lists.size(produtos) + ' produto(s)'}">
-                </span>
+                    </span>
                 </div>
 
                 <table>
@@ -77,65 +78,47 @@
                     </thead>
 
                     <tbody>
-
                     <tr th:each="produto : ${produtos}">
-
                         <td>
                             <div class="produto-info">
-                                <div class="produto-nome"
-                                     th:text="${produto.nome()}">
-                                </div>
+                                <div class="produto-nome" th:text="${produto.nome}"></div>
                             </div>
                         </td>
 
-                        <td class="num"
-                            th:text="${produto.codigo()}">
-                        </td>
+                        <td class="num" th:text="${produto.codigo}"></td>
 
-                        <td class="produto-desc"
-                            th:text="${produto.descricao()}">
-                        </td>
+                        <td class="produto-desc" th:text="${produto.descricao}"></td>
 
                         <td>
                             <div class="table-actions">
-
                                 <button type="button"
                                         class="btn-edit"
-                                        th:data-id="${produto.id()}"
-                                        th:data-nome="${produto.nome()}"
-                                        th:data-codigo="${produto.codigo()}"
-                                        th:data-descricao="${produto.descricao()}"
+                                        th:data-id="${produto.id}"
+                                        th:data-nome="${produto.nome}"
+                                        th:data-codigo="${produto.codigo}"
+                                        th:data-descricao="${produto.descricao}"
                                         onclick="handleEditarProduto(this)">
                                     ✏ Editar
                                 </button>
 
-                                <form th:action="@{/dashboard/produtos/{id}/excluir(id=${produto.id()})}"
+                                <form th:action="@{/dashboard/produtos/{id}/excluir(id=${produto.id})}"
                                       method="post">
-
-                                    <input type="hidden"
-                                           th:name="${_csrf.parameterName}"
-                                           th:value="${_csrf.token}"/>
-
+                                    <input type="hidden" th:name="${_csrf.parameterName}" th:value="${_csrf.token}"/>
                                     <button type="submit"
                                             class="btn-del"
                                             onclick="return confirm('Tem certeza que deseja excluir este produto?');">
                                         🗑 Excluir
                                     </button>
-
                                 </form>
-
                             </div>
                         </td>
-
                     </tr>
 
                     <tr th:if="${#lists.isEmpty(produtos)}">
-                        <td colspan="4"
-                            style="text-align:center;color:var(--color-muted-5)">
+                        <td colspan="4" style="text-align:center;color:var(--color-muted-5)">
                             Nenhum produto cadastrado.
                         </td>
                     </tr>
-
                     </tbody>
                 </table>
 
@@ -143,8 +126,10 @@
 
         </div>
 
+
         <!-- FORMULÁRIO -->
         <div class="form-panel" id="form-panel" style="display:none">
+
 
             <form class="form-card"
                   id="produto-form"
@@ -154,7 +139,7 @@
 
                 <input type="hidden"
                        th:name="${_csrf.parameterName}"
-                       th:value="${_csrf.token}" />
+                       th:value="${_csrf.token}"/>
 
                 <input type="hidden"
                        id="id"
@@ -227,7 +212,7 @@
 
             <input type="hidden"
                    th:name="${_csrf.parameterName}"
-                   th:value="${_csrf.token}" />
+                   th:value="${_csrf.token}"/>
 
             <input type="hidden"
                    id="roteiro-produto-id"
@@ -263,8 +248,6 @@
             </div>
 
         </form>
-
-    </div>
 
     </div>
 

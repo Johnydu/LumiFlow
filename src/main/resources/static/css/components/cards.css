@@ -1,510 +1,119 @@
 /* ========================================
-   COMPONENTS/CARDS.CSS - Vidro Translúcido
+   CARDS E PAINÉIS
    ======================================== */
 
-/* ============ CARDS GRID ============ */
 .cards {
   display: grid;
-  grid-template-columns: repeat(4, 1fr);
-  gap: 20px;
-  margin-bottom: 24px;
+  grid-template-columns: repeat(4, minmax(0, 1fr));
+  gap: var(--space-5);
+  margin-bottom: var(--space-6);
 }
 
-/* ============ CARD GENERIC ============ */
+.card,
+.form-card,
+.panel {
+  background: var(--surface-glass);
+  border: 1px solid var(--border-subtle);
+  backdrop-filter: blur(var(--blur-lg));
+  -webkit-backdrop-filter: blur(var(--blur-lg));
+}
+
 .card {
-  background: rgba(7, 13, 29, 0.25) !important;
-  backdrop-filter: blur(16px) !important;
-  -webkit-backdrop-filter: blur(16px) !important;
-  border-radius: 24px;
-  padding: 28px;
-  border: 1px solid rgba(255, 255, 255, 0.08) !important;
+  padding: var(--space-6);
+  border-radius: var(--radius-2xl);
 }
 
 .card h3 {
+  margin: 0 0 var(--space-5);
   color: var(--color-label);
-  font-size: 18px;
-  margin-bottom: 22px;
+  font-size: var(--font-size-xl);
 }
 
 .card .number {
-  font-size: 54px;
-  font-weight: bold;
-  margin-bottom: 10px;
+  margin-bottom: var(--space-2);
+  font-size: var(--font-size-display);
+  font-weight: var(--font-weight-bold);
+  line-height: var(--line-height-tight);
 }
 
 .card p {
+  margin: 0;
   color: var(--color-copy-muted);
-  font-size: 18px;
+  font-size: var(--font-size-xl);
 }
 
-/* ============ LOGIN CARD CONTAINER ============ */
-body.page-usuario-login .card {
-  background: rgba(7, 13, 29, 0.35) !important;
-  backdrop-filter: blur(16px) !important;
-  -webkit-backdrop-filter: blur(16px) !important;
-  border: 1px solid rgba(255, 255, 255, 0.1) !important;
-  border-radius: var(--radius-xl);
-  padding: 40px 36px;
-  width: 360px;
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  gap: 0;
-  box-shadow: var(--shadow-glass);
-  transition: box-shadow 1.2s ease;
-}
-
-body.page-usuario-login .card.on {
-  box-shadow: 0 8px 60px rgba(255,220,80,0.25), 0 0 120px rgba(255,200,50,0.1);
-}
-
-/* ============ FORM CARD (Correção de Opacidade) ============ */
 .form-card {
-  background: rgba(7, 13, 29, 0.35) !important;
-  backdrop-filter: blur(16px) !important;
-  -webkit-backdrop-filter: blur(16px) !important;
-  border: 1px solid rgba(255, 255, 255, 0.08) !important;
-  border-radius: 14px;
-  padding: 22px;
-  margin-bottom: 14px;
-}
-
-/* ============ INFO CARD (Ordem de Produção) ============ */
-body.page-ordemproducao-detalhesordem .info-cards {
-  display: grid;
-  grid-template-columns: repeat(4,1fr);
-  gap: 12px;
-}
-
-body.page-ordemproducao-detalhesordem .info-card {
-  background: rgba(7, 13, 29, 0.25) !important;
-  backdrop-filter: blur(16px) !important;
-  -webkit-backdrop-filter: blur(16px) !important;
-  border: 1px solid rgba(255,255,255,0.08) !important;
-  border-radius: 14px;
-  padding: 16px;
-}
-
-body.page-ordemproducao-detalhesordem .info-label {
-  font-size: 10px;
-  color: var(--color-muted-4);
-  text-transform: uppercase;
-  letter-spacing: .05em;
-  margin-bottom: 6px;
-}
-
-body.page-ordemproducao-detalhesordem .info-val {
-  font-size: 15px;
-  font-weight: 600;
-}
-
-/* ============ SALDO CARDS (Vidracaria) ============ */
-body.page-vidracaria-vidracaria .saldo-grid {
-  display: grid;
-  grid-template-columns: repeat(3,1fr);
-  gap: 12px;
-}
-
-body.page-vidracaria-vidracaria .saldo-card {
-  background: rgba(7, 13, 29, 0.25) !important;
-  backdrop-filter: blur(16px) !important;
-  -webkit-backdrop-filter: blur(16px) !important;
-  border: 1px solid rgba(255,255,255,0.08) !important;
-  border-radius: 14px;
-  padding: 16px;
-  text-align: center;
-}
-
-body.page-vidracaria-vidracaria .saldo-tipo {
-  font-size: 11px;
-  color: var(--color-muted);
-  text-transform: uppercase;
-  letter-spacing: .05em;
-  margin-bottom: 8px;
-}
-
-body.page-vidracaria-vidracaria .saldo-val {
-  font-size: 32px;
-  font-weight: 700;
-  margin-bottom: 6px;
-}
-
-body.page-vidracaria-vidracaria .saldo-sub {
-  font-size: 10px;
-  color: var(--color-muted-5);
-}
-
-body.page-vidracaria-vidracaria .saldo-bar {
-  height: 4px;
-  border-radius: 2px;
-  margin-top: 10px;
-  background: rgba(255, 255, 255, 0.05);
-}
-
-body.page-vidracaria-vidracaria .saldo-fill {
-  height: 4px;
-  border-radius: 2px;
-}
-
-/* ============ PANEL GENERIC ============ */
-.panel {
-  background: rgba(7, 13, 29, 0.25) !important;
-  backdrop-filter: blur(16px) !important;
-  -webkit-backdrop-filter: blur(16px) !important;
-  border-radius: 24px;
-  border: 1px solid rgba(255,255,255,0.08) !important;
-  overflow: hidden;
+  margin-bottom: var(--space-4);
+  padding: var(--space-5);
+  border-radius: var(--radius-xl);
 }
 
 .panel {
-  background: rgba(7, 13, 29, 0.25) !important;
-  backdrop-filter: blur(16px) !important;
-  -webkit-backdrop-filter: blur(16px) !important;
-  border: 1px solid rgba(255,255,255,0.08) !important;
-  border-radius: 14px;
   overflow: hidden;
-}
-
-/* ============ PANEL HEADER ============ */
-.panel-header {
-  padding: 24px 28px;
-  border-bottom: 1px solid rgba(255,255,255,0.08);
-  font-size: 22px;
-  font-weight: bold;
+  border-radius: var(--radius-xl);
 }
 
 .panel-header {
-  padding: 14px 18px;
-  border-bottom: 1px solid rgba(255,255,255,0.08);
   display: flex;
   align-items: center;
   justify-content: space-between;
+  gap: var(--space-3);
+  padding: var(--panel-header-padding);
+  border-bottom: 1px solid var(--border-subtle);
 }
 
-body.page-ordemproducao-detalhesordem .itens-header {
-  padding: 16px 20px;
-  border-bottom: 1px solid rgba(255,255,255,0.08);
-  font-size: 14px;
-  font-weight: bold;
-}
-
-body.page-ordemproducao-listaordem .panel-header {
-  padding: 16px 20px;
-  border-bottom: 1px solid rgba(255,255,255,0.08);
-  display: flex;
-  align-items: center;
-  justify-content: space-between;
-}
-
-body.page-relatorio-relatoriotempo .panel-header {
-  padding: 14px 18px;
-  border-bottom: 1px solid rgba(255,255,255,0.08);
-  font-size: 14px;
-  font-weight: bold;
-  display: flex;
-  align-items: center;
-  justify-content: space-between;
-}
-
-body.page-vidracaria-vidracaria .panel-header {
-  padding: 14px 18px;
-  border-bottom: 1px solid rgba(255,255,255,0.08);
-  display: flex;
-  align-items: center;
-  justify-content: space-between;
-  font-size: 14px;
-  font-weight: bold;
-}
-
-/* ============ PANEL TITLE ============ */
 .panel-title {
-  font-size: 14px;
-  font-weight: bold;
+  font-size: var(--font-size-lg);
+  font-weight: var(--font-weight-bold);
 }
 
-body.page-ordemproducao-listaordem .panel-title {
-  font-size: 15px;
-  font-weight: bold;
-}
-
-/* ============ PANEL COUNT ============ */
-.panel-count{
-  font-size: 11px;
+.panel-count {
   color: var(--color-muted-4);
+  font-size: var(--font-size-sm);
 }
 
-/* ============ PANEL SUB ============ */
-body.page-relatorio-relatoriotempo .panel-sub {
-  font-size: 11px;
+.panel-sub {
   color: var(--color-muted-4);
+  font-size: var(--font-size-sm);
   font-weight: 400;
 }
 
-body.page-vidracaria-vidracaria .panel-sub {
-  font-size: 11px;
-  color: var(--color-muted-4);
-  font-weight: 400;
-}
-
-/* ============ SECTOR LIST ============ */
 .sector-list {
-  padding: 20px;
   display: flex;
   flex-direction: column;
-  gap: 16px;
+  gap: var(--space-4);
+  padding: var(--space-5);
 }
 
 .sector-item {
-  background: rgba(255, 255, 255, 0.02);
-  border: 1px solid rgba(255,255,255,0.08);
-  border-radius: 18px;
-  padding: 24px;
   display: flex;
-  justify-content: space-between;
   align-items: center;
+  justify-content: space-between;
+  gap: var(--space-4);
+  padding: var(--space-6);
+  border: 1px solid var(--border-subtle);
+  border-radius: var(--radius-2xl);
+  background: var(--surface-subtle);
 }
 
 .sector-item h4 {
-  font-size: 22px;
-  margin-bottom: 8px;
+  margin: 0 0 var(--space-2);
+  font-size: var(--font-size-2xl);
 }
 
 .sector-item p {
+  margin: 0;
   color: var(--color-copy-muted-2);
-  font-size: 16px;
+  font-size: var(--font-size-lg);
 }
 
 .sector-number {
-  font-size: 42px;
-  font-weight: bold;
+  font-size: 2.625rem;
+  font-weight: var(--font-weight-bold);
 }
 
-/* ============ DASHBOARD GRID ============ */
 .dashboard-grid {
   display: grid;
   grid-template-columns: 2fr 1fr;
-  gap: 22px;
-}
-
-/* ============ PROGRESS CARD ============ */
-body.page-ordemproducao-detalhesordem .prog-card {
-  background: rgba(7, 13, 29, 0.25) !important;
-  backdrop-filter: blur(16px) !important;
-  -webkit-backdrop-filter: blur(16px) !important;
-  border: 1px solid rgba(255,255,255,0.08) !important;
-  border-radius: 14px;
-  padding: 16px;
-}
-
-body.page-ordemproducao-detalhesordem .prog-label {
-  display: flex;
-  justify-content: space-between;
-  font-size: 12px;
-  color: var(--color-muted);
-  margin-bottom: 8px;
-}
-
-body.page-ordemproducao-detalhesordem .prog-track {
-  width: 100%;
-  height: 8px;
-  background: rgba(0, 0, 0, 0.2);
-  border-radius: 4px;
-  overflow: hidden;
-}
-
-body.page-ordemproducao-detalhesordem .prog-fill {
-  height: 8px;
-  background: var(--color-primary);
-  border-radius: 4px;
-}
-
-/* ============ ROTEIRO CARD ============ */
-body.page-ordemproducao-detalhesordem .roteiro-card {
-  background: rgba(7, 13, 29, 0.25) !important;
-  backdrop-filter: blur(16px) !important;
-  -webkit-backdrop-filter: blur(16px) !important;
-  border: 1px solid rgba(255,255,255,0.08) !important;
-  border-radius: 14px;
-  padding: 16px;
-}
-
-body.page-ordemproducao-detalhesordem .card-title {
-  font-size: 14px;
-  font-weight: bold;
-  margin-bottom: 14px;
-}
-
-body.page-ordemproducao-novaordem .roteiro-card {
-  background: rgba(255, 255, 255, 0.03);
-  border: 1px solid rgba(255,255,255,0.06);
-  border-radius: 12px;
-  padding: 16px;
-}
-
-body.page-ordemproducao-novaordem .roteiro-label {
-  font-size: 10px;
-  color: var(--color-muted-5);
-  text-transform: uppercase;
-  letter-spacing: .05em;
-  margin-bottom: 10px;
-}
-
-body.page-ordemproducao-novaordem .roteiro-pills {
-  display: flex;
-  align-items: center;
-  gap: 6px;
-  flex-wrap: wrap;
-}
-
-body.page-ordemproducao-novaordem .r-empty {
-  font-size: 12px;
-  color: var(--color-muted-6);
-  font-style: italic;
-}
-
-body.page-ordemproducao-novaordem .roteiro-info {
-  font-size: 11px;
-  color: var(--color-muted-5);
-  margin-top: 10px;
-  display: flex;
-  align-items: center;
-  gap: 6px;
-}
-
-/* ============ ITENS CARD ============ */
-body.page-ordemproducao-detalhesordem .itens-card {
-  background: rgba(7, 13, 29, 0.25) !important;
-  backdrop-filter: blur(16px) !important;
-  -webkit-backdrop-filter: blur(16px) !important;
-  border: 1px solid rgba(255,255,255,0.08) !important;
-  border-radius: 14px;
-  overflow: hidden;
-}
-
-/* ============ HISTORY CARD ============ */
-body.page-ordemproducao-detalhesordem .hist-card {
-  background: rgba(7, 13, 29, 0.25) !important;
-  backdrop-filter: blur(16px) !important;
-  -webkit-backdrop-filter: blur(16px) !important;
-  border: 1px solid rgba(255,255,255,0.08) !important;
-  border-radius: 14px;
-  padding: 16px;
-}
-
-body.page-ordemproducao-detalhesordem .hist-item {
-  display: flex;
-  gap: 12px;
-  padding: 10px 0;
-  border-bottom: 1px solid rgba(255,255,255,0.05);
-}
-
-body.page-ordemproducao-detalhesordem .hist-item:last-child {
-  border-bottom: none;
-}
-
-body.page-ordemproducao-detalhesordem .hist-dot {
-  width: 8px;
-  height: 8px;
-  border-radius: 50%;
-  background: var(--color-primary);
-  margin-top: 4px;
-  flex-shrink: 0;
-}
-
-body.page-ordemproducao-detalhesordem .hist-dot.refugo {
-  background: var(--color-danger);
-}
-
-body.page-ordemproducao-detalhesordem .hist-info {
-  flex: 1;
-}
-
-body.page-ordemproducao-detalhesordem .hist-title {
-  font-size: 12px;
-  font-weight: 500;
-  margin-bottom: 3px;
-}
-
-body.page-ordemproducao-detalhesordem .hist-sub {
-  font-size: 11px;
-  color: var(--color-muted-4);
-}
-
-/* ============ KPI GRID ============ */
-body.page-relatorio-relatoriotempo .kpi-grid {
-  display: grid;
-  grid-template-columns: repeat(4,1fr);
-  gap: 12px;
-}
-
-body.page-relatorio-relatoriotempo .kpi {
-  background: rgba(7, 13, 29, 0.25) !important;
-  backdrop-filter: blur(16px) !important;
-  -webkit-backdrop-filter: blur(16px) !important;
-  border: 1px solid rgba(255,255,255,0.08) !important;
-  border-radius: 14px;
-  padding: 16px;
-}
-
-body.page-relatorio-relatoriotempo .kpi-label {
-  font-size: 10px;
-  color: var(--color-muted-4);
-  text-transform: uppercase;
-  letter-spacing: .05em;
-  margin-bottom: 6px;
-}
-
-body.page-relatorio-relatoriotempo .kpi-val {
-  font-size: 22px;
-  font-weight: 700;
-}
-
-body.page-relatorio-relatoriotempo .kpi-sub {
-  font-size: 10px;
-  color: var(--color-muted-5);
-  margin-top: 4px;
-}
-
-/* ============ PAGINATION ============ */
-body.page-relatorio-relatoriotempo .paginacao {
-  display: flex;
-  align-items: center;
-  justify-content: space-between;
-  padding: 12px 18px;
-  border-top: 1px solid rgba(255,255,255,0.05);
-}
-
-body.page-relatorio-relatoriotempo .pag-info {
-  font-size: 11px;
-  color: var(--color-muted-4);
-}
-
-body.page-relatorio-relatoriotempo .pag-btns {
-  display: flex;
-  gap: 5px;
-}
-
-body.page-ordemproducao-listaordem .paginacao {
-  display: flex;
-  align-items: center;
-  justify-content: space-between;
-  padding: 14px 20px;
-  border-top: 1px solid rgba(255,255,255,0.05);
-}
-
-body.page-ordemproducao-listaordem .pag-info {
-  font-size: 11px;
-}
-
-body.page-ordemproducao-listaordem .pag-btns {
-  display: flex;
-  gap: 5px;
-}
-
-/* ============ FORM PANEL (Roteiros) ============ */
-body.page-roteiro-cadastroroteiros .form-panel {
-  width: 480px !important;
-  flex-shrink: 0;
-  position: sticky;
-  top: 20px;
+  gap: var(--space-6);
 }

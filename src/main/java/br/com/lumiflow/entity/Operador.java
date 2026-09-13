@@ -24,7 +24,7 @@ public class Operador extends Auditoria {
 
 
     @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "setor_padrao_id")
+    @JoinColumn(name = "setor_padrao_id",nullable = false)
     private Setor setorPadrao;
 
 }

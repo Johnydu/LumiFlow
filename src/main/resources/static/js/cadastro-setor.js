@@ -18,9 +18,6 @@ function limparFormularioSetor() {
 
   const etapasList = document.getElementById('etapas-setor-list');
   if (etapasList) etapasList.innerHTML = '';
-
-  const containerEtapas = document.getElementById('container-etapas-setor');
-  if (containerEtapas) containerEtapas.style.display = 'none';
 }
 
 function novoSetorForm() {
@@ -33,29 +30,13 @@ function novoSetorForm() {
   const setorId = document.getElementById('id');
   if (setorId) setorId.value = '';
 
-  const selectPossui = document.getElementById('possuiEtapas');
-  if (selectPossui) selectPossui.value = 'false';
-
   const etapasList = document.getElementById('etapas-setor-list');
   if (etapasList) etapasList.innerHTML = '';
 
-  const containerEtapas = document.getElementById('container-etapas-setor');
-  if (containerEtapas) containerEtapas.style.display = 'none';
+  // Ao criar um novo setor, já iniciamos com uma linha de etapa em branco opcional
+  adicionarEtapaSetor();
 
   showForm();
-}
-
-function toggleEtapasContainer() {
-  const select = document.getElementById('possuiEtapas');
-  const container = document.getElementById('container-etapas-setor');
-
-  if (select && select.value === 'true') {
-    if (container) container.style.display = 'block';
-  } else {
-    if (container) container.style.display = 'none';
-    const etapasList = document.getElementById('etapas-setor-list');
-    if (etapasList) etapasList.innerHTML = '';
-  }
 }
 
 function adicionarEtapaSetor(nomeEtapa = '', idEtapa = '', ordemEtapa = '') {
@@ -72,12 +53,45 @@ function adicionarEtapaSetor(nomeEtapa = '', idEtapa = '', ordemEtapa = '') {
   row.style.marginBottom = '8px';
   row.style.alignItems = 'center';
 
-  row.innerHTML = `
-        <input type="hidden" name="etapas[${index}].id" value="${idEtapa}">
-        <input type="hidden" name="etapas[${index}].ordem" value="${ordemCalculada}">
-        <input type="text" name="etapas[${index}].nome" class="form-control" placeholder="Nome da etapa (Ex: 1ª Dobra)" value="${nomeEtapa}" required style="flex:1; padding: 8px; border: 1px solid var(--color-muted-3, #ccc); border-radius: 4px;">
-        <button type="button" class="btn-del" onclick="removerLinhaEtapaSetor(this)" style="background: #ff4d4d; color: white; border: none; padding: 6px 10px; border-radius: 4px; cursor: pointer;">✕</button>
-    `;
+  const inputId = document.createElement('input');
+  inputId.type = 'hidden';
+  inputId.name = `etapas[${index}].id`;
+  inputId.value = idEtapa;
+
+  const inputOrdem = document.createElement('input');
+  inputOrdem.type = 'hidden';
+  inputOrdem.name = `etapas[${index}].ordem`;
+  inputOrdem.value = ordemCalculada;
+
+  const inputNome = document.createElement('input');
+  inputNome.type = 'text';
+  inputNome.name = `etapas[${index}].nome`;
+  inputNome.className = 'form-control';
+  inputNome.placeholder = 'Nome da etapa (Ex: 1ª Dobra)';
+  inputNome.value = nomeEtapa;
+  inputNome.required = true;
+  inputNome.style.flex = '1';
+  inputNome.style.padding = '8px';
+  inputNome.style.border = '1px solid var(--color-muted-3, #ccc)';
+  inputNome.style.borderRadius = '4px';
+
+  const btnRemover = document.createElement('button');
+  btnRemover.type = 'button';
+  btnRemover.className = 'btn-del';
+  btnRemover.textContent = '✕';
+  btnRemover.style.background = '#ff4d4d';
+  btnRemover.style.color = 'white';
+  btnRemover.style.border = 'none';
+  btnRemover.style.padding = '6px 10px';
+  btnRemover.style.borderRadius = '4px';
+  btnRemover.style.cursor = 'pointer';
+  btnRemover.addEventListener('click', () => removerLinhaEtapaSetor(btnRemover));
+
+  row.appendChild(inputId);
+  row.appendChild(inputOrdem);
+  row.appendChild(inputNome);
+  row.appendChild(btnRemover);
+
   container.appendChild(row);
   reindexarEtapasSetor();
 }
@@ -103,7 +117,7 @@ function reindexarEtapasSetor() {
   });
 }
 
-async function editarSetor(id, nome, possuiEtapas) {
+async function editarSetor(id, nome) {
   const form = document.getElementById('setor-form');
   if (form) form.action = `/dashboard/setores/${id}/editar`;
 
@@ -116,45 +130,25 @@ async function editarSetor(id, nome, possuiEtapas) {
   const setorNome = document.getElementById('nome');
   if (setorNome) setorNome.value = nome;
 
-  // 1. Buscamos o select pelo ID correto do HTML
-  const selectPossui = document.getElementById('possui-etapas-select');
-
-  // 2. Normalizamos para string "true" ou "false"
-  const possuiEtapasStr = (possuiEtapas === true || possuiEtapas === 'true') ? 'true' : 'false';
-
-  // 3. Log de depuração seguro (usando variáveis que já existem)
-  console.log("Valor recebido do banco (possuiEtapas):", possuiEtapas, typeof possuiEtapas);
-  console.log("Valor convertido para string:", possuiEtapasStr);
-
-  // 4. Aplicamos o valor no select e disparamos a mudança
-  if (selectPossui) {
-    selectPossui.value = possuiEtapasStr;
-    selectPossui.dispatchEvent(new Event('change'));
-  }
-
   const etapasList = document.getElementById('etapas-setor-list');
   if (etapasList) etapasList.innerHTML = '';
 
-  const containerEtapas = document.getElementById('container-etapas-setor');
-
-  if (possuiEtapasStr === 'true') {
-    if (containerEtapas) containerEtapas.style.display = 'block';
-
-    try {
-      const response = await fetch(`/dashboard/setores/${id}/etapas`);
-      if (response.ok) {
-        const etapas = await response.json();
-        if (etapas && etapas.length > 0) {
-          etapas.forEach(etapa => {
-            adicionarEtapaSetor(etapa.nome, etapa.id);
-          });
-        }
+  // Busca as etapas cadastradas do setor via API para edição
+  try {
+    const response = await fetch(`/dashboard/setores/${id}/etapas`);
+    if (response.ok) {
+      const etapas = await response.json();
+      if (etapas && etapas.length > 0) {
+        etapas.forEach(etapa => {
+          adicionarEtapaSetor(etapa.nome, etapa.id, etapa.ordem);
+        });
+      } else {
+        adicionarEtapaSetor(); // Garante uma linha vazia se o setor não tiver etapas cadastradas
       }
-    } catch (e) {
-      console.error('Erro ao carregar etapas do setor para edição', e);
     }
-  } else {
-    if (containerEtapas) containerEtapas.style.display = 'none';
+  } catch (e) {
+    console.error('Erro ao carregar etapas do setor para edição', e);
+    adicionarEtapaSetor();
   }
 
   showForm();
@@ -163,13 +157,65 @@ async function editarSetor(id, nome, possuiEtapas) {
 function editarSetorDoBotao(button) {
   const id = button.getAttribute('data-id');
   const nome = button.getAttribute('data-nome');
-
-  // Captura o valor bruto do atributo data-possui
-  const dataPossuiAttr = button.getAttribute('data-possui');
-
-  // Converte com segurança para booleano real (true ou false)
-  const possuiEtapas = (dataPossuiAttr === 'true' || dataPossuiAttr === true);
-
-  editarSetor(id, nome, possuiEtapas);
+  editarSetor(id, nome);
 }
 
+// ============================================================
+// FILTRO DINÂMICO DE BUSCA DE SETORES VIA AJAX (DEBOUNCE)
+// ============================================================
+document.addEventListener('DOMContentLoaded', () => {
+  'use strict';
+  initFiltroBuscaSetores();
+});
+
+function initFiltroBuscaSetores() {
+  const inputBusca = document.querySelector('.search');
+  if (!inputBusca) return;
+
+  const formBusca = inputBusca.closest('form');
+  if (!formBusca) return;
+
+  // Mantém o foco e a posição do cursor no input ao atualizar via AJAX
+  if (inputBusca.value) {
+    const val = inputBusca.value;
+    inputBusca.focus();
+    inputBusca.value = '';
+    inputBusca.value = val;
+  }
+
+  let timeout = null;
+
+  inputBusca.addEventListener('input', () => {
+    clearTimeout(timeout);
+    timeout = setTimeout(async () => {
+      const formData = new FormData(formBusca);
+      const params = new URLSearchParams(formData).toString();
+      const url = `${formBusca.action}?${params}`;
+
+      try {
+        const response = await fetch(url, {
+          headers: {
+            'X-Requested-With': 'XMLHttpRequest'
+          }
+        });
+
+        if (response.ok) {
+          const htmlText = await response.text();
+          const parser = new DOMParser();
+          const doc = parser.parseFromString(htmlText, 'text/html');
+
+          const novaLista = doc.querySelector('.lista');
+          const listaAtual = document.querySelector('.lista');
+
+          if (novaLista && listaAtual) {
+            listaAtual.replaceWith(novaLista);
+            initFiltroBuscaSetores(); // Reatacha o evento após substituir o DOM
+          }
+        }
+      } catch (error) {
+        console.error('Erro na busca dinâmica de setores, enviando via submit normal:', error);
+        formBusca.submit();
+      }
+    }, 400); // 400ms de atraso (debounce)
+  });
+}

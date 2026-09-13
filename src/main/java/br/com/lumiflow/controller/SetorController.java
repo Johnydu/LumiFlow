@@ -1,17 +1,22 @@
 package br.com.lumiflow.controller;
 
 import br.com.lumiflow.config.AppMessages;
+import br.com.lumiflow.dto.etapaSetor.EtapaSetorDTO;
 import br.com.lumiflow.dto.setor.SetorDTO;
+import br.com.lumiflow.entity.Setor;
 import br.com.lumiflow.service.SetorService;
+import jakarta.servlet.http.HttpServletRequest;
 import jakarta.validation.Valid;
 import lombok.AllArgsConstructor;
 import org.springframework.context.MessageSource;
+import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
+import java.util.List;
 import java.util.Locale;
 
 @Controller
@@ -22,14 +27,38 @@ public class SetorController {
     private final MessageSource messageSource;
 
     @GetMapping
-    public String setores(Model model) {
-        carregarPagina(model);
+    public String setores(
+            @RequestParam(value = "nome", required = false) String nome,
+            Model model,
+            HttpServletRequest request) {
+
+        carregarPagina(model, nome);
+
+        // Retorna apenas o fragmento da tabela em requisições AJAX assíncronas
+        if ("XMLHttpRequest".equals(request.getHeader("X-Requested-With"))) {
+            return "setor/Setores :: listaSetores";
+        }
+
         return "setor/Setores";
     }
 
+    @GetMapping("/{id}/etapas")
+    @ResponseBody
+    public ResponseEntity<List<EtapaSetorDTO>> buscarEtapasDoSetor(@PathVariable Long id) {
+        Setor setor = setorService.buscarSetorPorId(id);
+        List<EtapaSetorDTO> etapasDto = setor.getEtapas().stream()
+                .map(e -> new EtapaSetorDTO(e.getId(), e.getNome(), e.getOrdem()))
+                .toList();
+        return ResponseEntity.ok(etapasDto);
+    }
+
     @PostMapping
-    public String novoSetor(@Valid @ModelAttribute("setorDTO") SetorDTO dto, BindingResult result
-            , Model model, RedirectAttributes attributes, Locale locale) {
+    public String novoSetor(
+            @Valid @ModelAttribute("setorDTO") SetorDTO dto,
+            BindingResult result,
+            Model model,
+            RedirectAttributes attributes,
+            Locale locale) {
 
         if (result.hasErrors()) return erroValidacao(model, locale);
 
@@ -40,7 +69,11 @@ public class SetorController {
     }
 
     @PostMapping("{id}/excluir")
-    public String excluirSetor(@PathVariable Long id, RedirectAttributes attributes, Locale locale) {
+    public String excluirSetor(
+            @PathVariable Long id,
+            RedirectAttributes attributes,
+            Locale locale) {
+
         setorService.excluirSetor(id);
         attributes.addFlashAttribute("success", messageSource
                 .getMessage(AppMessages.SUCCESS_SECTOR_DELETED, null, locale));
@@ -48,9 +81,16 @@ public class SetorController {
     }
 
     @PostMapping("/{id}/editar")
-    public String editarSetor(@PathVariable Long id, @Valid @ModelAttribute("setorDTO") SetorDTO dto,
-                              BindingResult result, Model model, RedirectAttributes attributes, Locale locale) {
+    public String editarSetor(
+            @PathVariable Long id,
+            @Valid @ModelAttribute("setorDTO") SetorDTO dto,
+            BindingResult result,
+            Model model,
+            RedirectAttributes attributes,
+            Locale locale) {
+
         if (result.hasErrors()) return erroValidacao(model, locale);
+
         setorService.editarSetor(id, dto);
         attributes.addFlashAttribute("success", messageSource
                 .getMessage(AppMessages.SUCCESS_SECTOR_UPDATED, new Object[]{dto.nome()}, locale));
@@ -58,15 +98,22 @@ public class SetorController {
     }
 
     private String erroValidacao(Model model, Locale locale) {
-        carregarPagina(model);
+        carregarPagina(model, null);
         model.addAttribute("error", messageSource
                 .getMessage(AppMessages.ERROR_VALIDATION_FAILED, null, locale));
         return "setor/Setores";
     }
 
-    private void carregarPagina(Model model) {
-        model.addAttribute("setores", setorService.listarSetores());
-        if (!model.containsAttribute("setorDTO")) model.addAttribute("setorDTO",
-                new SetorDTO(null, null, null, null));
+    private void carregarPagina(Model model, String nome) {
+        if (nome != null && !nome.isBlank()) {
+            model.addAttribute("setores", setorService.buscarPorNome(nome.trim()));
+        } else {
+            model.addAttribute("setores", setorService.listarSetores());
+        }
+
+        if (!model.containsAttribute("setorDTO")) {
+            model.addAttribute("setorDTO",
+                    new SetorDTO(null, null, null, null));
+        }
     }
 }

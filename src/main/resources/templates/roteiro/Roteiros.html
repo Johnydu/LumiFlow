@@ -42,7 +42,17 @@
 
     <div class="content">
 
-        <div class="lista">
+        <!-- FORMULÁRIO DE BUSCA DINÂMICA (AJAX) -->
+        <form method="get" th:action="@{/dashboard/roteiros}" class="filter-form">
+            <input type="text"
+                   name="nomeProduto"
+                   th:value="${param.nomeProduto}"
+                   class="search"
+                   placeholder="Buscar por nome ou código do produto...">
+        </form>
+
+        <!-- LISTA COM FRAGMENTO AJAX -->
+        <div class="lista" th:fragment="listaRoteiros">
             <div class="panel">
                 <div class="panel-header">
                     <span class="panel-title">Roteiros cadastrados</span>

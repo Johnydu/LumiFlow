@@ -1,53 +1,27 @@
-/* ==========================================================================
-   LUMIFLOW - LISTA DE ORDENS POR SETORES (Ajustes Específicos)
-   ========================================================================== */
-
-/* Garante que o container de filtros fique em cima, ocupando a largura total e alinhado */
-.content {
-    display: flex;
-    flex-direction: column;
-    gap: 16px; /* Espaçamento uniforme entre os filtros e o painel */
+/* Filtros da listagem com fundo transparente e alinhamento padrão */
+body.page-ordemproducao-listaordemsetores .filtros .filtro-input,
+body.page-ordemproducao-listaordemsetores .filtros .filtro-date {
+  min-width: 170px;
+  height: 38px;
+  padding: 0 var(--space-3);
+  background: transparent; /* Fundo transparente */
+  border: 1px solid var(--border-subtle);
+  border-radius: var(--radius-md);
+  color: var(--color-text);
+  font-size: var(--font-size-sm);
+  color-scheme: dark; /* Mantém o calendário nativo escuro sem alterar o fundo do input */
+  outline: none;
+  transition: border-color 0.2s ease, box-shadow 0.2s ease;
 }
 
-.filtros {
-    display: flex;
-    gap: 12px;
-    align-items: center;
-    width: 100%;
-    flex-wrap: wrap;
+body.page-ordemproducao-listaordemsetores .filtros .filtro-input {
+  min-width: 250px;
 }
 
-/* Campo de busca expandido ocupando o espaço disponível */
-.filtros .filtro-input {
-    flex: 1;
-    min-width: 250px;
-    height: 40px;
-    padding: 0 14px;
-    background: #1a1a2e;
-    border: 1px solid rgba(255, 255, 255, 0.1);
-    border-radius: 10px;
-    color: #fff;
-    font-size: 13px;
-    outline: none;
-}
-
-.filtros .filtro-input:focus {
-    border-color: #6157ff;
-}
-
-/* Input de data padronizado ao lado da busca */
-.filtros .filtro-date {
-    height: 40px;
-    padding: 0 14px;
-    background: #1a1a2e;
-    border: 1px solid rgba(255, 255, 255, 0.1);
-    border-radius: 10px;
-    color: #fff;
-    font-size: 13px;
-    outline: none;
-    cursor: pointer;
-}
-
-.filtros .filtro-date:focus {
-    border-color: #6157ff;
+/* Estado de foco preservando a transparência e destacando a borda */
+body.page-ordemproducao-listaordemsetores .filtros .filtro-input:focus,
+body.page-ordemproducao-listaordemsetores .filtros .filtro-date:focus {
+  border-color: var(--color-primary, #6157ff);
+  background: transparent;
+  box-shadow: 0 0 0 2px rgba(97, 87, 255, 0.15);
 }

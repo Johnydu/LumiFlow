@@ -48,20 +48,29 @@
 
     <div class="content">
 
+        <form method="get" th:action="@{/dashboard/operadores}">
+            <input type="text"
+                   name="nome"
+                   th:value="${param.nome}"
+                   class="search"
+                   placeholder="Buscar operador...">
+
+            <select name="setorId" class="filtro-select">
+                <option value="">Todos os setores</option>
+                <option th:each="setor : ${listaSetores}"
+                        th:value="${setor.id}"
+                        th:text="${setor.nome}"
+                        th:selected="${param.setorId != null and #strings.toString(setor.id) == param.setorId}">
+                </option>
+            </select>
+        </form>
+
         <!-- LISTA -->
-        <div class="lista">
+        <div class="lista" th:fragment="listaOperadores">
 
             <div class="panel">
 
                 <div class="panel-header">
-                    <form method="get" th:action="@{/dashboard/operadores}">
-                        <input type="text"
-                               name="nome"
-                               th:value="${param.nome}"
-                               class="search"
-                               placeholder="Buscar operador...">
-                    </form>
-
                     <span class="panel-title">
                         Operadores cadastrados
                     </span>

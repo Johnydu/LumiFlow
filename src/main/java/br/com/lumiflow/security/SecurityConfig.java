@@ -98,22 +98,39 @@ public class SecurityConfig {
                                 ).hasAnyRole(ROLE_SUPORTE, ROLE_PCP_SUPERVISOR)
 
                                 // ----------------------------------------
-                                // CRIAÇÃO DE ORDENS — SUPORTE E PCP
+                                // CRIAÇÃO DE ORDENS — SUPORTE E PCP (rotas reais)
                                 // ----------------------------------------
-                                .requestMatchers(
-                                        "/dashboard/ordens/nova",
-                                        "/dashboard/ordens/salvar"
-                                ).hasAnyRole(ROLE_SUPORTE, ROLE_PCP_SUPERVISOR)
+                                .requestMatchers(org.springframework.http.HttpMethod.GET,
+                                        "/dashboard/ordens/novaOrdem")
+                                .hasAnyRole(ROLE_SUPORTE, ROLE_PCP_SUPERVISOR)
+                                .requestMatchers(org.springframework.http.HttpMethod.POST,
+                                        "/dashboard/ordens")
+                                .hasAnyRole(ROLE_SUPORTE, ROLE_PCP_SUPERVISOR)
 
                                 // ----------------------------------------
-                                // VISUALIZAÇÃO DE ORDENS — TODOS
+                                // LIBERAÇÃO E DIVISÃO DE ORDENS — PCP E GESTÃO
+                                // ----------------------------------------
+                                .requestMatchers(org.springframework.http.HttpMethod.POST,
+                                        "/dashboard/ordens-setor/*/ordens/*/liberar")
+                                .hasAnyRole(ROLE_PCP_SUPERVISOR, ROLE_GESTAO)
+                                .requestMatchers(org.springframework.http.HttpMethod.POST,
+                                        "/dashboard/ordens-setor/*/ordens/*/dividir")
+                                .hasAnyRole(ROLE_PCP_SUPERVISOR, ROLE_GESTAO)
+
+                                // ----------------------------------------
+                                // VISUALIZAÇÃO DE ORDENS POR SETOR — TODOS OS LOGADOS
                                 // ----------------------------------------
                                 .requestMatchers("/dashboard/ordens-setor/**").authenticated()
 
                                 // ----------------------------------------
-                                // LANÇAMENTOS — TODOS OS LOGADOS
+                                // LANÇAMENTO DE PRODUÇÃO — TODOS OS LOGADOS
                                 // ----------------------------------------
-                                .requestMatchers("/dashboard/lancamentos/**").authenticated()
+                                .requestMatchers("/dashboard/ordens/*/setor/*/lancar/**").authenticated()
+
+                                // ----------------------------------------
+                                // VISUALIZAÇÃO DE ORDENS — TODOS
+                                // ----------------------------------------
+                                .requestMatchers("/dashboard/ordens/**").authenticated()
 
                                 // ----------------------------------------
                                 // VIDRAÇARIA — TODOS OS LOGADOS
@@ -130,7 +147,7 @@ public class SecurityConfig {
                                 // DASHBOARD (tela raiz) — SOMENTE PCP E GESTÃO
                                 // ----------------------------------------
                                 .requestMatchers("/dashboard").hasAnyRole(ROLE_PCP_SUPERVISOR,
-                                ROLE_GESTAO,ROLE_SUPORTE)
+                                        ROLE_GESTAO, ROLE_SUPORTE)
 
                                 // ----------------------------------------
                                 // DASHBOARD — TODOS OS LOGADOS (regra genérica,

@@ -80,19 +80,82 @@ window.hideForm = function() {
     }
 };
 
-// Filtro automático de busca ao digitar (Debounce)
+// ========================
+// FILTRO DINÂMICO DE BUSCA E SETOR VIA AJAX
+// ========================
 document.addEventListener('DOMContentLoaded', () => {
     'use strict';
-
-    // Corrigido o seletor para pegar a classe .search da input no HTML
-    const inputBusca = document.querySelector('.search');
-    if (inputBusca) {
-        let timer;
-        inputBusca.addEventListener('input', () => {
-            clearTimeout(timer);
-            timer = setTimeout(() => {
-                inputBusca.closest('form').submit();
-            }, 500);
-        });
-    }
+    initFiltroOperadores();
 });
+
+function initFiltroOperadores() {
+    const inputBusca = document.querySelector('.search');
+    const selectSetor = document.querySelector('select[name="setorId"]'); // Ajuste o name se necessário
+
+    if (!inputBusca && !selectSetor) return;
+
+    const formBusca = inputBusca ? inputBusca.closest('form') : selectSetor.closest('form');
+    if (!formBusca) return;
+
+    // Mantém o foco e a posição do cursor no input de busca se houver valor preenchido
+    if (inputBusca && inputBusca.value) {
+        const val = inputBusca.value;
+        inputBusca.focus();
+        inputBusca.value = '';
+        inputBusca.value = val;
+    }
+
+    let timeout = null;
+
+    // Função central que executa a requisição AJAX considerando os filtros atuais do formulário
+    const dispararBuscaAsync = (isDebounced = true) => {
+        const executar = async () => {
+            const formData = new FormData(formBusca);
+            const params = new URLSearchParams(formData).toString();
+            const url = `${formBusca.action}?${params}`;
+
+            try {
+                const response = await fetch(url, {
+                    headers: {
+                        'X-Requested-With': 'XMLHttpRequest'
+                    }
+                });
+
+                if (response.ok) {
+                    const htmlText = await response.text();
+                    const parser = new DOMParser();
+                    const doc = parser.parseFromString(htmlText, 'text/html');
+
+                    const novaLista = doc.querySelector('.lista');
+                    const listaAtual = document.querySelector('.lista');
+
+                    if (novaLista && listaAtual) {
+                        listaAtual.replaceWith(novaLista);
+                        initFiltroOperadores(); // Reatacha os ouvintes de eventos após atualizar o DOM
+                    }
+                }
+            } catch (error) {
+                console.error('Erro na busca dinâmica, enviando via submit normal:', error);
+                formBusca.submit();
+            }
+        };
+
+        if (isDebounced) {
+            clearTimeout(timeout);
+            timeout = setTimeout(executar, 400); // 400ms de atraso para o campo de texto (evita gatilhos seguidos com backspace)
+        } else {
+            clearTimeout(timeout);
+            executar(); // Execução imediata para a seleção do dropdown de setor
+        }
+    };
+
+    // Evento de digitação no campo de nome (com debounce)
+    if (inputBusca) {
+        inputBusca.addEventListener('input', () => dispararBuscaAsync(true));
+    }
+
+    // Evento de alteração no select de setores (sem atraso, resposta imediata)
+    if (selectSetor) {
+        selectSetor.addEventListener('change', () => dispararBuscaAsync(false));
+    }
+}

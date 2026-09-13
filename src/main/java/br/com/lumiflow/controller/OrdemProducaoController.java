@@ -8,6 +8,7 @@ import br.com.lumiflow.service.ProdutoService;
 import jakarta.validation.Valid;
 import lombok.AllArgsConstructor;
 import org.springframework.context.MessageSource;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
@@ -28,16 +29,21 @@ public class OrdemProducaoController {
 
 
 
+    @PreAuthorize("hasAnyRole('SUPORTE', 'PCP_SUPERVISOR')")
     @GetMapping("/novaOrdem")
     public String novaOrdemForm(Model model) {
         carregarPaginaNovaOrdem(model);
         return "ordens/NovaOrdem";
     }
 
+
+
+    @PreAuthorize("hasAnyRole('SUPORTE', 'PCP_SUPERVISOR')")
     @PostMapping
     public String novaOrdem(@Valid @ModelAttribute("ordemDTO") OrdemProducaoDTO dto, BindingResult result,
                             Model model, RedirectAttributes attributes, Locale locale,
                             @AuthenticationPrincipal UsuarioDetails usuarioLogado) {
+
 
         if (result.hasErrors()) return erroValidacao(model, locale);
 

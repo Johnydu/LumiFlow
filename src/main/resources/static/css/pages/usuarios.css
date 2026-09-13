@@ -7,7 +7,7 @@ body.page-usuario-cadastrousuario .user-avatar {
   display: flex !important;
   align-items: center !important;
   justify-content: center !important;
-  color: #fff !important;
+  color: var(--color-text) !important;
   font-weight: 700 !important;
-  font-size: 14px !important;
+  font-size: var(--font-size-lg) !important;
 }

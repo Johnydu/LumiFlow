@@ -5,6 +5,7 @@ import br.com.lumiflow.dto.roteiro.RoteiroDTO;
 import br.com.lumiflow.service.ProdutoService;
 import br.com.lumiflow.service.RoteiroService;
 import br.com.lumiflow.service.SetorService;
+import jakarta.servlet.http.HttpServletRequest;
 import jakarta.validation.Valid;
 import lombok.AllArgsConstructor;
 import org.springframework.context.MessageSource;
@@ -27,8 +28,17 @@ public class RoteiroController {
     private final MessageSource messageSource;
 
     @GetMapping
-    public String listar(Model model) {
-        carregarPagina(model);
+    public String listar(
+            @RequestParam(value = "nomeProduto", required = false) String nomeProduto,
+            Model model,
+            HttpServletRequest request) {
+
+        carregarPagina(model, nomeProduto);
+
+        if ("XMLHttpRequest".equals(request.getHeader("X-Requested-With"))) {
+            return "roteiro/Roteiros :: listaRoteiros";
+        }
+
         return "roteiro/Roteiros";
     }
 
@@ -67,14 +77,19 @@ public class RoteiroController {
     }
 
     private String erroValidacao(Model model, Locale locale) {
-        carregarPagina(model);
+        carregarPagina(model, null);
         model.addAttribute("error",
                 messageSource.getMessage(AppMessages.ERROR_VALIDATION_FAILED, null, locale));
         return "roteiro/Roteiros";
     }
 
-    private void carregarPagina(Model model) {
-        model.addAttribute("roteiros", roteiroService.listarRoteiros());
+    private void carregarPagina(Model model, String nomeProduto) {
+        if (nomeProduto != null && !nomeProduto.isBlank()) {
+            model.addAttribute("roteiros", roteiroService.buscarPorNomeOuCodigoProduto(nomeProduto));
+        } else {
+            model.addAttribute("roteiros", roteiroService.listarRoteiros());
+        }
+
         model.addAttribute("produtos", produtoService.listarProdutos());
         model.addAttribute("setores", setorService.listarSetores());
         if (!model.containsAttribute("roteiroDTO"))

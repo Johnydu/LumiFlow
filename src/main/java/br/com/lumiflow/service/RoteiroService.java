@@ -97,5 +97,32 @@ public class RoteiroService {
                         : r.getSetor().getNome() + " (" + r.getEtapaSetor().getNome() + ")")
                 .toList();
     }
+
+    @Transactional(readOnly = true)
+    public List<RoteiroListagemDTO> buscarPorNomeOuCodigoProduto(String termo) {
+        if (termo == null || termo.isBlank()) {
+            return listarRoteiros();
+        }
+
+        String termoLower = termo.trim().toLowerCase();
+
+        return roteiroProdutoRepository.listarOrdenados().stream()
+                .filter(r -> {
+                    String nomeProduto = r.getProduto().getNome() != null ?
+                            r.getProduto().getNome().toLowerCase() : "";
+                    String codigoProduto = r.getProduto().getCodigo() != null ?
+                            r.getProduto().getCodigo().toLowerCase() : "";
+                    return nomeProduto.contains(termoLower) || codigoProduto.contains(termoLower);
+                })
+                .collect(Collectors.groupingBy(r -> r.getProduto()
+                        .getId(), java.util.LinkedHashMap::new, Collectors.toList()))
+                .values().stream().map(lista -> {
+                    RoteiroProduto primeiro = lista.getFirst();
+                    List<String> fluxo = lista.stream().map(r -> r.getEtapaSetor() == null ? r.getSetor()
+                            .getNome() : r.getSetor().getNome() + " (" + r.getEtapaSetor().getNome() + ")").toList();
+                    return new RoteiroListagemDTO(primeiro.getProduto().getId(), primeiro.getProduto()
+                            .getNome(), primeiro.getProduto().getCodigo(), lista.size(), fluxo);
+                }).toList();
+    }
 }
 

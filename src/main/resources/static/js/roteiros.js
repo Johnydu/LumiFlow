@@ -208,10 +208,6 @@ async function carregarEtapasDoSetor(selectSetor, etapaSetorIdSelecionada) {
 // HANDLER E EDIÇÃO DE ROTEIRO (SEGURANÇA CONTRA XSS)
 // ============================================================
 
-/**
- * Handler seguro para acionamento via botão com data-attribute
- * Uso no HTML: <button type="button" th:data-produto-id="${roteiro.produtoId}" onclick="handleEditarRoteiro(this)">Editar</button>
- */
 function handleEditarRoteiro(button) {
     const produtoId = button.getAttribute('data-produto-id');
     if (produtoId) {
@@ -262,4 +258,64 @@ async function editarRoteiro(produtoId) {
         console.error('Erro ao editar roteiro:', error);
         alert('Ocorreu um erro ao carregar o formulário de edição.');
     }
+}
+
+// ============================================================
+// FILTRO DINÂMICO DE BUSCA DE ROTEIROS VIA AJAX (DEBOUNCE)
+// ============================================================
+document.addEventListener('DOMContentLoaded', () => {
+    'use strict';
+    initFiltroBuscaRoteiros();
+});
+
+function initFiltroBuscaRoteiros() {
+    const inputBusca = document.querySelector('.search');
+    if (!inputBusca) return;
+
+    const formBusca = inputBusca.closest('form');
+    if (!formBusca) return;
+
+    // Mantém o foco e a posição do cursor no input ao atualizar via AJAX
+    if (inputBusca.value) {
+        const val = inputBusca.value;
+        inputBusca.focus();
+        inputBusca.value = '';
+        inputBusca.value = val;
+    }
+
+    let timeout = null;
+
+    inputBusca.addEventListener('input', () => {
+        clearTimeout(timeout);
+        timeout = setTimeout(async () => {
+            const formData = new FormData(formBusca);
+            const params = new URLSearchParams(formData).toString();
+            const url = `${formBusca.action}?${params}`;
+
+            try {
+                const response = await fetch(url, {
+                    headers: {
+                        'X-Requested-With': 'XMLHttpRequest'
+                    }
+                });
+
+                if (response.ok) {
+                    const htmlText = await response.text();
+                    const parser = new DOMParser();
+                    const doc = parser.parseFromString(htmlText, 'text/html');
+
+                    const novaLista = doc.querySelector('.lista');
+                    const listaAtual = document.querySelector('.lista');
+
+                    if (novaLista && listaAtual) {
+                        listaAtual.replaceWith(novaLista);
+                        initFiltroBuscaRoteiros(); // Reatacha o evento após substituir o DOM
+                    }
+                }
+            } catch (error) {
+                console.error('Erro na busca dinâmica de roteiros, enviando via submit normal:', error);
+                formBusca.submit();
+            }
+        }, 400); // Debounce de 400ms para evitar requisições a cada tecla (backspace, etc)
+    });
 }

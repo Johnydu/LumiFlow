@@ -7,7 +7,6 @@ function hideForm() {
 }
 
 function novaMaquinaForm() {
-
   const form = document.querySelector('.form-card');
 
   form.reset();
@@ -19,37 +18,38 @@ function novaMaquinaForm() {
   showForm();
 }
 
-function editarMaquina(id, nome, setorId) {
+// Ajustado para receber e preencher corretamente o id do select (setorId)
+function handleEditarMaquina(button) {
+  const id = button.getAttribute('data-id');
+  const nome = button.getAttribute('data-nome');
+  const setorId = button.getAttribute('data-setor-id');
 
   const form = document.querySelector('.form-card');
-
   form.action = '/dashboard/maquinas/' + id + '/editar';
 
   document.getElementById('id').value = id;
   document.getElementById('nome').value = nome;
-  document.getElementById('setorId').value = setorId;
 
-  document.getElementById('form-title').textContent =
-      'Editar Máquina';
+  // Define o valor no select de setores do formulário
+  const selectSetor = document.querySelector('select[th\\:field="*{setorId}"], select[id="setorId"], select[name="setorId"]');
+  if (selectSetor) {
+    selectSetor.value = setorId;
+  }
+
+  document.getElementById('form-title').textContent = 'Editar Máquina';
 
   showForm();
 }
 
-function filtrarSetor(botao, setor) {
-
-  document
-      .querySelectorAll('.setor-tab')
-      .forEach(t => t.classList.remove('active'));
-
-  botao.classList.add('active');
-
-  const linhas = document.querySelectorAll('tbody tr');
+// Função atualizada para lidar com o novo filtro de Dropdown (Select)
+function handleFiltrarSetorSelect(selectElement) {
+  const setorSelecionado = selectElement.value.toLowerCase();
+  const linhas = document.querySelectorAll('table tbody tr[data-setor]');
 
   linhas.forEach(linha => {
+    const setorLinha = linha.getAttribute('data-setor').toLowerCase();
 
-    const setorLinha = linha.dataset.setor;
-
-    if (setor === 'todos' || setorLinha === setor) {
+    if (setorSelecionado === 'todos' || setorLinha === setorSelecionado) {
       linha.style.display = '';
     } else {
       linha.style.display = 'none';

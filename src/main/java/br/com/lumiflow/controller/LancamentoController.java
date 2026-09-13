@@ -32,7 +32,7 @@ public class LancamentoController {
 
     @GetMapping
     public String form(@PathVariable Long ordemId, @PathVariable Long ordemSetorId, Model model) {
-        OrdemSetor ordemSetor = lancamentoService.buscarEtapaAtiva(ordemSetorId);
+        OrdemSetor ordemSetor = lancamentoService.buscarEtapaAtiva(ordemId, ordemSetorId);
 
         model.addAttribute("ordem", ordemSetor.getOrdemProducao());
         model.addAttribute("ordemSetor", ordemSetor);
@@ -67,7 +67,7 @@ public class LancamentoController {
         if (result.hasErrors()) return recarregarComErro(ordemId, ordemSetorId,
                 "producaoDTO", dto, result, attributes);
 
-        OrdemSetor ordemSetor = lancamentoService.lancarProducao(ordemSetorId, dto);
+        OrdemSetor ordemSetor = lancamentoService.lancarProducao(ordemId,ordemSetorId, dto);
         attributes.addFlashAttribute("success",
                 messageSource.getMessage(AppMessages.SUCCESS_LAUNCH_REGISTERED, null, locale));
 
@@ -87,7 +87,7 @@ public class LancamentoController {
         if (result.hasErrors()) return recarregarComErro(ordemId, ordemSetorId,
                 "refugoDTO", dto, result, attributes);
 
-        lancamentoService.registrarRefugo(ordemSetorId, dto, usuarioLogado.getUsuario());
+        lancamentoService.registrarRefugo(ordemId, ordemSetorId, dto, usuarioLogado.getUsuario());
         attributes.addFlashAttribute("success",
                 messageSource.getMessage(AppMessages.SUCCESS_REFUGO_REGISTERED, null, locale));
         return "redirect:/dashboard/ordens/" + ordemId + "/setor/" + ordemSetorId + "/lancar";
@@ -102,7 +102,7 @@ public class LancamentoController {
         if (result.hasErrors())
             return recarregarComErro(ordemId, ordemSetorId, "retrabalhoDTO", dto, result, attributes);
 
-        lancamentoService.registrarRetrabalho(dto, usuarioLogado.getUsuario());
+        lancamentoService.registrarRetrabalho(ordemId, dto, usuarioLogado.getUsuario());
         attributes.addFlashAttribute("success",
                 messageSource.getMessage(AppMessages.SUCCESS_RETRABALHO_REGISTERED, null, locale));
         return "redirect:/dashboard/ordens/" + ordemId + "/setor/" + ordemSetorId + "/lancar";

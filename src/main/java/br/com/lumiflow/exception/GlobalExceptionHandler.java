@@ -9,6 +9,7 @@ import org.springframework.web.bind.annotation.ControllerAdvice;
 import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
+import java.net.URI;
 import java.util.Locale;
 
 @ControllerAdvice
@@ -25,15 +26,10 @@ public class GlobalExceptionHandler {
             HttpServletRequest request,
             Locale locale) {
 
-        String mensagem = messageSource.getMessage(
-                ex.getMessageKey(),
-                ex.getArgs(),
-                locale
-        );
+        String mensagem = messageSource.getMessage(ex.getMessageKey(), ex.getArgs(), locale);
         redirectAttributes.addFlashAttribute("error", mensagem);
 
-        String referer = request.getHeader("Referer");
-        return referer != null ? "redirect:" + referer : "redirect:/dashboard";
+        return redirecionarComSeguranca(request);
     }
 
     @ExceptionHandler(Exception.class)
@@ -45,14 +41,29 @@ public class GlobalExceptionHandler {
 
         log.error("Erro não tratado na requisição [{}]: {}", request.getRequestURI(), ex.getMessage(), ex);
 
-        String mensagem = messageSource.getMessage(
-                AppMessages.ERROR_SYSTEM_INTERNAL,
-                null,
-                locale
-        );
+        String mensagem = messageSource.getMessage(AppMessages.ERROR_SYSTEM_INTERNAL, null, locale);
         redirectAttributes.addFlashAttribute("error", mensagem);
 
+        return redirecionarComSeguranca(request);
+    }
+
+    private String redirecionarComSeguranca(HttpServletRequest request) {
         String referer = request.getHeader("Referer");
-        return referer != null ? "redirect:" + referer : "redirect:/dashboard";
+
+        if (referer != null && isCaminhoInternoSeguro(referer, request)) {
+            return "redirect:" + referer;
+        }
+
+        return "redirect:/dashboard";
+    }
+
+    private boolean isCaminhoInternoSeguro(String referer, HttpServletRequest request) {
+        try {
+            URI uri = URI.create(referer);
+            String host = uri.getHost();
+            return host == null || host.equalsIgnoreCase(request.getServerName());
+        } catch (Exception e) {
+            return false;
+        }
     }
 }

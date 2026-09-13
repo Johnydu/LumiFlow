@@ -4,11 +4,11 @@
 body.page-setor-cadastrosetor .tag-maq {
   display: inline-flex;
   align-items: center;
-  margin: 2px 6px 2px 0;
-  padding: 4px 10px;
-  border-radius: 999px;
-  font-size: 11px;
-  background: rgba(97,87,255,0.15);
+  margin: var(--space-1) var(--space-2) var(--space-1) 0;
+  padding: var(--space-1) var(--space-3);
+  border-radius: var(--radius-pill);
+  font-size: var(--font-size-sm);
+  background: var(--primary-alpha-15);
   color: var(--color-primary-soft);
-  border: 1px solid rgba(97,87,255,0.25);
+  border: 1px solid var(--primary-alpha-30);
 }

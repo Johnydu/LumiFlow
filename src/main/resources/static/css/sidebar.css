@@ -1,153 +1,195 @@
-/* ==========================================
-   SIDEBAR.CSS
-   ========================================== */
+/* ========================================
+   SIDEBAR - FIXA E IMÓVEL NO SCROLL
+   ======================================== */
+
 .sidebar {
-  width: 260px;
-  background: rgba(7, 13, 29, 0.25);
-  backdrop-filter: blur(16px);
-  -webkit-backdrop-filter: blur(16px);
-  border-right: 1px solid rgba(255, 255, 255, 0.08);
-  padding: 20px;
+  position: fixed;
+  top: 0;
+  left: 0;
+  bottom: 0;
+  width: var(--sidebar-width);
+  height: 100vh;
+  max-height: 100vh;
   display: flex;
   flex-direction: column;
+  justify-content: flex-start;
+  padding: var(--space-4) var(--space-5);
+  background: rgba(7, 13, 29, 0.4);
+  border-right: 1px solid var(--border-subtle);
+  backdrop-filter: blur(var(--blur-lg));
+  -webkit-backdrop-filter: blur(var(--blur-lg));
+  box-sizing: border-box;
+  z-index: 100;
+  overflow: hidden;
+}
+
+.sidebar .sidebar-header {
+  display: flex;
+  align-items: center;
   justify-content: space-between;
+  flex-shrink: 0;
+  margin-bottom: var(--space-3);
 }
 
 .sidebar .logo {
-  font-size: 24px;
-  font-weight: bold;
-  margin-bottom: 16px;
   color: var(--color-text);
+  font-size: var(--font-size-2xl);
+  font-weight: var(--font-weight-bold);
   letter-spacing: 0.5px;
 }
 
 .sidebar-close {
-  background: transparent;
-  border: 1px solid var(--border-subtle);
-  color: var(--color-text);
-  border-radius: 8px;
-  padding: 6px 10px;
-  cursor: pointer;
-  margin-bottom: 10px;
   display: none;
+  padding: var(--space-2) var(--space-3);
+  border: 1px solid var(--border-subtle);
+  border-radius: var(--radius-md);
+  background: transparent;
+  color: var(--color-text);
+  cursor: pointer;
+}
+
+.sidebar .sidebar-nav {
+  display: flex;
+  flex-direction: column;
+  flex: 1 1 auto;
+  min-height: 0;
+  overflow-y: auto;
+  padding-right: 2px;
+  margin-right: -4px;
+}
+
+.sidebar .sidebar-nav::-webkit-scrollbar {
+  width: 4px;
+}
+.sidebar .sidebar-nav::-webkit-scrollbar-thumb {
+  background: var(--border-subtle);
+  border-radius: 4px;
 }
 
 .sidebar .menu-title {
+  flex-shrink: 0;
+  margin: var(--space-3) 0 var(--space-2);
   color: var(--color-muted-3);
-  font-size: 10px;
-  margin: 14px 0 6px;
+  font-size: var(--font-size-xs);
+  font-weight: var(--font-weight-bold);
   letter-spacing: 1.2px;
-  font-weight: 700;
 }
 
 .sidebar .menu {
   display: flex;
   flex-direction: column;
-  gap: 6px;
+  gap: var(--space-2);
+  flex-shrink: 0;
 }
 
 .sidebar .menu-item {
-  height: 38px;
-  border: 1px solid rgba(255, 255, 255, 0.08);
-  background: rgba(255, 255, 255, 0.03);
-  border-radius: 8px;
   display: flex;
   align-items: center;
-  padding: 0 12px;
-  font-size: 13px;
+  flex-shrink: 0;
+  height: 38px;
+  padding: 0 var(--space-3);
+  border: 1px solid var(--border-subtle);
+  border-radius: var(--radius-md);
+  background: var(--surface-subtle);
   color: var(--color-text);
+  font-size: var(--font-size-md);
   text-decoration: none;
   cursor: pointer;
-  transition: all 0.2s ease;
+  transition: background 0.2s ease, border-color 0.2s ease, color 0.2s ease;
 }
 
 .sidebar .menu-item:hover {
-  background: rgba(255, 255, 255, 0.08);
-  border-color: rgba(255, 255, 255, 0.2);
+  background: var(--surface-hover);
+  border-color: var(--border-strong);
   color: var(--color-primary-hover);
 }
 
 .sidebar .menu-item.active {
   background: var(--color-primary-bg);
-  color: var(--color-text);
   border-color: var(--color-primary);
-  font-weight: 600;
+  color: var(--color-text);
+  font-weight: var(--font-weight-semibold);
   box-shadow: 0 0 12px var(--color-primary-soft);
 }
 
 .sidebar .sidebar-footer {
+  flex-shrink: 0;
   margin-top: auto;
-  padding-top: 12px;
-  border-top: 1px solid rgba(255, 255, 255, 0.08);
+  padding-top: var(--space-3);
+  border-top: 1px solid var(--border-subtle);
+  background: inherit;
 }
 
 .sidebar .profile {
   display: flex;
   align-items: center;
-  gap: 10px;
-  margin-bottom: 10px;
+  gap: var(--space-3);
+  margin-bottom: var(--space-3);
 }
 
 .sidebar .avatar {
+  display: flex;
+  align-items: center;
+  justify-content: center;
   width: 34px;
   height: 34px;
   border-radius: 50%;
   background: var(--color-primary);
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  font-weight: bold;
-  font-size: 12px;
   color: var(--color-text);
+  font-size: var(--font-size-sm);
+  font-weight: var(--font-weight-bold);
+  flex-shrink: 0;
 }
 
 .sidebar .profile-info {
   display: flex;
   flex-direction: column;
+  min-width: 0;
   overflow: hidden;
 }
 
 .sidebar .profile-info .pname {
-  font-size: 13px;
-  font-weight: 600;
-  color: var(--color-text);
-  white-space: nowrap;
   overflow: hidden;
+  color: var(--color-text);
+  font-size: var(--font-size-md);
+  font-weight: var(--font-weight-semibold);
   text-overflow: ellipsis;
+  white-space: nowrap;
 }
 
 .sidebar .profile-info .nivel-tag {
-  font-size: 11px;
   color: var(--color-muted-2);
+  font-size: var(--font-size-sm);
 }
 
 .sidebar .logout-form {
-  margin: 0;
   width: 100%;
+  margin: 0;
 }
 
 .sidebar .logout-btn {
+  display: flex;
+  align-items: center;
   width: 100%;
   height: 36px;
+  padding: 0 var(--space-3);
+  border: 1px solid var(--border-subtle);
+  border-radius: var(--radius-md);
+  background: var(--surface-subtle);
   color: var(--color-danger);
-  background: rgba(255, 255, 255, 0.03);
-  border: 1px solid rgba(255, 255, 255, 0.08);
-  border-radius: 8px;
-  justify-content: flex-start;
-  padding: 0 12px;
-  font-size: 13px;
+  font-size: var(--font-size-md);
   cursor: pointer;
 }
 
 .sidebar .logout-btn:hover {
-  background: rgba(239, 68, 68, 0.15);
-  border-color: rgba(239, 68, 68, 0.3);
+  background: var(--danger-alpha-15);
+  border-color: var(--danger-alpha-30);
   color: var(--color-danger-hover);
 }
 
 .sidebar .app-version {
-  text-align: center;
-  margin-top: 8px;
-  font-size: 10px;
+  margin-top: var(--space-2);
   color: var(--color-muted-3);
+  font-size: var(--font-size-xs);
+  text-align: center;
 }

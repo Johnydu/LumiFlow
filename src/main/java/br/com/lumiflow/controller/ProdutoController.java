@@ -66,10 +66,10 @@ public class ProdutoController {
     }
 
     private void carregarPagina(Model model, String nome) {
-        model.addAttribute("produtos", nome != null && !nome.isBlank() ? produtoService
-                .buscarPorNome(nome) : produtoService.listarProdutos());
+        model.addAttribute("produtos", produtoService.buscarProdutos(nome));
+
         if (!model.containsAttribute("produtoDTO"))
-            model.addAttribute("produtoDTO", new ProdutoDTO(null,
-                    null, null, null));
+            model.addAttribute("produtoDTO",
+                    new ProdutoDTO(null, null, null, null));
     }
 }

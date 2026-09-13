@@ -53,12 +53,12 @@
                        autocomplete="off"/>
             </div>
 
-            <select class="filtro-select" name="status" onchange="document.getElementById('formFiltros').submit()">
+            <select class="filtro-select" name="status" id="filtroStatus">
                 <option value="">Todos os status</option>
-                <option value="DISPONIVEL" th:selected="${param.status == 'DISPONIVEL'}">Disponível</option>
-                <option value="LIBERADA" th:selected="${param.status == 'LIBERADA'}">Liberada</option>
-                <option value="EM_ANDAMENTO" th:selected="${param.status == 'EM_ANDAMENTO'}">Em andamento</option>
-                <option value="CONCLUIDA" th:selected="${param.status == 'CONCLUIDA'}">Concluída</option>
+                <option value="DISPONIVEL">Disponível</option>
+                <option value="LIBERADA">Liberada</option>
+                <option value="EM_ANDAMENTO">Em andamento</option>
+                <option value="CONCLUIDA">Concluída</option>
             </select>
 
         </form>
@@ -91,7 +91,9 @@
                 </thead>
 
                 <tbody>
-                <tr th:each="ordem : ${ordens}">
+                <!-- LINHA CORRIGIDA: Apenas um tr unificado com o th:each e o th:data-status -->
+                <tr th:each="ordem : ${ordens}"
+                    th:data-status="${ordem.status() != null ? ordem.status().name() : ''}">
 
                     <!-- 1. NÚMERO -->
                     <td class="num" th:text="${ordem.numero()}"></td>
@@ -100,7 +102,7 @@
                     <td class="produto-nome" th:text="${ordem.produtoNome() + ' - ' + ordem.produtoCodigo()
                         + (ordem.variante() != null ? ' (' + ordem.variante() + ')' : '')}"></td>
 
-                    <!-- 3. ETAPA (Coluna que estava faltando) -->
+                    <!-- 3. ETAPA -->
                     <td>
                         <span class="setor-tag" th:text="${ordem.etapaNome() ?: '—'}"></span>
                     </td>

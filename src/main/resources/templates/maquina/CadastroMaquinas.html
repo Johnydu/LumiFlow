@@ -43,22 +43,17 @@
     <div class="lista">
 
       <!-- Filtro por setorId -->
-      <div class="setor-tabs">
-
-        <button type="button"
-                class="setor-tab active"
-                onclick="filtrarSetor(this, 'todos')">
-          Todos
-        </button>
-
-        <button type="button"
-                class="setor-tab"
-                th:each="setor : ${setores}"
-                th:text="${setor.nome}"
-                th:data-setor-nome="${setor.nome}"
-                onclick="handleFiltrarSetor(this)">
-        </button>
-
+      <!-- Filtro por setor via Dropdown -->
+      <div class="filtros-bar" style="margin-bottom: var(--space-4);">
+        <div class="field" style="max-width: 300px; margin: 0;">
+          <select id="filtroSetorSelect" class="form-control" onchange="handleFiltrarSetorSelect(this)">
+            <option value="todos">Todos os setores</option>
+            <option th:each="setor : ${setores}"
+                    th:value="${setor.nome}"
+                    th:text="${setor.nome}">
+            </option>
+          </select>
+        </div>
       </div>
 
       <div class="panel">

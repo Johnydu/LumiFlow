@@ -1,26 +1,17 @@
-/* Container pai da aplicação */
-.app-container {
-    display: flex;
-    min-height: 100vh;
-    width: 100vw;
-    overflow-x: hidden;
-    }
-    /* Evita rolagem
+/* ========================================
+   DASHBOARD
+   ======================================== */
 
-/* Área de conteúdo do Dashboard */
-.content {
-    display: flex;
-    flex-direction: column;
-    gap: 1.5rem;
-    padding: 1.5rem 2rem; /* Aumenta o respiro lateral interno */
-    width: 100%;
-    box-sizing: border-box; /* Garante que o padding não estoure a largura total */
+.app-container {
+  display: flex;
+  width: 100%;
+  min-height: 100vh;
+  overflow-x: hidden;
 }
-/* ============ ALINHAMENTO E CENTRALIZAÇÃO DOS CARDS ============ */
-.card,
+
 .dashboard-card,
 .stat-card {
-    display: flex;
-    flex-direction: column;
-    align-items: center;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
 }

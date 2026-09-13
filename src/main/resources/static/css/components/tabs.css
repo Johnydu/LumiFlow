@@ -1,46 +1,41 @@
-/* =================================================================
-   Componente de Abas (Tabs) - Padrão LumiFlow (Vidro Translúcido)
-   =================================================================== */
+/* ========================================
+   ABAS
+   ======================================== */
 
 .tabs {
-    display: flex;
-    gap: 8px;
-    margin-bottom: 20px;
-    border-bottom: 1px solid rgba(255, 255, 255, 0.08);
-    padding-bottom: 10px;
+  display: flex;
+  flex-wrap: wrap;
+  gap: var(--space-2);
+  margin-bottom: var(--space-5);
+  padding-bottom: var(--space-3);
+  border-bottom: 1px solid var(--border-subtle);
 }
 
 .tabs .tab {
-    background-color: rgba(7, 13, 29, 0.25) !important;
-    backdrop-filter: blur(16px) !important;
-    -webkit-backdrop-filter: blur(16px) !important;
-    color: var(--color-muted, #94a3b8);
-    border: 1px solid rgba(255, 255, 255, 0.08);
-    padding: 10px 18px;
-    font-size: 14px;
-    font-weight: 500;
-    border-radius: 8px;
-    cursor: pointer;
-    transition: all 0.2s ease-in-out;
+  padding: var(--space-3) var(--space-5);
+  border: 1px solid var(--border-subtle);
+  border-radius: var(--radius-md);
+  background: var(--surface-glass);
+  color: var(--color-muted);
+  font-size: var(--font-size-lg);
+  font-weight: var(--font-weight-medium);
+  cursor: pointer;
 }
 
 .tabs .tab:hover {
-    background-color: rgba(255, 255, 255, 0.06) !important;
-    color: var(--color-text, #ffffff);
-    border-color: rgba(255, 255, 255, 0.2);
+  border-color: var(--border-strong);
+  background: var(--surface-hover);
+  color: var(--color-text);
 }
 
-/* Estado Ativo Padrão (Consumo / Geral) */
 .tabs .tab.active {
-    background-color: var(--color-primary, #0f172a) !important;
-    color: #ffffff;
-    border-color: var(--color-primary, #0f172a);
-    box-shadow: 0 0 12px var(--color-primary-soft, rgba(97, 87, 255, 0.3));
+  border-color: var(--color-primary);
+  background: var(--color-primary);
+  color: var(--color-text);
+  box-shadow: 0 0 12px var(--color-primary-soft);
 }
 
-/* Variação opcional para aba de Entrada */
 .tabs .tab.entrada.active {
-    background-color: var(--color-success, #10b981) !important;
-    border-color: var(--color-success, #10b981);
-    color: #ffffff;
+  border-color: var(--color-success);
+  background: var(--color-success);
 }
