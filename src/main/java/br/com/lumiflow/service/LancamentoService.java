@@ -149,19 +149,60 @@ public class LancamentoService {
 
     @Transactional
     public void registrarRefugo(Long ordemId, Long ordemSetorId, RefugoDTO dto, Usuario usuarioLogado) {
-        OrdemSetor ordemSetor = buscarEtapaAtiva(ordemId, ordemSetorId);
+        OrdemSetor ordemSetorAtual = buscarEtapaAtiva(ordemId, ordemSetorId);
         Setor setorOrigem = setorService.buscarSetorPorId(dto.setorOrigemId());
+
+        if (dto.quantidade() > ordemSetorAtual.getQtdPendente()) {
+            throw new BusinessException(AppMessages.ERROR_LAUNCH_EXCEEDS_PENDING);
+        }
+
+        // Abate da etapa atual — as peças "saem" dali
+        ordemSetorAtual.setQtdPendente(ordemSetorAtual.getQtdPendente() - dto.quantidade());
+        if (ordemSetorAtual.getQtdPendente() == 0 && ordemSetorAtual.getQtdProduzida() > 0) {
+            ordemSetorAtual.setStatus(EstatusOrdemProducao.CONCLUIDA);
+            ordemSetorAtual.setFim(LocalDateTime.now());
+        }
+        ordemSetorRepository.save(ordemSetorAtual);
+
+        // Cria/reaproveita a pendência de refugo no setor de origem
+        OrdemSetor ordemSetorOrigem = ordemSetorRepository
+                .findByOrdemProducaoIdAndSetorIdAndStatusIn(
+                        ordemSetorAtual.getOrdemProducao().getId(), setorOrigem.getId(),
+                        List.of(EstatusOrdemProducao.DISPONIVEL, EstatusOrdemProducao.EM_ANDAMENTO))
+                .orElseGet(() -> criarOrdemSetorParaRefugo(ordemSetorAtual.getOrdemProducao(), setorOrigem));
+
+        ordemSetorOrigem.setQtdRecebida(ordemSetorOrigem.getQtdRecebida() + dto.quantidade());
+        ordemSetorOrigem.setQtdPendente(ordemSetorOrigem.getQtdPendente() + dto.quantidade());
+        ordemSetorRepository.save(ordemSetorOrigem);
 
         Refugo refugo = new Refugo();
         refugo.setQtdRefugo(dto.quantidade());
         refugo.setMotivo(dto.motivo());
         refugo.setDestino(dto.destino());
         refugo.setDataHora(LocalDateTime.now());
-        refugo.setOrdemSetor(ordemSetor);
+        refugo.setOrdemSetor(ordemSetorAtual);
         refugo.setSetorOrigem(setorOrigem);
         refugo.setUsuario(usuarioLogado);
-
         refugoRepository.save(refugo);
+    }
+
+    private OrdemSetor criarOrdemSetorParaRefugo(OrdemProducao ordem, Setor setorOrigem) {
+        // Descobre a sequência desse setor no roteiro do produto
+        Integer sequencia = roteiroProdutoRepository.buscarPorProdutoId(ordem.getProduto().getId()).stream()
+                .filter(rp -> rp.getSetor().getId().equals(setorOrigem.getId()))
+                .map(RoteiroProduto::getSequencia)
+                .findFirst()
+                .orElseThrow(() -> new BusinessException(AppMessages.ERROR_PRODUCT_WITHOUT_ROUTE));
+
+        OrdemSetor novo = new OrdemSetor();
+        novo.setOrdemProducao(ordem);
+        novo.setSetor(setorOrigem);
+        novo.setSequencia(sequencia);
+        novo.setQtdRecebida(0);
+        novo.setQtdProduzida(0);
+        novo.setQtdPendente(0);
+        novo.setStatus(EstatusOrdemProducao.DISPONIVEL);
+        return novo;
     }
 
     @Transactional(readOnly = true)
@@ -180,6 +221,7 @@ public class LancamentoService {
         }
 
         Maquina maquina = maquinaRepository.findById(dto.maquinaId())
+                .filter(m -> m.getSetor().getId().equals(refugo.getSetorOrigem().getId()))
                 .orElseThrow(() -> new BusinessException(AppMessages.ERROR_MACHINE_NOTFOUND));
 
         Retrabalho retrabalho = new Retrabalho();
@@ -189,8 +231,31 @@ public class LancamentoService {
         retrabalho.setRefugo(refugo);
         retrabalho.setMaquina(maquina);
         retrabalho.setUsuario(usuarioLogado);
-
         retrabalhoRepository.save(retrabalho);
+
+        // A quantidade retrabalhada avança como se fosse produção normal do setor de origem
+        OrdemSetor ordemSetorOrigem = ordemSetorRepository
+                .findByOrdemProducaoIdAndSetorIdAndStatusIn(
+                        ordemId, refugo.getSetorOrigem().getId(),
+                        List.of(EstatusOrdemProducao.DISPONIVEL, EstatusOrdemProducao.EM_ANDAMENTO))
+                .orElseThrow(() -> new BusinessException(AppMessages.ERROR_ORDER_NOT_AVAILABLE));
+
+        if (dto.quantidade() > ordemSetorOrigem.getQtdPendente()) {
+            throw new BusinessException(AppMessages.ERROR_LAUNCH_EXCEEDS_PENDING);
+        }
+
+        ordemSetorOrigem.setQtdProduzida(ordemSetorOrigem.getQtdProduzida() + dto.quantidade());
+        ordemSetorOrigem.setQtdPendente(ordemSetorOrigem.getQtdPendente() - dto.quantidade());
+        ordemSetorOrigem.setStatus(EstatusOrdemProducao.EM_ANDAMENTO);
+
+        avancarParaProximaEtapa(ordemSetorOrigem, dto.quantidade());
+
+        if (ordemSetorOrigem.getQtdPendente() == 0) {
+            ordemSetorOrigem.setStatus(EstatusOrdemProducao.CONCLUIDA);
+            ordemSetorOrigem.setFim(LocalDateTime.now());
+        }
+
+        ordemSetorRepository.save(ordemSetorOrigem);
     }
 
     @Transactional(readOnly = true)

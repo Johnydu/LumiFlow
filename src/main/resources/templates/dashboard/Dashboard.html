@@ -76,7 +76,8 @@
                 <div class="panel">
                     <div class="panel-header">
                         <span class="panel-title">Ordens em andamento</span>
-                        <span class="panel-count" th:text="${(paginaDeOrdens != null ? paginaDeOrdens.totalElements : 0) + ' ordem(ns)'}">0 ordem(ns)</span>
+                        <span class="panel-count"
+                              th:text="${(paginaDeOrdens != null ? paginaDeOrdens.totalElements : 0) + ' ordem(ns)'}">0 ordem(ns)</span>
                     </div>
 
                     <table>
@@ -86,31 +87,35 @@
                             <th>Item</th>
                             <th>Qtd</th>
                             <th>Progresso</th>
-                            <th>Setor</th>
+                            <th>Etapa atual</th>
+                            <th style="width:90px; text-align:center;">Ação</th>
                         </tr>
                         </thead>
                         <tbody>
-                        <tr th:each="ordem : ${paginaDeOrdens?.content}">
-                            <td class="num" th:text="${ordem?.codigo ?: (ordem?.id != null ? 'OP-' + ordem.id : '-')}">-</td>
-                            <td th:text="${ordem?.produto?.nome ?: '-'}">-</td>
-                            <td class="num" th:text="${ordem?.quantidade ?: 0}">0</td>
+                        <tr th:each="ordem : ${ordensAtivas}">
+                            <td class="num" th:text="${ordem.numero()}">-</td>
+                            <td th:text="${ordem.produtoNome()}">-</td>
+                            <td class="num" th:text="${ordem.quantidade()}">0</td>
                             <td>
                                 <div class="table-progress">
-                                    <span th:style="'width:' + ${ordem?.progresso != null ? #numbers.formatDecimal(ordem.progresso, 1, 0) : 0} + '%; ' + (${ordem?.progresso != null && ordem.progresso >= 100} ? 'background:var(--color-success);' : '')"></span>
+                                    <span th:style="'width:' + ${#numbers.formatDecimal(ordem.progresso(), 1, 0)} + '%;'"></span>
                                 </div>
                             </td>
                             <td>
-                                <span class="status"
-                                      th:classappend="${ordem?.status?.name() == 'CONCLUIDO' || (ordem?.progresso != null && ordem.progresso >= 100)} ? 'status-green' : 'status-purple'"
-                                      th:text="${ordem?.setorAtual?.nome ?: '-'}">
-                                    -
-                                </span>
+            <span class="status"
+                  th:classappend="${ordem.status() == 'CONCLUIDA'} ? 'status-green' : 'status-purple'"
+                  th:text="${ordem.etapaAtualNome() != null ? ordem.setorAtualNome() + ' - ' + ordem.etapaAtualNome() : ordem.setorAtualNome()}">
+                -
+            </span>
+                            </td>
+                            <td style="text-align:center;">
+                                <a th:href="@{/dashboard/ordens/{id}/detalhes(id=${ordem.id()})}" class="btn-ver">Detalhes</a>
                             </td>
                         </tr>
 
-                        <tr th:if="${paginaDeOrdens == null || paginaDeOrdens.isEmpty()}">
-                            <td colspan="5" style="text-align:center; color:var(--color-muted-5); padding: 2rem;">
-                                Nenhuma ordem em andamento no momento.
+                        <tr th:if="${ordensAtivas == null || #lists.isEmpty(ordensAtivas)}">
+                            <td colspan="6" style="text-align:center; color:var(--color-muted-5); padding: 2rem;">
+                                Nenhuma ordem ativa no momento.
                             </td>
                         </tr>
                         </tbody>
@@ -136,7 +141,8 @@
                             </div>
                         </div>
 
-                        <div th:if="${resumoSetores == null || #lists.isEmpty(resumoSetores)}" style="text-align:center; color:var(--color-muted-5); padding: 2rem;">
+                        <div th:if="${resumoSetores == null || #lists.isEmpty(resumoSetores)}"
+                             style="text-align:center; color:var(--color-muted-5); padding: 2rem;">
                             Nenhum setor encontrado.
                         </div>
                     </div>

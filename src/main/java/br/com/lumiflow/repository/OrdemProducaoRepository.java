@@ -9,6 +9,7 @@ import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.query.Param;
 
+import java.time.LocalDateTime;
 import java.util.List;
 
 
@@ -28,7 +29,7 @@ public interface OrdemProducaoRepository extends JpaRepository<OrdemProducao, Lo
             @Param("status") String status
     );
 
-
+    List<OrdemProducao> findByStatusNotOrderByDataCriacaoDesc(EstatusOrdemProducao status, Pageable pageable);
 
     Long countByStatus(EstatusOrdemProducao status);
 
@@ -42,4 +43,7 @@ public interface OrdemProducaoRepository extends JpaRepository<OrdemProducao, Lo
 
     @Query(value = "SELECT nextval('ordem_producao_numero_seq')", nativeQuery = true)
     Long proximoNumeroSequencial();
+
+    Long countByStatusNot(EstatusOrdemProducao status);
+    Long countByStatusAndAtualizadoEmBetween(EstatusOrdemProducao status, LocalDateTime inicio, LocalDateTime fim);
 }

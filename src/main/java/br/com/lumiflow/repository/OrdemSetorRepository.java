@@ -56,4 +56,11 @@ public interface OrdemSetorRepository extends JpaRepository<OrdemSetor, Long> {
             @Param("ordemProducaoId") Long ordemProducaoId,
             @Param("sequencia") Integer sequencia,
             @Param("variante") String variante);
+
+    Optional<OrdemSetor> findByOrdemProducaoIdAndSetorIdAndStatusIn(Long ordemProducaoId, Long setorId,
+                                                                    List<EstatusOrdemProducao> status);
+
+    List<OrdemSetor> findByOrdemProducaoIdInOrderBySequenciaAsc(List<Long> ordemProducaoIds);
+
+    Long countByStatus(EstatusOrdemProducao status);
 }

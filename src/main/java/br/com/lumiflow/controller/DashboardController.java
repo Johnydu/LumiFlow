@@ -1,5 +1,6 @@
 package br.com.lumiflow.controller;
 
+import br.com.lumiflow.dto.dashboard.DashboardOrdemDTO;
 import br.com.lumiflow.dto.dashboard.DashboardResumoDTO;
 import br.com.lumiflow.dto.dashboard.SetorResumoDTO;
 import br.com.lumiflow.dto.ordens.OrdemProducaoDTO;
@@ -21,22 +22,20 @@ import java.util.List;
 public class DashboardController {
 
     private final DashboardService dashboardService;
-    private final OrdemProducaoService ordemProducaoService;
+
 
     @GetMapping
-    private String carregarMetricas(Model model) {
+    public String carregarMetricas(Model model) {
         DashboardResumoDTO resumoDTO = dashboardService.obterResumoEstatisticas();
-        Page<OrdemProducaoDTO> paginaOrdens = ordemProducaoService.listarOrdens(0, 10);
+        List<DashboardOrdemDTO> ordensAtivas = dashboardService.listarOrdensAtivas(10);
         List<SetorResumoDTO> resumoSetores = dashboardService.obterResumoSetores();
 
-        model.addAttribute("totalOrdens", resumoDTO.totalOrdens() );
-        model.addAttribute("ordensAndamento", resumoDTO.ordensAndamento() );
-        model.addAttribute("ordensConcluidas", resumoDTO.ordensConcluidas() );
-        model.addAttribute("ordensPendentes", resumoDTO.ordensPendentes() );
-
-        model.addAttribute("listaOrdensEmAndamento",paginaOrdens);
-
-        model.addAttribute("resumosSetores", resumoSetores);
+        model.addAttribute("totalOrdens", resumoDTO.totalOrdens());
+        model.addAttribute("ordensAndamento", resumoDTO.ordensAndamento());
+        model.addAttribute("ordensConcluidas", resumoDTO.ordensConcluidas());
+        model.addAttribute("ordensPendentes", resumoDTO.ordensPendentes());
+        model.addAttribute("ordensAtivas", ordensAtivas);
+        model.addAttribute("resumoSetores", resumoSetores);
 
         return "dashboard/Dashboard";
     }
