@@ -41,7 +41,8 @@ textarea {
   flex-direction: column;
   min-width: 0;
   min-height: 100vh;
-  overflow: visible; /* Alterado de hidden para visible para liberar o scroll da página */
+  margin-left: var(--sidebar-width);
+  overflow: visible;
 }
 
 .content {

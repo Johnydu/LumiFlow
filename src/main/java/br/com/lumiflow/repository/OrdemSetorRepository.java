@@ -1,5 +1,6 @@
 package br.com.lumiflow.repository;
 
+import br.com.lumiflow.dto.dashboard.SetorResumoDTO;
 import br.com.lumiflow.entity.OrdemSetor;
 import br.com.lumiflow.entity.enums.EstatusOrdemProducao;
 import org.springframework.data.jpa.repository.JpaRepository;
@@ -7,6 +8,7 @@ import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.query.Param;
 import org.springframework.stereotype.Repository;
 
+import java.time.LocalDateTime;
 import java.util.List;
 import java.util.Optional;
 
@@ -63,4 +65,21 @@ public interface OrdemSetorRepository extends JpaRepository<OrdemSetor, Long> {
     List<OrdemSetor> findByOrdemProducaoIdInOrderBySequenciaAsc(List<Long> ordemProducaoIds);
 
     Long countByStatus(EstatusOrdemProducao status);
+
+    Long countByStatusNot(EstatusOrdemProducao status);
+
+    Long countByStatusAndFimBetween(EstatusOrdemProducao status, LocalDateTime inicio, LocalDateTime fim);
+
+    @Query("""
+    SELECT new br.com.lumiflow.dto.dashboard.SetorResumoDTO(
+        s.id,
+        s.nome,
+        COUNT(os.id)
+    )
+    FROM Setor s
+    LEFT JOIN OrdemSetor os ON os.setor = s AND os.status = br.com.lumiflow.entity.enums.EstatusOrdemProducao.DISPONIVEL
+    GROUP BY s.id, s.nome
+    ORDER BY COUNT(os.id) DESC
+""")
+    List<SetorResumoDTO> contarEtapasDisponiveisPorSetor();
 }

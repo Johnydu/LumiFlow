@@ -211,4 +211,6 @@
   /* Cores de apoio para tags e badges (ajuste conforme a sua paleta) */
   --tag-etapa-bg: rgba(var(--color-primary-rgb, 79, 70, 229), 0.10); /* Fundo com tom leve da cor primária */
   --tag-etapa-color: var(--color-primary, #4f46e5); /* Texto na cor primária */
+
+  --control-height: 38px;
 }

@@ -7,69 +7,69 @@
 .btn-ver,
 .btn-liberar,
 .btn-lancar {
-  min-width: unset !important;
-  height: var(--btn-height) !important;
-  padding: 0 12px !important;
-  border-radius: var(--radius-md) !important;
-  border: 1px solid !important;
-  font-size: var(--btn-font-size) !important;
-  font-weight: 500 !important;
-  letter-spacing: .2px !important;
-  display: inline-flex !important;
-  align-items: center !important;
-  justify-content: center !important;
-  gap: var(--space-2) !important;
-  cursor: pointer !important;
-  transition: background 0.15s ease, border-color 0.15s ease !important;
-  box-shadow: none !important;
-  text-shadow: none !important;
-  text-decoration: none !important; /* Remove qualquer sublinhado */
+  min-width: unset;
+  height: var(--btn-height);
+  padding: 0 12px;
+  border-radius: var(--radius-md);
+  border: 1px solid;
+  font-size: var(--btn-font-size);
+  font-weight: 500;
+  letter-spacing: .2px;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: var(--space-2);
+  cursor: pointer;
+  transition: background 0.15s ease, border-color 0.15s ease;
+  box-shadow: none;
+  text-shadow: none;
+  text-decoration: none;
 }
 
 /* EDITAR (Azul-acinzentado forte e sólido) */
 .btn-edit {
-  background: var(--btn-edit-bg) !important;
-  border-color: var(--btn-edit-border) !important;
-  color: var(--btn-edit-color) !important;
+  background: var(--btn-edit-bg);
+  border-color: var(--btn-edit-border);
+  color: var(--btn-edit-color);
 }
 .btn-edit:hover {
-  background: var(--btn-edit-border) !important;
-  border-color: var(--btn-edit-bg) !important;
+  background: var(--btn-edit-border);
+  border-color: var(--btn-edit-bg);
 }
 
 /* EXCLUIR (Vermelho forte e sólido) */
 .btn-del {
-  background: var(--btn-del-bg) !important;
-  border-color: var(--btn-del-border) !important;
-  color: var(--btn-del-color) !important;
+  background: var(--btn-del-bg);
+  border-color: var(--btn-del-border);
+  color: var(--btn-del-color);
 }
 .btn-del:hover {
-  background: var(--btn-del-border) !important;
-  border-color: var(--btn-del-bg) !important;
+  background: var(--btn-del-border);
+  border-color: var(--btn-del-bg);
 }
 
 /* LIBERAR E VER (Verde forte/sucesso) */
 .btn-liberar,
 .btn-ver {
-  background: var(--btn-success-bg) !important;
-  border-color: var(--btn-success-border) !important;
-  color: var(--btn-success-color) !important;
+  background: var(--btn-success-bg);
+  border-color: var(--btn-success-border);
+  color: var(--btn-success-color);
 }
 .btn-liberar:hover,
 .btn-ver:hover {
-  background: var(--btn-success-border) !important;
-  border-color: var(--btn-success-bg) !important;
+  background: var(--btn-success-border);
+  border-color: var(--btn-success-bg);
 }
 
 /* LANÇAR (Azul forte, sólido e destacado) */
 .btn-lancar {
-  background: var(--btn-neutral-bg) !important;
-  border-color: var(--btn-neutral-border) !important;
-  color: var(--btn-neutral-color) !important;
+  background: var(--btn-neutral-bg);
+  border-color: var(--btn-neutral-border);
+  color: var(--btn-neutral-color);
 }
 .btn-lancar:hover {
-  background: var(--btn-neutral-border) !important;
-  border-color: var(--btn-neutral-bg) !important;
+  background: var(--btn-neutral-border);
+  border-color: var(--btn-neutral-bg);
 }
 
 /* ============ BTN CANCEL ============ */
@@ -81,7 +81,7 @@
   color: var(--color-muted);
   font-size: var(--font-size-md);
   cursor: pointer;
-  text-decoration: none !important;
+  text-decoration: none;
 }
 .logout-btn:focus-visible {
   outline: 2px solid var(--color-primary);
@@ -98,7 +98,7 @@
   font-size: var(--font-size-md);
   cursor: pointer;
   font-weight: 500;
-  text-decoration: none !important;
+  text-decoration: none;
 }
 
 /* ============ PAGINATION BUTTONS ============ */
@@ -114,7 +114,7 @@
   display: flex;
   align-items: center;
   justify-content: center;
-  text-decoration: none !important;
+  text-decoration: none;
 }
 
 .pag-btn.active {
@@ -129,20 +129,25 @@ body.page-vidracaria-vidracaria .btn-submit.entrada {
 
 /* Estilo para o Botão Dividir */
 .btn-dividir {
+  min-width: unset;
+  height: var(--btn-height);
+  padding: 0 12px;
+  border-radius: var(--radius-md);
+  border: 1px solid var(--color-warning-border);
+  font-size: var(--btn-font-size);
+  font-weight: 500;
+  letter-spacing: .2px;
   display: inline-flex;
   align-items: center;
   justify-content: center;
-  padding: var(--space-2) var(--space-3);
-  font-size: var(--font-size-md);
-  font-weight: 500;
-  font-family: inherit;
-  color: var(--color-warning-text);
-  background-color: var(--color-warning-bg);
-  border: 1px solid var(--color-warning-border);
-  border-radius: var(--radius-sm);
+  gap: var(--space-2);
   cursor: pointer;
   transition: background-color 0.2s ease, border-color 0.2s ease;
+  box-shadow: none;
+  text-shadow: none;
   text-decoration: none;
+  color: var(--color-warning-text);
+  background-color: var(--color-warning-bg);
 }
 
 .btn-dividir:hover {

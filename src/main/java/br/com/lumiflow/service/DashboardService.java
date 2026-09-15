@@ -8,10 +8,7 @@ import br.com.lumiflow.entity.OrdemProducao;
 import br.com.lumiflow.entity.OrdemSetor;
 import br.com.lumiflow.entity.RoteiroProduto;
 import br.com.lumiflow.entity.enums.EstatusOrdemProducao;
-import br.com.lumiflow.repository.OrdemProducaoRepository;
-import br.com.lumiflow.repository.OrdemSetorRepository;
-import br.com.lumiflow.repository.RoteiroProdutoRepository;
-import br.com.lumiflow.repository.SetorRepository;
+import br.com.lumiflow.repository.*;
 import lombok.AllArgsConstructor;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.stereotype.Service;
@@ -29,27 +26,27 @@ import java.util.stream.Collectors;
 public class DashboardService {
 
     private final OrdemProducaoRepository ordemProducaoRepository;
-    private final SetorRepository setorRepository;
     private final RoteiroProdutoRepository roteiroProdutoRepository;
     private final OrdemSetorRepository ordemSetorRepository;
+    private final RefugoRepository refugoRepository;
 
     @Transactional(readOnly = true)
     public DashboardResumoDTO obterResumoEstatisticas() {
-        Long totalAtivas = ordemProducaoRepository.countByStatusNot(EstatusOrdemProducao.CONCLUIDA);
+        Long totalAtivas = ordemSetorRepository.countByStatusNot(EstatusOrdemProducao.CONCLUIDA);
         Long etapasEmAndamento = ordemSetorRepository.countByStatus(EstatusOrdemProducao.EM_ANDAMENTO);
-        Long etapasDisponiveis = ordemSetorRepository.countByStatus(EstatusOrdemProducao.DISPONIVEL);
-        Long concluidasHoje = ordemProducaoRepository.countByStatusAndAtualizadoEmBetween(
+        Long concluidasHoje = ordemSetorRepository.countByStatusAndFimBetween(
                 EstatusOrdemProducao.CONCLUIDA,
                 LocalDate.now().atStartOfDay(),
                 LocalDate.now().atTime(23, 59, 59));
+        Long pecasEmRetrabalho = contarPecasEmRetrabalhoAberto();
 
-        return new DashboardResumoDTO(totalAtivas, etapasEmAndamento, concluidasHoje, etapasDisponiveis);
+        return new DashboardResumoDTO(totalAtivas, etapasEmAndamento, concluidasHoje, pecasEmRetrabalho);
     }
 
 
     @Transactional(readOnly = true)
     public List<SetorResumoDTO> obterResumoSetores() {
-        return setorRepository.obterResumoOrdensPorSetor();
+        return ordemSetorRepository.contarEtapasDisponiveisPorSetor();
     }
 
     @Transactional(readOnly = true)
@@ -116,5 +113,21 @@ public class DashboardService {
                 setorNome,
                 ordem.getStatus().name()
         );
+    }
+
+    @Transactional(readOnly = true)
+    public Long contarPecasEmRetrabalhoAberto() {
+        List<Object[]> resultados = refugoRepository.buscarRefugosComTotalRetrabalhado();
+
+        long total = 0;
+        for (Object[] row : resultados) {
+            Integer qtdRefugo = (Integer) row[1];
+            Long qtdRetrabalhada = (Long) row[2];
+            long pendente = qtdRefugo - qtdRetrabalhada;
+            if (pendente > 0) {
+                total += pendente;
+            }
+        }
+        return total;
     }
 }
