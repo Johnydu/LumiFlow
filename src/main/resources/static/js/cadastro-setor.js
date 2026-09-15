@@ -11,17 +11,6 @@ function hideForm() {
 
 function limparFormularioSetor() {
   const form = document.getElementById('setor-form');
-  if (form) form.reset();
-
-  const setorId = document.getElementById('id');
-  if (setorId) setorId.value = '';
-
-  const etapasList = document.getElementById('etapas-setor-list');
-  if (etapasList) etapasList.innerHTML = '';
-}
-
-function novoSetorForm() {
-  const form = document.getElementById('setor-form');
   if (form) form.action = '/dashboard/setores';
 
   const formTitle = document.getElementById('form-title');
@@ -30,12 +19,17 @@ function novoSetorForm() {
   const setorId = document.getElementById('id');
   if (setorId) setorId.value = '';
 
+  const setorNome = document.getElementById('nome');
+  if (setorNome) setorNome.value = '';
+
   const etapasList = document.getElementById('etapas-setor-list');
   if (etapasList) etapasList.innerHTML = '';
+}
 
-  // Ao criar um novo setor, já iniciamos com uma linha de etapa em branco opcional
+function novoSetorForm() {
+  limparFormularioSetor();
+  // Cria uma primeira linha em branco por padrão
   adicionarEtapaSetor();
-
   showForm();
 }
 
@@ -44,7 +38,6 @@ function adicionarEtapaSetor(nomeEtapa = '', idEtapa = '', ordemEtapa = '') {
   if (!container) return;
 
   const index = container.children.length;
-  const ordemCalculada = ordemEtapa !== '' ? ordemEtapa : (index + 1);
 
   const row = document.createElement('div');
   row.className = 'etapa-item';
@@ -53,38 +46,34 @@ function adicionarEtapaSetor(nomeEtapa = '', idEtapa = '', ordemEtapa = '') {
   row.style.marginBottom = '8px';
   row.style.alignItems = 'center';
 
+  // Input de ID da etapa (Mantém o ID real recebido do banco, ou vazio se for nova)
   const inputId = document.createElement('input');
   inputId.type = 'hidden';
   inputId.name = `etapas[${index}].id`;
-  inputId.value = idEtapa;
+  inputId.value = idEtapa !== undefined && idEtapa !== null ? idEtapa : '';
 
+  // Input da Ordem da etapa
   const inputOrdem = document.createElement('input');
   inputOrdem.type = 'hidden';
   inputOrdem.name = `etapas[${index}].ordem`;
-  inputOrdem.value = ordemCalculada;
+  inputOrdem.value = ordemEtapa || (index + 1);
 
+  // Input do Nome da etapa
   const inputNome = document.createElement('input');
   inputNome.type = 'text';
   inputNome.name = `etapas[${index}].nome`;
-  inputNome.className = 'form-control';
+  inputNome.className = 'form-control input-etapa-nome';
   inputNome.placeholder = 'Nome da etapa (Ex: 1ª Dobra)';
-  inputNome.value = nomeEtapa;
+  inputNome.value = nomeEtapa || '';
   inputNome.required = true;
   inputNome.style.flex = '1';
-  inputNome.style.padding = '8px';
-  inputNome.style.border = '1px solid var(--color-muted-3, #ccc)';
-  inputNome.style.borderRadius = '4px';
 
+  // Botão de remover
   const btnRemover = document.createElement('button');
   btnRemover.type = 'button';
   btnRemover.className = 'btn-del';
   btnRemover.textContent = '✕';
-  btnRemover.style.background = '#ff4d4d';
-  btnRemover.style.color = 'white';
-  btnRemover.style.border = 'none';
-  btnRemover.style.padding = '6px 10px';
-  btnRemover.style.borderRadius = '4px';
-  btnRemover.style.cursor = 'pointer';
+  btnRemover.style.padding = '6px 12px';
   btnRemover.addEventListener('click', () => removerLinhaEtapaSetor(btnRemover));
 
   row.appendChild(inputId);
@@ -97,27 +86,32 @@ function adicionarEtapaSetor(nomeEtapa = '', idEtapa = '', ordemEtapa = '') {
 }
 
 function removerLinhaEtapaSetor(btn) {
-  btn.closest('.etapa-item').remove();
-  reindexarEtapasSetor();
+  const row = btn.closest('.etapa-item');
+  if (row) {
+    row.remove();
+    reindexarEtapasSetor();
+  }
 }
 
-// Reindexa os inputs para o Spring fazer o bind correto em etapas[0], etapas[1]...
+// Reindexa os inputs para o Spring realizar o binding correto no List<EtapaSetorDTO>
 function reindexarEtapasSetor() {
   document.querySelectorAll('#etapas-setor-list .etapa-item').forEach((item, index) => {
-    const inputId = item.querySelector('input[name$=".id"]');
-    const inputOrdem = item.querySelector('input[name$=".ordem"]');
-    const inputNome = item.querySelector('input[type="text"]');
+    const inputId = item.querySelector('input[name*=".id"]');
+    const inputOrdem = item.querySelector('input[name*=".ordem"]');
+    const inputNome = item.querySelector('input[name*=".nome"]');
 
     if (inputId) inputId.name = `etapas[${index}].id`;
     if (inputOrdem) {
       inputOrdem.name = `etapas[${index}].ordem`;
-      inputOrdem.value = index + 1; // Atualiza a ordem sequencial automaticamente
+      inputOrdem.value = index + 1;
     }
     if (inputNome) inputNome.name = `etapas[${index}].nome`;
   });
 }
 
-async function editarSetor(id, nome) {
+async function editarSetor(id, nome, buttonRef) {
+  limparFormularioSetor();
+
   const form = document.getElementById('setor-form');
   if (form) form.action = `/dashboard/setores/${id}/editar`;
 
@@ -130,24 +124,48 @@ async function editarSetor(id, nome) {
   const setorNome = document.getElementById('nome');
   if (setorNome) setorNome.value = nome;
 
-  const etapasList = document.getElementById('etapas-setor-list');
-  if (etapasList) etapasList.innerHTML = '';
+  let etapasCarregadas = false;
 
-  // Busca as etapas cadastradas do setor via API para edição
+  // 1. Tenta carregar via API (fetch)
   try {
     const response = await fetch(`/dashboard/setores/${id}/etapas`);
     if (response.ok) {
       const etapas = await response.json();
-      if (etapas && etapas.length > 0) {
+      if (Array.isArray(etapas) && etapas.length > 0) {
         etapas.forEach(etapa => {
+          // Passa explicitamente o id, nome e ordem vindos da API
           adicionarEtapaSetor(etapa.nome, etapa.id, etapa.ordem);
         });
-      } else {
-        adicionarEtapaSetor(); // Garante uma linha vazia se o setor não tiver etapas cadastradas
+        etapasCarregadas = true;
       }
     }
   } catch (e) {
-    console.error('Erro ao carregar etapas do setor para edição', e);
+    console.warn('Falha no fetch de etapas, tentando fallback HTML...', e);
+  }
+
+  // 2. Fallback: Se o fetch falhar ou retornar vazio, extrai direto da tabela HTML
+  if (!etapasCarregadas && buttonRef) {
+    const tr = buttonRef.closest('tr');
+    if (tr) {
+      const tagsEtapas = tr.querySelectorAll('.tag-etapa');
+      if (tagsEtapas.length > 0) {
+        tagsEtapas.forEach((tag, idx) => {
+          const nomeTexto = tag.textContent.trim();
+          if (nomeTexto) {
+            adicionarEtapaSetor(
+              nomeTexto,
+              tag.getAttribute('data-id'),
+              tag.getAttribute('data-ordem') || idx + 1
+            );
+          }
+        });
+        etapasCarregadas = true;
+      }
+    }
+  }
+
+  // 3. Se não tiver nenhuma etapa, adiciona 1 linha vazia
+  if (!etapasCarregadas) {
     adicionarEtapaSetor();
   }
 
@@ -157,7 +175,7 @@ async function editarSetor(id, nome) {
 function editarSetorDoBotao(button) {
   const id = button.getAttribute('data-id');
   const nome = button.getAttribute('data-nome');
-  editarSetor(id, nome);
+  editarSetor(id, nome, button);
 }
 
 // ============================================================
@@ -174,14 +192,6 @@ function initFiltroBuscaSetores() {
 
   const formBusca = inputBusca.closest('form');
   if (!formBusca) return;
-
-  // Mantém o foco e a posição do cursor no input ao atualizar via AJAX
-  if (inputBusca.value) {
-    const val = inputBusca.value;
-    inputBusca.focus();
-    inputBusca.value = '';
-    inputBusca.value = val;
-  }
 
   let timeout = null;
 
@@ -209,13 +219,12 @@ function initFiltroBuscaSetores() {
 
           if (novaLista && listaAtual) {
             listaAtual.replaceWith(novaLista);
-            initFiltroBuscaSetores(); // Reatacha o evento após substituir o DOM
+            initFiltroBuscaSetores();
           }
         }
       } catch (error) {
-        console.error('Erro na busca dinâmica de setores, enviando via submit normal:', error);
-        formBusca.submit();
+        console.error('Erro na busca dinâmica:', error);
       }
-    }, 400); // 400ms de atraso (debounce)
+    }, 400);
   });
 }

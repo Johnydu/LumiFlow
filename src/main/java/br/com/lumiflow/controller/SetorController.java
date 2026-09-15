@@ -1,22 +1,18 @@
 package br.com.lumiflow.controller;
 
 import br.com.lumiflow.config.AppMessages;
-import br.com.lumiflow.dto.etapaSetor.EtapaSetorDTO;
 import br.com.lumiflow.dto.setor.SetorDTO;
-import br.com.lumiflow.entity.Setor;
 import br.com.lumiflow.service.SetorService;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.validation.Valid;
 import lombok.AllArgsConstructor;
 import org.springframework.context.MessageSource;
-import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
-import java.util.List;
 import java.util.Locale;
 
 @Controller
@@ -40,16 +36,6 @@ public class SetorController {
         }
 
         return "setor/Setores";
-    }
-
-    @GetMapping("/{id}/etapas")
-    @ResponseBody
-    public ResponseEntity<List<EtapaSetorDTO>> buscarEtapasDoSetor(@PathVariable Long id) {
-        Setor setor = setorService.buscarSetorPorId(id);
-        List<EtapaSetorDTO> etapasDto = setor.getEtapas().stream()
-                .map(e -> new EtapaSetorDTO(e.getId(), e.getNome(), e.getOrdem()))
-                .toList();
-        return ResponseEntity.ok(etapasDto);
     }
 
     @PostMapping
@@ -113,7 +99,7 @@ public class SetorController {
 
         if (!model.containsAttribute("setorDTO")) {
             model.addAttribute("setorDTO",
-                    new SetorDTO(null, null, null, null));
+                    new SetorDTO(null, null, null));
         }
     }
 }

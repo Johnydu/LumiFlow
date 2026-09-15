@@ -8,7 +8,7 @@ import java.util.List;
 
 @Repository
 public interface EtapaSetorRepository extends JpaRepository<EtapaSetor, Long> {
-    List<EtapaSetor> findBySetorId(Long setorId);
+    List<EtapaSetor> findBySetorIdOrderByOrdemAsc(Long setorId);
 
     void deleteAllBySetorId(long id);
 }

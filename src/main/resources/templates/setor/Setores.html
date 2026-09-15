@@ -77,6 +77,8 @@
               <div class="etapas-cell-container">
                                 <span th:each="etapa : ${setor.etapas}"
                                       class="tag-etapa"
+                                      th:data-id="${etapa.id}"
+                                      th:data-ordem="${etapa.ordem}"
                                       th:text="${etapa.nome}">
                                 </span>
                 <span th:if="${#lists.isEmpty(setor.etapas)}"

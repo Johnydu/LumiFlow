@@ -16,8 +16,12 @@ import org.springframework.dao.DataIntegrityViolationException;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.util.HashMap;
+import java.util.HashSet;
 import java.util.List;
 import java.util.Locale;
+import java.util.Map;
+import java.util.Set;
 
 @Service
 @AllArgsConstructor
@@ -66,19 +70,56 @@ public class SetorService {
     }
 
     @Transactional
-    public void editarSetor(long id, SetorDTO dto) {
+    public void editarSetor(Long id, SetorDTO dto) {
         Setor setor = buscarSetorPorId(id);
-        setorRepository.findByNome(dto.nome().toUpperCase(Locale.ROOT)).filter(s -> !s.getId()
-                .equals(id)).ifPresent(s -> {
-            throw new BusinessException(AppMessages.ERROR_SECTOR_NAME_DUPLICATE);
-        });
+
+        // Validação de nome duplicado
+        setorRepository.findByNome(dto.nome().toUpperCase(Locale.ROOT))
+                .filter(s -> !s.getId().equals(id))
+                .ifPresent(s -> {
+                    throw new BusinessException(AppMessages.ERROR_SECTOR_NAME_DUPLICATE);
+                });
+
         setor.setNome(dto.nome().trim().toUpperCase(Locale.ROOT));
 
-        // Remove o campo obsoleto possuiEtapas e salva as etapas dinamicamente enviadas
-        setorRepository.save(setor);
+        Map<Long, EtapaSetor> etapasExistentesMap = new HashMap<>();
+        for (EtapaSetor etapa : setor.getEtapas()) {
+            etapasExistentesMap.put(etapa.getId(), etapa);
+        }
 
-        etapaSetorRepository.deleteAllBySetorId(id);
-        salvarEtapasDoSetor(setor, dto);
+        Set<Long> etapasRecebidas = new HashSet<>();
+        int ordem = 1;
+
+        if (dto.etapas() != null) {
+            for (EtapaSetorDTO etapaDto : dto.etapas()) {
+                if (etapaDto == null || etapaDto.nome() == null || etapaDto.nome().isBlank()) {
+                    continue;
+                }
+
+                EtapaSetor etapa;
+                if (etapaDto.id() != null && etapasExistentesMap.containsKey(etapaDto.id())) {
+                    etapa = etapasExistentesMap.get(etapaDto.id());
+                    etapasRecebidas.add(etapaDto.id());
+                } else {
+                    etapa = new EtapaSetor();
+                    etapa.setSetor(setor);
+                    setor.getEtapas().add(etapa);
+                }
+
+                etapa.setNome(etapaDto.nome().trim().toUpperCase(Locale.ROOT));
+                etapa.setOrdem(ordem++);
+            }
+        }
+
+        // Remove apenas as etapas retiradas do formulário; orphanRemoval cuida do DELETE.
+        setor.getEtapas().removeIf(etapa ->
+                etapa.getId() != null && !etapasRecebidas.contains(etapa.getId()));
+
+        if (setor.getEtapas().isEmpty() && dto.etapas() != null && !dto.etapas().isEmpty()) {
+            throw new BusinessException(AppMessages.ERROR_VALIDATION_FAILED);
+        }
+
+        setorRepository.save(setor);
     }
 
     private void salvarEtapasDoSetor(Setor setor, SetorDTO dto) {

@@ -14,9 +14,7 @@ public record SetorDTO(
         @NotBlank
         String nome,
 
-        @NotNull
-        Boolean possuiEtapas,
-
+        
         List<EtapaSetorDTO> etapas
 
 ) {

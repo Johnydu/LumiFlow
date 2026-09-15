@@ -6,9 +6,9 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
     <title>Dashboard - LumiFlow</title>
 
+    <link rel="stylesheet" th:href="@{/css/globals.css}">
     <link rel="stylesheet" th:href="@{/css/topbar.css}">
     <link rel="stylesheet" th:href="@{/css/variables.css}">
-    <link rel="stylesheet" th:href="@{/css/globals.css}">
     <link rel="stylesheet" th:href="@{/css/sidebar.css}">
     <link rel="stylesheet" th:href="@{/css/components/buttons.css}">
     <link rel="stylesheet" th:href="@{/css/components/forms.css}">
@@ -63,9 +63,9 @@
                 </div>
 
                 <div class="card">
-                    <h3>PENDENTES</h3>
+                    <h3>REFUGO/RETRABALHO</h3>
                     <div class="number red" th:text="${ordensPendentes ?: 0}">0</div>
-                    <p>aguardando lançamento</p>
+                    <p>peças aguardando conserto</p>
                 </div>
             </div>
 
@@ -132,7 +132,7 @@
                         <div class="sector-item" th:each="setor : ${resumoSetores}">
                             <div>
                                 <h4 th:text="${setor?.nome ?: 'Sem nome'}">Nome do Setor</h4>
-                                <p th:text="${(setor?.qtdOrdens ?: 0) + ' ordem(ns)'}">0 ordem(ns)</p>
+                                <p th:text="${(setor?.qtdOrdens ?: 0) + ' aguardando liberação'}">0 aguardando liberação</p>
                             </div>
                             <div class="sector-number"
                                  th:classappend="${setor?.qtdOrdens ?: 0} > 0 ? 'orange' : ''"

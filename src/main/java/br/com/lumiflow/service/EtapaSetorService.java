@@ -20,6 +20,6 @@ public class EtapaSetorService {
 
     public List<EtapaSetor> listarPorSetorId(Long setorId) {
 
-        return etapaSetorRepository.findBySetorId(setorId);
+        return etapaSetorRepository.findBySetorIdOrderByOrdemAsc(setorId);
     }
 }
