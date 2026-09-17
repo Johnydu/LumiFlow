@@ -7,5 +7,6 @@ public record EtapaSetorDTO(
         String nome,
 
         Integer ordem
+
 ) {
 }

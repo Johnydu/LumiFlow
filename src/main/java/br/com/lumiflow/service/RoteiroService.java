@@ -37,10 +37,12 @@ public class RoteiroService {
                         .getId(), java.util.LinkedHashMap::new, Collectors.toList()))
                 .values().stream().map(lista -> {
             RoteiroProduto primeiro = lista.getFirst();
+
             List<String> fluxo = lista.stream().map(r -> r.getEtapaSetor() == null ? r.getSetor()
                     .getNome() : r.getSetor().getNome() + " (" + r.getEtapaSetor().getNome() + ")").toList();
             return new RoteiroListagemDTO(primeiro.getProduto().getId(), primeiro.getProduto()
                     .getNome(), primeiro.getProduto().getCodigo(), lista.size(), fluxo);
+
         }).toList();
     }
 

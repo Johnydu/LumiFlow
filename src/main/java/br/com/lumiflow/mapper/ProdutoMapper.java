@@ -5,7 +5,6 @@ import br.com.lumiflow.dto.produto.ProdutoListagemDTO;
 import br.com.lumiflow.entity.Produto;
 import org.mapstruct.Mapper;
 import org.mapstruct.Mapping;
-import org.mapstruct.Named;
 
 import java.util.List;
 
@@ -14,15 +13,10 @@ public interface ProdutoMapper {
 
     ProdutoDTO toDTO(Produto produto);
 
-    @Mapping(target = "nome", source = "nome", qualifiedByName = "normalizarNome")
+    @Mapping(target = "nome", source = "nome")
     Produto toEntity(ProdutoDTO dto);
 
-    @Named("normalizarNome")
-    default String normalizarNome(String nome) {
-        return nome == null
-                ? null
-                : nome.trim().toUpperCase(java.util.Locale.ROOT);
-    }
+
 
     List<ProdutoDTO>  toListDTO(List<Produto> produtoList);
 

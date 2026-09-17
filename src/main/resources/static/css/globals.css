@@ -1,5 +1,5 @@
 /* ========================================
-   BASE GLOBAL DE LAYOUT (CORRIGIDO PARA SCROLL NA PÁGINA)
+   GLOBAL.CSS
    ======================================== */
 
 html,
@@ -23,7 +23,7 @@ body {
   background: url("/images/fundo.webp") no-repeat center center fixed var(--color-bg);
   background-size: cover;
   color: var(--color-text);
-  font-family: var(--font-family-base);
+  font-family: var(--font-family-base), serif;
   line-height: var(--line-height-normal);
   overflow-y: auto; /* A página inteira gerencia o scroll vertical no canto da tela */
 }
@@ -81,4 +81,30 @@ textarea {
   background: rgba(97, 87, 255, 0.4);
   border: 3px solid transparent;
   background-clip: padding-box;
+}
+
+/* ========================================
+   CORREÇÃO GLOBAL PARA ALINHAMENTO DE TABELAS (AÇÕES)
+   ======================================== */
+
+/* Garante que todas as células da tabela fiquem perfeitamente alinhadas no centro verticalmente */
+table th,
+table td {
+  vertical-align: middle !important;
+}
+
+/* Padroniza a última coluna (geralmente a de Ações) para centralizar os botões */
+table th:last-child,
+table td:last-child {
+  text-align: center !important;
+  white-space: nowrap; /* Evita que os botões quebrem de linha */
+}
+
+/* Container flexível opcional para os botões de ação dentro da célula */
+table td .action-buttons,
+table td .acoes-container {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 8px; /* Espaçamento uniforme entre os botões Editar e Excluir */
 }

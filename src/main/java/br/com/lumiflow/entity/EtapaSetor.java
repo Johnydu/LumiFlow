@@ -3,6 +3,8 @@ package br.com.lumiflow.entity;
 import jakarta.persistence.*;
 import lombok.*;
 
+import java.util.Locale;
+
 @Getter
 @Setter
 @Entity
@@ -26,5 +28,11 @@ public class EtapaSetor extends Auditoria {
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "setor_id", nullable = false)
     private Setor setor;
+
+    @PrePersist
+    @PreUpdate
+    private void normalizarTextos() {
+        if (nome != null) nome = nome.trim().toUpperCase(Locale.ROOT);
+    }
 
 }

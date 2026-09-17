@@ -5,7 +5,6 @@ import br.com.lumiflow.dto.operador.OperadorListagemDTO;
 import br.com.lumiflow.entity.Operador;
 import org.mapstruct.Mapper;
 import org.mapstruct.Mapping;
-import org.mapstruct.Named;
 
 import java.util.List;
 
@@ -13,15 +12,12 @@ import java.util.List;
 public interface OperadorMapper {
 
     // 1. DTO -> Entidade (Cadastro e Edição)
-    @Mapping(target = "nome", source = "nome", qualifiedByName = "normalizarNome")
-    @Mapping(target = "funcao", source = "funcao", qualifiedByName = "normalizarNome")
+    @Mapping(target = "nome", source = "nome")
+    @Mapping(target = "funcao", source = "funcao")
     @Mapping(target = "setorPadrao", ignore = true) // A busca da entidade Setor é feita no Service pelo ID
     Operador toEntity(OperadorDTO dto);
 
-    // 2. Entidade -> DTO (Para carregar dados de edição, se necessário)
-    @Mapping(target = "nome", source = "nome", qualifiedByName = "normalizarNome")
-    @Mapping(target = "setorPadraoId", source = "setorPadrao.id")
-    OperadorDTO toDto(Operador operador);
+
 
     // 3. Entidade -> Listagem DTO (Para a Tabela)
     @Mapping(target = "setorPadraoId", source = "setorPadrao.id")
@@ -31,8 +27,5 @@ public interface OperadorMapper {
     // Mapeamento da lista de exibição
     List<OperadorListagemDTO> toListDto(List<Operador> operadores);
 
-    @Named("normalizarNome")
-    default String normalizarNome(String nome) {
-        return nome == null ? null : nome.trim().toUpperCase(java.util.Locale.ROOT);
-    }
+
 }

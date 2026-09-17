@@ -6,9 +6,9 @@ import jakarta.validation.constraints.NotNull;
 import lombok.*;
 import org.springframework.format.annotation.DateTimeFormat;
 
-import java.sql.Timestamp;
-import java.time.LocalDate;
+
 import java.time.LocalDateTime;
+import java.util.Locale;
 
 @Entity
 @Table(name = "movimentacao_vidro")
@@ -45,4 +45,10 @@ public class MovimentacaoVidro extends Auditoria {
     @JoinColumn(name = "operador_id", nullable = false)
     @NotNull(message = "O operador responsável é obrigatório")
     private Operador operador; //
+
+    @PrePersist
+    @PreUpdate
+    private void normalizarTextos() {
+        if (observacao != null) observacao = observacao.trim().toUpperCase(Locale.ROOT);
+    }
 }

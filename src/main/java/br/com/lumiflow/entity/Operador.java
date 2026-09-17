@@ -3,6 +3,8 @@ package br.com.lumiflow.entity;
 import jakarta.persistence.*;
 import lombok.*;
 
+import java.util.Locale;
+
 @Entity
 @AllArgsConstructor
 @NoArgsConstructor
@@ -26,5 +28,12 @@ public class Operador extends Auditoria {
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "setor_padrao_id",nullable = false)
     private Setor setorPadrao;
+
+    @PrePersist
+    @PreUpdate
+    private void normalizarTextos() {
+        if (nome != null) nome = nome.trim().toUpperCase(Locale.ROOT);
+        if (funcao != null) funcao = funcao.trim().toUpperCase(Locale.ROOT);
+    }
 
 }

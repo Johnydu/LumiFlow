@@ -7,6 +7,7 @@ import lombok.*;
 import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Locale;
 
 @Entity
 @Table(name = "ordem_producao")
@@ -48,5 +49,11 @@ public class OrdemProducao extends Auditoria{
     @OneToMany(mappedBy = "ordemProducao", fetch = FetchType.LAZY)
     private List<OrdemSetor> ordensSetor = new ArrayList<>();
 
+    @PrePersist
+    @PreUpdate
+    private void normalizarTextos() {
+        if (numero != null) numero = numero.trim().toUpperCase(Locale.ROOT);
+        if (observacao != null) observacao = observacao.trim().toUpperCase(Locale.ROOT);
+    }
 
 }
