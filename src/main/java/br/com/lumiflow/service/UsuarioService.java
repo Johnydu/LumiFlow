@@ -14,7 +14,6 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
-import java.util.Locale;
 
 @Service
 @AllArgsConstructor
@@ -61,10 +60,11 @@ public class UsuarioService {
         Usuario usuario = validarUsuarioPorId(id);
         if (!LoginValidator.isValidLogin(dto.login()))
             throw new BusinessException(AppMessages.ERROR_USER_LOGIN_INVALID);
-        usuarioRepository.findByLogin(dto.login()).filter(outro -> !outro.getId().equals(id)).ifPresent(outro -> {
+        usuarioRepository.findByLogin(dto.login())
+                .filter(outro -> !outro.getId().equals(id)).ifPresent(outro -> {
             throw new BusinessException(AppMessages.ERROR_USER_ALREADY_EXISTS);
         });
-        usuario.setNome(dto.nome().toUpperCase(Locale.ROOT));
+        usuario.setNome(dto.nome());
         usuario.setLogin(dto.login().trim());
         usuario.setNivelAcesso(nivelAcessoService.buscarNivelAcessoPorId(dto.nivelAcessoId()));
         usuario.setSetor(dto.setorId() == null ? null : setorService.buscarSetorPorId(dto.setorId()));

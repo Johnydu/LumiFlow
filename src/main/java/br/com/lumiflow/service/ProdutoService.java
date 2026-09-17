@@ -13,7 +13,6 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
-import java.util.Locale;
 
 @Service
 @AllArgsConstructor
@@ -31,9 +30,6 @@ public class ProdutoService {
     }
 
 
-    public Produto buscarPorNome(String nome) {
-        return produtoRepository.findByNome(nome).orElseThrow(() -> new BusinessException(AppMessages.ERROR_PRODUCT_NOTFOUND));
-    }
 
     @Transactional(readOnly = true)
     public List<ProdutoListagemDTO> listarProdutos() {
@@ -60,7 +56,7 @@ public class ProdutoService {
     @Transactional
     public void editarProduto(Long id, ProdutoDTO dto) {
         Produto produto = buscarProdutoPorId(id);
-        produto.setNome(dto.nome().toUpperCase(Locale.ROOT));
+        produto.setNome(dto.nome());
         produto.setCodigo(dto.codigo());
         produto.setDescricao(dto.descricao());
         produtoRepository.save(produto);

@@ -1,5 +1,5 @@
 /* ========================================
-   COMPONENTS/ALERTS.CSS (Modern Toasts)
+   COMPONENTS/ALERTS.CSS (Modern Toasts Ajustados)
    ======================================== */
 
 .alert-success,
@@ -24,7 +24,7 @@
   line-height: var(--line-height-normal);
 
   /* Efeito de Vidro (Glassmorphism) e Sombra Flutuante */
-  background: rgba(255, 255, 255, 0.85);
+  background: rgba(255, 255, 255, 0.95);
   backdrop-filter: blur(12px);
   -webkit-backdrop-filter: blur(12px);
   box-shadow: 0 10px 30px rgba(0, 0, 0, 0.12),
@@ -44,15 +44,16 @@
   transform: translateX(0) scale(1);
 }
 
-/* --- Variantes de Cores (Borda Lateral + Ícones) --- */
+/* --- Variantes de Cores (Borda Lateral + Ícones Ajustados) --- */
 
-/* Sucesso */
+/* Sucesso (Verde Esmeralda Suave e Profissional) */
 .alert-success {
-  border-left: 5px solid var(--color-success);
-  color: var(--color-success-soft);
+  border-left: 5px solid #059669;
+  background: rgba(236, 253, 245, 0.95);
+  color: #065f46;
 }
 .alert-success i {
-  color: var(--color-success);
+  color: #059669;
   font-size: var(--font-size-xl);
 }
 
@@ -127,9 +128,9 @@ body.page-usuario-login .alert-danger {
 }
 
 body.page-usuario-login .alert-success {
-  background: var(--success-alpha-15);
-  border: 1px solid var(--success-alpha-30);
-  color: var(--color-success-soft);
+  background: #ecfdf5;
+  border: 1px solid #a7f3d0;
+  color: #065f46;
 }
 
 /* Oculta o botão de fechar no login se preferir a mensagem fixa */

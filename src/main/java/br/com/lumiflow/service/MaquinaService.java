@@ -11,7 +11,6 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
-import java.util.Locale;
 
 @Service
 @AllArgsConstructor
@@ -47,7 +46,7 @@ public class MaquinaService {
                 .filter(outra -> !outra.getId().equals(id)).ifPresent(outra -> {
             throw new BusinessException(AppMessages.ERROR_MACHINE_NAME_DUPLICATE);
         });
-        maquina.setNome(dto.nome().trim().toUpperCase(Locale.ROOT));
+        maquina.setNome(dto.nome());
         maquina.setSetor(setorService.buscarSetorPorId(dto.setorId()));
         maquinaRepository.save(maquina);
     }

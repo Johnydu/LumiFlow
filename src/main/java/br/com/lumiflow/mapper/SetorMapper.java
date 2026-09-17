@@ -7,7 +7,6 @@ import br.com.lumiflow.entity.EtapaSetor;
 import br.com.lumiflow.entity.Setor;
 import org.mapstruct.Mapper;
 import org.mapstruct.Mapping;
-import org.mapstruct.Named;
 
 import java.util.Collections;
 import java.util.List;
@@ -15,18 +14,13 @@ import java.util.List;
 @Mapper(componentModel = "spring")
 public interface SetorMapper {
 
-    @Mapping(target = "nome", source = "nome", qualifiedByName = "normalizarNome")
+    @Mapping(target = "nome", source = "nome")
     @Mapping(target = "etapas", ignore = true)
     Setor toEntity(SetorDTO dto);
 
-    @Named("normalizarNome")
-    default String normalizarNome(String nome) {
-        return nome == null
-                ? null
-                : nome.trim().toUpperCase(java.util.Locale.ROOT);
-    }
 
-    SetorDTO toDto(Setor setor);
+
+
 
     @Mapping(target = "quantidadeMaquinas", expression = "java(0)")
     @Mapping(target = "etapas", expression = "java(toEtapaDtoList(setor.getEtapas()))")

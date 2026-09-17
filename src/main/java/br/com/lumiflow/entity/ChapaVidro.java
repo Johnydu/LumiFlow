@@ -4,6 +4,8 @@ import br.com.lumiflow.entity.enums.TipoVidro;
 import jakarta.persistence.*;
 import lombok.*;
 
+import java.util.Locale;
+
 @Entity
 @Table(name = "chapa_vidro")
 @AllArgsConstructor
@@ -27,4 +29,10 @@ public class ChapaVidro extends Auditoria {
 
     @Column(name = "estoque_minimo",nullable = false,length = 10)
     private Integer estoqueMinimo;
+
+    @PrePersist
+    @PreUpdate
+    private void normalizarTextos() {
+        if (descricao != null) descricao = descricao.trim().toUpperCase(Locale.ROOT);
+    }
 }

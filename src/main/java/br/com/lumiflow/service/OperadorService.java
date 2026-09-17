@@ -61,8 +61,7 @@ public class OperadorService {
         validarNomeOperadorParaEdicao(dto.nome(), id);
 
         operador.setNome(dto.nome().toUpperCase(Locale.ROOT));
-        operador.setFuncao(dto.funcao() == null || dto.funcao().isBlank() ? null : dto.funcao()
-                .trim().toUpperCase(Locale.ROOT));
+        operador.setFuncao(dto.funcao() == null || dto.funcao().isBlank() ? null : dto.funcao());
         operador.setSetorPadrao(dto.setorPadraoId() == null ? null : setorService.buscarSetorPorId(dto.setorPadraoId()));
         operadorRepository.save(operador);
     }

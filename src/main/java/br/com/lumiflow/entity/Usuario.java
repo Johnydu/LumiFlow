@@ -3,6 +3,8 @@ package br.com.lumiflow.entity;
 import jakarta.persistence.*;
 import lombok.*;
 
+import java.util.Locale;
+
 @Entity
 @Table(name = "usuario")
 @Getter
@@ -33,6 +35,12 @@ public class Usuario extends Auditoria  {
     @JoinColumn(name = "setor_id")
     private Setor setor;
 
+    @PrePersist
+    @PreUpdate
+    private void normalizarTextos() {
+        if (nome != null) nome = nome.trim().toUpperCase(Locale.ROOT);
+        if (login != null) login = login.trim().toUpperCase(Locale.ROOT);
+    }
 
 }
 

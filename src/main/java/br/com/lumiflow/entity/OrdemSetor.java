@@ -4,6 +4,7 @@ import jakarta.persistence.*;
 import lombok.*;
 
 import java.time.LocalDateTime;
+import java.util.Locale;
 
 @Entity
 @Table(name = "ordem_setor")
@@ -52,4 +53,9 @@ public class OrdemSetor extends Auditoria{
     @Column(name = "variante")
     private String variante;
 
+    @PrePersist
+    @PreUpdate
+    private void normalizarTextos() {
+        if (variante != null) variante = variante.trim().toUpperCase(Locale.ROOT);
+    }
 }

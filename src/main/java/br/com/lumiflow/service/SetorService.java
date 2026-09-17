@@ -19,7 +19,6 @@ import org.springframework.transaction.annotation.Transactional;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.List;
-import java.util.Locale;
 import java.util.Map;
 import java.util.Set;
 
@@ -49,7 +48,7 @@ public class SetorService {
 
     @Transactional
     public void novoSetor(SetorDTO dto) {
-        if (setorRepository.findByNome(dto.nome().toUpperCase(Locale.ROOT)).isPresent())
+        if (setorRepository.findByNome(dto.nome()).isPresent())
             throw new BusinessException(AppMessages.ERROR_SECTOR_NAME_DUPLICATE);
 
         Setor setor = setorRepository.save(setorMapper.toEntity(dto));
@@ -74,13 +73,13 @@ public class SetorService {
         Setor setor = buscarSetorPorId(id);
 
         // Validação de nome duplicado
-        setorRepository.findByNome(dto.nome().toUpperCase(Locale.ROOT))
+        setorRepository.findByNome(dto.nome())
                 .filter(s -> !s.getId().equals(id))
                 .ifPresent(s -> {
                     throw new BusinessException(AppMessages.ERROR_SECTOR_NAME_DUPLICATE);
                 });
 
-        setor.setNome(dto.nome().trim().toUpperCase(Locale.ROOT));
+        setor.setNome(dto.nome());
 
         Map<Long, EtapaSetor> etapasExistentesMap = new HashMap<>();
         for (EtapaSetor etapa : setor.getEtapas()) {
@@ -106,7 +105,7 @@ public class SetorService {
                     setor.getEtapas().add(etapa);
                 }
 
-                etapa.setNome(etapaDto.nome().trim().toUpperCase(Locale.ROOT));
+                etapa.setNome(etapaDto.nome());
                 etapa.setOrdem(ordem++);
             }
         }

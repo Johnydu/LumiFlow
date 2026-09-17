@@ -83,7 +83,7 @@ public class OrdemProducaoService {
                 ordem.getProduto().getNome(),
                 ordem.getProduto().getCodigo(),
                 etapaNome,
-                ordemSetor.getVariante().toUpperCase(Locale.ROOT),
+                ordemSetor.getVariante(),
                 totalEtapa,
                 produzido,
                 percentual,
@@ -124,7 +124,7 @@ public class OrdemProducaoService {
             throw new BusinessException(AppMessages.ERROR_PRODUCT_WITHOUT_ROUTE);
         }
 
-        RoteiroProduto primeiroPasso = roteiro.get(0); // já vem ordenado por sequência
+        RoteiroProduto primeiroPasso = roteiro.getFirst(); // já vem ordenado por sequência
 
         OrdemSetor ordemSetor = new OrdemSetor();
         ordemSetor.setSequencia(primeiroPasso.getSequencia());

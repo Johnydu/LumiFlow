@@ -6,6 +6,7 @@ import lombok.*;
 import java.util.ArrayList;
 import java.util.HashSet;
 import java.util.List;
+import java.util.Locale;
 import java.util.Set;
 
 @Entity
@@ -34,5 +35,11 @@ public class Setor extends Auditoria {
             inverseJoinColumns = @JoinColumn(name = "operador_id")
     )
     private Set<Operador> operadores = new HashSet<>();
+
+    @PrePersist
+    @PreUpdate
+    private void normalizarTextos() {
+        if (nome != null) nome = nome.trim().toUpperCase(Locale.ROOT);
+    }
 
 }

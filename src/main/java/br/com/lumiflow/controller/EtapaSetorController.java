@@ -22,7 +22,7 @@ public class EtapaSetorController {
     @ResponseBody
     public List<EtapaSetorDTO> listarEtapasPorSetor(@PathVariable Long setorId) {
         return etapaSetorService.listarPorSetorId(setorId).stream()
-                .map(e -> new EtapaSetorDTO(e.getId(), e.getNome(),e.getOrdem()))
+                .map(e -> new EtapaSetorDTO(e.id(), e.nome(),e.ordem()))
                 .toList();
     }
 }

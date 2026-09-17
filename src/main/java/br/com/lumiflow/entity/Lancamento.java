@@ -4,6 +4,7 @@ package br.com.lumiflow.entity;
 import jakarta.persistence.*;
 import lombok.*;
 import java.time.LocalDateTime;
+import java.util.Locale;
 
 @Entity
 @Table(name = "lancamento")
@@ -43,4 +44,9 @@ public class Lancamento {
     @JoinColumn(name = "etapa_setor_id")
     private EtapaSetor etapaSetor;
 
+    @PrePersist
+    @PreUpdate
+    private void normalizarTextos() {
+        if (observacao != null) observacao = observacao.trim().toUpperCase(Locale.ROOT);
+    }
 }
