@@ -1,40 +1,32 @@
 /*
  * RESPONSIVE.CSS
- * Os únicos overrides de viewport ficam centralizados aqui.
+ * Layout "sanduíche": desktop amplo, tablet condensado e celular empilhado.
+ * Este arquivo é carregado por último para manter os ajustes de viewport em um só lugar.
  */
 
-@media (max-width: 1024px) {
-  .content {
-    padding: var(--space-5);
-  }
+/* Tablet horizontal e notebooks menores */
+@media (max-width: 1200px) {
+  .content { padding: var(--space-5) var(--space-6); }
 
   .cards,
-  body.page-relatorio-relatoriotempo .kpi-grid {
-    grid-template-columns: repeat(2, minmax(0, 1fr));
-  }
+  body.page-relatorio-relatoriotempo .kpi-grid { grid-template-columns: repeat(2, minmax(0, 1fr)); }
 
-  .dashboard-grid {
-    grid-template-columns: 1fr;
-  }
+  .dashboard-grid { grid-template-columns: 1fr; }
 
   body.page-ordemproducao-detalhesordem .info-cards,
-  body.page-vidracaria-vidracaria .saldo-grid {
-    grid-template-columns: repeat(2, minmax(0, 1fr));
-  }
+  body.page-vidracaria-vidracaria .saldo-grid { grid-template-columns: repeat(2, minmax(0, 1fr)); }
 
   body.page-roteiro-cadastroroteiros .form-panel,
-  .form-panel {
-    position: static;
-    width: 100%;
-  }
+  .form-panel { position: static; width: 100%; }
 
-  body.page-roteiro-cadastroroteiros .content,
-  body.page-ordemproducao-lancamento .content {
-    max-width: none;
-  }
+  body.page-ordemproducao-novaordem .content { padding: var(--space-6); }
+  body.page-ordemproducao-novaordem .form-card { padding: var(--space-6); }
 }
 
-@media (max-width: 768px) {
+/* Tablet vertical: a sidebar passa a ser um menu lateral, sem reduzir a área útil. */
+@media (max-width: 900px) {
+  .main { margin-left: 0; }
+
   .sidebar {
     position: fixed;
     inset: 0 auto 0 0;
@@ -45,16 +37,10 @@
     overflow-y: auto;
   }
 
-  .sidebar.open {
-    transform: translateX(0);
-  }
+  .sidebar.open { transform: translateX(0); }
 
   .sidebar-close,
-  .menu-toggle {
-    display: inline-flex;
-    align-items: center;
-    justify-content: center;
-  }
+  .menu-toggle { display: inline-flex; align-items: center; justify-content: center; }
 
   .sidebar-overlay {
     display: none;
@@ -64,256 +50,168 @@
     background: var(--surface-overlay);
   }
 
-  .sidebar-overlay.open {
-    display: block;
-  }
+  .sidebar-overlay.open { display: block; }
+  body.sidebar-open { overflow: hidden; }
 
-  body.sidebar-open {
-    overflow: hidden;
-  }
+  .topbar { min-height: 60px; margin-bottom: 0; padding: var(--space-3) var(--space-5); }
+  .content { gap: var(--space-4); }
+  .filtros { gap: var(--space-2); }
 
-  .topbar {
-    min-height: 60px;
-    margin-bottom: 0;
-    padding: var(--space-3) var(--space-4);
-  }
+  .filtro-input,
+  .filtro-select,
+  .filtro-date { min-width: 0; }
 
-  .topbar-title {
-    font-size: var(--font-size-lg);
-  }
+  body.page-ordemproducao-lancamento .form-grid-3 { grid-template-columns: repeat(2, minmax(0, 1fr)); }
+  body.page-vidracaria-vidracaria #filter-form { grid-template-columns: 1fr 1fr; }
+  body.page-vidracaria-vidracaria .filter-actions { grid-column: 1 / -1; }
+}
+
+/* Celulares e tablets estreitos */
+@media (max-width: 700px) {
+  .topbar { gap: var(--space-2); padding: var(--space-3) var(--space-4); }
+  .topbar-left { flex: 1 1 0; }
+  .topbar-title { font-size: var(--font-size-lg); }
 
   .btn-novo,
   .btn-nova {
-    flex-shrink: 0;
+    flex: 0 1 auto;
     min-height: var(--control-height-md);
+    max-width: 48vw;
     padding-inline: var(--space-3);
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
   }
 
-  .content {
-    width: 100%;
-    padding: var(--space-4);
-    gap: var(--space-4);
-  }
+  .content { width: 100%; padding: var(--space-4); gap: var(--space-4); }
 
-  .filtros {
+  .filtros,
+  body.page-vidracaria-vidracaria #filter-form {
+    grid-template-columns: 1fr;
     flex-direction: column;
     align-items: stretch;
-    gap: var(--space-2);
   }
 
+  .search,
   .search-input-wrapper,
   .filtro-input,
   .filtro-select,
-  .filtro-date {
-    width: 100%;
-    min-width: 0;
+  .filtro-date { width: 100%; min-width: 0; }
+
+  body.page-ordemproducao-listaordemsetores .filtros .filtro-input,
+  body.page-ordemproducao-listaordemsetores .filtros .filtro-date { min-width: 0; }
+
+  .cards,
+  body.page-relatorio-relatoriotempo .kpi-grid,
+  body.page-ordemproducao-detalhesordem .info-cards,
+  body.page-vidracaria-vidracaria .saldo-grid,
+  body.page-ordemproducao-lancamento .form-grid-3,
+  .form-grid,
+  .form-grid-3,
+  body.page-vidracaria-vidracaria .form-grid,
+  body.page-produto-cadastroproduto .setores-grid { grid-template-columns: 1fr; }
+
+  .card,
+  .form-card { padding: var(--space-4); }
+
+  .card h3,
+  .card p { font-size: var(--font-size-md); }
+  .card .number { font-size: 2.25rem; }
+
+  .produto-destaque,
+  .sector-item { flex-direction: column; align-items: flex-start; gap: var(--space-3); }
+
+  .produto-badges,
+  .tabs,
+  .preview-pills,
+  .roteiro-pills { flex-wrap: wrap; }
+
+  .tabs .tab,
+  body.page-ordemproducao-lancamento .tab {
+    flex: 1 1 130px;
+    padding-inline: var(--space-3);
+    font-size: var(--font-size-sm);
+    text-align: center;
   }
 
-  .panel {
+  .form-actions,
+  .modal-actions { flex-wrap: wrap; }
+
+  .form-actions > *,
+  .modal-actions > * { flex: 1 1 150px; min-width: 0; text-align: center; }
+
+  /* A rolagem é interna ao painel: botões e dados não quebram nem ampliam a página. */
+  .panel,
+  body.page-ordemproducao-detalhesordem .itens-card {
     max-width: 100%;
     overflow-x: auto;
     -webkit-overflow-scrolling: touch;
   }
 
-  .panel > table {
-    min-width: 760px;
-  }
+  .panel > table,
+  body.page-ordemproducao-detalhesordem .itens-card > table { min-width: 680px; }
 
   th,
-  td {
-    padding: var(--space-3) var(--space-2);
-    font-size: var(--font-size-xs);
-    white-space: nowrap;
-  }
+  td { padding: var(--space-3) var(--space-2); font-size: var(--font-size-xs); white-space: nowrap; }
 
-  .panel-header {
-    min-width: 0;
-    flex-wrap: wrap;
-    padding: var(--space-3) var(--space-4);
-  }
-
-  .table-actions {
-    justify-content: flex-start;
-    flex-wrap: nowrap;
-  }
-
-  .table-actions form {
-    display: contents;
-  }
+  .panel-header { min-width: 0; flex-wrap: wrap; padding: var(--space-3) var(--space-4); }
+  .table-actions { justify-content: flex-start; flex-wrap: nowrap; }
+  .table-actions form { display: contents; }
 
   .table-actions a,
-  .table-actions button {
-    flex: 0 0 auto;
-  }
+  .table-actions button { flex: 0 0 auto; min-height: 34px; padding-inline: var(--space-2); }
 
-  .form-card {
-    width: 100%;
-    padding: var(--space-4);
-  }
+  body.page-vidracaria-vidracaria .filter-actions { grid-column: auto; }
+  body.page-vidracaria-vidracaria #btn-limpar { width: 100%; }
 
-  .form-grid,
-  .form-grid-3,
-  body.page-vidracaria-vidracaria .form-grid,
-  body.page-produto-cadastroproduto .setores-grid {
-    grid-template-columns: 1fr;
-  }
+  body.page-ordemproducao-novaordem .content,
+  body.page-ordemproducao-novaordem .form-card { padding: var(--space-4); }
+  body.page-ordemproducao-novaordem .form-grid { grid-template-columns: 1fr; }
 
-  .form-actions,
-  .modal-actions {
-    flex-wrap: wrap;
-  }
+  .modal-overlay { padding: var(--space-3); }
+  .modal-box { max-height: calc(100vh - 2 * var(--space-3)); overflow-y: auto; padding: var(--space-4); }
+  .linha-divisao { flex-wrap: wrap; align-items: stretch; }
+  .linha-divisao .input-variante { flex: 1 1 160px; }
 
-  .form-actions > *,
-  .modal-actions > * {
-    flex: 1 1 160px;
-  }
-
-  .cards,
-  body.page-relatorio-relatoriotempo .kpi-grid,
-  body.page-ordemproducao-detalhesordem .info-cards,
-  body.page-vidracaria-vidracaria .saldo-grid {
-    grid-template-columns: repeat(2, minmax(0, 1fr));
-  }
-
-  .card {
-    padding: var(--space-5);
-  }
-
-  .login-body .login-brand-panel {
-    display: none;
-  }
-
-  .login-shell {
-    padding: var(--space-4);
-  }
-
-  .login-card,
-  .login-card-container {
-    width: 100%;
-    max-width: 520px;
-    min-height: 0;
-  }
-
-  .login-form-side,
-  .login-form-panel {
-    padding: var(--space-8) var(--space-6);
-  }
-
-  .tabs,
-  .produto-badges,
-  .roteiro-pills,
-  .preview-pills {
-    flex-wrap: wrap;
-  }
-
-  .produto-destaque,
-  .sector-item {
-    flex-direction: column;
-    align-items: flex-start;
-    gap: var(--space-3);
-  }
-
-  .modal-overlay {
-    padding: var(--space-4);
-  }
-
-  .modal-box {
-    max-height: calc(100vh - 2 * var(--space-4));
-    overflow-y: auto;
-  }
-
-  .linha-divisao {
-    flex-wrap: wrap;
-    align-items: stretch;
-  }
-
-  .linha-divisao .input-variante {
+  .alert-success,
+  .alert-danger,
+  .alert-info {
+    top: var(--space-3);
+    right: var(--space-3);
+    left: var(--space-3);
     min-width: 0;
-    flex: 1 1 180px;
+    max-width: none;
+    padding: var(--space-3) var(--space-4);
+    font-size: var(--font-size-sm);
   }
+
+  .login-body .login-brand-panel { display: none; }
+  .login-shell { padding: var(--space-4); }
+  .login-card,
+  .login-card-container { width: 100%; min-height: 0; }
+  .login-form-side,
+  .login-form-panel { padding: var(--space-8) var(--space-6); }
 }
 
+/* Telefones compactos */
 @media (max-width: 480px) {
-  .content {
-    padding: var(--space-3);
-  }
-
-  .topbar {
-    gap: var(--space-2);
-  }
-
-  .topbar-title {
-    font-size: var(--font-size-md);
-  }
-
+  .content { padding: var(--space-3); }
+  .topbar-title { font-size: var(--font-size-md); }
   .btn-novo,
-  .btn-nova {
-    max-width: 42vw;
-    overflow: hidden;
-    padding-inline: var(--space-2);
-    text-overflow: ellipsis;
-    white-space: nowrap;
-  }
+  .btn-nova { max-width: 44vw; padding-inline: var(--space-2); }
 
   .cards,
   body.page-relatorio-relatoriotempo .kpi-grid,
   body.page-ordemproducao-detalhesordem .info-cards,
-  body.page-vidracaria-vidracaria .saldo-grid {
-    grid-template-columns: 1fr;
-  }
+  body.page-vidracaria-vidracaria .saldo-grid { grid-template-columns: 1fr; }
 
-  .card,
-  .form-card {
-    padding: var(--space-4);
-  }
+  .panel-header { align-items: flex-start; flex-direction: column; }
+  .panel > table,
+  body.page-ordemproducao-detalhesordem .itens-card > table { min-width: 620px; }
 
-  .card .number {
-    font-size: 2.25rem;
-  }
-
-  .panel-header {
-    align-items: flex-start;
-    flex-direction: column;
-  }
-
-  .panel > table {
-    min-width: 680px;
-  }
-
-  th,
-  td {
-    padding: var(--space-2);
-  }
-
-  .table-actions a,
-  .table-actions button {
-    min-height: 34px;
-    padding-inline: var(--space-2);
-  }
-
-  .login-shell {
-    padding: var(--space-2);
-  }
-
+  .modal-actions { flex-direction: column-reverse; }
+  .modal-actions > * { width: 100%; flex-basis: auto; }
+  .login-shell { padding: var(--space-2); }
   .login-form-side,
-  .login-form-panel {
-    padding: var(--space-6) var(--space-4);
-  }
-
-  .modal-overlay {
-    padding: var(--space-2);
-  }
-
-  .modal-box {
-    padding: var(--space-4);
-  }
-
-  .modal-actions {
-    flex-direction: column-reverse;
-  }
-
-  .modal-actions > * {
-    width: 100%;
-    flex-basis: auto;
-  }
+  .login-form-panel { padding: var(--space-6) var(--space-4); }
 }
