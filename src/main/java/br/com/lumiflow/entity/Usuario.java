@@ -39,7 +39,6 @@ public class Usuario extends Auditoria  {
     @PreUpdate
     private void normalizarTextos() {
         if (nome != null) nome = nome.trim().toUpperCase(Locale.ROOT);
-        if (login != null) login = login.trim().toUpperCase(Locale.ROOT);
     }
 
 }
