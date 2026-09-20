@@ -9,7 +9,8 @@ import java.util.List;
 @Repository
 public interface LancamentoRepository extends JpaRepository<Lancamento, Long> {
 
-    // Histórico de lançamentos de uma etapa (auditoria/tela de detalhe)
-    List<Lancamento> findByOrdemSetorIdOrderByDataHoraDesc(Long ordemSetorId);
+
+    List<Lancamento> findAllByOrderByDataHoraDesc();
+
 
 }

@@ -1,0 +1,100 @@
+<!DOCTYPE html>
+<html lang="pt-BR" xmlns:th="http://www.thymeleaf.org"
+      xmlns:sec="http://www.thymeleaf.org/extras/spring-security">
+<head>
+    <title>Histórico de Lançamentos - LumiFlow</title>
+    <meta charset="UTF-8"/>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+    <link rel="stylesheet" th:href="@{/css/variables.css}">
+    <link rel="stylesheet" th:href="@{/css/globals.css}">
+    <link rel="stylesheet" th:href="@{/css/sidebar.css}">
+    <link rel="stylesheet" th:href="@{/css/topbar.css}">
+    <link rel="stylesheet" th:href="@{/css/components/buttons.css}">
+    <link rel="stylesheet" th:href="@{/css/components/forms.css}">
+    <link rel="stylesheet" th:href="@{/css/components/tables.css}">
+    <link rel="stylesheet" th:href="@{/css/components/cards.css}">
+    <link rel="stylesheet" th:href="@{/css/components/badges.css}">
+    <link rel="stylesheet" th:href="@{/css/components/status.css}">
+    <link rel="stylesheet" th:href="@{/css/components/alerts.css}">
+    <link rel="stylesheet" th:href="@{/css/utils.css}">
+    <link rel="stylesheet" th:href="@{/css/pages/historicoLancamentos.css}">
+    <link rel="stylesheet" th:href="@{/css/responsive.css}"/>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+</head>
+<body class="page-lancamentos">
+<div th:replace="~{fragments/messages :: alerts}"></div>
+
+<!-- SIDEBAR - MENU LATERAL -->
+<aside th:replace="~{fragments/sidebar :: sidebar(activePage='lancamentos')}"></aside>
+
+<!-- ================================ -->
+<!-- CONTEÚDO PRINCIPAL               -->
+<!-- ================================ -->
+<main class="main">
+    <div th:replace="~{fragments/topbar :: topbar(
+        'Histórico de Lançamentos',
+        null,
+        null
+    )}"></div>
+
+    <div class="content">
+        <div class="panel">
+            <div class="panel-header">
+                <span class="panel-title">Histórico geral de lançamentos da ordem</span>
+                <span class="panel-count"
+                      th:text="${#lists.size(historicos) + ' registros'}">
+                </span>
+            </div>
+
+            <table>
+                <thead>
+                <tr>
+                    <th>Data / Hora</th>
+                    <th>Setor</th>
+                    <th>Etapa</th>
+                    <th>Qtd. Produzida</th>
+                    <th>Operador</th>
+                    <th>Detalhes / Observação</th>
+                </tr>
+                </thead>
+                <tbody>
+                <tr th:each="hist : ${historicos}">
+                    <!-- Data e Hora -->
+                    <td class="col-data"
+                        th:text="${#temporals.format(hist.dataHora, 'dd/MM/yyyy HH:mm')}">
+                    </td>
+
+                    <!-- Setor -->
+                    <td>
+                        <span class="setor-tag" th:text="${hist.setor}">Setor</span>
+                    </td>
+
+                    <!-- Etapa -->
+                    <td th:text="${hist.etapa}">Etapa</td>
+
+                    <!-- Quantidade -->
+                    <td>
+                        <strong th:text="${hist.quantidadeProduzida + ' unid.'}">0 unid.</strong>
+                    </td>
+
+                    <!-- Operador -->
+                    <td th:text="${hist.operador}">Operador</td>
+
+                    <!-- Detalhes / Observação -->
+                    <td class="col-detalhes"
+                        th:text="${hist.detalhes != null && hist.detalhes != '' ? hist.detalhes : '-'}">
+                        Detalhes
+                    </td>
+                </tr>
+                </tbody>
+            </table>
+        </div>
+    </div>
+</main>
+
+<script th:src="@{/js/historicoLancamento.js}"></script>
+<script th:src="@{/js/sidebar.js}"></script>
+<script th:src="@{/js/alerts.js}"></script>
+
+</body>
+</html>

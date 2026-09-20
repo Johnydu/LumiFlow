@@ -1,6 +1,7 @@
 package br.com.lumiflow.service;
 
 import br.com.lumiflow.config.AppMessages;
+import br.com.lumiflow.dto.lancamento.HistoricoLancamentosDTO;
 import br.com.lumiflow.dto.lancamento.LancamentoProducaoDTO;
 import br.com.lumiflow.dto.lancamento.RefugoDTO;
 import br.com.lumiflow.dto.lancamento.RetrabalhoDTO;
@@ -58,8 +59,8 @@ public class LancamentoService {
     }
 
     @Transactional
-    public OrdemSetor lancarProducao(Long ordemId,Long ordemSetorId, LancamentoProducaoDTO dto) {
-        OrdemSetor ordemSetor = buscarEtapaAtiva(ordemId,ordemSetorId);
+    public OrdemSetor lancarProducao(Long ordemId, Long ordemSetorId, LancamentoProducaoDTO dto) {
+        OrdemSetor ordemSetor = buscarEtapaAtiva(ordemId, ordemSetorId);
 
         if (dto.quantidade() > ordemSetor.getQtdPendente()) {
             throw new BusinessException(AppMessages.ERROR_LAUNCH_EXCEEDS_PENDING);
@@ -266,5 +267,26 @@ public class LancamentoService {
                 .map(RoteiroProduto::getEtapaSetor)
                 .map(EtapaSetor::getNome)
                 .orElse(null);
+    }
+
+    @Transactional(readOnly = true)
+    public List<HistoricoLancamentosDTO> listarHistoricoLancamentos() {
+        List<Lancamento> lancamentos = lancamentoRepository.findAllByOrderByDataHoraDesc();
+
+        return lancamentos.stream().map(lancamento -> {
+            String nomeSetor = "Setor";
+            if (lancamento.getEtapaSetor() != null && lancamento.getEtapaSetor().getSetor() != null) {
+                nomeSetor = lancamento.getEtapaSetor().getSetor().getNome();
+            }
+
+            return new HistoricoLancamentosDTO(
+                    nomeSetor,
+                    lancamento.getEtapaSetor() != null ? lancamento.getEtapaSetor().getNome() : null,
+                    lancamento.getQtdProduzida(),
+                    lancamento.getObservacao(),
+                    lancamento.getOperador() != null ? lancamento.getOperador().getNome() : "Desconhecido",
+                    lancamento.getDataHora()
+            );
+        }).toList();
     }
 }

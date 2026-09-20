@@ -49,13 +49,13 @@ textarea {
   display: flex;
   flex: 1;
   flex-direction: column;
-  gap: var(--space-5);
+  gap: var(--space-5, 20px);
   width: 100%;
-  max-width: var(--content-max-width);
+  /* Removido o max-width fixo para permitir que o painel/tabela preencha a tela */
   min-width: 0;
-  margin: 0 auto;
-  padding: var(--space-6) var(--space-8);
-  overflow-y: visible; /* Remove o scroll isolado do conteúdo */
+  margin: 0; /* Remove a centralização forçada que deixava espaços vazios nas laterais */
+  padding: var(--space-6) var(--space-6); /* Padding lateral levemente otimizado (de space-8 para space-6) */
+  overflow-y: visible;
 }
 
 /* Estilização global da barra de rolagem no canto da janela */
@@ -84,27 +84,26 @@ textarea {
 }
 
 /* ========================================
-   CORREÇÃO GLOBAL PARA ALINHAMENTO DE TABELAS (AÇÕES)
+   AJUSTE DE TAMANHO E ESPAÇAMENTO PARA TABELAS
    ======================================== */
 
-/* Garante que todas as células da tabela fiquem perfeitamente alinhadas no centro verticalmente */
+/* Aumenta o espaçamento interno das células para dar mais "respiro" e preencher melhor o espaço */
 table th,
 table td {
-  vertical-align: middle !important;
+  padding: 16px 20px !important; /* Aumenta o padding vertical e horizontal (ajuste conforme preferência) */
+  font-size: 0.95rem; /* Garante que o texto tenha um tamanho excelente para leitura */
 }
 
-/* Padroniza a última coluna (geralmente a de Ações) para centralizar os botões */
-table th:last-child,
-table td:last-child {
-  text-align: center !important;
-  white-space: nowrap; /* Evita que os botões quebrem de linha */
+/* Deixa os cabeçalhos das tabelas um pouco mais destacados e limpos */
+table th {
+  font-weight: 600;
+  letter-spacing: 0.02em;
 }
 
-/* Container flexível opcional para os botões de ação dentro da célula */
-table td .action-buttons,
-table td .acoes-container {
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  gap: 8px; /* Espaçamento uniforme entre os botões Editar e Excluir */
+/* Se você usa botões de ação dentro das tabelas, aumentamos levemente o tamanho deles para acompanhar a proporção */
+table td .btn,
+table td button,
+table td a.btn {
+  padding: 8px 14px;
+  font-size: 0.9rem;
 }

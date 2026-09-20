@@ -1,16 +1,16 @@
 /* ========================================
-   TOPBAR E CONTROLES DE NAVEGAÇÃO
+   TOPBAR E CONTROLES DE NAVEGAÇÃO 
    ======================================== */
 
 .topbar {
   display: flex;
   align-items: center;
   justify-content: space-between;
-  gap: var(--space-3);
+  gap: var(--space-4);
   width: 100%;
-  min-height: var(--topbar-height);
-  margin-bottom: var(--space-5);
-  padding: var(--space-4) var(--space-6);
+  min-height: calc(var(--topbar-height) + 8px); /* Ligeiramente mais imponente */
+  margin-bottom: var(--space-6); /* Espaçamento maior para afastar dos painéis */
+  padding: var(--space-4) var(--space-6); /* Padding lateral alinhado ao novo layout fluido */
   box-sizing: border-box;
   background: var(--surface-glass);
   border-bottom: 1px solid var(--border-subtle);
@@ -22,14 +22,14 @@
 .topbar-right {
   display: flex;
   align-items: center;
-  gap: var(--space-3);
+  gap: var(--space-4);
   min-width: 0;
 }
 
 .topbar-title {
   overflow: hidden;
   color: var(--color-text);
-  font-size: var(--font-size-xl);
+  font-size: 1.25rem; /* Proporção mais encorpada */
   font-weight: var(--font-weight-semibold);
   text-overflow: ellipsis;
   white-space: nowrap;
@@ -38,7 +38,7 @@
 .topbar h1 {
   margin: 0;
   color: var(--color-text);
-  font-size: var(--font-size-2xl);
+  font-size: 1.5rem;
 }
 
 .btn-novo,
@@ -53,13 +53,15 @@
   cursor: pointer;
 }
 
+/* Botão principal de ação (ex: + Nova Máquina) com mais presença */
 .btn-novo {
-  min-height: var(--control-height-md);
+  min-height: 42px; /* Alinhado à altura dos novos itens de menu */
   padding: 0 var(--space-5);
   background: var(--color-primary);
-  font-size: var(--font-size-md);
+  font-size: 0.95rem;
   font-weight: var(--font-weight-medium);
   box-shadow: 0 0 12px var(--color-primary-soft);
+  transition: background 0.2s ease, transform 0.2s ease;
 }
 
 .btn-novo:hover {
@@ -70,10 +72,10 @@
 
 .btn-back,
 .btn-export {
-  min-height: var(--control-height-md);
+  min-height: 40px;
   padding: 0 var(--space-4);
   background: var(--surface-subtle);
-  font-size: var(--font-size-sm);
+  font-size: 0.9rem;
 }
 
 .btn-back:hover,
@@ -97,18 +99,18 @@
 
 .filtro-input,
 .filtro-select {
-  min-height: var(--control-height-lg);
+  min-height: 42px;
   padding: 0 var(--space-4);
   background: rgba(7, 13, 29, 0.4);
-  font-size: var(--font-size-sm);
+  font-size: 0.9rem;
 }
 
 .filtro-input {
-  min-width: 200px;
+  min-width: 220px;
 }
 
 .filtro-select {
-  min-width: 150px;
+  min-width: 160px;
 }
 
 .filtro-input:focus,
@@ -130,8 +132,8 @@
   display: none;
   align-items: center;
   justify-content: center;
-  width: var(--control-height-md);
-  height: var(--control-height-md);
+  width: 42px;
+  height: 42px;
   border: 1px solid var(--border-subtle);
   border-radius: var(--radius-md);
   background: var(--surface-subtle);

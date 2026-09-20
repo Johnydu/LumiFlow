@@ -24,7 +24,8 @@ public class SetorController {
 
     @GetMapping
     public String setores(
-            @RequestParam(value = "nome", required = false) String nome,
+            @RequestParam(value = "nome", required = false)
+            String nome,
             Model model,
             HttpServletRequest request) {
 
