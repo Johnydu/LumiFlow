@@ -53,6 +53,9 @@ public class OrdemSetor extends Auditoria{
     @Column(name = "variante")
     private String variante;
 
+    @Column(name = "origem_refugo", nullable = false)
+    private boolean origemRefugo = false;
+
     @PrePersist
     @PreUpdate
     private void normalizarTextos() {

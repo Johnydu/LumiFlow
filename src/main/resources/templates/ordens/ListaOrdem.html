@@ -99,8 +99,12 @@
                     <td class="num" th:text="${ordem.numero()}"></td>
 
                     <!-- 2. PRODUTO/CODIGO -->
-                    <td class="produto-nome" th:text="${ordem.produtoNome() + ' - ' + ordem.produtoCodigo()
-                        + (ordem.variante() != null ? ' (' + ordem.variante() + ')' : '')}"></td>
+                    <td class="produto-nome">
+                        <span th:text="${ordem.produtoNome() + ' - ' + ordem.produtoCodigo()
+                         + (ordem.variante() != null ? ' (' + ordem.variante() + ')' : '')}"></span>
+                        <span th:if="${ordem.origemRefugo()}" class="badge-refugo"
+                              title="Contém peças de refugo/retrabalho">🔧 Refugo</span>
+                    </td>
 
                     <!-- 3. ETAPA -->
                     <td>

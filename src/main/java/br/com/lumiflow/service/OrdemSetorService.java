@@ -1,13 +1,12 @@
 package br.com.lumiflow.service;
 
 import br.com.lumiflow.dto.ordens.ResumoSetorDTO;
-import br.com.lumiflow.entity.Operador; //[cite: 1]
+import br.com.lumiflow.entity.*;
 import br.com.lumiflow.repository.OperadorRepository;
 import br.com.lumiflow.repository.OrdemSetorRepository;
 import lombok.AllArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
-
 import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.List;
@@ -50,4 +49,6 @@ public class OrdemSetorService {
 
         return lista;
     }
+
+
 }

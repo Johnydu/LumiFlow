@@ -157,7 +157,8 @@ public class LancamentoService {
             throw new BusinessException(AppMessages.ERROR_LAUNCH_EXCEEDS_PENDING);
         }
 
-        // Abate da etapa atual — as peças "saem" dali
+        // Abate da etapa atual — as peças "saem" dali (tanto do recebido quanto do pendente)
+        ordemSetorAtual.setQtdRecebida(ordemSetorAtual.getQtdRecebida() - dto.quantidade());
         ordemSetorAtual.setQtdPendente(ordemSetorAtual.getQtdPendente() - dto.quantidade());
         if (ordemSetorAtual.getQtdPendente() == 0 && ordemSetorAtual.getQtdProduzida() > 0) {
             ordemSetorAtual.setStatus(EstatusOrdemProducao.CONCLUIDA);
@@ -172,6 +173,7 @@ public class LancamentoService {
                         List.of(EstatusOrdemProducao.DISPONIVEL, EstatusOrdemProducao.EM_ANDAMENTO))
                 .orElseGet(() -> criarOrdemSetorParaRefugo(ordemSetorAtual.getOrdemProducao(), setorOrigem));
 
+        ordemSetorOrigem.setOrigemRefugo(true); // marca sempre, reaproveitado ou novo
         ordemSetorOrigem.setQtdRecebida(ordemSetorOrigem.getQtdRecebida() + dto.quantidade());
         ordemSetorOrigem.setQtdPendente(ordemSetorOrigem.getQtdPendente() + dto.quantidade());
         ordemSetorRepository.save(ordemSetorOrigem);
@@ -188,7 +190,6 @@ public class LancamentoService {
     }
 
     private OrdemSetor criarOrdemSetorParaRefugo(OrdemProducao ordem, Setor setorOrigem) {
-        // Descobre a sequência desse setor no roteiro do produto
         Integer sequencia = roteiroProdutoRepository.buscarPorProdutoId(ordem.getProduto().getId()).stream()
                 .filter(rp -> rp.getSetor().getId().equals(setorOrigem.getId()))
                 .map(RoteiroProduto::getSequencia)
@@ -203,6 +204,7 @@ public class LancamentoService {
         novo.setQtdProduzida(0);
         novo.setQtdPendente(0);
         novo.setStatus(EstatusOrdemProducao.DISPONIVEL);
+        novo.setOrigemRefugo(true);
         return novo;
     }
 

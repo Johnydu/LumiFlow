@@ -1,0 +1,1 @@
+ALTER TABLE ordem_setor ADD COLUMN origem_refugo BOOLEAN NOT NULL DEFAULT FALSE;

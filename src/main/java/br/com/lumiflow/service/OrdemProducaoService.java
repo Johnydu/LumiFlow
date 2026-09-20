@@ -84,6 +84,7 @@ public class OrdemProducaoService {
                 ordem.getProduto().getCodigo(),
                 etapaNome,
                 ordemSetor.getVariante(),
+                ordemSetor.isOrigemRefugo(),
                 totalEtapa,
                 produzido,
                 percentual,

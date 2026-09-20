@@ -6,28 +6,17 @@ import java.time.LocalDateTime;
 
 public record OrdemListagemDTO(
         Long id,
-
         Long ordemSetorId,
-
         String numero,
-
         String produtoNome,
-
         String produtoCodigo,
-
         String etapaNome,
-
         String variante,
-
+        boolean origemRefugo,
         Integer quantidade,
-
         Integer produzido,
-
         Double percentual,
-
         String observacao,
-
         LocalDateTime criadoEm,
-
         EstatusOrdemProducao status
 ) {}
