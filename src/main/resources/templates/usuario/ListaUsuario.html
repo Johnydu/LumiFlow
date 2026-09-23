@@ -16,6 +16,7 @@
     <link rel="stylesheet" th:href="@{/css/components/badges.css}">
     <link rel="stylesheet" th:href="@{/css/components/status.css}">
     <link rel="stylesheet" th:href="@{/css/components/alerts.css}">
+    <link rel="stylesheet" th:href="@{/css/components/modal.css}">
     <link rel="stylesheet" th:href="@{/css/pages/usuarios.css}">
     <link rel="stylesheet" th:href="@{/css/utils.css}">
     <link rel="stylesheet" th:href="@{/css/error.css}">
@@ -24,7 +25,6 @@
 </head>
 <body class="page-usuario-cadastrousuario">
 <div th:replace="~{fragments/messages :: alerts}"></div>
-
 
 <aside th:replace="~{fragments/sidebar :: sidebar(activePage='usuario')}"></aside>
 
@@ -38,7 +38,7 @@
     <div class="content">
 
         <!-- LISTA -->
-        <div class="lista">
+        <div class="lista" style="width: 100%;">
 
             <div class="panel">
 
@@ -57,7 +57,7 @@
 
                     <span class="panel-count"
                           th:text="${#lists.size(usuarios) + ' usuario(s)'}">
-                </span>
+                    </span>
                 </div>
 
                 <table>
@@ -88,7 +88,7 @@
                         </td>
 
                         <td>
-                        <span class="nivel-tag" th:text="${usuario.nivelAcesso}"></span>
+                            <span class="nivel-tag" th:text="${usuario.nivelAcesso}"></span>
                         </td>
 
                         <td th:text="${usuario.setor != null ? usuario.setor : '-'}"></td>
@@ -105,7 +105,6 @@
                                         onclick="handleEditarUsuario(this)">
                                     ✏ Editar
                                 </button>
-
 
                                 <form th:action="@{/dashboard/usuario/{id}/excluir(id=${usuario.id})}"
                                       method="post"
@@ -131,72 +130,91 @@
             </div>
         </div>
 
-        <!-- FORMULÁRIO -->
-        <div class="form-panel" id="form-panel" style="display:none">
-            <form class="form-card"
-                  th:action="@{/dashboard/usuario}"
-                  th:object="${usuarioDTO}"
-                  method="post">
-
-                <input type="hidden"
-                       th:name="${_csrf.parameterName}"
-                       th:value="${_csrf.token}" />
-
-                <div class="form-title" id="form-title">Novo Usuário</div>
-
-                <div class="field">
-                    <label>Nome completo <span>*</span></label>
-                    <input type="text"
-                           th:field="*{nome}"
-                           placeholder="Ex: Carlos Silva"required/>
-                </div>
-                <div class="field">
-                    <label>Login <span>*</span></label>
-                    <input type="text"
-                           th:field="*{login}"
-                           placeholder="Ex: carlos"required/>
-                    <span class="hint">Usado para acessar o sistema.</span>
-                </div>
-                <div class="field">
-                    <label>Senha <span>*</span></label>
-                    <input type="password"
-                           th:field="*{senha}"
-                           placeholder="Min. 12 caracteres com maiúscula, minúscula, número e caractere especial (@$!%*?&)"/>
-                </div>
-                <div class="field">
-                    <label>Nível de acesso <span>*</span></label>
-                    <select th:field="*{nivelAcessoId}">
-                        <option value="">Selecione o nível</option>
-                        <option th:each="nivel : ${niveisAcesso}"
-                                th:value="${nivel.id}"
-                                th:text="${nivel.descricao}">
-
-                        </option>
-                    </select>
-                </div>
-                <div class="field">
-                    <label>Setor</label>
-                    <select th:field="*{setorId}">
-                        <option value="">Nenhum (gestão/suporte)</option>
-                        <option th:each="setor : ${setores}"
-                                th:value="${setor.id}"
-                                th:text="${setor.nome}">
-                        </option>
-                    </select>
-                    <span class="hint">Obrigatório para Operadores.</span>
+        <!-- MODAL DE CADASTRO / EDIÇÃO DE USUÁRIO -->
+        <div id="form-panel" class="modal-overlay" style="display:none;">
+            <div class="modal-box">
+                <div class="modal-header">
+                    <span class="modal-title" id="form-title">Novo Usuário</span>
+                    <button type="button" class="modal-close" onclick="hideForm()">&times;</button>
                 </div>
 
-                <div class="form-actions">
-                    <button type="button" class="btn-cancel" onclick="hideForm()">Cancelar</button>
-                    <button type="submit" class="btn-submit">Salvar</button>
-                </div>
-            </form>
+                <form th:action="@{/dashboard/usuario}"
+                      th:object="${usuarioDTO}"
+                      method="post">
+
+                    <input type="hidden"
+                           th:name="${_csrf.parameterName}"
+                           th:value="${_csrf.token}" />
+
+                    <!-- Campo oculto para ID (essencial para edição) -->
+                    <input type="hidden" name="id" th:field="*{id}" />
+
+                    <div class="modal-body">
+                        <div class="field" style="display: flex; flex-direction: column; gap: 4px;">
+                            <label style="font-size: var(--font-size-sm); font-weight: 500;">Nome completo <span style="color: var(--color-danger);">*</span></label>
+                            <input type="text"
+                                   th:field="*{nome}"
+                                   id="nome"
+                                   placeholder="Ex: Carlos Silva" required
+                                   style="height: var(--control-height, 38px); padding: 0 var(--space-3); border: 1px solid var(--border-strong); border-radius: var(--radius-md); background: var(--color-field); color: var(--color-text); font-size: var(--font-size-sm);" />
+                        </div>
+
+                        <div class="field" style="display: flex; flex-direction: column; gap: 4px;">
+                            <label style="font-size: var(--font-size-sm); font-weight: 500;">Login <span style="color: var(--color-danger);">*</span></label>
+                            <input type="text"
+                                   th:field="*{login}"
+                                   id="login"
+                                   placeholder="Ex: carlos" required
+                                   style="height: var(--control-height, 38px); padding: 0 var(--space-3); border: 1px solid var(--border-strong); border-radius: var(--radius-md); background: var(--color-field); color: var(--color-text); font-size: var(--font-size-sm);" />
+                            <span class="hint" style="font-size: var(--font-size-xs); color: var(--color-muted);">Usado para acessar o sistema.</span>
+                        </div>
+
+                        <div class="field" style="display: flex; flex-direction: column; gap: 4px;">
+                            <label style="font-size: var(--font-size-sm); font-weight: 500;">Senha <span style="color: var(--color-danger);">*</span></label>
+                            <input type="password"
+                                   th:field="*{senha}"
+                                   id="senha"
+                                   placeholder="Min. 12 caracteres..."
+                                   style="height: var(--control-height, 38px); padding: 0 var(--space-3); border: 1px solid var(--border-strong); border-radius: var(--radius-md); background: var(--color-field); color: var(--color-text); font-size: var(--font-size-sm);" />
+                        </div>
+
+                        <div class="field" style="display: flex; flex-direction: column; gap: 4px;">
+                            <label style="font-size: var(--font-size-sm); font-weight: 500;">Nível de acesso <span style="color: var(--color-danger);">*</span></label>
+                            <select th:field="*{nivelAcessoId}" id="nivelAcessoId"
+                                    style="height: var(--control-height, 38px); padding: 0 var(--space-3); border: 1px solid var(--border-strong); border-radius: var(--radius-md); background: var(--color-field); color: var(--color-text); font-size: var(--font-size-sm);">
+                                <option value="">Selecione o nível</option>
+                                <option th:each="nivel : ${niveisAcesso}"
+                                        th:value="${nivel.id}"
+                                        th:text="${nivel.descricao}">
+                                </option>
+                            </select>
+                        </div>
+
+                        <div class="field" style="display: flex; flex-direction: column; gap: 4px;">
+                            <label style="font-size: var(--font-size-sm); font-weight: 500;">Setor</label>
+                            <select th:field="*{setorId}" id="setorId"
+                                    style="height: var(--control-height, 38px); padding: 0 var(--space-3); border: 1px solid var(--border-strong); border-radius: var(--radius-md); background: var(--color-field); color: var(--color-text); font-size: var(--font-size-sm);">
+                                <option value="">Nenhum (gestão/suporte)</option>
+                                <option th:each="setor : ${setores}"
+                                        th:value="${setor.id}"
+                                        th:text="${setor.nome}">
+                                </option>
+                            </select>
+                            <span class="hint" style="font-size: var(--font-size-xs); color: var(--color-muted);">Obrigatório para Operadores.</span>
+                        </div>
+                    </div>
+
+                    <div class="modal-actions">
+                        <button type="button" class="btn-cancel" onclick="hideForm()">Cancelar</button>
+                        <button type="submit" class="btn-submit">Salvar</button>
+                    </div>
+                </form>
+            </div>
         </div>
 
     </div>
 </main>
 
-<script th:src="@{/js/usuario-secure.js}"></script>
 <script th:src="@{/js/cadastro-usuario.js}"></script>
 <script th:src="@{/js/sidebar.js}"></script>
 <script th:src="@{/js/alerts.js}"></script>

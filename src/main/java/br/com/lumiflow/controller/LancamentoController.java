@@ -4,6 +4,7 @@ import br.com.lumiflow.config.AppMessages;
 import br.com.lumiflow.dto.lancamento.LancamentoProducaoDTO;
 import br.com.lumiflow.dto.lancamento.RefugoDTO;
 import br.com.lumiflow.dto.lancamento.RetrabalhoDTO;
+import br.com.lumiflow.dto.operador.OperadorDTO;
 import br.com.lumiflow.entity.OrdemSetor;
 import br.com.lumiflow.entity.enums.EstatusOrdemProducao;
 import br.com.lumiflow.security.UsuarioDetails;
@@ -45,6 +46,8 @@ public class LancamentoController {
         model.addAttribute("setores", setorService.listarSetores());
         model.addAttribute("refugosParaRetrabalho",
                 lancamentoService.listarRefugosParaRetrabalho(ordemId));
+        model.addAttribute("todasMaquinasParaRetrabalho",
+                lancamentoService.listarMaquinasParaRetrabalho(ordemId));
 
         if (!model.containsAttribute("producaoDTO"))
             model.addAttribute("producaoDTO",
@@ -81,13 +84,12 @@ public class LancamentoController {
     @PostMapping("/refugo")
     public String refugo(@PathVariable Long ordemId, @PathVariable Long ordemSetorId,
                          @Valid @ModelAttribute("refugoDTO") RefugoDTO dto, BindingResult result,
-                         RedirectAttributes attributes, Locale locale,
-                         @AuthenticationPrincipal UsuarioDetails usuarioLogado) {
+                         RedirectAttributes attributes, Locale locale, OperadorDTO operador) {
 
         if (result.hasErrors()) return recarregarComErro(ordemId, ordemSetorId,
                 "refugoDTO", dto, result, attributes);
 
-        lancamentoService.registrarRefugo(ordemId, ordemSetorId, dto, usuarioLogado.getUsuario());
+        lancamentoService.registrarRefugo(ordemId, ordemSetorId, dto, operador);
         attributes.addFlashAttribute("success",
                 messageSource.getMessage(AppMessages.SUCCESS_REFUGO_REGISTERED, null, locale));
         return "redirect:/dashboard/ordens/" + ordemId + "/setor/" + ordemSetorId + "/lancar";
@@ -97,12 +99,12 @@ public class LancamentoController {
     public String retrabalho(@PathVariable Long ordemId, @PathVariable Long ordemSetorId,
                              @Valid @ModelAttribute("retrabalhoDTO") RetrabalhoDTO dto, BindingResult result,
                              RedirectAttributes attributes, Locale locale,
-                             @AuthenticationPrincipal UsuarioDetails usuarioLogado) {
+                             OperadorDTO operadorDTO) {
 
         if (result.hasErrors())
             return recarregarComErro(ordemId, ordemSetorId, "retrabalhoDTO", dto, result, attributes);
 
-        lancamentoService.registrarRetrabalho(ordemId, dto, usuarioLogado.getUsuario());
+        lancamentoService.registrarRetrabalho(ordemId, dto, operadorDTO);
         attributes.addFlashAttribute("success",
                 messageSource.getMessage(AppMessages.SUCCESS_RETRABALHO_REGISTERED, null, locale));
         return "redirect:/dashboard/ordens/" + ordemId + "/setor/" + ordemSetorId + "/lancar";

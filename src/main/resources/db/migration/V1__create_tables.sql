@@ -1,24 +1,5 @@
 -- ============================================================================
--- LumiFlow ERP MVP - Schema Inicial Completo (PostgreSQL)
--- ============================================================================
-
--- 1. FUNÇÕES UTILITÁRIAS
--- ============================================================================
-
-CREATE OR REPLACE FUNCTION update_atualizado_em_column()
-    RETURNS TRIGGER AS
-$$
-BEGIN
-    NEW.atualizado_em = CURRENT_TIMESTAMP;
-    RETURN NEW;
-END;
-$$ LANGUAGE plpgsql;
-
-COMMENT ON FUNCTION update_atualizado_em_column() IS 'Atualiza atualizado_em antes de cada UPDATE em tabelas auditadas';
-
-
--- ============================================================================
--- 2. SEGURANÇA E CONTROLE DE ACESSO
+-- 1. SEGURANÇA E CONTROLE DE ACESSO
 -- ============================================================================
 
 CREATE TABLE nivel_acesso
@@ -34,7 +15,6 @@ CREATE TABLE setor
 (
     id            BIGINT GENERATED ALWAYS AS IDENTITY PRIMARY KEY,
     nome          VARCHAR(50) NOT NULL UNIQUE,
-    possui_etapas BOOLEAN     NOT NULL DEFAULT FALSE,
     criado_em     TIMESTAMPTZ NOT NULL DEFAULT CURRENT_TIMESTAMP,
     atualizado_em TIMESTAMPTZ NULL
 );
@@ -84,9 +64,8 @@ CREATE TABLE setor_operador
 );
 COMMENT ON TABLE setor_operador IS 'Associação: Operadores podem trabalhar em múltiplos setores';
 
-
 -- ============================================================================
--- 3. ESTRUTURA DE PRODUÇÃO
+-- 2. ESTRUTURA DE PRODUÇÃO
 -- ============================================================================
 
 CREATE TABLE maquina
@@ -145,10 +124,11 @@ CREATE TABLE roteiro_produto
 );
 COMMENT ON TABLE roteiro_produto IS 'Define o percurso de cada produto pela produção';
 
+-- ============================================================================
+-- 3. ORDENS DE PRODUÇÃO
+-- ============================================================================
 
--- ============================================================================
--- 4. ORDENS DE PRODUÇÃO
--- ============================================================================
+CREATE SEQUENCE ordem_producao_numero_seq START WITH 1 INCREMENT BY 1;
 
 CREATE TABLE ordem_producao
 (
@@ -158,6 +138,7 @@ CREATE TABLE ordem_producao
     status        VARCHAR(25)  NOT NULL,
     produto_id    BIGINT       NOT NULL,
     criado_por_id BIGINT       NOT NULL,
+    observacao    VARCHAR(500) NULL,
     data_criacao  TIMESTAMPTZ  NOT NULL DEFAULT CURRENT_TIMESTAMP,
     criado_em     TIMESTAMPTZ  NOT NULL DEFAULT CURRENT_TIMESTAMP,
     atualizado_em TIMESTAMPTZ  NULL,
@@ -178,6 +159,8 @@ CREATE TABLE ordem_setor
     qtd_produzida     INT         NOT NULL DEFAULT 0,
     qtd_pendente      INT         NOT NULL DEFAULT 0,
     status            VARCHAR(25) NOT NULL,
+    variante          VARCHAR(50) NULL,
+    origem_refugo     BOOLEAN     NOT NULL DEFAULT FALSE,
     inicio            TIMESTAMPTZ NULL,
     fim               TIMESTAMPTZ NULL,
     ordem_producao_id BIGINT      NOT NULL,
@@ -204,14 +187,14 @@ CREATE TABLE lancamento
     data_hora      TIMESTAMPTZ  NOT NULL DEFAULT CURRENT_TIMESTAMP,
     ordem_setor_id BIGINT       NOT NULL,
     maquina_id     BIGINT       NOT NULL,
-    usuario_id     BIGINT       NOT NULL,
+    operador_id    BIGINT       NOT NULL,
     etapa_setor_id BIGINT       NULL,
     CONSTRAINT fk_lancamento_ordem_setor
         FOREIGN KEY (ordem_setor_id) REFERENCES ordem_setor (id) ON DELETE RESTRICT,
     CONSTRAINT fk_lancamento_maquina
         FOREIGN KEY (maquina_id) REFERENCES maquina (id) ON DELETE RESTRICT,
-    CONSTRAINT fk_lancamento_usuario
-        FOREIGN KEY (usuario_id) REFERENCES usuario (id) ON DELETE RESTRICT,
+    CONSTRAINT fk_lancamento_operador
+        FOREIGN KEY (operador_id) REFERENCES operador (id) ON DELETE RESTRICT,
     CONSTRAINT fk_lancamento_etapa
         FOREIGN KEY (etapa_setor_id) REFERENCES etapa_setor (id) ON DELETE SET NULL,
     CONSTRAINT chk_lancamento_quantidade
@@ -219,29 +202,29 @@ CREATE TABLE lancamento
 );
 COMMENT ON TABLE lancamento IS 'Registro de produção realizada por operador em máquina';
 
-
 -- ============================================================================
--- 5. QUALIDADE E CONTROLE
+-- 4. QUALIDADE E CONTROLE
 -- ============================================================================
 
 CREATE TABLE refugo
 (
-    id              BIGINT GENERATED ALWAYS AS IDENTITY PRIMARY KEY,
-    qtd_refugo      INT          NOT NULL,
-    motivo          VARCHAR(255) NOT NULL,
-    destino         VARCHAR(30)  NOT NULL,
-    data_hora       TIMESTAMPTZ  NOT NULL DEFAULT CURRENT_TIMESTAMP,
-    ordem_setor_id  BIGINT       NOT NULL,
-    setor_origem_id BIGINT       NOT NULL,
-    usuario_id      BIGINT       NOT NULL,
-    criado_em       TIMESTAMPTZ  NOT NULL DEFAULT CURRENT_TIMESTAMP,
-    atualizado_em   TIMESTAMPTZ  NULL,
+    id               BIGINT GENERATED ALWAYS AS IDENTITY PRIMARY KEY,
+    qtd_refugo       INT          NOT NULL,
+    motivo           VARCHAR(255) NOT NULL,
+    destino          VARCHAR(30)  NOT NULL,
+    data_hora        TIMESTAMPTZ  NOT NULL DEFAULT CURRENT_TIMESTAMP,
+    ordem_setor_id   BIGINT       NOT NULL,
+    setor_origem_id  BIGINT       NOT NULL,
+    operador_id       BIGINT       NOT NULL,
+    sequencia_origem INT          NULL,
+    criado_em        TIMESTAMPTZ  NOT NULL DEFAULT CURRENT_TIMESTAMP,
+    atualizado_em    TIMESTAMPTZ  NULL,
     CONSTRAINT fk_refugo_ordem_setor
         FOREIGN KEY (ordem_setor_id) REFERENCES ordem_setor (id) ON DELETE RESTRICT,
     CONSTRAINT fk_refugo_setor_origem
         FOREIGN KEY (setor_origem_id) REFERENCES setor (id) ON DELETE RESTRICT,
     CONSTRAINT fk_refugo_usuario
-        FOREIGN KEY (usuario_id) REFERENCES usuario (id) ON DELETE RESTRICT,
+        FOREIGN KEY (operador_id) REFERENCES operador (id) ON DELETE RESTRICT,
     CONSTRAINT chk_refugo_destino
         CHECK (destino IN ('RETRABALHO', 'DESCARTE')),
     CONSTRAINT chk_refugo_quantidade
@@ -256,8 +239,8 @@ CREATE TABLE retrabalho
     observacao    VARCHAR(255) NULL,
     data_hora     TIMESTAMPTZ  NOT NULL DEFAULT CURRENT_TIMESTAMP,
     refugo_id     BIGINT       NOT NULL,
-    maquina_id    BIGINT       NOT NULL,
-    usuario_id    BIGINT       NOT NULL,
+    maquina_id    BIGINT       null ,
+    operador_id    BIGINT       NOT NULL,
     criado_em     TIMESTAMPTZ  NOT NULL DEFAULT CURRENT_TIMESTAMP,
     atualizado_em TIMESTAMPTZ  NULL,
     CONSTRAINT fk_retrabalho_refugo
@@ -265,15 +248,14 @@ CREATE TABLE retrabalho
     CONSTRAINT fk_retrabalho_maquina
         FOREIGN KEY (maquina_id) REFERENCES maquina (id) ON DELETE RESTRICT,
     CONSTRAINT fk_retrabalho_usuario
-        FOREIGN KEY (usuario_id) REFERENCES usuario (id) ON DELETE RESTRICT,
+        FOREIGN KEY (operador_id) REFERENCES operador (id) ON DELETE RESTRICT,
     CONSTRAINT chk_retrabalho_quantidade
         CHECK (qtd_refeita > 0)
 );
 COMMENT ON TABLE retrabalho IS 'Retrabalho de peças refugadas';
 
-
 -- ============================================================================
--- 6. CONTROLE DE VIDROS (Ledger Unificado)
+-- 5. CONTROLE DE VIDROS (Ledger Unificado)
 -- ============================================================================
 
 CREATE TABLE chapa_vidro
@@ -311,123 +293,8 @@ CREATE TABLE movimentacao_vidro
 );
 COMMENT ON TABLE movimentacao_vidro IS 'Ledger de entradas/saídas/perdas de vidro vinculado a operador';
 
-
 -- ============================================================================
--- 7. TRIGGERS PARA AUDITORIA (atualizado_em)
--- ============================================================================
-
-CREATE TRIGGER trg_nivel_acesso_atualizado_em
-    BEFORE UPDATE ON nivel_acesso FOR EACH ROW
-EXECUTE FUNCTION update_atualizado_em_column();
-
-CREATE TRIGGER trg_setor_atualizado_em
-    BEFORE UPDATE ON setor FOR EACH ROW
-EXECUTE FUNCTION update_atualizado_em_column();
-
-CREATE TRIGGER trg_usuario_atualizado_em
-    BEFORE UPDATE ON usuario FOR EACH ROW
-EXECUTE FUNCTION update_atualizado_em_column();
-
-CREATE TRIGGER trg_operador_atualizado_em
-    BEFORE UPDATE ON operador FOR EACH ROW
-EXECUTE FUNCTION update_atualizado_em_column();
-
-CREATE TRIGGER trg_maquina_atualizado_em
-    BEFORE UPDATE ON maquina FOR EACH ROW
-EXECUTE FUNCTION update_atualizado_em_column();
-
-CREATE TRIGGER trg_etapa_setor_atualizado_em
-    BEFORE UPDATE ON etapa_setor FOR EACH ROW
-EXECUTE FUNCTION update_atualizado_em_column();
-
-CREATE TRIGGER trg_produto_atualizado_em
-    BEFORE UPDATE ON produto FOR EACH ROW
-EXECUTE FUNCTION update_atualizado_em_column();
-
-CREATE TRIGGER trg_roteiro_produto_atualizado_em
-    BEFORE UPDATE ON roteiro_produto FOR EACH ROW
-EXECUTE FUNCTION update_atualizado_em_column();
-
-CREATE TRIGGER trg_ordem_producao_atualizado_em
-    BEFORE UPDATE ON ordem_producao FOR EACH ROW
-EXECUTE FUNCTION update_atualizado_em_column();
-
-CREATE TRIGGER trg_ordem_setor_atualizado_em
-    BEFORE UPDATE ON ordem_setor FOR EACH ROW
-EXECUTE FUNCTION update_atualizado_em_column();
-
-CREATE TRIGGER trg_lancamento_atualizado_em
-    BEFORE UPDATE ON lancamento FOR EACH ROW
-EXECUTE FUNCTION update_atualizado_em_column();
-
-CREATE TRIGGER trg_refugo_atualizado_em
-    BEFORE UPDATE ON refugo FOR EACH ROW
-EXECUTE FUNCTION update_atualizado_em_column();
-
-CREATE TRIGGER trg_retrabalho_atualizado_em
-    BEFORE UPDATE ON retrabalho FOR EACH ROW
-EXECUTE FUNCTION update_atualizado_em_column();
-
-CREATE TRIGGER trg_chapa_vidro_atualizado_em
-    BEFORE UPDATE ON chapa_vidro FOR EACH ROW
-EXECUTE FUNCTION update_atualizado_em_column();
-
-CREATE TRIGGER trg_movimentacao_vidro_atualizado_em
-    BEFORE UPDATE ON movimentacao_vidro FOR EACH ROW
-EXECUTE FUNCTION update_atualizado_em_column();
-
-
--- ============================================================================
--- 8. ÍNDICES ESTRATÉGICOS PARA PERFORMANCE
--- ============================================================================
-
--- USUÁRIO E SEGURANÇA
-CREATE INDEX idx_usuario_nivel_acesso ON usuario (nivel_acesso_id);
-CREATE INDEX idx_usuario_setor ON usuario (setor_id);
-
--- OPERADOR
-CREATE INDEX idx_operador_nome ON operador (nome);
-CREATE INDEX idx_operador_setor_padrao ON operador (setor_padrao_id);
-CREATE INDEX idx_setor_operador_operador ON setor_operador (operador_id);
-
--- MÁQUINA E ETAPAS
-CREATE INDEX idx_maquina_setor ON maquina (setor_id);
-CREATE INDEX idx_etapa_setor_setor ON etapa_setor (setor_id);
-
--- ROTEIRO
-CREATE INDEX idx_roteiro_produto_id ON roteiro_produto (produto_id);
-CREATE INDEX idx_roteiro_setor ON roteiro_produto (setor_id);
-
--- ORDEM DE PRODUÇÃO
-CREATE INDEX idx_ordem_produto ON ordem_producao (produto_id);
-CREATE INDEX idx_ordem_status ON ordem_producao (status);
-CREATE INDEX idx_ordem_criado_por ON ordem_producao (criado_por_id);
-CREATE INDEX idx_ordem_data_criacao ON ordem_producao (data_criacao DESC);
-
--- ORDEM SETOR
-CREATE INDEX idx_ordem_setor_ordem_producao ON ordem_setor (ordem_producao_id);
-CREATE INDEX idx_ordem_setor_setor ON ordem_setor (setor_id);
-CREATE INDEX idx_ordem_setor_status ON ordem_setor (status);
-
--- LANÇAMENTO
-CREATE INDEX idx_lancamento_ordem_setor ON lancamento (ordem_setor_id);
-CREATE INDEX idx_lancamento_maquina ON lancamento (maquina_id);
-CREATE INDEX idx_lancamento_usuario ON lancamento (usuario_id);
-CREATE INDEX idx_lancamento_data_hora ON lancamento (data_hora DESC);
-
--- REFUGO E RETRABALHO
-CREATE INDEX idx_refugo_ordem_setor ON refugo (ordem_setor_id);
-CREATE INDEX idx_refugo_data_hora ON refugo (data_hora DESC);
-CREATE INDEX idx_retrabalho_refugo ON retrabalho (refugo_id);
-
--- VIDRO
-CREATE INDEX idx_movimentacao_vidro_chapa ON movimentacao_vidro (chapa_vidro_id);
-CREATE INDEX idx_movimentacao_vidro_data ON movimentacao_vidro (data_hora DESC);
-CREATE INDEX idx_movimentacao_vidro_operador ON movimentacao_vidro (operador_id);
-
-
--- ============================================================================
--- 9. DADOS INICIAIS
+-- 6. DADOS INICIAIS
 -- ============================================================================
 
 INSERT INTO nivel_acesso (descricao)

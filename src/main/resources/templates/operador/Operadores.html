@@ -22,6 +22,8 @@
     <link rel="stylesheet" th:href="@{/css/components/badges.css}">
     <link rel="stylesheet" th:href="@{/css/components/status.css}">
     <link rel="stylesheet" th:href="@{/css/components/alerts.css}">
+    <!-- Componente Modal Centralizado -->
+    <link rel="stylesheet" th:href="@{/css/components/modal.css}">
 
     <!-- 4. Page Specific -->
     <link rel="stylesheet" th:href="@{/css/pages/operadores.css}">
@@ -156,78 +158,83 @@
 
         </div>
 
-        <!-- FORMULÁRIO LATERAL -->
-        <div class="form-panel" id="form-panel" style="display:none">
-
-            <form class="form-card"
-                  id="operador-form"
-                  th:action="@{/dashboard/operadores}"
-                  th:object="${operadorDTO}"
-                  method="post">
-
-                <!-- th:action gera o input CSRF automaticamente -->
-
-                <input type="hidden"
-                       id="id"
-                       th:field="*{id}" />
-
-                <div class="form-title" id="form-title">
-                    Novo operador
+        <!-- MODAL DE CADASTRO / EDIÇÃO DE OPERADORES -->
+        <div class="modal-overlay" id="form-panel" style="display:none">
+            <div class="modal-box" style="max-width: 520px;">
+                <div class="modal-header">
+                    <span class="modal-title" id="form-title">Novo operador</span>
+                    <button type="button" class="modal-close" onclick="hideForm()">&times;</button>
                 </div>
 
-                <div class="field">
-                    <label for="nome">
-                        Nome do operador <span>*</span>
-                    </label>
+                <form id="operador-form"
+                      th:action="@{/dashboard/operadores}"
+                      th:object="${operadorDTO}"
+                      method="post">
 
-                    <input type="text"
-                           id="nome"
-                           th:field="*{nome}"
-                           placeholder="Ex: Carlos Silva"
-                           required>
-                </div>
+                    <!-- th:action gera o input CSRF automaticamente -->
 
-                <div class="field">
-                    <label for="funcao">
-                        Função
-                    </label>
+                    <input type="hidden"
+                           id="id"
+                           th:field="*{id}" />
 
-                    <input type="text"
-                           id="funcao"
-                           th:field="*{funcao}"
-                           placeholder="Ex: Soldador, Pintor"
-                           maxlength="30">
-                </div>
+                    <div class="modal-body" style="display: flex; flex-direction: column; gap: var(--space-4);">
+                        <div class="field" style="display: flex; flex-direction: column; gap: 4px;">
+                            <label for="nome" style="font-size: var(--font-size-sm); font-weight: 500;">
+                                Nome do operador <span style="color: var(--color-danger);">*</span>
+                            </label>
 
-                <div class="field">
-                    <label for="setorPadraoId">
-                        Setor Padrão
-                    </label>
+                            <input type="text"
+                                   id="nome"
+                                   th:field="*{nome}"
+                                   placeholder="Ex: Carlos Silva"
+                                   required
+                                   style="height: var(--control-height, 38px); padding: 0 var(--space-3); border: 1px solid var(--border-strong); border-radius: var(--radius-md); background: var(--color-field); color: var(--color-text); font-size: var(--font-size-sm);">
+                        </div>
 
-                    <select id="setorPadraoId" th:field="*{setorPadraoId}">
-                        <option value="">Nenhum / Volante</option>
-                        <option th:each="setor : ${listaSetores}"
-                                th:value="${setor.id}"
-                                th:text="${setor.nome}">
-                        </option>
-                    </select>
-                </div>
+                        <div class="field" style="display: flex; flex-direction: column; gap: 4px;">
+                            <label for="funcao" style="font-size: var(--font-size-sm); font-weight: 500;">
+                                Função
+                            </label>
 
-                <div class="form-actions">
-                    <button type="button"
-                            class="btn-cancel"
-                            onclick="hideForm()">
-                        Cancelar
-                    </button>
+                            <input type="text"
+                                   id="funcao"
+                                   th:field="*{funcao}"
+                                   placeholder="Ex: Soldador, Pintor"
+                                   maxlength="30"
+                                   style="height: var(--control-height, 38px); padding: 0 var(--space-3); border: 1px solid var(--border-strong); border-radius: var(--radius-md); background: var(--color-field); color: var(--color-text); font-size: var(--font-size-sm);">
+                        </div>
 
-                    <button type="submit"
-                            class="btn-submit">
-                        Salvar
-                    </button>
-                </div>
+                        <div class="field" style="display: flex; flex-direction: column; gap: 4px;">
+                            <label for="setorPadraoId" style="font-size: var(--font-size-sm); font-weight: 500;">
+                                Setor Padrão
+                            </label>
 
-            </form>
+                            <select id="setorPadraoId" th:field="*{setorPadraoId}"
+                                    style="height: var(--control-height, 38px); padding: 0 var(--space-3); border: 1px solid var(--border-strong); border-radius: var(--radius-md); background: var(--color-field); color: var(--color-text); font-size: var(--font-size-sm);">
+                                <option value="">Nenhum / Volante</option>
+                                <option th:each="setor : ${listaSetores}"
+                                        th:value="${setor.id}"
+                                        th:text="${setor.nome}">
+                                </option>
+                            </select>
+                        </div>
+                    </div>
 
+                    <div class="modal-actions">
+                        <button type="button"
+                                class="btn-cancel"
+                                onclick="hideForm()">
+                            Cancelar
+                        </button>
+
+                        <button type="submit"
+                                class="btn-submit">
+                            Salvar
+                        </button>
+                    </div>
+
+                </form>
+            </div>
         </div>
 
     </div>

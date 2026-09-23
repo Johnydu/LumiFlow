@@ -1,1 +1,0 @@
-ALTER TABLE setor DROP COLUMN possui_etapas;

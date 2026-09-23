@@ -7,7 +7,7 @@ public record RetrabalhoDTO(
         @NotNull(message = "O refugo vinculado é obrigatório")
         Long refugoId,
 
-        @NotNull(message = "A máquina é obrigatória")
+
         Long maquinaId,
 
         @NotNull(message = "A quantidade é obrigatória")

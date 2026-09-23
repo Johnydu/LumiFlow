@@ -1,5 +1,5 @@
 function showForm() {
-  document.getElementById('form-panel').style.display = 'block';
+  document.getElementById('form-panel').style.display = 'flex';
 }
 
 function hideForm() {

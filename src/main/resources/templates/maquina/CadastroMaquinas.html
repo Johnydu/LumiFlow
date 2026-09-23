@@ -1,6 +1,6 @@
 <!DOCTYPE html>
 <html lang="pt-BR" xmlns:th="http://www.thymeleaf.org"
-     xmlns:sec="http://www.thymeleaf.org/extras/spring-security">
+      xmlns:sec="http://www.thymeleaf.org/extras/spring-security">
 <head>
   <title>Maquinas - LumiFlow</title>
   <meta charset="UTF-8"/>
@@ -16,6 +16,8 @@
   <link rel="stylesheet" th:href="@{/css/components/badges.css}">
   <link rel="stylesheet" th:href="@{/css/components/status.css}">
   <link rel="stylesheet" th:href="@{/css/components/alerts.css}">
+  <!-- Componente Modal Centralizado -->
+  <link rel="stylesheet" th:href="@{/css/components/modal.css}">
   <link rel="stylesheet" th:href="@{/css/utils.css}">
   <link rel="stylesheet" th:href="@{/css/pages/maquinas.css}">
   <link rel="stylesheet" th:href="@{/css/responsive.css}"/>
@@ -43,7 +45,6 @@
     <!-- ================================ -->
     <div class="lista">
 
-      <!-- Filtro por setorId -->
       <!-- Filtro por setor via Dropdown -->
       <div class="filtros-bar" style="margin-bottom: var(--space-4);">
         <div class="field" style="max-width: 300px; margin: 0;">
@@ -80,11 +81,8 @@
 
             <td th:text="${maquina.nome}"></td>
 
-
             <td>
-       <span class="setor-tag"
-             th:text="${maquina.setor}">
-       </span>
+              <span class="setor-tag" th:text="${maquina.setor}"></span>
             </td>
 
             <td>
@@ -96,7 +94,7 @@
                         th:data-nome="${maquina.nome}"
                         th:data-setor-id="${maquina.setorId != null ? maquina.setorId : ''}"
                         onclick="handleEditarMaquina(this)">
-                   ✏ Editar
+                  ✏ Editar
                 </button>
 
                 <form th:action="@{/dashboard/maquinas/{id}/excluir(id=${maquina.id})}"
@@ -125,70 +123,79 @@
     </div>
 
     <!-- ================================ -->
-    <!-- FORMULÁRIO - NOVA / EDITAR       -->
+    <!-- MODAL - NOVA / EDITAR            -->
     <!-- ================================ -->
-    <div class="form-panel" id="form-panel" style="display:none">
-
-      <form class="form-card"
-            th:action="@{/dashboard/maquinas}"
-            th:object="${maquinaDTO}"
-            method="post">
-
-        <input type="hidden"
-               th:name="${_csrf.parameterName}"
-               th:value="${_csrf.token}" />
-
-        <div class="form-title" id="form-title">
-          Nova Máquina
+    <div class="modal-overlay" id="form-panel" style="display:none">
+      <div class="modal-box" style="max-width: 520px;">
+        <div class="modal-header">
+          <span class="modal-title" id="form-title">Nova Máquina</span>
+          <button type="button" class="modal-close" onclick="hideForm()">&times;</button>
         </div>
 
-        <input type="hidden" th:field="*{id}"/>
+        <form class="form-card"
+              th:action="@{/dashboard/maquinas}"
+              th:object="${maquinaDTO}"
+              method="post"
+              style="border: none; background: transparent; padding: 0; box-shadow: none;">
 
-        <div class="field">
-          <label for="nome">Nome da máquina <span>*</span></label>
+          <input type="hidden"
+                 th:name="${_csrf.parameterName}"
+                 th:value="${_csrf.token}" />
 
-          <input type="text"
-                 id="nome"
-                 th:field="*{nome}"
-                 class="form-control"
-                 placeholder="Ex: Dobradeira Argus 1" required/>
-        </div>
+          <input type="hidden" th:field="*{id}"/>
 
-        <div class="field">
-          <label>Setor vinculado <span>*</span></label>
+          <div class="modal-body" style="display: flex; flex-direction: column; gap: var(--space-4);">
+            <div class="field" style="display: flex; flex-direction: column; gap: 4px; margin: 0;">
+              <label for="nome" style="font-size: var(--font-size-sm); font-weight: 500;">
+                Nome da máquina <span style="color: var(--color-danger);">*</span>
+              </label>
 
-          <select th:field="*{setorId}">
-            <option value="">Selecione o setor</option>
+              <input type="text"
+                     id="nome"
+                     th:field="*{nome}"
+                     class="form-control"
+                     placeholder="Ex: Dobradeira Argus 1" required
+                     style="height: var(--control-height, 38px); padding: 0 var(--space-3); border: 1px solid var(--border-strong); border-radius: var(--radius-md); background: var(--color-field); color: var(--color-text); font-size: var(--font-size-sm);"/>
+            </div>
 
-            <option th:each="setor : ${setores}"
-                    th:value="${setor.id}"
-                    th:text="${setor.nome}">
-            </option>
-          </select>
+            <div class="field" style="display: flex; flex-direction: column; gap: 4px; margin: 0;">
+              <label style="font-size: var(--font-size-sm); font-weight: 500;">
+                Setor vinculado <span style="color: var(--color-danger);">*</span>
+              </label>
 
-          <span class="hint">
+              <select th:field="*{setorId}"
+                      style="height: var(--control-height, 38px); padding: 0 var(--space-3); border: 1px solid var(--border-strong); border-radius: var(--radius-md); background: var(--color-field); color: var(--color-text); font-size: var(--font-size-sm);">
+                <option value="">Selecione o setor</option>
+
+                <option th:each="setor : ${setores}"
+                        th:value="${setor.id}"
+                        th:text="${setor.nome}">
+                </option>
+              </select>
+
+              <span class="hint" style="font-size: var(--font-size-xs); color: var(--color-muted-5);">
                 A máquina ficará disponível apenas neste setor.
-            </span>
-        </div>
+              </span>
+            </div>
+          </div>
 
-        <div class="form-actions">
-          <button type="button"
-                  class="btn-cancel"
-                  onclick="hideForm()">
-            Cancelar
-          </button>
+          <div class="modal-actions">
+            <button type="button"
+                    class="btn-cancel"
+                    onclick="hideForm()">
+              Cancelar
+            </button>
 
-          <button type="submit"
-                  class="btn-submit">
-            Salvar
-          </button>
-        </div>
+            <button type="submit"
+                    class="btn-submit">
+              Salvar
+            </button>
+          </div>
 
-
-      </form>
-
+        </form>
+      </div>
     </div>
-    
+
   </div>
 </main>
 

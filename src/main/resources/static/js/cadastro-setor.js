@@ -1,6 +1,6 @@
 function showForm() {
   const panel = document.getElementById('form-panel');
-  if (panel) panel.style.display = 'block';
+  if (panel) panel.style.display = 'flex'; // Exibe o overlay do modal centralizado
 }
 
 function hideForm() {
@@ -43,7 +43,6 @@ function adicionarEtapaSetor(nomeEtapa = '', idEtapa = '', ordemEtapa = '') {
   row.className = 'etapa-item';
   row.style.display = 'flex';
   row.style.gap = '10px';
-  row.style.marginBottom = '8px';
   row.style.alignItems = 'center';
 
   // Input de ID da etapa (Mantém o ID real recebido do banco, ou vazio se for nova)
@@ -67,6 +66,13 @@ function adicionarEtapaSetor(nomeEtapa = '', idEtapa = '', ordemEtapa = '') {
   inputNome.value = nomeEtapa || '';
   inputNome.required = true;
   inputNome.style.flex = '1';
+  inputNome.style.height = 'var(--control-height, 38px)';
+  inputNome.style.padding = '0 var(--space-3)';
+  inputNome.style.border = '1px solid var(--border-strong)';
+  inputNome.style.borderRadius = 'var(--radius-md)';
+  inputNome.style.background = 'var(--color-field)';
+  inputNome.style.color = 'var(--color-text)';
+  inputNome.style.fontSize = 'var(--font-size-sm)';
 
   // Botão de remover
   const btnRemover = document.createElement('button');
@@ -133,7 +139,6 @@ async function editarSetor(id, nome, buttonRef) {
       const etapas = await response.json();
       if (Array.isArray(etapas) && etapas.length > 0) {
         etapas.forEach(etapa => {
-          // Passa explicitamente o id, nome e ordem vindos da API
           adicionarEtapaSetor(etapa.nome, etapa.id, etapa.ordem);
         });
         etapasCarregadas = true;
@@ -153,9 +158,9 @@ async function editarSetor(id, nome, buttonRef) {
           const nomeTexto = tag.textContent.trim();
           if (nomeTexto) {
             adicionarEtapaSetor(
-              nomeTexto,
-              tag.getAttribute('data-id'),
-              tag.getAttribute('data-ordem') || idx + 1
+                nomeTexto,
+                tag.getAttribute('data-id'),
+                tag.getAttribute('data-ordem') || idx + 1
             );
           }
         });

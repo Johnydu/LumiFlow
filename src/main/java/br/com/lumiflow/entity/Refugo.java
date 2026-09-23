@@ -42,8 +42,11 @@ public class Refugo extends Auditoria {
     private Setor setorOrigem;
 
     @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "usuario_id",nullable = false)
-    private Usuario usuario;
+    @JoinColumn(name = "operador_id",nullable = false)
+    private Operador operador;
+
+    @Column(name = "sequencia_origem", nullable = false)
+    private Integer sequenciaOrigem;
 
     @PrePersist
     @PreUpdate

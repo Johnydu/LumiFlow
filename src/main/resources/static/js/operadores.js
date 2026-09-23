@@ -1,10 +1,10 @@
 /**
  * LumiFlow - Gerenciamento de Operadores
- * Funções para controle do painel lateral de cadastro e edição.
+ * Funções para controle do modal centralizado de cadastro e edição.
  */
 
 /**
- * Abre o painel lateral para cadastrar um novo operador.
+ * Abre o modal centralizado para cadastrar um novo operador.
  */
 window.novoOperadorForm = function() {
     const formPanel = document.getElementById('form-panel');
@@ -24,7 +24,7 @@ window.novoOperadorForm = function() {
     if (formTitle) formTitle.textContent = 'Novo operador';
 
     if (formPanel) {
-        formPanel.style.display = 'block';
+        formPanel.style.display = 'flex'; // Exibe o overlay do modal centralizado
     }
 
     // Foco automático no primeiro campo
@@ -33,7 +33,7 @@ window.novoOperadorForm = function() {
 };
 
 /**
- * Preenche e abre o painel lateral para editar um operador existente.
+ * Preenche e abre o modal centralizado para editar um operador existente.
  * @param {HTMLElement} button - O botão clicado da tabela contendo os atributos data-*
  */
 window.handleEditarOperador = function(button) {
@@ -66,12 +66,12 @@ window.handleEditarOperador = function(button) {
     if (formTitle) formTitle.textContent = 'Editar operador';
 
     if (formPanel) {
-        formPanel.style.display = 'block';
+        formPanel.style.display = 'flex'; // Exibe o overlay do modal centralizado
     }
 };
 
 /**
- * Oculta o painel lateral do formulário.
+ * Oculta o modal centralizado do formulário.
  */
 window.hideForm = function() {
     const formPanel = document.getElementById('form-panel');
@@ -90,7 +90,7 @@ document.addEventListener('DOMContentLoaded', () => {
 
 function initFiltroOperadores() {
     const inputBusca = document.querySelector('.search');
-    const selectSetor = document.querySelector('select[name="setorId"]'); // Ajuste o name se necessário
+    const selectSetor = document.querySelector('select[name="setorId"]');
 
     if (!inputBusca && !selectSetor) return;
 
@@ -142,7 +142,7 @@ function initFiltroOperadores() {
 
         if (isDebounced) {
             clearTimeout(timeout);
-            timeout = setTimeout(executar, 400); // 400ms de atraso para o campo de texto (evita gatilhos seguidos com backspace)
+            timeout = setTimeout(executar, 400); // 400ms de atraso para o campo de texto
         } else {
             clearTimeout(timeout);
             executar(); // Execução imediata para a seleção do dropdown de setor

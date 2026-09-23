@@ -102,3 +102,30 @@ body.page-ordemproducao-lancamento .btn-submit.retrab {
   background: var(--color-warning);
   color: var(--color-track);
 }
+
+/* Alinha os itens da topbar à esquerda na página de lançamento */
+body.page-ordemproducao-lancamento .topbar {
+  justify-content: flex-start;
+  gap: var(--space-4);
+}
+
+/* Joga o botão que estava na direita para o lado esquerdo (antes do menu hambúrguer) */
+body.page-ordemproducao-lancamento .topbar > .btn-novo {
+  order: -1;
+
+  /* Ajustes visuais para transformar o botão de ação principal em um botão secundário/voltar */
+  background: var(--surface-subtle);
+  color: var(--color-text);
+  min-height: 40px;
+  padding: 0 var(--space-4);
+  font-size: 0.9rem;
+  box-shadow: none;
+  transform: none;
+}
+
+body.page-ordemproducao-lancamento .topbar > .btn-novo:hover {
+  background: var(--surface-hover);
+  border-color: var(--border-subtle);
+  transform: none;
+  box-shadow: none;
+}

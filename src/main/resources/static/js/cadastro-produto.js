@@ -1,5 +1,6 @@
 /**
  * LumiFlow - Módulo de Cadastro e Gerenciamento de Produtos
+ * Ficheiro unificado (Modais, Segurança data-*, Abas, AJAX e Roteiros)
  */
 
 // ========================
@@ -12,29 +13,35 @@ document.addEventListener('DOMContentLoaded', () => {
   initFiltroBuscaProdutos();
 });
 
-
 // ========================
-// CONTROLE DO PAINEL DE FORMULÁRIO
+// CONTROLE DO PAINEL DE FORMULÁRIO (MODAL)
 // ========================
 
 function showForm() {
-  document.getElementById('form-panel').style.display = 'block';
+  const panel = document.getElementById('form-panel');
+  if (panel) {
+    panel.style.display = 'flex'; // Exibe o overlay do modal centralizado
+  }
 }
 
 function hideForm() {
-  document.getElementById('form-panel').style.display = 'none';
+  const panel = document.getElementById('form-panel');
+  if (panel) {
+    panel.style.display = 'none';
+    const form = document.getElementById('produto-form');
+    if (form) form.reset();
+  }
 }
-
 
 // ========================
 // CONTROLE DE ABAS (Dados / Roteiro)
 // ========================
 
 function showTab(tab, btnClicado) {
-  const tabDados = document.getElementById('tab-dados');
+  const produtoForm = document.getElementById('produto-form');
   const tabRoteiro = document.getElementById('tab-roteiro');
 
-  if (tabDados) tabDados.style.display = tab === 'dados' ? 'block' : 'none';
+  if (produtoForm) produtoForm.style.display = tab === 'dados' ? 'block' : 'none';
   if (tabRoteiro) tabRoteiro.style.display = tab === 'roteiro' ? 'block' : 'none';
 
   if (btnClicado) {
@@ -43,7 +50,6 @@ function showTab(tab, btnClicado) {
   }
 }
 
-
 // ========================
 // FUNÇÕES DE FORMULÁRIO DE PRODUTO
 // ========================
@@ -51,37 +57,71 @@ function showTab(tab, btnClicado) {
 function novoProdutoForm() {
   resetarFormularios();
 
-  document.getElementById('produto-form').action = '/dashboard/produtos';
-  document.getElementById('form-title').textContent = 'Informações do produto';
+  const produtoForm = document.getElementById('produto-form');
+  if (produtoForm) produtoForm.action = '/dashboard/produtos';
 
-  showTab('dados', document.getElementById('tab-btn-dados'));
+  const titleEl = document.getElementById('form-title');
+  if (titleEl) titleEl.textContent = 'Novo Produto';
+
+  showTab('dados');
   showForm();
+}
+
+/**
+ * Handler seguro para edição de produto via atributos data-* (Evita XSS)
+ */
+function handleEditarProduto(button) {
+  const produtoId = button.getAttribute('data-id');
+  const produtoNome = button.getAttribute('data-nome');
+  const produtoCodigo = button.getAttribute('data-codigo');
+  const produtoDescricao = button.getAttribute('data-descricao');
+
+  editarProduto(produtoId, produtoNome, produtoCodigo, produtoDescricao);
 }
 
 function editarProduto(id, nome, codigo, descricao) {
   resetarFormularios();
 
   const form = document.getElementById('produto-form');
-  form.action = '/dashboard/produtos/' + id + '/editar';
+  if (form) {
+    form.action = '/dashboard/produtos/' + id + '/editar';
+  }
 
-  document.getElementById('id').value = id;
-  document.getElementById('nome').value = nome;
-  document.getElementById('codigo').value = codigo;
-  document.getElementById('descricao').value = descricao || '';
-  document.getElementById('roteiro-produto-id').value = id;
+  const idInput = document.getElementById('id');
+  if (idInput) idInput.value = id;
 
-  document.getElementById('form-title').textContent = 'Editar produto';
+  const nomeInput = document.getElementById('nome');
+  if (nomeInput) nomeInput.value = nome;
 
-  showTab('dados', document.getElementById('tab-btn-dados'));
+  const codigoInput = document.getElementById('codigo');
+  if (codigoInput) codigoInput.value = codigo;
+
+  const descInput = document.getElementById('descricao');
+  if (descInput) descInput.value = descricao || '';
+
+  const roteiroIdInput = document.getElementById('roteiro-produto-id');
+  if (roteiroIdInput) roteiroIdInput.value = id;
+
+  const titleEl = document.getElementById('form-title');
+  if (titleEl) titleEl.textContent = 'Editar Produto';
+
+  showTab('dados');
   showForm();
 }
 
 function resetarFormularios() {
   // Reseta aba de dados
-  document.getElementById('id').value = '';
-  document.getElementById('nome').value = '';
-  document.getElementById('codigo').value = '';
-  document.getElementById('descricao').value = '';
+  const idInput = document.getElementById('id');
+  if (idInput) idInput.value = '';
+  const nomeInput = document.getElementById('nome');
+  if (nomeInput) nomeInput.value = '';
+  const codigoInput = document.getElementById('codigo');
+  if (codigoInput) codigoInput.value = '';
+  const descInput = document.getElementById('descricao');
+  if (descInput) descInput.value = '';
+
+  const form = document.getElementById('produto-form');
+  if (form) form.reset();
 
   // Reseta aba de roteiro
   sequenciaAtual = 0;
@@ -89,10 +129,13 @@ function resetarFormularios() {
 
   document.querySelectorAll('.setor-check').forEach(label => {
     label.classList.remove('checked');
-    label.querySelector('input[type=checkbox]').checked = false;
+    const checkbox = label.querySelector('input[type=checkbox]');
+    if (checkbox) checkbox.checked = false;
     const seq = label.querySelector('.setor-seq');
-    seq.textContent = '—';
-    seq.style.display = 'none';
+    if (seq) {
+      seq.textContent = '—';
+      seq.style.display = 'none';
+    }
   });
 
   atualizarPreview();
@@ -101,20 +144,16 @@ function resetarFormularios() {
 // ========================
 // FILTRO DE BUSCA DINÂMICA (AJAX)
 // ========================
-document.addEventListener('DOMContentLoaded', () => {
-  initFiltroBuscaProdutos();
-});
 
 function initFiltroBuscaProdutos() {
-  // Procura o input de busca pelo ID ou classe na página toda
   const inputBusca = document.getElementById('form-busca-produto')?.querySelector('input.search')
       || document.querySelector('input.search');
 
   if (!inputBusca) return;
 
   const formBusca = inputBusca.closest('form');
+  if (!formBusca) return;
 
-  // Mantém o foco e o cursor no final do texto digitado
   if (inputBusca.value) {
     const val = inputBusca.value;
     inputBusca.focus();
@@ -146,19 +185,16 @@ function initFiltroBuscaProdutos() {
 
           if (novaLista && listaAtual) {
             listaAtual.replaceWith(novaLista);
-            // Reinicializa o listener caso o DOM tenha sido substituído
             initFiltroBuscaProdutos();
           }
         }
       } catch (error) {
-        console.error('Erro na busca dinâmica, enviando via submit normal:', error);
+        console.error('Erro na busca dinâmica:', error);
         formBusca.submit();
       }
-    }, 300); // 300ms de delay (debounce)
+    }, 300);
   });
 }
-
-
 
 // ========================
 // TOGGLE DE SETORES (Roteiro)
@@ -169,11 +205,15 @@ function toggleSetor(label, setorId) {
   const seqSpan = label.querySelector('.setor-seq');
   const nomeSetor = label.querySelector('.setor-nome').textContent.trim();
 
+  if (!checkbox) return;
+
   if (checkbox.checked) {
     checkbox.checked = false;
     label.classList.remove('checked');
-    seqSpan.textContent = '—';
-    seqSpan.style.display = 'none';
+    if (seqSpan) {
+      seqSpan.textContent = '—';
+      seqSpan.style.display = 'none';
+    }
 
     setoresSelecionados.delete(setorId);
     reordenarSequencias();
@@ -181,8 +221,10 @@ function toggleSetor(label, setorId) {
     sequenciaAtual++;
     checkbox.checked = true;
     label.classList.add('checked');
-    seqSpan.textContent = sequenciaAtual + 'º';
-    seqSpan.style.display = 'inline';
+    if (seqSpan) {
+      seqSpan.textContent = sequenciaAtual + 'º';
+      seqSpan.style.display = 'inline';
+    }
 
     setoresSelecionados.set(setorId, { nome: nomeSetor, seq: sequenciaAtual });
   }
@@ -206,7 +248,7 @@ function reordenarSequencias() {
     const id = obterSetorId(label);
     const seqSpan = label.querySelector('.setor-seq');
 
-    if (setoresSelecionados.has(id)) {
+    if (id && setoresSelecionados.has(id) && seqSpan) {
       seqSpan.textContent = setoresSelecionados.get(id).seq + 'º';
     }
   });
@@ -214,10 +256,10 @@ function reordenarSequencias() {
 
 function obterSetorId(label) {
   const onclickAttr = label.getAttribute('onclick');
+  if (!onclickAttr) return null;
   const match = onclickAttr.match(/toggleSetor\(this,\s*(\d+)\)/);
   return match ? parseInt(match[1]) : null;
 }
-
 
 // ========================
 // PREVIEW DO ROTEIRO
@@ -254,18 +296,4 @@ function atualizarPreview() {
       pills.appendChild(seta);
     }
   });
-}
-
-
-// ========================
-// ABERTURA AUTOMÁTICA DA ABA (via URL)
-// ========================
-const abaRoteiro = /*[[${param.abaRoteiro}]]*/ null;
-const produtoIdParam = /*[[${param.produtoId}]]*/ null;
-
-if (abaRoteiro && produtoIdParam) {
-  showForm();
-  showTab('roteiro', document.getElementById('tab-btn-roteiro'));
-  const roteiroIdInput = document.getElementById('roteiro-produto-id');
-  if (roteiroIdInput) roteiroIdInput.value = produtoIdParam;
 }

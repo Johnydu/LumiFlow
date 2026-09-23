@@ -34,12 +34,12 @@ public class Retrabalho extends Auditoria{
     private Refugo refugo;
 
     @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "maquina_id",nullable = false)
+    @JoinColumn(name = "maquina_id")
     private Maquina maquina;
 
     @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "usuario_id",nullable = false)
-    private Usuario usuario;
+    @JoinColumn(name = "operador_id",nullable = false)
+    private Operador operador;
 
     @PrePersist
     @PreUpdate

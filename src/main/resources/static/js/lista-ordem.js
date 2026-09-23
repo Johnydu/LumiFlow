@@ -173,3 +173,7 @@ function atualizarSoma() {
         document.getElementById('somaAtual').style.color = 'var(--color-danger)';
     }
 }
+
+function voltarPagina() {
+    window.location.href = '/dashboard/ordens-setor';
+}

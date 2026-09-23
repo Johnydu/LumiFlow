@@ -1,18 +1,18 @@
 /**
  * ============================================================
- * GESTÃO DE ROTEIROS — LumiFlow
+ * GESTÃO DE ROTEIROS — LumiFlow (Modais Otimizados)
  * ============================================================
  */
 
 let etapaIndex = 0;
 
 // ============================================================
-// PAINEL / VISIBILIDADE DO FORMULÁRIO
+// PAINEL / VISIBILIDADE DO MODAL
 // ============================================================
 function showForm() {
     const panel = document.getElementById('form-panel');
     if (panel) {
-        panel.style.display = 'block';
+        panel.style.display = 'flex'; // Exibe o overlay do modal centralizado
     }
 }
 
@@ -72,26 +72,27 @@ function criarLinhaEtapa(setorId = '', etapaSetorId = '') {
     row.className = 'etapa-item';
     row.style.display = 'flex';
     row.style.gap = '10px';
-    row.style.marginBottom = '10px';
     row.style.alignItems = 'center';
 
     row.innerHTML = `
-        <span class="etapa-num" style="font-weight:bold">${index + 1}º</span>
+        <span class="etapa-num" style="font-weight:bold; min-width: 24px;">${index + 1}º</span>
 
         <!-- Select do Setor -->
-        <select name="passos[${index}].setorId" class="etapa-select setor-select" onchange="aoMudarSetor(this)">
+        <select name="passos[${index}].setorId" class="form-control setor-select" onchange="aoMudarSetor(this)"
+                style="flex: 1; height: var(--control-height, 38px); padding: 0 var(--space-2); border: 1px solid var(--border-strong); border-radius: var(--radius-md); background: var(--color-field); color: var(--color-text); font-size: var(--font-size-sm);">
             ${templateSetor ? templateSetor.innerHTML : ''}
         </select>
 
         <!-- Select do Processo / Etapa do Setor -->
-        <select name="passos[${index}].etapaSetorId" class="etapa-select etapa-setor-select">
-            <option value="">Selecione o processo</option>
+        <select name="passos[${index}].etapaSetorId" class="form-control etapa-setor-select"
+                style="flex: 1; height: var(--control-height, 38px); padding: 0 var(--space-2); border: 1px solid var(--border-strong); border-radius: var(--radius-md); background: var(--color-field); color: var(--color-text); font-size: var(--font-size-sm);">
+            <option value="">Selecione o processo...</option>
         </select>
 
-        <div class="etapa-actions">
-            <button type="button" class="etapa-move" onclick="moverEtapa(this, -1)">↑</button>
-            <button type="button" class="etapa-move" onclick="moverEtapa(this, 1)">↓</button>
-            <button type="button" class="etapa-del" onclick="removerEtapa(this)">✕</button>
+        <div class="etapa-actions" style="display: flex; gap: 4px;">
+            <button type="button" class="etapa-move" onclick="moverEtapa(this, -1)" style="padding: 6px 8px; border: 1px solid var(--border-strong); background: transparent; border-radius: var(--radius-sm); cursor: pointer;">↑</button>
+            <button type="button" class="etapa-move" onclick="moverEtapa(this, 1)" style="padding: 6px 8px; border: 1px solid var(--border-strong); background: transparent; border-radius: var(--radius-sm); cursor: pointer;">↓</button>
+            <button type="button" class="btn-del" onclick="removerEtapa(this)" style="padding: 6px 10px;">✕</button>
         </div>
     `;
 
@@ -110,7 +111,7 @@ async function adicionarEtapa(setorId = '', etapaSetorId = '') {
     const row = criarLinhaEtapa(setorId, etapaSetorId);
     container.appendChild(row);
 
-    // Se veio um setor pré-selecionado (ex: na edição), carrega e seleciona as etapas correspondentes
+    // Se veio um setor pré-selecionado, carrega e seleciona as etapas correspondentes
     if (setorId) {
         const selectSetor = row.querySelector('.setor-select');
         await carregarEtapasDoSetor(selectSetor, etapaSetorId);
@@ -166,7 +167,6 @@ function reindexarPassos() {
 // REQUISIÇÕES ASYNC / FETCH
 // ============================================================
 
-// Disparado quando o usuário altera o setor na linha
 async function aoMudarSetor(selectSetor) {
     await carregarEtapasDoSetor(selectSetor, '');
 }
@@ -181,7 +181,7 @@ async function carregarEtapasDoSetor(selectSetor, etapaSetorIdSelecionada) {
     const selectEtapa = row.querySelector('.etapa-setor-select');
     if (!selectEtapa) return;
 
-    selectEtapa.innerHTML = '<option value="">Selecione o processo</option>';
+    selectEtapa.innerHTML = '<option value="">Selecione o processo...</option>';
 
     if (!setorId) return;
 
@@ -205,7 +205,7 @@ async function carregarEtapasDoSetor(selectSetor, etapaSetorIdSelecionada) {
 }
 
 // ============================================================
-// HANDLER E EDIÇÃO DE ROTEIRO (SEGURANÇA CONTRA XSS)
+// HANDLER E EDIÇÃO DE ROTEIRO
 // ============================================================
 
 function handleEditarRoteiro(button) {
@@ -275,7 +275,6 @@ function initFiltroBuscaRoteiros() {
     const formBusca = inputBusca.closest('form');
     if (!formBusca) return;
 
-    // Mantém o foco e a posição do cursor no input ao atualizar via AJAX
     if (inputBusca.value) {
         const val = inputBusca.value;
         inputBusca.focus();
@@ -309,13 +308,13 @@ function initFiltroBuscaRoteiros() {
 
                     if (novaLista && listaAtual) {
                         listaAtual.replaceWith(novaLista);
-                        initFiltroBuscaRoteiros(); // Reatacha o evento após substituir o DOM
+                        initFiltroBuscaRoteiros();
                     }
                 }
             } catch (error) {
-                console.error('Erro na busca dinâmica de roteiros, enviando via submit normal:', error);
+                console.error('Erro na busca dinâmica de roteiros:', error);
                 formBusca.submit();
             }
-        }, 400); // Debounce de 400ms para evitar requisições a cada tecla (backspace, etc)
+        }, 400);
     });
 }

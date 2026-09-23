@@ -18,4 +18,6 @@ public interface MaquinaRepository extends JpaRepository<Maquina, Long> {
     Integer countBySetorId(Long setorId);
 
     List<Maquina> findBySetorIdOrderByNomeAsc(Long setorId);
+
+    List<Maquina> findBySetorIdInOrderByNomeAsc(List<Long> setorIds);
 }

@@ -5,6 +5,7 @@ import br.com.lumiflow.dto.lancamento.HistoricoLancamentosDTO;
 import br.com.lumiflow.dto.lancamento.LancamentoProducaoDTO;
 import br.com.lumiflow.dto.lancamento.RefugoDTO;
 import br.com.lumiflow.dto.lancamento.RetrabalhoDTO;
+import br.com.lumiflow.dto.operador.OperadorDTO;
 import br.com.lumiflow.entity.*;
 import br.com.lumiflow.entity.enums.DestinoRefugo;
 import br.com.lumiflow.entity.enums.EstatusOrdemProducao;
@@ -30,6 +31,7 @@ public class LancamentoService {
     private final RoteiroProdutoRepository roteiroProdutoRepository;
     private final SetorService setorService;
     private final OperadorRepository operadorRepository;
+    private final OperadorService operadorService;
 
     @Transactional(readOnly = true)
     public OrdemSetor buscarEtapaAtiva(Long ordemId, Long ordemSetorId) {
@@ -111,21 +113,27 @@ public class LancamentoService {
     }
 
     private void avancarParaProximaEtapa(OrdemSetor ordemSetorAtual, Integer quantidadeLancada) {
-        OrdemProducao ordem = ordemSetorAtual.getOrdemProducao();
+        avancarParaProximaEtapaAPartirDe(ordemSetorAtual.getOrdemProducao(), ordemSetorAtual.getSequencia(),
+                ordemSetorAtual.getVariante(), quantidadeLancada);
 
+        if (roteiroProdutoRepository.findProximoPasso(ordemSetorAtual.getOrdemProducao().getProduto().getId(),
+                ordemSetorAtual.getSequencia()).isEmpty()
+                && ordemSetorAtual.getQtdPendente() - quantidadeLancada <= 0) {
+            OrdemProducao ordem = ordemSetorAtual.getOrdemProducao();
+            ordem.setStatus(EstatusOrdemProducao.CONCLUIDA);
+            ordemProducaoRepository.save(ordem);
+        }
+    }
+
+    private void avancarParaProximaEtapaAPartirDe(OrdemProducao ordem, Integer sequenciaReferencia,
+                                                  String variante, Integer quantidadeLancada) {
         RoteiroProduto proximoPasso = roteiroProdutoRepository
-                .findProximoPasso(ordem.getProduto().getId(), ordemSetorAtual.getSequencia())
+                .findProximoPasso(ordem.getProduto().getId(), sequenciaReferencia)
                 .orElse(null);
 
         if (proximoPasso == null) {
-            if (ordemSetorAtual.getQtdPendente() - quantidadeLancada <= 0) {
-                ordem.setStatus(EstatusOrdemProducao.CONCLUIDA);
-                ordemProducaoRepository.save(ordem);
-            }
             return;
         }
-
-        String variante = ordemSetorAtual.getVariante();
 
         OrdemSetor proximaEtapa = ordemSetorRepository
                 .findByOrdemProducaoIdAndSequenciaAndVariante(ordem.getId(), proximoPasso.getSequencia(), variante)
@@ -149,9 +157,10 @@ public class LancamentoService {
     }
 
     @Transactional
-    public void registrarRefugo(Long ordemId, Long ordemSetorId, RefugoDTO dto, Usuario usuarioLogado) {
+    public void registrarRefugo(Long ordemId, Long ordemSetorId, RefugoDTO dto, OperadorDTO operadorDTO) {
         OrdemSetor ordemSetorAtual = buscarEtapaAtiva(ordemId, ordemSetorId);
         Setor setorOrigem = setorService.buscarSetorPorId(dto.setorOrigemId());
+        Operador operador = operadorService.buscarOperadorPorId(operadorDTO.id());
 
         if (dto.quantidade() > ordemSetorAtual.getQtdPendente()) {
             throw new BusinessException(AppMessages.ERROR_LAUNCH_EXCEEDS_PENDING);
@@ -178,6 +187,7 @@ public class LancamentoService {
         ordemSetorOrigem.setQtdPendente(ordemSetorOrigem.getQtdPendente() + dto.quantidade());
         ordemSetorRepository.save(ordemSetorOrigem);
 
+
         Refugo refugo = new Refugo();
         refugo.setQtdRefugo(dto.quantidade());
         refugo.setMotivo(dto.motivo());
@@ -185,21 +195,16 @@ public class LancamentoService {
         refugo.setDataHora(LocalDateTime.now());
         refugo.setOrdemSetor(ordemSetorAtual);
         refugo.setSetorOrigem(setorOrigem);
-        refugo.setUsuario(usuarioLogado);
+        refugo.setSequenciaOrigem(ordemSetorAtual.getSequencia()); // guarda de onde veio (Colagem)
+        refugo.setOperador(operador);
         refugoRepository.save(refugo);
     }
 
     private OrdemSetor criarOrdemSetorParaRefugo(OrdemProducao ordem, Setor setorOrigem) {
-        Integer sequencia = roteiroProdutoRepository.buscarPorProdutoId(ordem.getProduto().getId()).stream()
-                .filter(rp -> rp.getSetor().getId().equals(setorOrigem.getId()))
-                .map(RoteiroProduto::getSequencia)
-                .findFirst()
-                .orElseThrow(() -> new BusinessException(AppMessages.ERROR_PRODUCT_WITHOUT_ROUTE));
-
         OrdemSetor novo = new OrdemSetor();
         novo.setOrdemProducao(ordem);
         novo.setSetor(setorOrigem);
-        novo.setSequencia(sequencia);
+        novo.setSequencia(0); // marcador — não representa posição real do roteiro
         novo.setQtdRecebida(0);
         novo.setQtdProduzida(0);
         novo.setQtdPendente(0);
@@ -215,17 +220,21 @@ public class LancamentoService {
     }
 
     @Transactional
-    public void registrarRetrabalho(Long ordemId, RetrabalhoDTO dto, Usuario usuarioLogado) {
+    public void registrarRetrabalho(Long ordemId, RetrabalhoDTO dto, OperadorDTO operadorDTO) {
         Refugo refugo = refugoRepository.findById(dto.refugoId())
                 .orElseThrow(() -> new BusinessException(AppMessages.ERROR_REFUGO_NOTFOUND));
+        Operador operador = operadorService.buscarOperadorPorId(operadorDTO.id());
 
         if (!refugo.getOrdemSetor().getOrdemProducao().getId().equals(ordemId)) {
             throw new BusinessException(AppMessages.ERROR_REFUGO_NOTFOUND);
         }
 
-        Maquina maquina = maquinaRepository.findById(dto.maquinaId())
-                .filter(m -> m.getSetor().getId().equals(refugo.getSetorOrigem().getId()))
-                .orElseThrow(() -> new BusinessException(AppMessages.ERROR_MACHINE_NOTFOUND));
+        Maquina maquina = null;
+        if (dto.maquinaId() != null) {
+            maquina = maquinaRepository.findById(dto.maquinaId())
+                    .filter(m -> m.getSetor().getId().equals(refugo.getSetorOrigem().getId()))
+                    .orElseThrow(() -> new BusinessException(AppMessages.ERROR_MACHINE_NOTFOUND));
+        }
 
         Retrabalho retrabalho = new Retrabalho();
         retrabalho.setQtdRefeita(dto.quantidade());
@@ -233,10 +242,9 @@ public class LancamentoService {
         retrabalho.setDataHora(LocalDateTime.now());
         retrabalho.setRefugo(refugo);
         retrabalho.setMaquina(maquina);
-        retrabalho.setUsuario(usuarioLogado);
+        retrabalho.setOperador(operador);
         retrabalhoRepository.save(retrabalho);
 
-        // A quantidade retrabalhada avança como se fosse produção normal do setor de origem
         OrdemSetor ordemSetorOrigem = ordemSetorRepository
                 .findByOrdemProducaoIdAndSetorIdAndStatusIn(
                         ordemId, refugo.getSetorOrigem().getId(),
@@ -251,7 +259,9 @@ public class LancamentoService {
         ordemSetorOrigem.setQtdPendente(ordemSetorOrigem.getQtdPendente() - dto.quantidade());
         ordemSetorOrigem.setStatus(EstatusOrdemProducao.EM_ANDAMENTO);
 
-        avancarParaProximaEtapa(ordemSetorOrigem, dto.quantidade());
+        // Avança usando a sequência de ONDE O REFUGO FOI DETECTADO (Colagem), não a do setor físico atual
+        avancarParaProximaEtapaAPartirDe(ordemSetorOrigem.getOrdemProducao(), refugo.getSequenciaOrigem(),
+                ordemSetorOrigem.getVariante(), dto.quantidade());
 
         if (ordemSetorOrigem.getQtdPendente() == 0) {
             ordemSetorOrigem.setStatus(EstatusOrdemProducao.CONCLUIDA);
@@ -260,7 +270,6 @@ public class LancamentoService {
 
         ordemSetorRepository.save(ordemSetorOrigem);
     }
-
     @Transactional(readOnly = true)
     public String buscarNomeEtapa(OrdemSetor ordemSetor) {
         return roteiroProdutoRepository
@@ -290,5 +299,19 @@ public class LancamentoService {
                     lancamento.getDataHora()
             );
         }).toList();
+    }
+
+    @Transactional(readOnly = true)
+    public List<Maquina> listarMaquinasParaRetrabalho(Long ordemProducaoId) {
+        List<Long> setoresOrigem = listarRefugosParaRetrabalho(ordemProducaoId).stream()
+                .map(r -> r.getSetorOrigem().getId())
+                .distinct()
+                .toList();
+
+        if (setoresOrigem.isEmpty()) {
+            return List.of();
+        }
+
+        return maquinaRepository.findBySetorIdInOrderByNomeAsc(setoresOrigem);
     }
 }
