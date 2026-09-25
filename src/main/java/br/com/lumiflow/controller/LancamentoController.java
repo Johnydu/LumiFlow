@@ -54,10 +54,10 @@ public class LancamentoController {
                     new LancamentoProducaoDTO(null, null, null, null));
         if (!model.containsAttribute("refugoDTO"))
             model.addAttribute("refugoDTO",
-                    new RefugoDTO(null, null, null, null));
+                    new RefugoDTO(null, null, null, null,null));
         if (!model.containsAttribute("retrabalhoDTO"))
             model.addAttribute("retrabalhoDTO",
-                    new RetrabalhoDTO(null, null, null, null));
+                    new RetrabalhoDTO(null, null, null,null, null));
 
         return "ordens/Lancamento";
     }
@@ -84,12 +84,12 @@ public class LancamentoController {
     @PostMapping("/refugo")
     public String refugo(@PathVariable Long ordemId, @PathVariable Long ordemSetorId,
                          @Valid @ModelAttribute("refugoDTO") RefugoDTO dto, BindingResult result,
-                         RedirectAttributes attributes, Locale locale, OperadorDTO operador) {
+                         RedirectAttributes attributes, Locale locale) {
 
         if (result.hasErrors()) return recarregarComErro(ordemId, ordemSetorId,
                 "refugoDTO", dto, result, attributes);
 
-        lancamentoService.registrarRefugo(ordemId, ordemSetorId, dto, operador);
+        lancamentoService.registrarRefugo(ordemId, ordemSetorId, dto);
         attributes.addFlashAttribute("success",
                 messageSource.getMessage(AppMessages.SUCCESS_REFUGO_REGISTERED, null, locale));
         return "redirect:/dashboard/ordens/" + ordemId + "/setor/" + ordemSetorId + "/lancar";
@@ -98,13 +98,12 @@ public class LancamentoController {
     @PostMapping("/retrabalho")
     public String retrabalho(@PathVariable Long ordemId, @PathVariable Long ordemSetorId,
                              @Valid @ModelAttribute("retrabalhoDTO") RetrabalhoDTO dto, BindingResult result,
-                             RedirectAttributes attributes, Locale locale,
-                             OperadorDTO operadorDTO) {
+                             RedirectAttributes attributes, Locale locale) {
 
         if (result.hasErrors())
             return recarregarComErro(ordemId, ordemSetorId, "retrabalhoDTO", dto, result, attributes);
 
-        lancamentoService.registrarRetrabalho(ordemId, dto, operadorDTO);
+        lancamentoService.registrarRetrabalho(ordemId, dto);
         attributes.addFlashAttribute("success",
                 messageSource.getMessage(AppMessages.SUCCESS_RETRABALHO_REGISTERED, null, locale));
         return "redirect:/dashboard/ordens/" + ordemId + "/setor/" + ordemSetorId + "/lancar";

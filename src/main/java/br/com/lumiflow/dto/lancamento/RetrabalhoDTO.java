@@ -10,6 +10,9 @@ public record RetrabalhoDTO(
 
         Long maquinaId,
 
+        @NotNull(message = "O operador é obrigatório")
+        Long operadorId,
+
         @NotNull(message = "A quantidade é obrigatória")
         @Min(value = 1, message = "A quantidade deve ser maior que zero")
         Integer quantidade,

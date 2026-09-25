@@ -13,6 +13,9 @@ public record RefugoDTO(
         @NotNull(message = "O setor de origem é obrigatório")
         Long setorOrigemId,
 
+        @NotNull(message = "Operador é obrigatório")
+        Long operadorId,
+
         @NotNull(message = "O destino é obrigatório")
         DestinoRefugo destino,
 

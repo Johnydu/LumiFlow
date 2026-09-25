@@ -107,6 +107,7 @@ public class LancamentoService {
             ordemSetor.setFim(LocalDateTime.now());
         }
 
+
         ordemSetorRepository.save(ordemSetor);
 
         return ordemSetor;
@@ -151,16 +152,38 @@ public class LancamentoService {
             proximaEtapa.setStatus(EstatusOrdemProducao.DISPONIVEL);
         }
 
+        // Soma as novas quantidades que chegaram da etapa anterior
         proximaEtapa.setQtdRecebida(proximaEtapa.getQtdRecebida() + quantidadeLancada);
         proximaEtapa.setQtdPendente(proximaEtapa.getQtdPendente() + quantidadeLancada);
+
+        // CORREÇÃO: Se a etapa estava concluída (ou qualquer outro status) e recebeu novas peças pendentes,
+        // ela precisa voltar a ficar ativa/pendente para os operadores trabalharem nelas.
+        if (proximaEtapa.getQtdPendente() > 0) {
+            if (proximaEtapa.getStatus() == EstatusOrdemProducao.CONCLUIDA ||
+                    proximaEtapa.getStatus() == EstatusOrdemProducao.DISPONIVEL) {
+
+                // Se já tinha alguma produção anterior nela, volta para EM_ANDAMENTO,
+                // senão fica LIBERADA ou EM_ANDAMENTO conforme a regra do seu negócio.
+                // Aqui garantimos que se estava concluída, ela reabre.
+                if (proximaEtapa.getQtdProduzida() > 0) {
+                    proximaEtapa.setStatus(EstatusOrdemProducao.EM_ANDAMENTO);
+                } else {
+                    proximaEtapa.setStatus(EstatusOrdemProducao.LIBERADA);
+                }
+
+                // Limpa a data de fim já que ela foi reaberta com novas pendências
+                proximaEtapa.setFim(null);
+            }
+        }
+
         ordemSetorRepository.save(proximaEtapa);
     }
 
     @Transactional
-    public void registrarRefugo(Long ordemId, Long ordemSetorId, RefugoDTO dto, OperadorDTO operadorDTO) {
+    public void registrarRefugo(Long ordemId, Long ordemSetorId, RefugoDTO dto) {
         OrdemSetor ordemSetorAtual = buscarEtapaAtiva(ordemId, ordemSetorId);
         Setor setorOrigem = setorService.buscarSetorPorId(dto.setorOrigemId());
-        Operador operador = operadorService.buscarOperadorPorId(operadorDTO.id());
+        Operador operador = operadorService.buscarOperadorPorId(dto.operadorId());
 
         if (dto.quantidade() > ordemSetorAtual.getQtdPendente()) {
             throw new BusinessException(AppMessages.ERROR_LAUNCH_EXCEEDS_PENDING);
@@ -220,10 +243,10 @@ public class LancamentoService {
     }
 
     @Transactional
-    public void registrarRetrabalho(Long ordemId, RetrabalhoDTO dto, OperadorDTO operadorDTO) {
+    public void registrarRetrabalho(Long ordemId, RetrabalhoDTO dto) {
         Refugo refugo = refugoRepository.findById(dto.refugoId())
                 .orElseThrow(() -> new BusinessException(AppMessages.ERROR_REFUGO_NOTFOUND));
-        Operador operador = operadorService.buscarOperadorPorId(operadorDTO.id());
+        Operador operador = operadorService.buscarOperadorPorId(dto.operadorId());
 
         if (!refugo.getOrdemSetor().getOrdemProducao().getId().equals(ordemId)) {
             throw new BusinessException(AppMessages.ERROR_REFUGO_NOTFOUND);
@@ -270,6 +293,7 @@ public class LancamentoService {
 
         ordemSetorRepository.save(ordemSetorOrigem);
     }
+
     @Transactional(readOnly = true)
     public String buscarNomeEtapa(OrdemSetor ordemSetor) {
         return roteiroProdutoRepository

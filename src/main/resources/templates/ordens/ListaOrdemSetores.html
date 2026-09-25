@@ -82,7 +82,8 @@
                     </td>
 
                     <td>
-                        <span th:text="${item.operadores() != null && !item.operadores().isEmpty() ? item.operadores() : 'Nenhum operador'}">
+                        <span th:text="${item.operadores() != null && !item.operadores().isEmpty()
+                         ? item.operadores() : 'Nenhum operador'}">
                             Nome dos operadores
                         </span>
                     </td>
@@ -94,13 +95,14 @@
                     <td>
                         <div class="prog-wrap">
                             <div class="prog-track">
-                                <!-- BARRA DE PROGRESSO CORRIGIDA COM LARGURA E COR -->
-                                <div class="prog-fill"
-                                     th:style="'width:' + ${#numbers.formatDecimal(item.percentualConcluido(), 1, 2)} + '%; background: var(--color-primary, #6157ff);'">
+                                <!-- BARRA DE PROGRESSO AJUSTADA -->
+                                <div class="prog-fill p-and"
+                                     th:style="'width: ' + ${item.percentualConcluido()} + '%'">
                                 </div>
                             </div>
                             <span class="prog-txt"
-                                  th:text="${item.ordensConcluidas() + '/' + item.qtdOrdens() + ' (' + #numbers.formatDecimal(item.percentualConcluido(), 1, 0) + '%)'}">
+                                  th:text="${item.ordensConcluidas() + '/' + item.qtdOrdens()
+                                   + ' (' + #numbers.formatDecimal(item.percentualConcluido(), 1, 0) + '%)'}">
                                 0/0 (0%)
                             </span>
                         </div>
