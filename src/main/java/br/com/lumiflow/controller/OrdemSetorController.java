@@ -5,13 +5,14 @@ import br.com.lumiflow.dto.ordens.DividirEtapaDTO;
 import br.com.lumiflow.dto.ordens.OrdemFiltroDTO;
 import br.com.lumiflow.dto.ordens.OrdemListagemDTO;
 import br.com.lumiflow.dto.ordens.ResumoSetorDTO;
-import br.com.lumiflow.dto.setor.SetorDTO;
 import br.com.lumiflow.entity.Setor;
+import br.com.lumiflow.exception.BusinessException;
 import br.com.lumiflow.service.OrdemProducaoService;
 import br.com.lumiflow.service.OrdemSetorService;
 import br.com.lumiflow.service.SetorService;
 import jakarta.validation.Valid;
-import lombok.AllArgsConstructor;
+import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.context.MessageSource;
 import org.springframework.format.annotation.DateTimeFormat;
 import org.springframework.security.access.prepost.PreAuthorize;
@@ -25,9 +26,10 @@ import java.time.LocalDate;
 import java.util.List;
 import java.util.Locale;
 
+@Slf4j
 @Controller
 @RequestMapping("/dashboard/ordens-setor")
-@AllArgsConstructor
+@RequiredArgsConstructor
 public class OrdemSetorController {
 
     private final OrdemSetorService ordemSetorService;
@@ -35,15 +37,25 @@ public class OrdemSetorController {
     private final SetorService setorService;
     private final MessageSource messageSource;
 
-
     @GetMapping
     public String listarOrdensSetor(
-            @RequestParam(value = "busca", required = false) String busca,
-            @RequestParam(value = "data", required = false) @DateTimeFormat(iso = DateTimeFormat.ISO.DATE) LocalDate data,
-            Model model) {
+            @RequestParam(value = "busca", required = false)
+            String busca,
+            @RequestParam(value = "data", required = false)
+            @DateTimeFormat(iso = DateTimeFormat.ISO.DATE)
+            LocalDate data,
+            Model model,
+            Locale locale) {
 
-        List<ResumoSetorDTO> resumoSetores = ordemSetorService.obterResumoSetores(busca, data);
-        model.addAttribute("resumoSetores", resumoSetores);
+        try {
+            List<ResumoSetorDTO> resumoSetores = ordemSetorService.obterResumoSetores(busca, data);
+            model.addAttribute("resumoSetores", resumoSetores);
+        } catch (Exception e) {
+            log.error("Erro inesperado ao listar resumo dos setores: {}", e.getMessage(), e);
+            model.addAttribute("error", messageSource
+                    .getMessage(AppMessages.ERROR_VALIDATION_FAILED, null, locale));
+            model.addAttribute("resumoSetores", List.of());
+        }
 
         return "ordens/ListaOrdemSetores";
     }
@@ -51,17 +63,28 @@ public class OrdemSetorController {
     @GetMapping("/{setorId}")
     public String listarOrdensPorSetorId(@PathVariable("setorId") Long setorId,
                                          @ModelAttribute OrdemFiltroDTO filtro,
-                                         Model model) {
+                                         Model model,
+                                         Locale locale) {
 
-        List<OrdemListagemDTO> ordens = ordemProducaoService.listarPorSetorIdEFiltros(setorId, filtro);
-        Setor setor = setorService.buscarSetorPorId(setorId);
+        try {
+            List<OrdemListagemDTO> ordens = ordemProducaoService.listarPorSetorIdEFiltros(setorId, filtro);
+            Setor setor = setorService.buscarSetorPorId(setorId);
 
-        model.addAttribute("ordens", ordens);
-        model.addAttribute("setorAtual", setor != null ? setor.getNome() : "Desconhecido");
-        model.addAttribute("setorIdAtual", setorId);
-        model.addAttribute("buscaAtual", filtro.busca());
-        model.addAttribute("statusAtual", filtro.status());
-        model.addAttribute("totalOrdens", ordens.size());
+            model.addAttribute("ordens", ordens);
+            model.addAttribute("setorAtual", setor != null ? setor.getNome() : "Desconhecido");
+            model.addAttribute("setorIdAtual", setorId);
+            model.addAttribute("buscaAtual", filtro.busca());
+            model.addAttribute("statusAtual", filtro.status());
+            model.addAttribute("totalOrdens", ordens.size());
+        } catch (Exception e) {
+            log.error("Erro inesperado ao listar ordens para o setor id {}: {}", setorId, e.getMessage(), e);
+            model.addAttribute("error", messageSource
+                    .getMessage(AppMessages.ERROR_VALIDATION_FAILED, null, locale));
+            model.addAttribute("ordens", List.of());
+            model.addAttribute("setorAtual", "Desconhecido");
+            model.addAttribute("setorIdAtual", setorId);
+            model.addAttribute("totalOrdens", 0);
+        }
 
         return "ordens/ListaOrdem";
     }
@@ -71,9 +94,19 @@ public class OrdemSetorController {
     public String liberarOrdem(@PathVariable Long setorId, @PathVariable Long ordemSetorId,
                                RedirectAttributes attributes, Locale locale) {
 
-        ordemProducaoService.liberarOrdem(ordemSetorId);
-        attributes.addFlashAttribute("success", messageSource
-                .getMessage(AppMessages.SUCCESS_ORDER_LIBERADA, null, locale));
+        try {
+            ordemProducaoService.liberarOrdem(ordemSetorId);
+            attributes.addFlashAttribute("success", messageSource
+                    .getMessage(AppMessages.SUCCESS_ORDER_LIBERADA, null, locale));
+        } catch (BusinessException e) {
+            log.warn("Erro de negócio ao liberar ordem setor id {}: {}", ordemSetorId, e.getMessage());
+            String errorMessage = messageSource.getMessage(e.getMessage(), null, e.getMessage(), locale);
+            attributes.addFlashAttribute("error", errorMessage);
+        } catch (Exception e) {
+            log.error("Erro inesperado ao liberar ordem setor id {}: {}", ordemSetorId, e.getMessage(), e);
+            attributes.addFlashAttribute("error", messageSource
+                    .getMessage(AppMessages.ERROR_VALIDATION_FAILED, null, locale));
+        }
 
         return "redirect:/dashboard/ordens-setor/" + setorId;
     }
@@ -90,11 +123,20 @@ public class OrdemSetorController {
             return "redirect:/dashboard/ordens-setor/" + setorId;
         }
 
-        ordemProducaoService.dividirEtapa(ordemSetorId, dto);
-        attributes.addFlashAttribute("success", messageSource
-                .getMessage(AppMessages.SUCCESS_ORDER_DIVIDED, null, locale));
+        try {
+            ordemProducaoService.dividirEtapa(ordemSetorId, dto);
+            attributes.addFlashAttribute("success", messageSource
+                    .getMessage(AppMessages.SUCCESS_ORDER_DIVIDED, null, locale));
+        } catch (BusinessException e) {
+            log.warn("Erro de negócio ao dividir etapa da ordem setor id {}: {}", ordemSetorId, e.getMessage());
+            String errorMessage = messageSource.getMessage(e.getMessage(), null, e.getMessage(), locale);
+            attributes.addFlashAttribute("error", errorMessage);
+        } catch (Exception e) {
+            log.error("Erro inesperado ao dividir etapa da ordem setor id {}: {}", ordemSetorId, e.getMessage(), e);
+            attributes.addFlashAttribute("error", messageSource
+                    .getMessage(AppMessages.ERROR_VALIDATION_FAILED, null, locale));
+        }
 
         return "redirect:/dashboard/ordens-setor/" + setorId;
     }
 }
-

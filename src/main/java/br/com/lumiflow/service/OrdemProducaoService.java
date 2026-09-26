@@ -9,7 +9,9 @@ import br.com.lumiflow.mapper.OrdemProducaoMapper;
 import br.com.lumiflow.repository.OrdemProducaoRepository;
 import br.com.lumiflow.repository.OrdemSetorRepository;
 import br.com.lumiflow.repository.RoteiroProdutoRepository;
-import lombok.AllArgsConstructor;
+import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
+import org.springframework.dao.DataAccessException;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
@@ -22,9 +24,9 @@ import java.util.Map;
 import java.util.Set;
 import java.util.stream.Collectors;
 
-
+@Slf4j
 @Service
-@AllArgsConstructor
+@RequiredArgsConstructor
 public class OrdemProducaoService {
 
     private final OrdemProducaoRepository ordemProducaoRepository;
@@ -33,41 +35,51 @@ public class OrdemProducaoService {
     private final OrdemSetorRepository ordemSetorRepository;
     private final OrdemProducaoMapper ordemProducaoMapper;
 
-
-
     @Transactional(readOnly = true)
     public List<OrdemListagemDTO> listarPorSetorIdEFiltros(Long setorId, OrdemFiltroDTO filtro) {
-        String busca = (filtro.busca() != null && !filtro.busca().isBlank()) ? filtro.busca().trim() : null;
-        String status = (filtro.status() != null && !filtro.status().isBlank()) ? filtro.status().trim() : null;
+        try {
+            if (setorId == null) {
+                throw new BusinessException(AppMessages.ERROR_VALIDATION_FAILED);
+            }
 
-        List<OrdemSetor> etapas = ordemSetorRepository.buscarPorSetorIdEFiltros(setorId, busca, status);
+            String busca = (filtro != null && filtro.busca() != null && !filtro.busca().isBlank()) ? filtro.busca().trim() : null;
+            String status = (filtro != null && filtro.status() != null && !filtro.status().isBlank()) ? filtro.status().trim() : null;
 
-        if (etapas.isEmpty()) {
-            return List.of();
+            List<OrdemSetor> etapas = ordemSetorRepository.buscarPorSetorIdEFiltros(setorId, busca, status);
+
+            if (etapas.isEmpty()) {
+                return List.of();
+            }
+
+            Set<Long> produtoIds = etapas.stream()
+                    .map(os -> os.getOrdemProducao().getProduto().getId())
+                    .collect(Collectors.toSet());
+
+            Map<String, String> etapaNomePorProdutoESequencia = roteiroProdutoRepository
+                    .findByProdutoIdIn(produtoIds)
+                    .stream()
+                    .filter(rp -> rp.getEtapaSetor() != null)
+                    .collect(Collectors.toMap(
+                            rp -> rp.getProduto().getId() + "-" + rp.getSequencia(),
+                            rp -> rp.getEtapaSetor().getNome(),
+                            (a, b) -> a // em caso de chave duplicada, mantém a primeira
+                    ));
+
+            return etapas.stream()
+                    .map(os -> montarOrdemListagemDTO(os, etapaNomePorProdutoESequencia))
+                    .toList();
+        } catch (BusinessException e) {
+            throw e;
+        } catch (DataAccessException e) {
+            log.error("Erro de base de dados ao listar ordens por setor id {} e filtros: {}", setorId, e.getMessage(), e);
+            throw new BusinessException(AppMessages.ERROR_VALIDATION_FAILED);
+        } catch (Exception e) {
+            log.error("Erro inesperado ao listar ordens por setor id {} e filtros: {}", setorId, e.getMessage(), e);
+            throw new BusinessException(AppMessages.ERROR_VALIDATION_FAILED);
         }
-
-        Set<Long> produtoIds = etapas.stream()
-                .map(os -> os.getOrdemProducao().getProduto().getId())
-                .collect(Collectors.toSet());
-
-        Map<String, String> etapaNomePorProdutoESequencia = roteiroProdutoRepository
-                .findByProdutoIdIn(produtoIds)
-                .stream()
-                .filter(rp -> rp.getEtapaSetor() != null)
-                .collect(Collectors.toMap(
-                        rp -> rp.getProduto().getId() + "-" + rp.getSequencia(),
-                        rp -> rp.getEtapaSetor().getNome(),
-                        (a, b) -> a // em caso de chave duplicada, mantém a primeira
-                ));
-
-        return etapas.stream()
-                .map(os -> montarOrdemListagemDTO(os, etapaNomePorProdutoESequencia))
-                .toList();
     }
 
-    private OrdemListagemDTO montarOrdemListagemDTO(OrdemSetor ordemSetor, Map<String,
-            String> etapaNomePorProdutoESequencia) {
-
+    private OrdemListagemDTO montarOrdemListagemDTO(OrdemSetor ordemSetor, Map<String, String> etapaNomePorProdutoESequencia) {
         OrdemProducao ordem = ordemSetor.getOrdemProducao();
         Integer totalEtapa = ordemSetor.getQtdRecebida();
         Integer produzido = ordemSetor.getQtdProduzida();
@@ -94,28 +106,50 @@ public class OrdemProducaoService {
         );
     }
 
+    @Transactional(readOnly = true)
     public Page<OrdemProducaoDTO> listarOrdens(int pagina, int tamanho) {
-        Pageable pageable = PageRequest.of(pagina, tamanho);
-        return ordemProducaoRepository.findAllOrdenadasPorEmAndamento(pageable)
-                .map(ordemProducaoMapper::toDTO);
+        try {
+            Pageable pageable = PageRequest.of(pagina, tamanho);
+            return ordemProducaoRepository.findAllOrdenadasPorEmAndamento(pageable)
+                    .map(ordemProducaoMapper::toDTO);
+        } catch (DataAccessException e) {
+            log.error("Erro de base de dados ao listar ordens paginadas: {}", e.getMessage(), e);
+            throw new BusinessException(AppMessages.ERROR_VALIDATION_FAILED);
+        } catch (Exception e) {
+            log.error("Erro inesperado ao listar ordens paginadas: {}", e.getMessage(), e);
+            throw new BusinessException(AppMessages.ERROR_VALIDATION_FAILED);
+        }
     }
 
     @Transactional
     public void criar(OrdemProducaoDTO dto, Usuario usuarioLogado) {
-        var produto = produtoService.buscarProdutoPorId(dto.produtoId());
+        try {
+            if (dto == null) {
+                throw new BusinessException(AppMessages.ERROR_VALIDATION_FAILED);
+            }
+            var produto = produtoService.buscarProdutoPorId(dto.produtoId());
 
-        OrdemProducao ordem = new OrdemProducao();
-        ordem.setNumero(gerarNumero());
-        ordem.setQuantidade(dto.quantidade());
-        ordem.setStatus(EstatusOrdemProducao.DISPONIVEL);
-        ordem.setProduto(produto);
-        ordem.setCriadoPor(usuarioLogado);
-        ordem.setDataCriacao(dto.dataCriacao().atStartOfDay());
-        ordem.setObservacao(dto.observacao());
+            OrdemProducao ordem = new OrdemProducao();
+            ordem.setNumero(gerarNumero());
+            ordem.setQuantidade(dto.quantidade());
+            ordem.setStatus(EstatusOrdemProducao.DISPONIVEL);
+            ordem.setProduto(produto);
+            ordem.setCriadoPor(usuarioLogado);
+            ordem.setDataCriacao(dto.dataCriacao() != null ? dto.dataCriacao().atStartOfDay() : java.time.LocalDateTime.now());
+            ordem.setObservacao(dto.observacao());
 
-        ordemProducaoRepository.save(ordem);
+            ordemProducaoRepository.save(ordem);
 
-        criarPrimeiraEtapaOrdemSetor(ordem);
+            criarPrimeiraEtapaOrdemSetor(ordem);
+        } catch (BusinessException e) {
+            throw e;
+        } catch (DataAccessException e) {
+            log.error("Erro de base de dados ao criar ordem de produção: {}", e.getMessage(), e);
+            throw new BusinessException(AppMessages.ERROR_VALIDATION_FAILED);
+        } catch (Exception e) {
+            log.error("Erro inesperado ao criar ordem de produção: {}", e.getMessage(), e);
+            throw new BusinessException(AppMessages.ERROR_VALIDATION_FAILED);
+        }
     }
 
     private void criarPrimeiraEtapaOrdemSetor(OrdemProducao ordem) {
@@ -141,66 +175,91 @@ public class OrdemProducaoService {
 
     private String gerarNumero() {
         Long seq = ordemProducaoRepository.proximoNumeroSequencial();
-        return "OP-" + String.format("%04d", seq);
+        return "OP-" + String.format("%04d", seq != null ? seq : 1L);
     }
 
     @Transactional
     public void liberarOrdem(Long ordemSetorId) {
-        OrdemSetor ordemSetor = ordemSetorRepository.findById(ordemSetorId)
-                .orElseThrow(() -> new BusinessException(AppMessages.ERROR_ORDER_SECTOR_NOTFOUND));
+        try {
+            if (ordemSetorId == null) {
+                throw new BusinessException(AppMessages.ERROR_ORDER_SECTOR_NOTFOUND);
+            }
+            OrdemSetor ordemSetor = ordemSetorRepository.findById(ordemSetorId)
+                    .orElseThrow(() -> new BusinessException(AppMessages.ERROR_ORDER_SECTOR_NOTFOUND));
 
-        if (ordemSetor.getStatus() != EstatusOrdemProducao.DISPONIVEL) {
-            throw new BusinessException(AppMessages.ERROR_ORDER_NOT_AVAILABLE);
+            if (ordemSetor.getStatus() != EstatusOrdemProducao.DISPONIVEL) {
+                throw new BusinessException(AppMessages.ERROR_ORDER_NOT_AVAILABLE);
+            }
+
+            ordemSetor.setStatus(EstatusOrdemProducao.LIBERADA);
+            ordemSetorRepository.save(ordemSetor);
+        } catch (BusinessException e) {
+            throw e;
+        } catch (DataAccessException e) {
+            log.error("Erro de base de dados ao liberar ordem setor id {}: {}", ordemSetorId, e.getMessage(), e);
+            throw new BusinessException(AppMessages.ERROR_VALIDATION_FAILED);
+        } catch (Exception e) {
+            log.error("Erro inesperado ao liberar ordem setor id {}: {}", ordemSetorId, e.getMessage(), e);
+            throw new BusinessException(AppMessages.ERROR_VALIDATION_FAILED);
         }
-
-        ordemSetor.setStatus(EstatusOrdemProducao.LIBERADA);
-        ordemSetorRepository.save(ordemSetor);
     }
 
     @Transactional
     public void dividirEtapa(Long ordemSetorId, DividirEtapaDTO dto) {
-        OrdemSetor ordemOriginal = ordemSetorRepository.findById(ordemSetorId)
-                .orElseThrow(() -> new BusinessException(AppMessages.ERROR_ORDER_SECTOR_NOTFOUND));
+        try {
+            if (ordemSetorId == null || dto == null || dto.divisoes() == null) {
+                throw new BusinessException(AppMessages.ERROR_VALIDATION_FAILED);
+            }
 
-        if (ordemOriginal.getStatus() != EstatusOrdemProducao.DISPONIVEL) {
-            throw new BusinessException(AppMessages.ERROR_ORDER_NOT_AVAILABLE);
-        }
+            OrdemSetor ordemOriginal = ordemSetorRepository.findById(ordemSetorId)
+                    .orElseThrow(() -> new BusinessException(AppMessages.ERROR_ORDER_SECTOR_NOTFOUND));
 
-        int somaDivisoes = dto.divisoes().stream().mapToInt(DivisaoItemDTO::quantidade).sum();
+            if (ordemOriginal.getStatus() != EstatusOrdemProducao.DISPONIVEL) {
+                throw new BusinessException(AppMessages.ERROR_ORDER_NOT_AVAILABLE);
+            }
 
-        if (somaDivisoes > ordemOriginal.getQtdPendente()) {
-            throw new BusinessException(AppMessages.ERROR_DIVISION_SUM_MISMATCH);
-        }
+            int somaDivisoes = dto.divisoes().stream().mapToInt(DivisaoItemDTO::quantidade).sum();
 
-        OrdemProducao ordem = ordemOriginal.getOrdemProducao();
-        Setor setor = ordemOriginal.getSetor();
-        Integer sequencia = ordemOriginal.getSequencia();
+            if (somaDivisoes > ordemOriginal.getQtdPendente()) {
+                throw new BusinessException(AppMessages.ERROR_DIVISION_SUM_MISMATCH);
+            }
 
-        for (DivisaoItemDTO item : dto.divisoes()) {
-            OrdemSetor novaEtapa = new OrdemSetor();
-            novaEtapa.setOrdemProducao(ordem);
-            novaEtapa.setSetor(setor);
-            novaEtapa.setSequencia(sequencia);
-            novaEtapa.setVariante(item.variante().toUpperCase(Locale.ROOT));
-            novaEtapa.setQtdRecebida(item.quantidade());
-            novaEtapa.setQtdProduzida(0);
-            novaEtapa.setQtdPendente(item.quantidade());
-            novaEtapa.setStatus(EstatusOrdemProducao.DISPONIVEL);
-            ordemSetorRepository.save(novaEtapa);
-        }
+            OrdemProducao ordem = ordemOriginal.getOrdemProducao();
+            Setor setor = ordemOriginal.getSetor();
+            Integer sequencia = ordemOriginal.getSequencia();
 
-        int restante = ordemOriginal.getQtdPendente() - somaDivisoes;
+            for (DivisaoItemDTO item : dto.divisoes()) {
+                OrdemSetor novaEtapa = new OrdemSetor();
+                novaEtapa.setOrdemProducao(ordem);
+                novaEtapa.setSetor(setor);
+                novaEtapa.setSequencia(sequencia);
+                novaEtapa.setVariante(item.variante() != null ? item.variante().toUpperCase(Locale.ROOT) : null);
+                novaEtapa.setQtdRecebida(item.quantidade());
+                novaEtapa.setQtdProduzida(0);
+                novaEtapa.setQtdPendente(item.quantidade());
+                novaEtapa.setStatus(EstatusOrdemProducao.DISPONIVEL);
+                ordemSetorRepository.save(novaEtapa);
+            }
 
-        if (restante > 0) {
-            // Sobra fica como uma linha "sem variante" — o próprio registro original é reaproveitado
-            ordemOriginal.setQtdRecebida(restante);
-            ordemOriginal.setQtdPendente(restante);
-            ordemOriginal.setVariante(null);
-            ordemSetorRepository.save(ordemOriginal);
-        } else {
-            ordemSetorRepository.delete(ordemOriginal);
+            int restante = ordemOriginal.getQtdPendente() - somaDivisoes;
+
+            if (restante > 0) {
+                // Sobra fica como uma linha "sem variante" — o próprio registro original é reaproveitado
+                ordemOriginal.setQtdRecebida(restante);
+                ordemOriginal.setQtdPendente(restante);
+                ordemOriginal.setVariante(null);
+                ordemSetorRepository.save(ordemOriginal);
+            } else {
+                ordemSetorRepository.delete(ordemOriginal);
+            }
+        } catch (BusinessException e) {
+            throw e;
+        } catch (DataAccessException e) {
+            log.error("Erro de base de dados ao dividir etapa da ordem setor id {}: {}", ordemSetorId, e.getMessage(), e);
+            throw new BusinessException(AppMessages.ERROR_VALIDATION_FAILED);
+        } catch (Exception e) {
+            log.error("Erro inesperado ao dividir etapa da ordem setor id {}: {}", ordemSetorId, e.getMessage(), e);
+            throw new BusinessException(AppMessages.ERROR_VALIDATION_FAILED);
         }
     }
-
-
 }

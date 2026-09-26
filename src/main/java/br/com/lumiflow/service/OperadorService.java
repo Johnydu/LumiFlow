@@ -7,76 +7,167 @@ import br.com.lumiflow.exception.BusinessException;
 import br.com.lumiflow.mapper.OperadorMapper;
 import br.com.lumiflow.entity.Operador;
 import br.com.lumiflow.repository.OperadorRepository;
-import lombok.AllArgsConstructor;
+import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
+import org.springframework.dao.DataAccessException;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
 import java.util.Locale;
 
+@Slf4j
 @Service
-@AllArgsConstructor
+@RequiredArgsConstructor
 public class OperadorService {
     private final OperadorRepository operadorRepository;
     private final OperadorMapper operadorMapper;
     private final SetorService setorService;
 
     public void validarNomeOperador(String nome) {
-        if (operadorRepository.existsByNome(nome))
+        if (nome == null || nome.isBlank()) {
+            throw new BusinessException(AppMessages.ERROR_VALIDATION_FAILED);
+        }
+        if (operadorRepository.existsByNome(nome.trim().toUpperCase(Locale.ROOT))) {
             throw new BusinessException(AppMessages.ERROR_OPERATOR_NAME_DUPLICATE);
+        }
     }
 
     public void validarNomeOperadorParaEdicao(String nome, Long id) {
-        if (nome != null && operadorRepository.existsByNomeAndIdNot(nome.trim().toUpperCase(Locale.ROOT), id))
-            throw new BusinessException(AppMessages.ERROR_OPERATOR_NAME_DUPLICATE);
+        if (nome != null && !nome.isBlank() && id != null) {
+            if (operadorRepository.existsByNomeAndIdNot(nome.trim().toUpperCase(Locale.ROOT), id)) {
+                throw new BusinessException(AppMessages.ERROR_OPERATOR_NAME_DUPLICATE);
+            }
+        }
     }
 
     public Operador buscarOperadorPorId(Long id) {
-        return operadorRepository.findById(id)
-                .orElseThrow(() -> new BusinessException(AppMessages.ERROR_OPERATOR_NOTFOUND));
+        try {
+            if (id == null) {
+                throw new BusinessException(AppMessages.ERROR_OPERATOR_NOTFOUND);
+            }
+            return operadorRepository.findById(id)
+                    .orElseThrow(() -> new BusinessException(AppMessages.ERROR_OPERATOR_NOTFOUND));
+        } catch (BusinessException e) {
+            throw e;
+        } catch (DataAccessException e) {
+            log.error("Erro de base de dados ao buscar operador id {}: {}", id, e.getMessage(), e);
+            throw new BusinessException(AppMessages.ERROR_VALIDATION_FAILED);
+        } catch (Exception e) {
+            log.error("Erro inesperado ao buscar operador id {}: {}", id, e.getMessage(), e);
+            throw new BusinessException(AppMessages.ERROR_VALIDATION_FAILED);
+        }
     }
 
     @Transactional(readOnly = true)
     public List<OperadorListagemDTO> listarOperadores() {
-        return operadorMapper.toListDto(operadorRepository.findAllByOrderByNomeAsc());
+        try {
+            return operadorMapper.toListDto(operadorRepository.findAllByOrderByNomeAsc());
+        } catch (DataAccessException e) {
+            log.error("Erro de base de dados ao listar operadores: {}", e.getMessage(), e);
+            throw new BusinessException(AppMessages.ERROR_VALIDATION_FAILED);
+        } catch (Exception e) {
+            log.error("Erro inesperado ao listar operadores: {}", e.getMessage(), e);
+            throw new BusinessException(AppMessages.ERROR_VALIDATION_FAILED);
+        }
     }
 
     @Transactional
     public void novoOperador(OperadorDTO dto) {
-        validarNomeOperador(dto.nome());
-        Operador operador = operadorMapper.toEntity(dto);
-        operador.setSetorPadrao(setorService.buscarSetorPorId(dto.setorPadraoId()));
-        operadorRepository.save(operador);
+        try {
+            if (dto == null) {
+                throw new BusinessException(AppMessages.ERROR_VALIDATION_FAILED);
+            }
+            validarNomeOperador(dto.nome());
+
+            Operador operador = operadorMapper.toEntity(dto);
+            if (dto.nome() != null) {
+                operador.setNome(dto.nome().trim().toUpperCase(Locale.ROOT));
+            }
+            if (dto.setorPadraoId() != null) {
+                operador.setSetorPadrao(setorService.buscarSetorPorId(dto.setorPadraoId()));
+            }
+
+            operadorRepository.save(operador);
+        } catch (BusinessException e) {
+            throw e;
+        } catch (DataAccessException e) {
+            log.error("Erro de base de dados ao criar novo operador: {}", e.getMessage(), e);
+            throw new BusinessException(AppMessages.ERROR_VALIDATION_FAILED);
+        } catch (Exception e) {
+            log.error("Erro inesperado ao criar novo operador: {}", e.getMessage(), e);
+            throw new BusinessException(AppMessages.ERROR_VALIDATION_FAILED);
+        }
     }
 
     @Transactional
     public void excluirOperador(Long id) {
-        operadorRepository.delete(buscarOperadorPorId(id));
+        try {
+            if (id == null) {
+                throw new BusinessException(AppMessages.ERROR_OPERATOR_NOTFOUND);
+            }
+            Operador operador = buscarOperadorPorId(id);
+            operadorRepository.delete(operador);
+        } catch (BusinessException e) {
+            throw e;
+        } catch (DataAccessException e) {
+            log.error("Erro de base de dados ao excluir operador id {}: {}", id, e.getMessage(), e);
+            throw new BusinessException(AppMessages.ERROR_VALIDATION_FAILED);
+        } catch (Exception e) {
+            log.error("Erro inesperado ao excluir operador id {}: {}", id, e.getMessage(), e);
+            throw new BusinessException(AppMessages.ERROR_VALIDATION_FAILED);
+        }
     }
 
     @Transactional
     public void editarOperador(Long id, OperadorDTO dto) {
-        Operador operador = buscarOperadorPorId(id);
+        try {
+            if (id == null || dto == null) {
+                throw new BusinessException(AppMessages.ERROR_VALIDATION_FAILED);
+            }
+            Operador operador = buscarOperadorPorId(id);
 
-        validarNomeOperadorParaEdicao(dto.nome(), id);
+            validarNomeOperadorParaEdicao(dto.nome(), id);
 
-        operador.setNome(dto.nome().toUpperCase(Locale.ROOT));
-        operador.setFuncao(dto.funcao() == null || dto.funcao().isBlank() ? null : dto.funcao());
-        operador.setSetorPadrao(dto.setorPadraoId() == null ? null : setorService.buscarSetorPorId(dto.setorPadraoId()));
-        operadorRepository.save(operador);
+            if (dto.nome() != null && !dto.nome().isBlank()) {
+                operador.setNome(dto.nome().trim().toUpperCase(Locale.ROOT));
+            }
+            operador.setFuncao(dto.funcao() == null || dto.funcao().isBlank() ? null : dto.funcao().trim());
+            operador.setSetorPadrao(dto.setorPadraoId() == null ? null : setorService.buscarSetorPorId(dto.setorPadraoId()));
+
+            operadorRepository.save(operador);
+        } catch (BusinessException e) {
+            throw e;
+        } catch (DataAccessException e) {
+            log.error("Erro de base de dados ao editar operador id {}: {}", id, e.getMessage(), e);
+            throw new BusinessException(AppMessages.ERROR_VALIDATION_FAILED);
+        } catch (Exception e) {
+            log.error("Erro inesperado ao editar operador id {}: {}", id, e.getMessage(), e);
+            throw new BusinessException(AppMessages.ERROR_VALIDATION_FAILED);
+        }
     }
 
     @Transactional(readOnly = true)
     public List<OperadorListagemDTO> buscarOperadores(String nome, Long setorId) {
-        // Trata strings vazias vindas do form
-        String termoBusca = (nome == null || nome.isBlank()) ? null : nome.trim();
+        try {
+            // Trata strings vazias vindas do form
+            String termoBusca = (nome == null || nome.isBlank()) ? null : nome.trim();
 
-        // Se ambos forem nulos ou vazios, retorna todos
-        if (termoBusca == null && setorId == null) {
-            return listarOperadores();
+            // Se ambos forem nulos ou vazios, retorna todos
+            if (termoBusca == null && setorId == null) {
+                return listarOperadores();
+            }
+
+            List<Operador> operadores = operadorRepository.buscarPorNomeESetor(termoBusca, setorId);
+            return operadorMapper.toListDto(operadores);
+        } catch (BusinessException e) {
+            throw e;
+        } catch (DataAccessException e) {
+            log.error("Erro de base de dados ao buscar operadores por nome '{}' e setor id {}: {}", nome, setorId, e.getMessage(), e);
+            throw new BusinessException(AppMessages.ERROR_VALIDATION_FAILED);
+        } catch (Exception e) {
+            log.error("Erro inesperado ao buscar operadores por nome '{}' e setor id {}: {}", nome, setorId, e.getMessage(), e);
+            throw new BusinessException(AppMessages.ERROR_VALIDATION_FAILED);
         }
-
-        List<Operador> operadores = operadorRepository.buscarPorNomeESetor(termoBusca, setorId);
-        return operadorMapper.toListDto(operadores);
     }
 }

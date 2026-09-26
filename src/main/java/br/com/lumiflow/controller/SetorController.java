@@ -2,10 +2,12 @@ package br.com.lumiflow.controller;
 
 import br.com.lumiflow.config.AppMessages;
 import br.com.lumiflow.dto.setor.SetorDTO;
+import br.com.lumiflow.exception.BusinessException;
 import br.com.lumiflow.service.SetorService;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.validation.Valid;
-import lombok.AllArgsConstructor;
+import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.context.MessageSource;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
@@ -13,23 +15,35 @@ import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
+import java.util.List;
 import java.util.Locale;
 
+@Slf4j
 @Controller
-@AllArgsConstructor
+@RequiredArgsConstructor
 @RequestMapping("/dashboard/setores")
 public class SetorController {
+
     private final SetorService setorService;
     private final MessageSource messageSource;
 
     @GetMapping
     public String setores(
-            @RequestParam(value = "nome", required = false)
-            String nome,
+            @RequestParam(value = "nome", required = false) String nome,
             Model model,
-            HttpServletRequest request) {
+            HttpServletRequest request,
+            Locale locale) {
 
-        carregarPagina(model, nome);
+        try {
+            carregarPagina(model, nome);
+        } catch (Exception e) {
+            log.error("Erro inesperado ao carregar a página de setores: {}", e.getMessage(), e);
+            model.addAttribute("error", messageSource.getMessage(AppMessages.ERROR_VALIDATION_FAILED, null, locale));
+            model.addAttribute("setores", List.of());
+            if (!model.containsAttribute("setorDTO")) {
+                model.addAttribute("setorDTO", new SetorDTO(null, null, null));
+            }
+        }
 
         // Retorna apenas o fragmento da tabela em requisições AJAX assíncronas
         if ("XMLHttpRequest".equals(request.getHeader("X-Requested-With"))) {
@@ -47,23 +61,47 @@ public class SetorController {
             RedirectAttributes attributes,
             Locale locale) {
 
-        if (result.hasErrors()) return erroValidacao(model, locale);
+        if (result.hasErrors()) {
+            return erroValidacao(model, locale);
+        }
 
-        setorService.novoSetor(dto);
-        attributes.addFlashAttribute("success", messageSource
-                .getMessage(AppMessages.SUCCESS_SECTOR_CREATED, new Object[]{dto.nome()}, locale));
+        try {
+            setorService.novoSetor(dto);
+            attributes.addFlashAttribute("success", messageSource
+                    .getMessage(AppMessages.SUCCESS_SECTOR_CREATED, new Object[]{dto.nome()}, locale));
+        } catch (BusinessException e) {
+            log.warn("Erro de negócio ao criar setor '{}': {}", dto.nome(), e.getMessage());
+            String errorMessage = messageSource.getMessage(e.getMessage(), null, e.getMessage(), locale);
+            attributes.addFlashAttribute("error", errorMessage);
+            attributes.addFlashAttribute("setorDTO", dto);
+        } catch (Exception e) {
+            log.error("Erro inesperado ao criar setor '{}': {}", dto.nome(), e.getMessage(), e);
+            attributes.addFlashAttribute("error", messageSource.getMessage(AppMessages.ERROR_VALIDATION_FAILED, null, locale));
+            attributes.addFlashAttribute("setorDTO", dto);
+        }
+
         return "redirect:/dashboard/setores";
     }
 
-    @PostMapping("{id}/excluir")
+    @PostMapping("/{id}/excluir")
     public String excluirSetor(
             @PathVariable Long id,
             RedirectAttributes attributes,
             Locale locale) {
 
-        setorService.excluirSetor(id);
-        attributes.addFlashAttribute("success", messageSource
-                .getMessage(AppMessages.SUCCESS_SECTOR_DELETED, null, locale));
+        try {
+            setorService.excluirSetor(id);
+            attributes.addFlashAttribute("success", messageSource
+                    .getMessage(AppMessages.SUCCESS_SECTOR_DELETED, null, locale));
+        } catch (BusinessException e) {
+            log.warn("Erro de negócio ao excluir setor id {}: {}", id, e.getMessage());
+            String errorMessage = messageSource.getMessage(e.getMessage(), null, e.getMessage(), locale);
+            attributes.addFlashAttribute("error", errorMessage);
+        } catch (Exception e) {
+            log.error("Erro inesperado ao excluir setor id {}: {}", id, e.getMessage(), e);
+            attributes.addFlashAttribute("error", messageSource.getMessage(AppMessages.ERROR_VALIDATION_FAILED, null, locale));
+        }
+
         return "redirect:/dashboard/setores";
     }
 
@@ -76,11 +114,25 @@ public class SetorController {
             RedirectAttributes attributes,
             Locale locale) {
 
-        if (result.hasErrors()) return erroValidacao(model, locale);
+        if (result.hasErrors()) {
+            return erroValidacao(model, locale);
+        }
 
-        setorService.editarSetor(id, dto);
-        attributes.addFlashAttribute("success", messageSource
-                .getMessage(AppMessages.SUCCESS_SECTOR_UPDATED, new Object[]{dto.nome()}, locale));
+        try {
+            setorService.editarSetor(id, dto);
+            attributes.addFlashAttribute("success", messageSource
+                    .getMessage(AppMessages.SUCCESS_SECTOR_UPDATED, new Object[]{dto.nome()}, locale));
+        } catch (BusinessException e) {
+            log.warn("Erro de negócio ao editar setor id {}: {}", id, e.getMessage());
+            String errorMessage = messageSource.getMessage(e.getMessage(), null, e.getMessage(), locale);
+            attributes.addFlashAttribute("error", errorMessage);
+            attributes.addFlashAttribute("setorDTO", dto);
+        } catch (Exception e) {
+            log.error("Erro inesperado ao editar setor id {}: {}", id, e.getMessage(), e);
+            attributes.addFlashAttribute("error", messageSource.getMessage(AppMessages.ERROR_VALIDATION_FAILED, null, locale));
+            attributes.addFlashAttribute("setorDTO", dto);
+        }
+
         return "redirect:/dashboard/setores";
     }
 
@@ -92,10 +144,15 @@ public class SetorController {
     }
 
     private void carregarPagina(Model model, String nome) {
-        if (nome != null && !nome.isBlank()) {
-            model.addAttribute("setores", setorService.buscarPorNome(nome.trim()));
-        } else {
-            model.addAttribute("setores", setorService.listarSetores());
+        try {
+            if (nome != null && !nome.isBlank()) {
+                model.addAttribute("setores", setorService.buscarPorNome(nome.trim()));
+            } else {
+                model.addAttribute("setores", setorService.listarSetores());
+            }
+        } catch (Exception e) {
+            log.error("Erro ao carregar setores na página: {}", e.getMessage(), e);
+            model.addAttribute("setores", List.of());
         }
 
         if (!model.containsAttribute("setorDTO")) {

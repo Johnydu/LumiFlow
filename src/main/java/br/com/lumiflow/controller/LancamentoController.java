@@ -4,16 +4,15 @@ import br.com.lumiflow.config.AppMessages;
 import br.com.lumiflow.dto.lancamento.LancamentoProducaoDTO;
 import br.com.lumiflow.dto.lancamento.RefugoDTO;
 import br.com.lumiflow.dto.lancamento.RetrabalhoDTO;
-import br.com.lumiflow.dto.operador.OperadorDTO;
 import br.com.lumiflow.entity.OrdemSetor;
 import br.com.lumiflow.entity.enums.EstatusOrdemProducao;
-import br.com.lumiflow.security.UsuarioDetails;
+import br.com.lumiflow.exception.BusinessException;
 import br.com.lumiflow.service.LancamentoService;
 import br.com.lumiflow.service.SetorService;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.context.MessageSource;
-import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.validation.BindingResult;
@@ -22,6 +21,7 @@ import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
 import java.util.Locale;
 
+@Slf4j
 @Controller
 @RequestMapping("/dashboard/ordens/{ordemId}/setor/{ordemSetorId}/lancar")
 @RequiredArgsConstructor
@@ -54,10 +54,10 @@ public class LancamentoController {
                     new LancamentoProducaoDTO(null, null, null, null));
         if (!model.containsAttribute("refugoDTO"))
             model.addAttribute("refugoDTO",
-                    new RefugoDTO(null, null, null, null,null));
+                    new RefugoDTO(null, null, null, null, null));
         if (!model.containsAttribute("retrabalhoDTO"))
             model.addAttribute("retrabalhoDTO",
-                    new RetrabalhoDTO(null, null, null,null, null));
+                    new RetrabalhoDTO(null, null, null, null, null));
 
         return "ordens/Lancamento";
     }
@@ -67,18 +67,27 @@ public class LancamentoController {
                            @Valid @ModelAttribute("producaoDTO") LancamentoProducaoDTO dto,
                            BindingResult result, RedirectAttributes attributes, Locale locale) {
 
-        if (result.hasErrors()) return recarregarComErro(ordemId, ordemSetorId,
-                "producaoDTO", dto, result, attributes);
-
-        OrdemSetor ordemSetor = lancamentoService.lancarProducao(ordemId,ordemSetorId, dto);
-        attributes.addFlashAttribute("success",
-                messageSource.getMessage(AppMessages.SUCCESS_LAUNCH_REGISTERED, null, locale));
-
-        if (ordemSetor.getStatus() == EstatusOrdemProducao.CONCLUIDA) {
-            return "redirect:/dashboard/ordens-setor/" + ordemSetor.getSetor().getId();
+        if (result.hasErrors()) {
+            return recarregarComErro(ordemId, ordemSetorId, "producaoDTO", dto, result, attributes);
         }
 
-        return "redirect:/dashboard/ordens/" + ordemId + "/setor/" + ordemSetorId + "/lancar";
+        try {
+            OrdemSetor ordemSetor = lancamentoService.lancarProducao(ordemId, ordemSetorId, dto);
+            attributes.addFlashAttribute("success",
+                    messageSource.getMessage(AppMessages.SUCCESS_LAUNCH_REGISTERED, null, locale));
+
+            if (ordemSetor.getStatus() == EstatusOrdemProducao.CONCLUIDA) {
+                return "redirect:/dashboard/ordens-setor/" + ordemSetor.getSetor().getId();
+            }
+
+            return "redirect:/dashboard/ordens/" + ordemId + "/setor/" + ordemSetorId + "/lancar";
+
+        } catch (BusinessException e) {
+            log.warn("Erro de negócio ao lançar produção na ordem {}: {}", ordemId, e.getMessage());
+            attributes.addFlashAttribute("error", e.getMessage());
+            attributes.addFlashAttribute("producaoDTO", dto);
+            return "redirect:/dashboard/ordens/" + ordemId + "/setor/" + ordemSetorId + "/lancar";
+        }
     }
 
     @PostMapping("/refugo")
@@ -86,13 +95,22 @@ public class LancamentoController {
                          @Valid @ModelAttribute("refugoDTO") RefugoDTO dto, BindingResult result,
                          RedirectAttributes attributes, Locale locale) {
 
-        if (result.hasErrors()) return recarregarComErro(ordemId, ordemSetorId,
-                "refugoDTO", dto, result, attributes);
+        if (result.hasErrors()) {
+            return recarregarComErro(ordemId, ordemSetorId, "refugoDTO", dto, result, attributes);
+        }
 
-        lancamentoService.registrarRefugo(ordemId, ordemSetorId, dto);
-        attributes.addFlashAttribute("success",
-                messageSource.getMessage(AppMessages.SUCCESS_REFUGO_REGISTERED, null, locale));
-        return "redirect:/dashboard/ordens/" + ordemId + "/setor/" + ordemSetorId + "/lancar";
+        try {
+            lancamentoService.registrarRefugo(ordemId, ordemSetorId, dto);
+            attributes.addFlashAttribute("success",
+                    messageSource.getMessage(AppMessages.SUCCESS_REFUGO_REGISTERED, null, locale));
+            return "redirect:/dashboard/ordens/" + ordemId + "/setor/" + ordemSetorId + "/lancar";
+
+        } catch (BusinessException e) {
+            log.warn("Erro de negócio ao registar refugo na ordem {}: {}", ordemId, e.getMessage());
+            attributes.addFlashAttribute("error", e.getMessage());
+            attributes.addFlashAttribute("refugoDTO", dto);
+            return "redirect:/dashboard/ordens/" + ordemId + "/setor/" + ordemSetorId + "/lancar";
+        }
     }
 
     @PostMapping("/retrabalho")
@@ -100,13 +118,22 @@ public class LancamentoController {
                              @Valid @ModelAttribute("retrabalhoDTO") RetrabalhoDTO dto, BindingResult result,
                              RedirectAttributes attributes, Locale locale) {
 
-        if (result.hasErrors())
+        if (result.hasErrors()) {
             return recarregarComErro(ordemId, ordemSetorId, "retrabalhoDTO", dto, result, attributes);
+        }
 
-        lancamentoService.registrarRetrabalho(ordemId, dto);
-        attributes.addFlashAttribute("success",
-                messageSource.getMessage(AppMessages.SUCCESS_RETRABALHO_REGISTERED, null, locale));
-        return "redirect:/dashboard/ordens/" + ordemId + "/setor/" + ordemSetorId + "/lancar";
+        try {
+            lancamentoService.registrarRetrabalho(ordemId, dto);
+            attributes.addFlashAttribute("success",
+                    messageSource.getMessage(AppMessages.SUCCESS_RETRABALHO_REGISTERED, null, locale));
+            return "redirect:/dashboard/ordens/" + ordemId + "/setor/" + ordemSetorId + "/lancar";
+
+        } catch (BusinessException e) {
+            log.warn("Erro de negócio ao registar retrabalho na ordem {}: {}", ordemId, e.getMessage());
+            attributes.addFlashAttribute("error", e.getMessage());
+            attributes.addFlashAttribute("retrabalhoDTO", dto);
+            return "redirect:/dashboard/ordens/" + ordemId + "/setor/" + ordemSetorId + "/lancar";
+        }
     }
 
     private String recarregarComErro(Long ordemId, Long ordemSetorId, String nomeDto, Object dto,
