@@ -6,14 +6,17 @@ import br.com.lumiflow.exception.BusinessException;
 import br.com.lumiflow.mapper.MaquinaMapper;
 import br.com.lumiflow.entity.Maquina;
 import br.com.lumiflow.repository.MaquinaRepository;
-import lombok.AllArgsConstructor;
+import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
+import org.springframework.dao.DataAccessException;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
 
+@Slf4j
 @Service
-@AllArgsConstructor
+@RequiredArgsConstructor
 public class MaquinaService {
 
     private final MaquinaRepository maquinaRepository;
@@ -22,37 +25,115 @@ public class MaquinaService {
 
     @Transactional(readOnly = true)
     public List<MaquinaDTO> listarMaquinas() {
-        return maquinaMapper.toDtoList(maquinaRepository.findAllByOrderByNomeAsc());
+        try {
+            return maquinaMapper.toDtoList(maquinaRepository.findAllByOrderByNomeAsc());
+        } catch (DataAccessException e) {
+            log.error("Erro de base de dados ao listar máquinas: {}", e.getMessage(), e);
+            throw new BusinessException(AppMessages.ERROR_VALIDATION_FAILED);
+        } catch (Exception e) {
+            log.error("Erro inesperado ao listar máquinas: {}", e.getMessage(), e);
+            throw new BusinessException(AppMessages.ERROR_VALIDATION_FAILED);
+        }
     }
 
     @Transactional
     public void novaMaquina(MaquinaDTO dto) {
-        if (maquinaRepository.findByNome(dto.nome()).isPresent())
-            throw new BusinessException(AppMessages.ERROR_MACHINE_NAME_DUPLICATE);
-        Maquina maquina = maquinaMapper.toEntity(dto);
-        maquina.setSetor(setorService.buscarSetorPorId(dto.setorId()));
-        maquinaRepository.save(maquina);
+        try {
+            if (dto == null || dto.nome() == null || dto.nome().isBlank()) {
+                throw new BusinessException(AppMessages.ERROR_VALIDATION_FAILED);
+            }
+            String nomeTrim = dto.nome().trim();
+            if (maquinaRepository.findByNome(nomeTrim).isPresent()) {
+                throw new BusinessException(AppMessages.ERROR_MACHINE_NAME_DUPLICATE);
+            }
+
+            Maquina maquina = maquinaMapper.toEntity(dto);
+            maquina.setNome(nomeTrim);
+            if (dto.setorId() != null) {
+                maquina.setSetor(setorService.buscarSetorPorId(dto.setorId()));
+            }
+
+            maquinaRepository.save(maquina);
+        } catch (BusinessException e) {
+            throw e;
+        } catch (DataAccessException e) {
+            log.error("Erro de base de dados ao criar nova máquina: {}", e.getMessage(), e);
+            throw new BusinessException(AppMessages.ERROR_VALIDATION_FAILED);
+        } catch (Exception e) {
+            log.error("Erro inesperado ao criar nova máquina: {}", e.getMessage(), e);
+            throw new BusinessException(AppMessages.ERROR_VALIDATION_FAILED);
+        }
     }
 
     @Transactional
-    public void deletarMaquina(long id) {
-        maquinaRepository.delete(buscarPorId(id));
+    public void deletarMaquina(Long id) {
+        try {
+            if (id == null) {
+                throw new BusinessException(AppMessages.ERROR_MACHINE_NOTFOUND);
+            }
+            Maquina maquina = buscarPorId(id);
+            maquinaRepository.delete(maquina);
+        } catch (BusinessException e) {
+            throw e;
+        } catch (DataAccessException e) {
+            log.error("Erro de base de dados ao excluir máquina id {}: {}", id, e.getMessage(), e);
+            throw new BusinessException(AppMessages.ERROR_VALIDATION_FAILED);
+        } catch (Exception e) {
+            log.error("Erro inesperado ao excluir máquina id {}: {}", id, e.getMessage(), e);
+            throw new BusinessException(AppMessages.ERROR_VALIDATION_FAILED);
+        }
     }
 
     @Transactional
     public void editarMaquina(Long id, MaquinaDTO dto) {
-        Maquina maquina = buscarPorId(id);
-        maquinaRepository.findByNome(dto.nome())
-                .filter(outra -> !outra.getId().equals(id)).ifPresent(outra -> {
-            throw new BusinessException(AppMessages.ERROR_MACHINE_NAME_DUPLICATE);
-        });
-        maquina.setNome(dto.nome());
-        maquina.setSetor(setorService.buscarSetorPorId(dto.setorId()));
-        maquinaRepository.save(maquina);
+        try {
+            if (id == null || dto == null) {
+                throw new BusinessException(AppMessages.ERROR_VALIDATION_FAILED);
+            }
+            Maquina maquina = buscarPorId(id);
+
+            if (dto.nome() != null && !dto.nome().isBlank()) {
+                String nomeTrim = dto.nome().trim();
+                maquinaRepository.findByNome(nomeTrim)
+                        .filter(outra -> !outra.getId().equals(id))
+                        .ifPresent(outra -> {
+                            throw new BusinessException(AppMessages.ERROR_MACHINE_NAME_DUPLICATE);
+                        });
+                maquina.setNome(nomeTrim);
+            }
+
+            if (dto.setorId() != null) {
+                maquina.setSetor(setorService.buscarSetorPorId(dto.setorId()));
+            }
+
+            maquinaRepository.save(maquina);
+        } catch (BusinessException e) {
+            throw e;
+        } catch (DataAccessException e) {
+            log.error("Erro de base de dados ao editar máquina id {}: {}", id, e.getMessage(), e);
+            throw new BusinessException(AppMessages.ERROR_VALIDATION_FAILED);
+        } catch (Exception e) {
+            log.error("Erro inesperado ao editar máquina id {}: {}", id, e.getMessage(), e);
+            throw new BusinessException(AppMessages.ERROR_VALIDATION_FAILED);
+        }
     }
 
-    private Maquina buscarPorId(long id) {
-        return maquinaRepository.findById(id)
-                .orElseThrow(() -> new BusinessException(AppMessages.ERROR_MACHINE_NOTFOUND));
+    @Transactional(readOnly = true)
+    public Maquina buscarPorId(Long id) {
+        try {
+            if (id == null) {
+                throw new BusinessException(AppMessages.ERROR_MACHINE_NOTFOUND);
+            }
+            return maquinaRepository.findById(id)
+                    .orElseThrow(() -> new BusinessException(AppMessages.ERROR_MACHINE_NOTFOUND));
+        } catch (BusinessException e) {
+            throw e;
+        } catch (DataAccessException e) {
+            log.error("Erro de base de dados ao buscar máquina id {}: {}", id, e.getMessage(), e);
+            throw new BusinessException(AppMessages.ERROR_MACHINE_NOTFOUND);
+        } catch (Exception e) {
+            log.error("Erro inesperado ao buscar máquina id {}: {}", id, e.getMessage(), e);
+            throw new BusinessException(AppMessages.ERROR_MACHINE_NOTFOUND);
+        }
     }
 }
