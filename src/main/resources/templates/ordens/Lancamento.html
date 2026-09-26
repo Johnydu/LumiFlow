@@ -21,7 +21,8 @@
     <link rel="stylesheet" th:href="@{/css/responsive.css}"/>
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
 </head>
-<body class="page-ordemproducao-lancamento">
+<body class="page-ordemproducao-lancamento"
+      th:data-url-voltar="@{/dashboard/ordens-setor/{setorId}(setorId=${ordemSetor.setor.id})}">
 <div th:replace="~{fragments/messages :: alerts}"></div>
 
 <aside th:replace="~{fragments/sidebar :: sidebar(activePage='ordens-setor')}"></aside>
@@ -203,15 +204,10 @@
     </div>
 </main>
 
-<script>
+<script th:inline="javascript">
     const abaComErro = /*[[${#fields.hasErrors('producaoDTO.*') ? 'producao' :
                             (#fields.hasErrors('refugoDTO.*') ? 'refugo' :
                             (#fields.hasErrors('retrabalhoDTO.*') ? 'retrabalho' : null))}]]*/ null;
-</script>
-<script>
-    function voltarPagina() {
-        window.location.href = '[[@{/dashboard/ordens-setor/{setorId}(setorId=${ordemSetor.setor.id})}]]';
-    }
 </script>
 <script th:src="@{/js/sidebar.js}"></script>
 <script th:src="@{/js/alerts.js}"></script>

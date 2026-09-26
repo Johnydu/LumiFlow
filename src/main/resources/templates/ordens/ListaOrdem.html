@@ -164,6 +164,7 @@
                     <td style="text-align: center;">
                         <div class="table-actions">
                             <form th:if="${ordem.status() != null && ordem.status().name() == 'DISPONIVEL'}"
+                                  sec:authorize="hasAnyRole('PCP_SUPERVISOR', 'GESTAO')"
                                   method="post"
                                   th:action="@{/dashboard/ordens-setor/{setorId}/ordens/{ordemSetorId}/liberar
                                                 (setorId=${setorIdAtual}, ordemSetorId=${ordem.ordemSetorId()})}"
@@ -173,6 +174,7 @@
                             </form>
 
                             <button th:if="${ordem.status() != null && ordem.status().name() == 'DISPONIVEL'}"
+                                    sec:authorize="hasAnyRole('PCP_SUPERVISOR', 'GESTAO')"
                                     type="button" class="btn-dividir"
                                     th:data-id="${ordem.ordemSetorId()}"
                                     th:data-qtd="${ordem.quantidade()}"
@@ -219,14 +221,18 @@
     </div>
 
     <!-- MODAL DE DIVISÃO -->
-    <div id="modalDivisao" class="modal-overlay" style="display:none;">
+    <div id="modalDivisao" class="modal-overlay" style="display:none;"
+         sec:authorize="hasAnyRole('PCP_SUPERVISOR', 'GESTAO')">
         <div class="modal-box">
             <div class="modal-header">
                 <span class="modal-title">Dividir Ordem</span>
                 <button type="button" class="modal-close" onclick="fecharModalDivisao()">&times;</button>
             </div>
 
-            <form id="formDivisao" method="post" action="">
+            <form id="formDivisao"
+                  method="post"
+                  th:action="@{/dashboard/ordens-setor/{setorId}/ordens/{ordemSetorId}/dividir
+                               (setorId=${setorIdAtual}, ordemSetorId=0)}">
                 <input type="hidden" th:name="${_csrf.parameterName}" th:value="${_csrf.token}"/>
 
                 <div class="modal-body">

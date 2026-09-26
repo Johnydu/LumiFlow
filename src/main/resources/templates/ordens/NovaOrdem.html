@@ -39,7 +39,8 @@
 
     <div class="content">
 
-        <form method="post" th:action="@{/dashboard/ordens}" id="formNovaOrdem">
+        <form method="post" th:action="@{/dashboard/ordens}" id="formNovaOrdem"
+              sec:authorize="hasAnyRole('SUPORTE', 'PCP_SUPERVISOR')">
 
             <!-- DADOS DA ORDEM -->
             <div class="form-card">

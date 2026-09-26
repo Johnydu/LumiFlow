@@ -13,6 +13,12 @@ document.addEventListener('DOMContentLoaded', () => {
   }
 });
 
+function voltarPagina() {
+  const url = document.body.dataset.urlVoltar;
+  if (url) {
+    window.location.href = url;
+  }
+}
 
 function filtrarMaquinasRetrabalho() {
   const selectRefugo = document.getElementById('selectRefugoRetrabalho');
@@ -30,4 +36,3 @@ function filtrarMaquinasRetrabalho() {
 
   selectMaquina.value = '';
 }
-

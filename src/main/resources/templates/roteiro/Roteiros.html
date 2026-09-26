@@ -86,7 +86,7 @@
                         </td>
 
                         <td>
-                            <div class="table-actions">
+                            <div class="table-actions" sec:authorize="hasAnyRole('SUPORTE', 'PCP_SUPERVISOR')">
                                 <button type="button"
                                         class="btn-edit"
                                         th:data-produto-id="${roteiro.produtoId()}"
@@ -122,7 +122,8 @@
         </div>
 
         <!-- MODAL DE CADASTRO / EDIÇÃO DE ROTEIROS -->
-        <div class="modal-overlay" id="form-panel" style="display:none">
+        <div class="modal-overlay" id="form-panel" style="display:none"
+             sec:authorize="hasAnyRole('SUPORTE', 'PCP_SUPERVISOR')">
             <div class="modal-box" style="max-width: 680px;">
                 <div class="modal-header">
                     <span class="modal-title" id="form-title">Novo Roteiro</span>

@@ -23,7 +23,7 @@ function limparFormularioSetor() {
   if (setorNome) setorNome.value = '';
 
   const etapasList = document.getElementById('etapas-setor-list');
-  if (etapasList) etapasList.innerHTML = '';
+  if (etapasList) etapasList.replaceChildren();
 }
 
 function novoSetorForm() {

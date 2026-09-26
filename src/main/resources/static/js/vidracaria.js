@@ -75,7 +75,11 @@ const VidracariaModule = (() => {
             return response.text();
           })
           .then(html => {
-            wrapper.innerHTML = html;
+            const parsedDocument = new DOMParser().parseFromString(html, 'text/html');
+            const content = Array.from(parsedDocument.body.childNodes, node =>
+              document.importNode(node, true)
+            );
+            wrapper.replaceChildren(...content);
           })
           .catch(error => console.error("Erro ao atualizar histórico:", error));
     };

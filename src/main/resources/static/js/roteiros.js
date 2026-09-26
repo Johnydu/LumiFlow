@@ -32,7 +32,7 @@ function hideForm() {
 function limparEtapas() {
     const container = document.getElementById('etapas-list');
     if (container) {
-        container.innerHTML = '';
+        container.replaceChildren();
     }
     etapaIndex = 0;
 }
@@ -74,29 +74,60 @@ function criarLinhaEtapa(setorId = '', etapaSetorId = '') {
     row.style.gap = '10px';
     row.style.alignItems = 'center';
 
-    row.innerHTML = `
-        <span class="etapa-num" style="font-weight:bold; min-width: 24px;">${index + 1}º</span>
+    const numeroEtapa = document.createElement('span');
+    numeroEtapa.className = 'etapa-num';
+    numeroEtapa.style.fontWeight = 'bold';
+    numeroEtapa.style.minWidth = '24px';
+    numeroEtapa.textContent = `${index + 1}º`;
 
-        <!-- Select do Setor -->
-        <select name="passos[${index}].setorId" class="form-control setor-select" onchange="aoMudarSetor(this)"
-                style="flex: 1; height: var(--control-height, 38px); padding: 0 var(--space-2); border: 1px solid var(--border-strong); border-radius: var(--radius-md); background: var(--color-field); color: var(--color-text); font-size: var(--font-size-sm);">
-            ${templateSetor ? templateSetor.innerHTML : ''}
-        </select>
+    const selectSetor = document.createElement('select');
+    selectSetor.name = `passos[${index}].setorId`;
+    selectSetor.className = 'form-control setor-select';
+    selectSetor.style.cssText = 'flex: 1; height: var(--control-height, 38px); padding: 0 var(--space-2); border: 1px solid var(--border-strong); border-radius: var(--radius-md); background: var(--color-field); color: var(--color-text); font-size: var(--font-size-sm);';
+    selectSetor.addEventListener('change', () => aoMudarSetor(selectSetor));
+    if (templateSetor) {
+        Array.from(templateSetor.options).forEach(option => {
+            selectSetor.appendChild(option.cloneNode(true));
+        });
+    }
 
-        <!-- Select do Processo / Etapa do Setor -->
-        <select name="passos[${index}].etapaSetorId" class="form-control etapa-setor-select"
-                style="flex: 1; height: var(--control-height, 38px); padding: 0 var(--space-2); border: 1px solid var(--border-strong); border-radius: var(--radius-md); background: var(--color-field); color: var(--color-text); font-size: var(--font-size-sm);">
-            <option value="">Selecione o processo...</option>
-        </select>
+    const selectEtapa = document.createElement('select');
+    selectEtapa.name = `passos[${index}].etapaSetorId`;
+    selectEtapa.className = 'form-control etapa-setor-select';
+    selectEtapa.style.cssText = selectSetor.style.cssText;
+    const optionEtapa = document.createElement('option');
+    optionEtapa.value = '';
+    optionEtapa.textContent = 'Selecione o processo...';
+    selectEtapa.appendChild(optionEtapa);
 
-        <div class="etapa-actions" style="display: flex; gap: 4px;">
-            <button type="button" class="etapa-move" onclick="moverEtapa(this, -1)" style="padding: 6px 8px; border: 1px solid var(--border-strong); background: transparent; border-radius: var(--radius-sm); cursor: pointer;">↑</button>
-            <button type="button" class="etapa-move" onclick="moverEtapa(this, 1)" style="padding: 6px 8px; border: 1px solid var(--border-strong); background: transparent; border-radius: var(--radius-sm); cursor: pointer;">↓</button>
-            <button type="button" class="btn-del" onclick="removerEtapa(this)" style="padding: 6px 10px;">✕</button>
-        </div>
-    `;
+    const actions = document.createElement('div');
+    actions.className = 'etapa-actions';
+    actions.style.display = 'flex';
+    actions.style.gap = '4px';
 
-    const selectSetor = row.querySelector('.setor-select');
+    const createActionButton = (label, className, handler, padding) => {
+        const button = document.createElement('button');
+        button.type = 'button';
+        button.className = className;
+        button.textContent = label;
+        button.style.padding = padding;
+        button.addEventListener('click', () => handler(button));
+        return button;
+    };
+
+    const moveUp = createActionButton('↑', 'etapa-move', button => moverEtapa(button, -1), '6px 8px');
+    const moveDown = createActionButton('↓', 'etapa-move', button => moverEtapa(button, 1), '6px 8px');
+    const remove = createActionButton('✕', 'btn-del', removerEtapa, '6px 10px');
+    [moveUp, moveDown].forEach(button => {
+        button.style.border = '1px solid var(--border-strong)';
+        button.style.background = 'transparent';
+        button.style.borderRadius = 'var(--radius-sm)';
+        button.style.cursor = 'pointer';
+    });
+
+    actions.append(moveUp, moveDown, remove);
+    row.append(numeroEtapa, selectSetor, selectEtapa, actions);
+
     if (selectSetor && setorId) {
         selectSetor.value = String(setorId);
     }
@@ -181,7 +212,10 @@ async function carregarEtapasDoSetor(selectSetor, etapaSetorIdSelecionada) {
     const selectEtapa = row.querySelector('.etapa-setor-select');
     if (!selectEtapa) return;
 
-    selectEtapa.innerHTML = '<option value="">Selecione o processo...</option>';
+    const optionInicial = document.createElement('option');
+    optionInicial.value = '';
+    optionInicial.textContent = 'Selecione o processo...';
+    selectEtapa.replaceChildren(optionInicial);
 
     if (!setorId) return;
 

@@ -107,13 +107,18 @@ function abrirModalDivisao(ordemSetorId, quantidadeTotal, produtoNome) {
     qtdTotalDivisao = parseInt(quantidadeTotal) || 0;
 
     contadorLinhas = 0;
-    document.getElementById('linhasDivisao').innerHTML = '';
+    document.getElementById('linhasDivisao').replaceChildren();
 
-    // Pega o ID do setor direto do atributo data-setor-id do body
-    const setorId = document.body.getAttribute('data-setor-id');
-
-    document.getElementById('formDivisao').action =
-        `/dashboard/ordens-setor/${setorId}/ordens/${ordemSetorId}/dividir`;
+    const formDivisao = document.getElementById('formDivisao');
+    const actionTemplate = formDivisao.getAttribute('action');
+    const action = actionTemplate.replace(
+        /\/0\/dividir$/,
+        `/${encodeURIComponent(ordemSetorId)}/dividir`
+    );
+    if (action === actionTemplate) {
+        throw new Error('Não foi possível definir a URL para dividir a ordem.');
+    }
+    formDivisao.action = action;
 
     adicionarLinhaDivisao();
     adicionarLinhaDivisao();
@@ -133,13 +138,30 @@ function adicionarLinhaDivisao() {
     const linha = document.createElement('div');
     linha.className = 'linha-divisao';
     linha.id = 'linha-' + index;
-    linha.innerHTML = `
-        <input type="text" name="divisoes[${index}].variante" placeholder="Ex: Branco, PT..." 
-        required class="input-variante"/>
-        <input type="number" name="divisoes[${index}].quantidade" placeholder="Qtd" min="1" 
-        required class="input-qtd" oninput="atualizarSoma()"/>
-        <button type="button" class="btn-remove-linha" onclick="removerLinha(${index})">&times;</button>
-    `;
+
+    const inputVariante = document.createElement('input');
+    inputVariante.type = 'text';
+    inputVariante.name = `divisoes[${index}].variante`;
+    inputVariante.placeholder = 'Ex: Branco, PT...';
+    inputVariante.required = true;
+    inputVariante.className = 'input-variante';
+
+    const inputQuantidade = document.createElement('input');
+    inputQuantidade.type = 'number';
+    inputQuantidade.name = `divisoes[${index}].quantidade`;
+    inputQuantidade.placeholder = 'Qtd';
+    inputQuantidade.min = '1';
+    inputQuantidade.required = true;
+    inputQuantidade.className = 'input-qtd';
+    inputQuantidade.addEventListener('input', atualizarSoma);
+
+    const botaoRemover = document.createElement('button');
+    botaoRemover.type = 'button';
+    botaoRemover.className = 'btn-remove-linha';
+    botaoRemover.textContent = '×';
+    botaoRemover.addEventListener('click', () => removerLinha(index));
+
+    linha.append(inputVariante, inputQuantidade, botaoRemover);
 
     container.appendChild(linha);
 }

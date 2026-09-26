@@ -31,10 +31,18 @@ function adicionarEtapaSetor() {
 
     const newRow = document.createElement('div');
     newRow.className = 'etapa-row';
-    newRow.innerHTML = `
-        <input type="text" name="etapas[]" placeholder="Nome da etapa">
-        <button type="button" onclick="this.parentElement.remove()">Remove</button>
-    `;
+
+    const input = document.createElement('input');
+    input.type = 'text';
+    input.name = 'etapas[]';
+    input.placeholder = 'Nome da etapa';
+
+    const removeButton = document.createElement('button');
+    removeButton.type = 'button';
+    removeButton.textContent = 'Remove';
+    removeButton.addEventListener('click', () => newRow.remove());
+
+    newRow.append(input, removeButton);
     container.appendChild(newRow);
 }
 

@@ -86,7 +86,7 @@
             </td>
 
             <td>
-              <div class="table-actions">
+              <div class="table-actions" sec:authorize="hasAnyRole('SUPORTE', 'PCP_SUPERVISOR')">
 
                 <button type="button"
                         class="btn-edit"
@@ -125,7 +125,8 @@
     <!-- ================================ -->
     <!-- MODAL - NOVA / EDITAR            -->
     <!-- ================================ -->
-    <div class="modal-overlay" id="form-panel" style="display:none">
+    <div class="modal-overlay" id="form-panel" style="display:none"
+         sec:authorize="hasAnyRole('SUPORTE', 'PCP_SUPERVISOR')">
       <div class="modal-box" style="max-width: 520px;">
         <div class="modal-header">
           <span class="modal-title" id="form-title">Nova Máquina</span>

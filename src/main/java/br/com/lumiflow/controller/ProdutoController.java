@@ -32,10 +32,12 @@ public class ProdutoController {
             carregarPagina(model, nome);
         } catch (Exception e) {
             log.error("Erro inesperado ao carregar a página de produtos: {}", e.getMessage(), e);
-            model.addAttribute("error", messageSource.getMessage(AppMessages.ERROR_VALIDATION_FAILED, null, locale));
+            model.addAttribute("error",
+                    messageSource.getMessage(AppMessages.ERROR_VALIDATION_FAILED, null, locale));
             model.addAttribute("produtos", List.of());
             if (!model.containsAttribute("produtoDTO")) {
-                model.addAttribute("produtoDTO", new ProdutoDTO(null, null, null, null));
+                model.addAttribute("produtoDTO",
+                        new ProdutoDTO(null, null, null, null));
             }
         }
         return "produto/Produtos";
@@ -59,7 +61,8 @@ public class ProdutoController {
             attributes.addFlashAttribute("produtoDTO", dto);
         } catch (Exception e) {
             log.error("Erro inesperado ao criar produto '{}': {}", dto.nome(), e.getMessage(), e);
-            attributes.addFlashAttribute("error", messageSource.getMessage(AppMessages.ERROR_VALIDATION_FAILED, null, locale));
+            attributes.addFlashAttribute("error",
+                    messageSource.getMessage(AppMessages.ERROR_VALIDATION_FAILED, null, locale));
             attributes.addFlashAttribute("produtoDTO", dto);
         }
 
@@ -78,7 +81,8 @@ public class ProdutoController {
             attributes.addFlashAttribute("error", errorMessage);
         } catch (Exception e) {
             log.error("Erro inesperado ao excluir produto id {}: {}", id, e.getMessage(), e);
-            attributes.addFlashAttribute("error", messageSource.getMessage(AppMessages.ERROR_VALIDATION_FAILED, null, locale));
+            attributes.addFlashAttribute("error", messageSource
+                    .getMessage(AppMessages.ERROR_VALIDATION_FAILED, null, locale));
         }
 
         return "redirect:/dashboard/produtos";
@@ -102,7 +106,8 @@ public class ProdutoController {
             attributes.addFlashAttribute("produtoDTO", dto);
         } catch (Exception e) {
             log.error("Erro inesperado ao editar produto id {}: {}", id, e.getMessage(), e);
-            attributes.addFlashAttribute("error", messageSource.getMessage(AppMessages.ERROR_VALIDATION_FAILED, null, locale));
+            attributes.addFlashAttribute("error", messageSource
+                    .getMessage(AppMessages.ERROR_VALIDATION_FAILED, null, locale));
             attributes.addFlashAttribute("produtoDTO", dto);
         }
 
