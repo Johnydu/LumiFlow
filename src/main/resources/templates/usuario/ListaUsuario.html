@@ -94,7 +94,7 @@
                         <td th:text="${usuario.setor != null ? usuario.setor : '-'}"></td>
 
                         <td>
-                            <div class="table-actions" sec:authorize="hasRole('SUPORTE')">
+                            <div class="table-actions" sec:authorize="hasRole('ADMIN')">
                                 <button type="button"
                                         class="btn-edit"
                                         th:data-id="${usuario.id}"
@@ -132,7 +132,7 @@
 
         <!-- MODAL DE CADASTRO / EDIÇÃO DE USUÁRIO -->
         <div id="form-panel" class="modal-overlay" style="display:none;"
-             sec:authorize="hasRole('SUPORTE')">
+             sec:authorize="hasRole('ADMIN')">
             <div class="modal-box">
                 <div class="modal-header">
                     <span class="modal-title" id="form-title">Novo Usuário</span>
