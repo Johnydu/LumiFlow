@@ -80,7 +80,7 @@
                 <tr>
                     <th>NÚMERO</th>
                     <th>PRODUTO/CODIGO</th>
-                    <th>ETAPA</th>
+                    <th>SETOR/ETAPA</th>
                     <th>QTD</th>
                     <th>PROGRESSO</th>
                     <th>OBSERVAÇÃO</th>
@@ -164,7 +164,7 @@
                     <td style="text-align: center;">
                         <div class="table-actions">
                             <form th:if="${ordem.status() != null && ordem.status().name() == 'DISPONIVEL'}"
-                                  sec:authorize="hasAnyRole('PCP_SUPERVISOR', 'GESTAO')"
+                                  sec:authorize="hasAnyRole('ADMIN', 'GESTAO', 'SUPERVISOR')"
                                   method="post"
                                   th:action="@{/dashboard/ordens-setor/{setorId}/ordens/{ordemSetorId}/liberar
                                                 (setorId=${setorIdAtual}, ordemSetorId=${ordem.ordemSetorId()})}"
@@ -174,7 +174,7 @@
                             </form>
 
                             <button th:if="${ordem.status() != null && ordem.status().name() == 'DISPONIVEL'}"
-                                    sec:authorize="hasAnyRole('PCP_SUPERVISOR', 'GESTAO')"
+                                    sec:authorize="hasAnyRole('ADMIN', 'GESTAO', 'SUPERVISOR')"
                                     type="button" class="btn-dividir"
                                     th:data-id="${ordem.ordemSetorId()}"
                                     th:data-qtd="${ordem.quantidade()}"
@@ -222,7 +222,7 @@
 
     <!-- MODAL DE DIVISÃO -->
     <div id="modalDivisao" class="modal-overlay" style="display:none;"
-         sec:authorize="hasAnyRole('PCP_SUPERVISOR', 'GESTAO')">
+         sec:authorize="hasAnyRole('ADMIN', 'GESTAO', 'SUPERVISOR')">
         <div class="modal-box">
             <div class="modal-header">
                 <span class="modal-title">Dividir Ordem</span>

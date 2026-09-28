@@ -57,7 +57,7 @@ public class LancamentoController {
                     new RefugoDTO(null, null, null, null, null));
         if (!model.containsAttribute("retrabalhoDTO"))
             model.addAttribute("retrabalhoDTO",
-                    new RetrabalhoDTO(null, null, null, null, null));
+                    new RetrabalhoDTO(null, null, null, null,null));
 
         return "ordens/Lancamento";
     }
