@@ -16,7 +16,7 @@
         <div class="menu-title">GERAL</div>
         <div class="menu">
             <a th:href="@{/dashboard}"
-               sec:authorize="hasAnyRole('PCP_SUPERVISOR', 'GESTAO', 'SUPORTE')"
+               sec:authorize="hasAnyRole('ADMIN', 'SUPERVISOR', 'GESTAO', 'PCP')"
                th:classappend="${activePage == 'dashboard'} ? 'active'"
                class="menu-item">Dashboard</a>
             <a th:href="@{/dashboard/ordens-setor}"
@@ -26,6 +26,7 @@
                th:classappend="${activePage == 'lancamentos'} ? 'active'"
                class="menu-item">Lançamentos</a>
             <a th:href="@{/dashboard/relatorio}"
+               sec:authorize="hasAnyRole('ADMIN', 'SUPERVISOR', 'GESTAO', 'PCP')"
                th:classappend="${activePage == 'relatorio'} ? 'active'"
                class="menu-item">Relatórios</a>
             <a th:href="@{/dashboard/vidracaria}"
@@ -36,27 +37,27 @@
         <div class="menu-title">CADASTROS</div>
         <div class="menu">
             <a th:href="@{/dashboard/produtos}"
-               sec:authorize="hasAnyRole('SUPORTE', 'PCP_SUPERVISOR')"
+               sec:authorize="hasAnyRole('ADMIN', 'PCP', 'SUPERVISOR')"
                th:classappend="${activePage == 'produtos'} ? 'active'"
                class="menu-item">Produtos</a>
             <a th:href="@{/dashboard/setores}"
-               sec:authorize="hasAnyRole('SUPORTE', 'PCP_SUPERVISOR')"
+               sec:authorize="hasAnyRole('ADMIN', 'PCP', 'SUPERVISOR')"
                th:classappend="${activePage == 'setores'} ? 'active'"
                class="menu-item">Setores</a>
             <a th:href="@{/dashboard/maquinas}"
-               sec:authorize="hasAnyRole('SUPORTE', 'PCP_SUPERVISOR')"
+               sec:authorize="hasAnyRole('ADMIN', 'PCP', 'SUPERVISOR')"
                th:classappend="${activePage == 'maquinas'} ? 'active'"
                class="menu-item">Máquinas</a>
             <a th:href="@{/dashboard/roteiros}"
-               sec:authorize="hasAnyRole('SUPORTE', 'PCP_SUPERVISOR')"
+               sec:authorize="hasAnyRole('ADMIN', 'PCP', 'SUPERVISOR')"
                th:classappend="${activePage == 'roteiros'} ? 'active'"
                class="menu-item">Roteiros</a>
             <a th:href="@{/dashboard/operadores}"
-               sec:authorize="hasAnyRole('SUPORTE', 'PCP_SUPERVISOR')"
+               sec:authorize="hasAnyRole('ADMIN', 'PCP', 'SUPERVISOR')"
                th:classappend="${activePage == 'operadores'} ? 'active'"
                class="menu-item">Operadores</a>
             <a th:href="@{/dashboard/usuario}"
-               sec:authorize="hasRole('SUPORTE')"
+               sec:authorize="hasRole('ADMIN')"
                th:classappend="${activePage == 'usuario'} ? 'active'"
                class="menu-item">Usuários</a>
         </div>
@@ -64,7 +65,7 @@
         <div class="menu-title">SISTEMA</div>
         <div class="menu">
             <a th:href="@{/dashboard/configuracao}"
-               sec:authorize="hasRole('SUPORTE')"
+               sec:authorize="hasRole('ADMIN')"
                th:classappend="${activePage == 'configuracao'} ? 'active'"
                class="menu-item">Configurações</a>
 

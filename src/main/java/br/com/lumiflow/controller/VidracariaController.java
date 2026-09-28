@@ -10,6 +10,7 @@ import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.context.MessageSource;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.validation.BindingResult;
@@ -30,7 +31,7 @@ public class VidracariaController {
     private final MessageSource messageSource;
 
     @GetMapping
-    public String index(Model model, Locale locale) {
+    public String vidracaria(Model model, Locale locale) {
         try {
             carregarPagina(model);
             return "vidracaria/Vidracaria";
@@ -39,6 +40,13 @@ public class VidracariaController {
             model.addAttribute("error", messageSource.getMessage(AppMessages.ERROR_VALIDATION_FAILED, null, locale));
             return "vidracaria/Vidracaria";
         }
+    }
+
+    private String erroValidacao(Model model, Locale locale) {
+        carregarPagina(model);
+        model.addAttribute("error",
+                messageSource.getMessage(AppMessages.ERROR_VALIDATION_FAILED, null, locale));
+        return "vidracaria/Vidracaria";
     }
 
     @PostMapping("/movimentar")
@@ -67,7 +75,9 @@ public class VidracariaController {
         return "redirect:/dashboard/vidracaria";
     }
 
+
     @PostMapping("/cadastrar-chapa")
+    @PreAuthorize("hasAnyRole('PCP_SUPERVISOR')")
     public String cadastrarChapa(@Valid @ModelAttribute("chapaDTO") ChapaVidroDTO dto, BindingResult result,
                                  Model model, RedirectAttributes attributes, Locale locale) {
         if (result.hasErrors()) {
@@ -90,13 +100,6 @@ public class VidracariaController {
         }
 
         return "redirect:/dashboard/vidracaria";
-    }
-
-    private String erroValidacao(Model model, Locale locale) {
-        carregarPagina(model);
-        model.addAttribute("error",
-                messageSource.getMessage(AppMessages.ERROR_VALIDATION_FAILED, null, locale));
-        return "vidracaria/Vidracaria";
     }
 
     private void carregarPagina(Model model) {

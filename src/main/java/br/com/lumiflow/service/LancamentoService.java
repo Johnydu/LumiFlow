@@ -170,19 +170,20 @@ public class LancamentoService {
             proximaEtapa.setQtdRecebida(0);
             proximaEtapa.setQtdProduzida(0);
             proximaEtapa.setQtdPendente(0);
-            proximaEtapa.setStatus(EstatusOrdemProducao.DISPONIVEL);
+            proximaEtapa.setStatus(EstatusOrdemProducao.DISPONIVEL); // <--- Nasce corretamente como DISPONIVEL
         }
 
         proximaEtapa.setQtdRecebida(proximaEtapa.getQtdRecebida() + quantidadeLancada);
         proximaEtapa.setQtdPendente(proximaEtapa.getQtdPendente() + quantidadeLancada);
 
         if (proximaEtapa.getQtdPendente() > 0) {
+            // Apenas estados válidos do enum
             if (proximaEtapa.getStatus() == EstatusOrdemProducao.CONCLUIDA ||
                     proximaEtapa.getStatus() == EstatusOrdemProducao.DISPONIVEL) {
                 if (proximaEtapa.getQtdProduzida() > 0) {
                     proximaEtapa.setStatus(EstatusOrdemProducao.EM_ANDAMENTO);
                 } else {
-                    proximaEtapa.setStatus(EstatusOrdemProducao.LIBERADA);
+                    proximaEtapa.setStatus(EstatusOrdemProducao.DISPONIVEL); // <--- Garante que fica DISPONIVEL
                 }
                 proximaEtapa.setFim(null);
             }
@@ -214,11 +215,19 @@ public class LancamentoService {
             }
             ordemSetorRepository.save(ordemSetorAtual);
 
+            // CORREÇÃO: Busca considerando também a sequência da etapa atual
             OrdemSetor ordemSetorOrigem = ordemSetorRepository
-                    .findByOrdemProducaoIdAndSetorIdAndStatusIn(
-                            ordemSetorAtual.getOrdemProducao().getId(), setorOrigem.getId(),
-                            List.of(EstatusOrdemProducao.DISPONIVEL, EstatusOrdemProducao.EM_ANDAMENTO))
-                    .orElseGet(() -> criarOrdemSetorParaRefugo(ordemSetorAtual.getOrdemProducao(), setorOrigem));
+                    .findByOrdemProducaoIdAndSetorIdAndSequenciaAndStatusIn(
+                            ordemSetorAtual.getOrdemProducao().getId(),
+                            setorOrigem.getId(),
+                            ordemSetorAtual.getSequencia(),
+                            List.of(EstatusOrdemProducao.DISPONIVEL,
+                                    EstatusOrdemProducao.EM_ANDAMENTO,
+                                    EstatusOrdemProducao.CONCLUIDA))
+                    .orElseGet(() -> criarOrdemSetorParaRefugo(
+                            ordemSetorAtual.getOrdemProducao(),
+                            setorOrigem,
+                            ordemSetorAtual.getSequencia()));
 
             ordemSetorOrigem.setOrigemRefugo(true);
             ordemSetorOrigem.setQtdRecebida(ordemSetorOrigem.getQtdRecebida() + dto.quantidade());
@@ -247,11 +256,11 @@ public class LancamentoService {
         }
     }
 
-    private OrdemSetor criarOrdemSetorParaRefugo(OrdemProducao ordem, Setor setorOrigem) {
+    private OrdemSetor criarOrdemSetorParaRefugo(OrdemProducao ordem, Setor setorOrigem, Integer sequencia) {
         OrdemSetor novo = new OrdemSetor();
         novo.setOrdemProducao(ordem);
         novo.setSetor(setorOrigem);
-        novo.setSequencia(0);
+        novo.setSequencia(sequencia); // <-- Usa a sequência real da etapa
         novo.setQtdRecebida(0);
         novo.setQtdProduzida(0);
         novo.setQtdPendente(0);
@@ -298,14 +307,14 @@ public class LancamentoService {
             retrabalhoRepository.save(retrabalho);
 
             OrdemSetor ordemSetorOrigem = ordemSetorRepository
-                    .findByOrdemProducaoIdAndSetorIdAndStatusIn(
-                            ordemId, refugo.getSetorOrigem().getId(),
-                            List.of(EstatusOrdemProducao.DISPONIVEL, EstatusOrdemProducao.EM_ANDAMENTO))
+                    .findByOrdemProducaoIdAndSetorIdAndSequenciaAndStatusIn(
+                            ordemId,
+                            refugo.getSetorOrigem().getId(),
+                            refugo.getSequenciaOrigem(),
+                            List.of(EstatusOrdemProducao.DISPONIVEL,
+                                    EstatusOrdemProducao.EM_ANDAMENTO,
+                                    EstatusOrdemProducao.CONCLUIDA))
                     .orElseThrow(() -> new BusinessException(AppMessages.ERROR_ORDER_NOT_AVAILABLE));
-
-            if (dto.quantidade() > ordemSetorOrigem.getQtdPendente()) {
-                throw new BusinessException(AppMessages.ERROR_LAUNCH_EXCEEDS_PENDING);
-            }
 
             ordemSetorOrigem.setQtdProduzida(ordemSetorOrigem.getQtdProduzida() + dto.quantidade());
             ordemSetorOrigem.setQtdPendente(ordemSetorOrigem.getQtdPendente() - dto.quantidade());
@@ -344,7 +353,8 @@ public class LancamentoService {
 
     @Transactional(readOnly = true)
     public List<HistoricoLancamentosDTO> listarHistoricoLancamentos() {
-        List<Lancamento> lancamentos = lancamentoRepository.findAllByOrderByDataHoraDesc();
+        // AGORA SEGURO CONTRA N+1: Uma única query traz tudo estruturado
+        List<Lancamento> lancamentos = lancamentoRepository.findAllComRelacionamentosOrderByDataHoraDesc();
 
         return lancamentos.stream().map(lancamento -> {
             String nomeSetor = "Setor";

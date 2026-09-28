@@ -82,4 +82,7 @@ public interface OrdemSetorRepository extends JpaRepository<OrdemSetor, Long> {
     ORDER BY COUNT(os.id) DESC
 """)
     List<SetorResumoDTO> contarEtapasDisponiveisPorSetor();
+
+    Optional<OrdemSetor> findByOrdemProducaoIdAndSetorIdAndSequenciaAndStatusIn(
+            Long ordemProducaoId, Long setorId, Integer sequencia, List<EstatusOrdemProducao> statuses);
 }

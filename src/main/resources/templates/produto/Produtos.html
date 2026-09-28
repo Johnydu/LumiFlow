@@ -92,7 +92,7 @@
                         <td class="produto-desc" th:text="${produto.descricao}"></td>
 
                         <td>
-                            <div class="table-actions" sec:authorize="hasAnyRole('SUPORTE', 'PCP_SUPERVISOR')">
+                            <div class="table-actions" sec:authorize="hasAnyRole('ADMIN', 'PCP', 'SUPERVISOR')">
                                 <button type="button"
                                         class="btn-edit"
                                         th:data-id="${produto.id}"
@@ -131,7 +131,7 @@
 
         <!-- MODAL DE FORMULÁRIO / DADOS DO PRODUTO -->
         <div class="modal-overlay" id="form-panel" style="display:none"
-             sec:authorize="hasAnyRole('SUPORTE', 'PCP_SUPERVISOR')">
+             sec:authorize="hasAnyRole('ADMIN', 'PCP', 'SUPERVISOR')">
             <div class="modal-box" style="max-width: 600px;">
                 <div class="modal-header">
                     <span class="modal-title" id="form-title">Novo produto</span>
@@ -225,7 +225,8 @@
                         </div>
 
                         <!-- PRÉVIA DO ROTEIRO -->
-                        <div class="preview-box" style="padding: 12px; border: 1px solid var(--border-strong); border-radius: var(--radius-md); background: var(--color-surface-subtle); margin-bottom: 16px;">
+                        <div class="preview-box" style="padding: 12px; border: 1px solid var(--border-strong);
+                         border-radius: var(--radius-md); background: var(--color-surface-subtle); margin-bottom: 16px;">
                             <div class="preview-label" style="font-size: var(--font-size-xs); font-weight: 500; color: var(--color-muted); margin-bottom: 6px;">Prévia do roteiro</div>
                             <div class="preview-pills" id="preview-pills" style="display: flex; flex-wrap: wrap; gap: 6px; align-items: center;">
                                 <span style="color:var(--color-muted-5);font-size:12px">
