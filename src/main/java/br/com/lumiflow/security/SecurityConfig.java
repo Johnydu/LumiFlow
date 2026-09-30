@@ -3,6 +3,7 @@ package br.com.lumiflow.security;
 import lombok.AllArgsConstructor;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
+import org.springframework.http.HttpMethod;
 import org.springframework.security.access.hierarchicalroles.RoleHierarchy;
 import org.springframework.security.access.hierarchicalroles.RoleHierarchyImpl;
 import org.springframework.security.authentication.AuthenticationManager;
@@ -14,50 +15,47 @@ import org.springframework.security.config.annotation.web.configuration.EnableWe
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.security.web.SecurityFilterChain;
+import org.springframework.security.web.authentication.UsernamePasswordAuthenticationFilter;
+import org.springframework.security.web.header.writers.ReferrerPolicyHeaderWriter;
 
 /**
- * ============================================================
  * CONFIGURAÇÃO DE SEGURANÇA — LumiFlow
- * ============================================================
- * Responsável por:
- * - Definir as rotas protegidas e públicas com base nas Roles
- * - Configurar a Hierarquia de Perfis (Role Hierarchy)
- * - Configurar o formulário de login personalizado
- * - Configurar o logout e segurança de sessão
- * - Registrar o BCrypt como encoder de senhas
- * ============================================================
-
- * HIERARQUIA DE PERFIS ADOTADA:
- * - ADMIN: Acesso total (topo da hierarquia)
- * - SUPERVISOR: Engloba PCP, Gestão e Operador (gestão operacional ampla)
- * - PCP / GESTÃO: Acessos específicos de engenharia/planejamento e relatórios/liberação
- * - OPERADOR: Acesso base para lançamentos no chão de fábrica
- * ============================================================
+ *
+ * HIERARQUIA DE PERFIS:
+ * - ADMIN: acesso total
+ * - SUPERVISOR: engloba PCP e Gestão
+ * - PCP / GESTÃO: planejamento e liberação/relatórios
+ * - OPERADOR: lançamentos no chão de fábrica
  */
 @Configuration
 @EnableWebSecurity
-@EnableMethodSecurity // Permite o uso de @PreAuthorize nos controllers
+@EnableMethodSecurity
 @AllArgsConstructor
 public class SecurityConfig {
 
     private final CustomAuthenticationSuccessHandler customAuthenticationSuccessHandler;
+    private final LoginIpThrottle loginIpThrottle;
 
-    // ============================================================
-    //                      ROLES DO SISTEMA
-    // ============================================================
     private static final String ROLE_ADMIN = "ADMIN";
-    private static final String ROLE_SUPERVISOR = "SUPERVISOR";
     private static final String ROLE_PCP = "PCP";
     private static final String ROLE_GESTAO = "GESTAO";
     private static final String ROLE_OPERADOR = "OPERADOR";
 
     private static final String LOGIN_PAGE = "/login";
 
-    // ============================================================
-    // HIERARQUIA DE PERFIS (ROLE HIERARCHY)
-    // Define que o ADMIN herda tudo, o SUPERVISOR herda PCP e Gestão,
-    // e ambos contemplam as camadas operacionais e de visualização.
-    // ============================================================
+    /**
+     * CSP em modo "report-only": não bloqueia nada, apenas relata no console do
+     * navegador o que seria bloqueado. Os templates ainda usam scripts, estilos
+     * e handlers inline ('unsafe-inline'). Depois de remover os inline, endureça
+     * e troque para enforcement.
+     */
+    private static final String CSP_POLICY = "default-src 'self'; "
+            + "script-src 'self' 'unsafe-inline'; "
+            + "style-src 'self' 'unsafe-inline' https://cdnjs.cloudflare.com; "
+            + "font-src 'self' https://cdnjs.cloudflare.com; "
+            + "img-src 'self' data:; "
+            + "object-src 'none'; base-uri 'self'; form-action 'self'; frame-ancestors 'none'";
+
     @Bean
     public RoleHierarchy roleHierarchy() {
         return RoleHierarchyImpl.fromHierarchy(
@@ -69,107 +67,75 @@ public class SecurityConfig {
         );
     }
 
-    // ============================================================
-    // FILTRO DE SEGURANÇA — DEFINE AS REGRAS DE ACESSO POR ROTA
-    // ============================================================
     @Bean
     public SecurityFilterChain securityFilterChain(HttpSecurity http) throws Exception {
 
         http
                 .authorizeHttpRequests(auth -> auth
 
-                        // Recursos estáticos — liberados para todos
-                        .requestMatchers(
-                                "/css/**",
-                                "/js/**",
-                                "/image/**",
-                                "/images/**",
-                                "/style.css",
-                                "/webjars/**"
-                        ).permitAll()
+                        // Recursos estáticos
+                        .requestMatchers("/css/**", "/js/**", "/image/**", "/images/**",
+                                "/style.css", "/webjars/**").permitAll()
 
-                        // Tela de login — pública
-                        .requestMatchers(LOGIN_PAGE, LOGIN_PAGE + "?error").permitAll()
+                        // Tela de login
+                        .requestMatchers(LOGIN_PAGE).permitAll()
 
-                        // ----------------------------------------
-                        // ROTAS EXCLUSIVAS DO ADMIN (Gestão de Sistema / Usuários)
-                        // ----------------------------------------
+                        // ADMIN: usuários e configurações
+                        // (inclui as rotas no singular usadas pelo menu lateral)
                         .requestMatchers(
                                 "/dashboard/usuario/**",
+                                "/dashboard/configuracao/**",
                                 "/dashboard/configuracoes/**"
                         ).hasRole(ROLE_ADMIN)
 
-                        // ----------------------------------------
-                        // ROTAS DE CADASTRO E CRIAÇÃO DE ORDENS (PCP, Supervisor e Admin)
-                        // ----------------------------------------
+                        // Cadastros e criação de ordens: PCP (Supervisor e Admin por herança)
                         .requestMatchers(
                                 "/dashboard/setores/**",
                                 "/dashboard/maquinas/**",
                                 "/dashboard/produtos/**",
                                 "/dashboard/roteiros/**",
                                 "/dashboard/operadores/**"
-                        ).hasRole(ROLE_PCP) // Supervisor e Admin entram automaticamente por herança
+                        ).hasRole(ROLE_PCP)
 
-                        .requestMatchers(org.springframework.http.HttpMethod.GET,
-                                "/dashboard/ordens/novaOrdem")
-                        .hasRole(ROLE_PCP)
-                        .requestMatchers(org.springframework.http.HttpMethod.POST,
-                                "/dashboard/ordens")
-                        .hasRole(ROLE_PCP)
+                        .requestMatchers(HttpMethod.GET, "/dashboard/ordens/novaOrdem").hasRole(ROLE_PCP)
+                        .requestMatchers(HttpMethod.POST, "/dashboard/ordens").hasRole(ROLE_PCP)
 
-                        // ----------------------------------------
-                        // LIBERAÇÃO E DIVISÃO DE ORDENS (Gestão, PCP, Supervisor e Admin)
-                        // ----------------------------------------
-                        .requestMatchers(org.springframework.http.HttpMethod.POST,
-                                "/dashboard/ordens-setor/*/ordens/*/liberar")
-                        .hasRole(ROLE_GESTAO) // Supervisor e Admin entram automaticamente
-                        .requestMatchers(org.springframework.http.HttpMethod.POST,
-                                "/dashboard/ordens-setor/*/ordens/*/dividir")
+                        // Liberação e divisão de ordens: Gestão
+                        .requestMatchers(HttpMethod.POST, "/dashboard/ordens-setor/*/ordens/*/liberar")
+                        .hasRole(ROLE_GESTAO)
+                        .requestMatchers(HttpMethod.POST, "/dashboard/ordens-setor/*/ordens/*/dividir")
                         .hasRole(ROLE_GESTAO)
 
-                        // ----------------------------------------
-                        // VISUALIZAÇÃO DE ORDENS POR SETOR — AUTENTICADOS
-                        // ----------------------------------------
+                        // Ordens por setor: autenticados
                         .requestMatchers("/dashboard/ordens-setor/**").authenticated()
 
-                        // ----------------------------------------
-                        // LANÇAMENTO DE PRODUÇÃO — OPERADORES E ACIMA
-                        // ----------------------------------------
+                        // Lançamento de produção: Operador e acima
                         .requestMatchers("/dashboard/ordens/*/setor/*/lancar/**").hasRole(ROLE_OPERADOR)
 
-                        // ----------------------------------------
-                        // VISUALIZAÇÃO DE ORDENS — AUTENTICADOS
-                        // ----------------------------------------
+                        // Demais rotas de ordens: autenticados
                         .requestMatchers("/dashboard/ordens/**").authenticated()
 
-                        // ----------------------------------------
-                        // VIDRAÇARIA — AUTENTICADOS
-                        // ----------------------------------------
+                        // Vidraçaria: autenticados
                         .requestMatchers("/dashboard/vidracaria/**").authenticated()
 
-                        // ----------------------------------------
-                        // RELATÓRIOS (Gestão, PCP, Supervisor, Admin)
-                        // ----------------------------------------
-                        .requestMatchers("/dashboard/relatorios/**")
+                        // Relatórios: Gestão (singular e plural, conforme o menu lateral)
+                        .requestMatchers("/dashboard/relatorio/**", "/dashboard/relatorios/**")
                         .hasRole(ROLE_GESTAO)
 
-                        // ----------------------------------------
-                        // DASHBOARD (Tela Raiz) — Acessível por perfis gerenciais/técnicos
-                        // ----------------------------------------
+                        // Dashboard (raiz)
                         .requestMatchers("/dashboard").hasRole(ROLE_GESTAO)
 
-                        // ----------------------------------------
-                        // DASHBOARD — REGRAS GENÉRICAS (Devem vir após as específicas)
-                        // ----------------------------------------
+                        // Regras genéricas (devem vir após as específicas)
                         .requestMatchers("/dashboard/**").authenticated()
 
-                        // Qualquer outra rota exige autenticação padrão
+                        // Negar por padrão: qualquer outra rota exige autenticação
                         .anyRequest().authenticated()
                 )
 
-                // ----------------------------------------
-                // CONFIGURAÇÃO DO FORMULÁRIO DE LOGIN
-                // ----------------------------------------
+                // Limite de falhas por IP, antes da autenticação por formulário
+                .addFilterBefore(new LoginRateLimitFilter(loginIpThrottle),
+                        UsernamePasswordAuthenticationFilter.class)
+
                 .formLogin(form -> form
                         .loginPage(LOGIN_PAGE)
                         .loginProcessingUrl(LOGIN_PAGE)
@@ -180,9 +146,6 @@ public class SecurityConfig {
                         .permitAll()
                 )
 
-                // ----------------------------------------
-                // CONFIGURAÇÃO DO LOGOUT
-                // ----------------------------------------
                 .logout(logout -> logout
                         .logoutUrl("/logout")
                         .logoutSuccessUrl(LOGIN_PAGE + "?logout=true")
@@ -191,25 +154,34 @@ public class SecurityConfig {
                         .deleteCookies("JSESSIONID")
                         .permitAll()
                 )
+
+                // Explícito por clareza: novo ID de sessão a cada login (anti session fixation)
+                .sessionManagement(session -> session
+                        .sessionFixation(fixation -> fixation.migrateSession())
+                )
+
+                .headers(headers -> headers
+                        .contentSecurityPolicy(csp -> csp.policyDirectives(CSP_POLICY).reportOnly())
+                        .referrerPolicy(referrer -> referrer
+                                .policy(ReferrerPolicyHeaderWriter.ReferrerPolicy.STRICT_ORIGIN_WHEN_CROSS_ORIGIN))
+                )
+
                 .csrf(Customizer.withDefaults());
 
         return http.build();
     }
 
-    // ============================================================
-    // BCRYPT — ENCODER DE SENHAS
-    // ============================================================
+    /**
+     * Custo 12: cada tentativa de senha fica mais cara para um atacante.
+     * Hashes já gravados (custo 10) continuam válidos: o custo vai dentro do próprio hash.
+     */
     @Bean
     public PasswordEncoder passwordEncoder() {
-        return new BCryptPasswordEncoder();
+        return new BCryptPasswordEncoder(12);
     }
 
-    // ============================================================
-    // AUTHENTICATION MANAGER
-    // ============================================================
     @Bean
-    public AuthenticationManager authenticationManager(
-            AuthenticationConfiguration config) throws Exception {
+    public AuthenticationManager authenticationManager(AuthenticationConfiguration config) throws Exception {
         return config.getAuthenticationManager();
     }
 }

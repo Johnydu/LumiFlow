@@ -22,4 +22,7 @@ public record UsuarioEdicaoDTO(
 
         Long setorId
 ) {
+        public UsuarioDTO semSenha() {
+                return new UsuarioDTO(id, nome, login, null, nivelAcessoId, setorId);
+        }
 }

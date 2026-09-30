@@ -25,4 +25,8 @@ public record UsuarioDTO(
 
         Long setorId
 
-) {}
+) {
+        public UsuarioDTO semSenha() {
+                return new UsuarioDTO(id, nome, login, null, nivelAcessoId, setorId);
+        }
+}

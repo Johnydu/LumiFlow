@@ -3,6 +3,7 @@ package br.com.lumiflow.entity;
 import jakarta.persistence.*;
 import lombok.*;
 
+import java.time.LocalDateTime;
 import java.util.Locale;
 
 @Entity
@@ -34,6 +35,12 @@ public class Usuario extends Auditoria  {
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "setor_id")
     private Setor setor;
+
+    @Column(name = "tentativas_falhas", nullable = false)
+    private int tentativasFalhas = 0;
+
+    @Column(name = "bloqueado_ate")
+    private LocalDateTime bloqueadoAte;
 
     @PrePersist
     @PreUpdate

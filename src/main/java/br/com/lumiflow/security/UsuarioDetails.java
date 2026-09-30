@@ -5,6 +5,7 @@ import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.security.core.userdetails.UserDetails;
 
+import java.time.LocalDateTime;
 import java.util.Collection;
 import java.util.List;
 
@@ -88,7 +89,8 @@ public class UsuarioDetails implements UserDetails {
 
     @Override
     public boolean isAccountNonLocked() {
-        return true;
+        LocalDateTime ate = usuario.getBloqueadoAte();
+        return ate == null || !ate.isAfter(LocalDateTime.now());
     }
 
     @Override
@@ -100,6 +102,7 @@ public class UsuarioDetails implements UserDetails {
     public boolean isEnabled() {
         return true;
     }
+
 
     // ============================================================
     // MÉTODOS EXTRAS — acesso aos dados do usuário logado
