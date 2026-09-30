@@ -1,6 +1,7 @@
 package br.com.lumiflow.controller;
 
 import br.com.lumiflow.config.AppMessages;
+import br.com.lumiflow.dto.etapaSetor.EtapaSetorDTO;
 import br.com.lumiflow.dto.roteiro.RoteiroDTO;
 import br.com.lumiflow.exception.BusinessException;
 import br.com.lumiflow.service.ProdutoService;
@@ -174,5 +175,12 @@ public class RoteiroController {
         if (!model.containsAttribute("roteiroDTO")) {
             model.addAttribute("roteiroDTO", new RoteiroDTO(null, new ArrayList<>()));
         }
+    }
+
+    @GetMapping("/{produtoId}/setor/{setorId}/etapas")
+    @ResponseBody
+    public List<EtapaSetorDTO> buscarEtapasDoSetorNoRoteiro(@PathVariable Long produtoId,
+                                                            @PathVariable Long setorId) {
+        return roteiroService.buscarEtapasDoSetorNoRoteiro(produtoId, setorId);
     }
 }

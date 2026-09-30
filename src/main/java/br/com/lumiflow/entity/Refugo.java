@@ -30,6 +30,11 @@ public class Refugo extends Auditoria {
     @Column(name = "destino",nullable = false)
     private DestinoRefugo destino;
 
+    // Variante da OrdemSetor de onde o refugo foi extraído (ex.: "BRANCO", "PRETO").
+    // Nullable: nem toda ordem foi dividida em variantes (dividirEtapa é opcional).
+    @Column(name = "variante", length = 50)
+    private String variante;
+
     @Column(name = "data_hora",nullable = false)
     private LocalDateTime dataHora;
 
@@ -52,5 +57,6 @@ public class Refugo extends Auditoria {
     @PreUpdate
     private void normalizarTextos() {
         if (motivo != null) motivo = motivo.trim().toUpperCase(Locale.ROOT);
+        if (variante != null) variante = variante.trim().toUpperCase(Locale.ROOT);
     }
 }

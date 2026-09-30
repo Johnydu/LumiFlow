@@ -121,9 +121,16 @@
                     </div>
                     <div class="field">
                         <label>Setor de origem do erro <span>*</span></label>
-                        <select th:field="*{setorOrigemId}">
+                        <select th:field="*{setorOrigemId}" id="selectSetorOrigemRefugo">
                             <option value="">Selecione o setor</option>
                             <option th:each="s : ${setores}" th:value="${s.id}" th:text="${s.nome}"></option>
+                        </select>
+                    </div>
+
+                    <div class="field" id="campoEtapaOrigemRefugo" style="display:none">
+                        <label>Etapa específica <span>*</span></label>
+                        <select th:field="*{etapaSetorId}" id="selectEtapaOrigemRefugo">
+                            <option value="">Selecione a etapa</option>
                         </select>
                     </div>
                 </div>
@@ -216,10 +223,17 @@
     </div>
 </main>
 
-<script th:inline="javascript">
+<script>
+    // O Thymeleaf substitui o conteúdo dentro do comentário quando a página é renderizada
     const abaComErro = /*[[${#fields.hasErrors('producaoDTO.*') ? 'producao' :
                             (#fields.hasErrors('refugoDTO.*') ? 'refugo' :
                             (#fields.hasErrors('retrabalhoDTO.*') ? 'retrabalho' : null))}]]*/ null;
+
+    const produtoId = /*[[${ordem?.produto?.id}]]*/ null;
+
+    if (produtoId) {
+        initEtapaOrigemRefugo(produtoId);
+    }
 </script>
 <script th:src="@{/js/sidebar.js}"></script>
 <script th:src="@{/js/alerts.js}"></script>

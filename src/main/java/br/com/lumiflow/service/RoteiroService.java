@@ -1,6 +1,7 @@
 package br.com.lumiflow.service;
 
 import br.com.lumiflow.config.AppMessages;
+import br.com.lumiflow.dto.etapaSetor.EtapaSetorDTO;
 import br.com.lumiflow.dto.roteiro.PassoRoteiroDTO;
 import br.com.lumiflow.dto.roteiro.RoteiroDTO;
 import br.com.lumiflow.dto.roteiro.RoteiroListagemDTO;
@@ -211,5 +212,16 @@ public class RoteiroService {
             log.error("Erro inesperado ao pesquisar roteiros por termo '{}': {}", termo, e.getMessage(), e);
             throw new BusinessException(AppMessages.ERROR_VALIDATION_FAILED);
         }
+    }
+
+    @Transactional(readOnly = true)
+    public List<EtapaSetorDTO> buscarEtapasDoSetorNoRoteiro(Long produtoId, Long setorId) {
+        return roteiroProdutoRepository.buscarPorProdutoId(produtoId).stream()
+                .filter(rp -> rp.getSetor().getId().equals(setorId) && rp.getEtapaSetor() != null)
+                .map(rp -> new EtapaSetorDTO(
+                        rp.getEtapaSetor().getId(),
+                        rp.getEtapaSetor().getNome(),
+                        rp.getEtapaSetor().getOrdem()))
+                .toList();
     }
 }

@@ -61,6 +61,7 @@ public final class AppMessages {
     public static final String ERROR_ROUTE_STEP_REQUIRED = "error.route.step.required";
     public static final String ERROR_ROUTE_STEP_NOTFOUND = "error.route.step.notfound";
     public static final String ERROR_ROTEIRO_ETAPA_NAO_CRIADA = "error.roteiro.etapa.naocriada";
+    public static final String ERROR_REFUGO_ETAPA_REQUIRED = "error.refugo.etapa.required";
 
     // ==================== ORDEM DE PRODUÇÃO ====================
     public static final String SUCCESS_ORDER_CREATED = "success.order.created";

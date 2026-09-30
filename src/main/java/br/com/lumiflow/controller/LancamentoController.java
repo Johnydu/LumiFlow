@@ -54,7 +54,7 @@ public class LancamentoController {
                     new LancamentoProducaoDTO(null, null, null, null));
         if (!model.containsAttribute("refugoDTO"))
             model.addAttribute("refugoDTO",
-                    new RefugoDTO(null, null, null, null, null));
+                    new RefugoDTO(null, null, null, null, null,null));
         if (!model.containsAttribute("retrabalhoDTO"))
             model.addAttribute("retrabalhoDTO",
                     new RetrabalhoDTO(null, null, null, null,null));
