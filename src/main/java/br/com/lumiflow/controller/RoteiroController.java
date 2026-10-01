@@ -13,6 +13,7 @@ import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.context.MessageSource;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.validation.BindingResult;
@@ -81,6 +82,7 @@ public class RoteiroController {
     }
 
     @PostMapping
+    @PreAuthorize("hasAnyRole('PCP','SUPERVISOR')")
     public String salvar(@Valid @ModelAttribute("roteiroDTO") RoteiroDTO dto, BindingResult result,
                          Model model, RedirectAttributes attributes, Locale locale) {
         if (result.hasErrors()) {
@@ -106,6 +108,7 @@ public class RoteiroController {
     }
 
     @PostMapping("/{produtoId}/editar")
+    @PreAuthorize("hasAnyRole('PCP','SUPERVISOR')")
     public String editar(@PathVariable Long produtoId, @Valid @ModelAttribute("roteiroDTO") RoteiroDTO dto,
                          BindingResult result, Model model, RedirectAttributes attributes, Locale locale) {
         if (result.hasErrors()) {

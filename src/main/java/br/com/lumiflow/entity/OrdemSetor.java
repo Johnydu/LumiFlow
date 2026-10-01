@@ -56,6 +56,10 @@ public class OrdemSetor extends Auditoria{
     @Column(name = "origem_refugo", nullable = false)
     private boolean origemRefugo = false;
 
+    @Version
+    @Column(name = "versao", nullable = false)
+    private Long versao;
+
     @PrePersist
     @PreUpdate
     private void normalizarTextos() {

@@ -44,4 +44,5 @@ public interface OrdemProducaoRepository extends JpaRepository<OrdemProducao, Lo
     @Query(value = "SELECT nextval('ordem_producao_numero_seq')", nativeQuery = true)
     Long proximoNumeroSequencial();
 
+
 }

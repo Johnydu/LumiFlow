@@ -20,7 +20,7 @@ import org.springframework.security.web.header.writers.ReferrerPolicyHeaderWrite
 
 /**
  * CONFIGURAÇÃO DE SEGURANÇA — LumiFlow
- *
+ * <p>
  * HIERARQUIA DE PERFIS:
  * - ADMIN: acesso total
  * - SUPERVISOR: engloba PCP e Gestão
@@ -38,6 +38,7 @@ public class SecurityConfig {
 
     private static final String ROLE_ADMIN = "ADMIN";
     private static final String ROLE_PCP = "PCP";
+    private static final String ROLE_SUPERVISOR = "SUPERVISOR";
     private static final String ROLE_GESTAO = "GESTAO";
     private static final String ROLE_OPERADOR = "OPERADOR";
 
@@ -102,9 +103,9 @@ public class SecurityConfig {
 
                         // Liberação e divisão de ordens: Gestão
                         .requestMatchers(HttpMethod.POST, "/dashboard/ordens-setor/*/ordens/*/liberar")
-                        .hasRole(ROLE_GESTAO)
+                        .hasAnyRole(ROLE_GESTAO, ROLE_PCP, ROLE_SUPERVISOR)
                         .requestMatchers(HttpMethod.POST, "/dashboard/ordens-setor/*/ordens/*/dividir")
-                        .hasRole(ROLE_GESTAO)
+                        .hasAnyRole(ROLE_GESTAO, ROLE_PCP, ROLE_SUPERVISOR)
 
                         // Ordens por setor: autenticados
                         .requestMatchers("/dashboard/ordens-setor/**").authenticated()
@@ -120,10 +121,10 @@ public class SecurityConfig {
 
                         // Relatórios: Gestão (singular e plural, conforme o menu lateral)
                         .requestMatchers("/dashboard/relatorio/**", "/dashboard/relatorios/**")
-                        .hasRole(ROLE_GESTAO)
+                        .hasAnyRole(ROLE_GESTAO, ROLE_PCP, ROLE_SUPERVISOR)
 
                         // Dashboard (raiz)
-                        .requestMatchers("/dashboard").hasRole(ROLE_GESTAO)
+                        .requestMatchers("/dashboard").hasAnyRole(ROLE_GESTAO, ROLE_PCP, ROLE_SUPERVISOR)
 
                         // Regras genéricas (devem vir após as específicas)
                         .requestMatchers("/dashboard/**").authenticated()

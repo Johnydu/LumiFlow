@@ -261,5 +261,18 @@ public class OrdemProducaoService {
             log.error("Erro inesperado ao dividir etapa da ordem setor id {}: {}", ordemSetorId, e.getMessage(), e);
             throw new BusinessException(AppMessages.ERROR_VALIDATION_FAILED);
         }
+
+
     }
+
+    private void verificarConclusaoOrdem(OrdemProducao ordem) {
+        boolean existeEtapaAberta = ordemSetorRepository
+                .existsByOrdemProducaoIdAndStatusNot(ordem.getId(), EstatusOrdemProducao.CONCLUIDA);
+
+        if (!existeEtapaAberta) {
+            ordem.setStatus(EstatusOrdemProducao.CONCLUIDA);
+            ordemProducaoRepository.save(ordem);
+        }
+    }
+
 }

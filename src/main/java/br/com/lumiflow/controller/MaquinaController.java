@@ -9,6 +9,7 @@ import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.context.MessageSource;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.validation.BindingResult;
@@ -45,6 +46,7 @@ public class MaquinaController {
     }
 
     @PostMapping
+    @PreAuthorize("hasAnyRole('PCP','SUPERVISOR')")
     public String novaMaquina(@Valid @ModelAttribute("maquinaDTO") MaquinaDTO dto, BindingResult result,
                               Model model, RedirectAttributes attributes, Locale locale) {
         if (result.hasErrors()) {
@@ -70,6 +72,7 @@ public class MaquinaController {
     }
 
     @PostMapping("/{id}/excluir")
+    @PreAuthorize("hasAnyRole('PCP','SUPERVISOR')")
     public String deletarMaquina(@PathVariable long id, RedirectAttributes attributes, Locale locale) {
         try {
             maquinaService.deletarMaquina(id);
@@ -88,6 +91,7 @@ public class MaquinaController {
     }
 
     @PostMapping("/{id}/editar")
+    @PreAuthorize("hasAnyRole('PCP','SUPERVISOR')")
     public String editar(@PathVariable Long id, @Valid @ModelAttribute("maquinaDTO") MaquinaDTO dto,
                          BindingResult result, Model model, RedirectAttributes attributes, Locale locale) {
         if (result.hasErrors()) {

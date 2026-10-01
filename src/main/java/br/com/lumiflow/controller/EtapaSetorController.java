@@ -5,13 +5,11 @@ import br.com.lumiflow.exception.BusinessException;
 import br.com.lumiflow.service.EtapaSetorService;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
-import org.springframework.context.MessageSource;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.ResponseBody;
 
 import java.util.List;
 
@@ -22,10 +20,10 @@ import java.util.List;
 public class EtapaSetorController {
 
     private final EtapaSetorService etapaSetorService;
-    private final MessageSource messageSource;
+
 
     @GetMapping("/{setorId}/etapas")
-    @ResponseBody
+
     public ResponseEntity<List<EtapaSetorDTO>> listarEtapasPorSetor(@PathVariable Long setorId) {
         try {
             if (setorId == null) {

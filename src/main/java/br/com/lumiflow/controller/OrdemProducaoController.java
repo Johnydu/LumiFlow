@@ -31,7 +31,7 @@ public class OrdemProducaoController {
     private final ProdutoService produtoService;
     private final MessageSource messageSource;
 
-    @PreAuthorize("hasAnyRole('SUPORTE', 'PCP_SUPERVISOR')")
+    @PreAuthorize("hasAnyRole('PCP','SUPERVISOR')")
     @GetMapping("/novaOrdem")
     public String novaOrdemForm(Model model, Locale locale) {
         try {
@@ -49,7 +49,7 @@ public class OrdemProducaoController {
         return "ordens/NovaOrdem";
     }
 
-    @PreAuthorize("hasAnyRole('SUPORTE', 'PCP_SUPERVISOR')")
+    @PreAuthorize("hasAnyRole('PCP','SUPERVISOR')")
     @PostMapping
     public String novaOrdem(@Valid @ModelAttribute("ordemDTO") OrdemProducaoDTO dto, BindingResult result,
                             Model model, RedirectAttributes attributes, Locale locale,

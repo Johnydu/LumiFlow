@@ -11,6 +11,7 @@ import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.context.MessageSource;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.validation.BindingResult;
@@ -44,6 +45,7 @@ public class UsuarioController {
     }
 
     @PostMapping
+    @PreAuthorize("hasRole('ADMIN')")
     public String novoUsuario(@Valid @ModelAttribute("usuarioDTO") UsuarioDTO dto, BindingResult result,
                               Model model, RedirectAttributes attributes, Locale locale) {
         if (result.hasErrors()) {
@@ -70,6 +72,7 @@ public class UsuarioController {
     }
 
     @PostMapping("/{id}/excluir")
+    @PreAuthorize("hasRole('ADMIN')")
     public String deletarUsuario(@PathVariable Long id, RedirectAttributes attributes, Locale locale) {
         try {
             usuarioService.excluirUsuario(id);
@@ -89,6 +92,7 @@ public class UsuarioController {
     }
 
     @PostMapping("/{id}/editar")
+    @PreAuthorize("hasRole('ADMIN')")
     public String editar(@PathVariable Long id, @Valid @ModelAttribute("usuarioDTO") UsuarioEdicaoDTO dto,
                          BindingResult result, Model model, RedirectAttributes attributes, Locale locale) {
         if (result.hasErrors()) {

@@ -11,11 +11,14 @@ import java.util.List;
 public interface LancamentoRepository extends JpaRepository<Lancamento, Long> {
 
 
-    @Query("SELECT l FROM Lancamento l " +
-            "LEFT JOIN FETCH l.etapaSetor es " +
-            "LEFT JOIN FETCH es.setor s " +
-            "LEFT JOIN FETCH l.operador o " +
-            "ORDER BY l.dataHora DESC")
+    @Query("""
+        SELECT l FROM Lancamento l
+        JOIN FETCH l.ordemSetor os
+        JOIN FETCH os.setor
+        JOIN FETCH l.operador
+        LEFT JOIN FETCH l.etapaSetor
+        ORDER BY l.dataHora DESC
+        """)
     List<Lancamento> findAllComRelacionamentosOrderByDataHoraDesc();
 }
 

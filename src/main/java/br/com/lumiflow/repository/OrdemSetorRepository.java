@@ -85,4 +85,7 @@ public interface OrdemSetorRepository extends JpaRepository<OrdemSetor, Long> {
 
     Optional<OrdemSetor> findByOrdemProducaoIdAndSetorIdAndSequenciaAndStatusIn(
             Long ordemProducaoId, Long setorId, Integer sequencia, List<EstatusOrdemProducao> statuses);
+
+    boolean existsByOrdemProducaoIdAndStatusNot(Long ordemProducaoId, EstatusOrdemProducao status);
+
 }

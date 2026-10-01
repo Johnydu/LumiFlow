@@ -91,7 +91,7 @@
                 </thead>
 
                 <tbody>
-                <!-- LINHA CORRIGIDA: Apenas um tr unificado com o th:each e o th:data-status -->
+
                 <tr th:each="ordem : ${ordens}"
                     th:data-status="${ordem.status() != null ? ordem.status().name() : ''}">
 
@@ -164,7 +164,7 @@
                     <td style="text-align: center;">
                         <div class="table-actions">
                             <form th:if="${ordem.status() != null && ordem.status().name() == 'DISPONIVEL'}"
-                                  sec:authorize="hasAnyRole('ADMIN', 'GESTAO', 'SUPERVISOR')"
+                                  sec:authorize="hasAnyRole('ADMIN', 'GESTAO', 'SUPERVISOR','PCP')"
                                   method="post"
                                   th:action="@{/dashboard/ordens-setor/{setorId}/ordens/{ordemSetorId}/liberar
                                                 (setorId=${setorIdAtual}, ordemSetorId=${ordem.ordemSetorId()})}"
@@ -174,7 +174,7 @@
                             </form>
 
                             <button th:if="${ordem.status() != null && ordem.status().name() == 'DISPONIVEL'}"
-                                    sec:authorize="hasAnyRole('ADMIN', 'GESTAO', 'SUPERVISOR')"
+                                    sec:authorize="hasAnyRole('ADMIN', 'GESTAO', 'SUPERVISOR','PCP')"
                                     type="button" class="btn-dividir"
                                     th:data-id="${ordem.ordemSetorId()}"
                                     th:data-qtd="${ordem.quantidade()}"
@@ -222,7 +222,7 @@
 
     <!-- MODAL DE DIVISÃO -->
     <div id="modalDivisao" class="modal-overlay" style="display:none;"
-         sec:authorize="hasAnyRole('ADMIN', 'GESTAO', 'SUPERVISOR')">
+         sec:authorize="hasAnyRole('ADMIN', 'GESTAO', 'SUPERVISOR', 'PCP')">
         <div class="modal-box">
             <div class="modal-header">
                 <span class="modal-title">Dividir Ordem</span>

@@ -8,6 +8,7 @@ import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.context.MessageSource;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.validation.BindingResult;
@@ -44,6 +45,7 @@ public class ProdutoController {
     }
 
     @PostMapping
+    @PreAuthorize("hasAnyRole('PCP','SUPERVISOR')")
     public String novoProduto(@Valid @ModelAttribute("produtoDTO") ProdutoDTO dto,
                               BindingResult result, Model model, RedirectAttributes attributes, Locale locale) {
         if (result.hasErrors()) {
@@ -70,6 +72,7 @@ public class ProdutoController {
     }
 
     @PostMapping("/{id}/excluir")
+    @PreAuthorize("hasAnyRole('PCP','SUPERVISOR')")
     public String excluirProduto(@PathVariable Long id, RedirectAttributes attributes, Locale locale) {
         try {
             produtoService.deletarProduto(id);
@@ -89,6 +92,7 @@ public class ProdutoController {
     }
 
     @PostMapping("/{id}/editar")
+    @PreAuthorize("hasAnyRole('PCP','SUPERVISOR')")
     public String editarProduto(@PathVariable Long id, @Valid @ModelAttribute("produtoDTO") ProdutoDTO dto,
                                 BindingResult result, Model model, RedirectAttributes attributes, Locale locale) {
         if (result.hasErrors()) {

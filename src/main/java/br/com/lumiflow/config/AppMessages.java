@@ -74,11 +74,13 @@ public final class AppMessages {
     // ==================== LANÇAMENTO / APONTAMENTO ====================
     public static final String SUCCESS_LAUNCH_REGISTERED = "success.launch.registered";
     public static final String ERROR_LAUNCH_EXCEEDS_PENDING = "error.launch.exceeds.pending";
+    public static final String ERROR_CONCURRENT_UPDATE = "error.concurrent.update";
 
     // ==================== REFUGO / RETRABALHO ====================
     public static final String SUCCESS_REFUGO_REGISTERED = "success.refugo.registered";
     public static final String SUCCESS_RETRABALHO_REGISTERED = "success.retrabalho.registered";
     public static final String ERROR_REFUGO_NOTFOUND = "error.refugo.notfound";
+    public static final String ERROR_REFUGO_ORIGEM_INVALIDA = "error.refugo.origem.invalida";
 
     // ==================== VIDRAÇARIA ====================
     public static final String SUCCESS_GLASS_MOVEMENT_CREATED = "success.glass.movement.created";

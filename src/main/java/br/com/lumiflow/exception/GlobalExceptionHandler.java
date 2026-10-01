@@ -5,6 +5,7 @@ import jakarta.servlet.http.HttpServletRequest;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.context.MessageSource;
+import org.springframework.orm.ObjectOptimisticLockingFailureException;
 import org.springframework.security.access.AccessDeniedException;
 import org.springframework.web.bind.annotation.ControllerAdvice;
 import org.springframework.web.bind.annotation.ExceptionHandler;
@@ -35,6 +36,14 @@ public class GlobalExceptionHandler {
         String mensagem = messageSource.getMessage(ex.getMessageKey(), ex.getArgs(), locale);
         redirectAttributes.addFlashAttribute("error", mensagem);
 
+        return redirecionarComSeguranca(request);
+    }
+
+    @ExceptionHandler(ObjectOptimisticLockingFailureException.class)
+    public String handleConcorrencia(RedirectAttributes redirectAttributes,
+                                     HttpServletRequest request, Locale locale) {
+        String mensagem = messageSource.getMessage(AppMessages.ERROR_CONCURRENT_UPDATE, null, locale);
+        redirectAttributes.addFlashAttribute("error", mensagem);
         return redirecionarComSeguranca(request);
     }
 

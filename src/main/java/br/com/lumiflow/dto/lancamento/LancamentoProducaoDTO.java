@@ -2,6 +2,7 @@ package br.com.lumiflow.dto.lancamento;
 
 import jakarta.validation.constraints.Min;
 import jakarta.validation.constraints.NotNull;
+import jakarta.validation.constraints.Size;
 
 public record LancamentoProducaoDTO(
         @NotNull(message = "A máquina é obrigatória")
@@ -14,5 +15,6 @@ public record LancamentoProducaoDTO(
         @Min(value = 1, message = "A quantidade deve ser maior que zero")
         Integer quantidade,
 
+        @Size(max = 255, message = "A observação deve ter no máximo 255 caracteres")
         String observacao
 ) {}
