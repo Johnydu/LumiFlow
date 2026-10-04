@@ -173,7 +173,8 @@
                                 <button type="submit" class="btn-liberar">Liberar</button>
                             </form>
 
-                            <button th:if="${ordem.status() != null && ordem.status().name() == 'DISPONIVEL'}"
+                            <button th:if="${ordem.status() != null && ordem.status().name() ==
+                             'DISPONIVEL' && !ordem.origemRefugo()}"
                                     sec:authorize="hasAnyRole('ADMIN', 'GESTAO', 'SUPERVISOR','PCP')"
                                     type="button" class="btn-dividir"
                                     th:data-id="${ordem.ordemSetorId()}"

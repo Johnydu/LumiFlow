@@ -1,5 +1,6 @@
 package br.com.lumiflow.controller;
 
+import br.com.lumiflow.dto.etapaSetor.EtapaSetorDTO;
 import br.com.lumiflow.exception.BusinessException;
 import br.com.lumiflow.service.RoteiroService;
 import lombok.RequiredArgsConstructor;
@@ -42,5 +43,11 @@ public class RoteiroRestController {
             log.error("Erro inesperado ao buscar fluxo para o produto id {}: {}", produtoId, e.getMessage(), e);
             return ResponseEntity.internalServerError().build();
         }
+    }
+
+    @GetMapping("/produto/{produtoId}/setor/{setorId}/etapas")
+    public ResponseEntity<List<EtapaSetorDTO>> buscarEtapasDoSetor(@PathVariable Long produtoId,
+                                                                   @PathVariable Long setorId) {
+        return ResponseEntity.ok(roteiroService.buscarEtapasDoSetorNoRoteiro(produtoId, setorId));
     }
 }

@@ -84,7 +84,7 @@ public class LancamentoController {
 
         } catch (BusinessException e) {
             log.warn("Erro de negócio ao lançar produção na ordem {}: {}", ordemId, e.getMessage());
-            attributes.addFlashAttribute("error", e.getMessage());
+            attributes.addFlashAttribute("error", traduzir(e, locale));
             attributes.addFlashAttribute("producaoDTO", dto);
             return "redirect:/dashboard/ordens/" + ordemId + "/setor/" + ordemSetorId + "/lancar";
         }
@@ -100,14 +100,18 @@ public class LancamentoController {
         }
 
         try {
-            lancamentoService.registrarRefugo(ordemId, ordemSetorId, dto);
+            OrdemSetor ordemSetor = lancamentoService.registrarRefugo(ordemId, ordemSetorId, dto);
             attributes.addFlashAttribute("success",
                     messageSource.getMessage(AppMessages.SUCCESS_REFUGO_REGISTERED, null, locale));
-            return "redirect:/dashboard/ordens/" + ordemId + "/setor/" + ordemSetorId + "/lancar";
 
+            if (ordemSetor.getStatus() == EstatusOrdemProducao.CONCLUIDA) {
+                return "redirect:/dashboard/ordens-setor/" + ordemSetor.getSetor().getId();
+            }
+
+            return "redirect:/dashboard/ordens/" + ordemId + "/setor/" + ordemSetorId + "/lancar";
         } catch (BusinessException e) {
             log.warn("Erro de negócio ao registar refugo na ordem {}: {}", ordemId, e.getMessage());
-            attributes.addFlashAttribute("error", e.getMessage());
+            attributes.addFlashAttribute("error", traduzir(e, locale));
             attributes.addFlashAttribute("refugoDTO", dto);
             return "redirect:/dashboard/ordens/" + ordemId + "/setor/" + ordemSetorId + "/lancar";
         }
@@ -123,14 +127,20 @@ public class LancamentoController {
         }
 
         try {
-            lancamentoService.registrarRetrabalho(ordemId, dto);
+            OrdemSetor ordemSetorOrigem = lancamentoService.registrarRetrabalho(ordemId, dto);
             attributes.addFlashAttribute("success",
                     messageSource.getMessage(AppMessages.SUCCESS_RETRABALHO_REGISTERED, null, locale));
+
+            if (ordemSetorOrigem.getId().equals(ordemSetorId)
+                    && ordemSetorOrigem.getStatus() == EstatusOrdemProducao.CONCLUIDA) {
+                return "redirect:/dashboard/ordens-setor/" + ordemSetorOrigem.getSetor().getId();
+            }
+
             return "redirect:/dashboard/ordens/" + ordemId + "/setor/" + ordemSetorId + "/lancar";
 
         } catch (BusinessException e) {
             log.warn("Erro de negócio ao registar retrabalho na ordem {}: {}", ordemId, e.getMessage());
-            attributes.addFlashAttribute("error", e.getMessage());
+            attributes.addFlashAttribute("error", traduzir(e, locale));
             attributes.addFlashAttribute("retrabalhoDTO", dto);
             return "redirect:/dashboard/ordens/" + ordemId + "/setor/" + ordemSetorId + "/lancar";
         }
@@ -142,4 +152,9 @@ public class LancamentoController {
         attributes.addFlashAttribute(nomeDto, dto);
         return "redirect:/dashboard/ordens/" + ordemId + "/setor/" + ordemSetorId + "/lancar";
     }
+
+    private String traduzir(BusinessException e, Locale locale) {
+        return messageSource.getMessage(e.getMessageKey(), e.getArgs(), e.getMessageKey(), locale);
+    }
+
 }

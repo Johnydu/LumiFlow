@@ -30,8 +30,6 @@ public class Refugo extends Auditoria {
     @Column(name = "destino",nullable = false)
     private DestinoRefugo destino;
 
-    // Variante da OrdemSetor de onde o refugo foi extraído (ex.: "BRANCO", "PRETO").
-    // Nullable: nem toda ordem foi dividida em variantes (dividirEtapa é opcional).
     @Column(name = "variante", length = 50)
     private String variante;
 
@@ -45,6 +43,10 @@ public class Refugo extends Auditoria {
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "setor_origem_id",nullable = false)
     private Setor setorOrigem;
+
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "ordem_setor_retrabalho_id")
+    private OrdemSetor ordemSetorRetrabalho;
 
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "operador_id",nullable = false)

@@ -30,8 +30,6 @@ public interface OrdemSetorRepository extends JpaRepository<OrdemSetor, Long> {
     List<Object[]> buscarResumoSetores(@Param("busca") String busca);
 
 
-    Optional<OrdemSetor> findByOrdemProducaoIdAndSetorIdAndStatus(Long ordemProducaoId, Long setorId, EstatusOrdemProducao status);
-
     @Query("""
     SELECT DISTINCT os FROM OrdemSetor os
     JOIN os.ordemProducao o
@@ -52,6 +50,7 @@ public interface OrdemSetorRepository extends JpaRepository<OrdemSetor, Long> {
     SELECT os FROM OrdemSetor os
     WHERE os.ordemProducao.id = :ordemProducaoId
       AND os.sequencia = :sequencia
+      AND os.origemRefugo = false
       AND ((:variante IS NULL AND os.variante IS NULL) OR os.variante = :variante)
 """)
     Optional<OrdemSetor> findByOrdemProducaoIdAndSequenciaAndVariante(
@@ -59,8 +58,6 @@ public interface OrdemSetorRepository extends JpaRepository<OrdemSetor, Long> {
             @Param("sequencia") Integer sequencia,
             @Param("variante") String variante);
 
-    Optional<OrdemSetor> findByOrdemProducaoIdAndSetorIdAndStatusIn(Long ordemProducaoId, Long setorId,
-                                                                    List<EstatusOrdemProducao> status);
 
     List<OrdemSetor> findByOrdemProducaoIdInOrderBySequenciaAsc(List<Long> ordemProducaoIds);
 
@@ -83,8 +80,6 @@ public interface OrdemSetorRepository extends JpaRepository<OrdemSetor, Long> {
 """)
     List<SetorResumoDTO> contarEtapasDisponiveisPorSetor();
 
-    Optional<OrdemSetor> findByOrdemProducaoIdAndSetorIdAndSequenciaAndStatusIn(
-            Long ordemProducaoId, Long setorId, Integer sequencia, List<EstatusOrdemProducao> statuses);
 
     boolean existsByOrdemProducaoIdAndStatusNot(Long ordemProducaoId, EstatusOrdemProducao status);
 

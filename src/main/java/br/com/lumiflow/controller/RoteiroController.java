@@ -186,4 +186,5 @@ public class RoteiroController {
                                                             @PathVariable Long setorId) {
         return roteiroService.buscarEtapasDoSetorNoRoteiro(produtoId, setorId);
     }
+
 }

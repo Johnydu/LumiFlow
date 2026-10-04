@@ -81,6 +81,7 @@ public final class AppMessages {
     public static final String SUCCESS_RETRABALHO_REGISTERED = "success.retrabalho.registered";
     public static final String ERROR_REFUGO_NOTFOUND = "error.refugo.notfound";
     public static final String ERROR_REFUGO_ORIGEM_INVALIDA = "error.refugo.origem.invalida";
+    
 
     // ==================== VIDRAÇARIA ====================
     public static final String SUCCESS_GLASS_MOVEMENT_CREATED = "success.glass.movement.created";

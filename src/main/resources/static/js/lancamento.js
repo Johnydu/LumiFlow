@@ -8,9 +8,10 @@ function showTab(nome) {
 }
 
 document.addEventListener('DOMContentLoaded', () => {
-  if (typeof abaComErro !== 'undefined' && abaComErro) {
-    showTab(abaComErro);
-  }
+  const { abaErro, produtoId } = document.body.dataset;
+
+  if (abaErro) showTab(abaErro);
+  if (produtoId) initEtapaOrigemRefugo(produtoId);
 });
 
 function voltarPagina() {
@@ -47,26 +48,24 @@ function initEtapaOrigemRefugo(produtoId) {
   selectSetor.addEventListener('change', async () => {
     const setorId = selectSetor.value;
 
-    selectEtapa.innerHTML = '<option value="">Selecione a etapa</option>';
+    selectEtapa.replaceChildren(new Option('Selecione a etapa', ''));
     campoEtapa.style.display = 'none';
     selectEtapa.required = false;
 
     if (!setorId) return;
 
     try {
-      const response = await fetch(`/dashboard/roteiros/${produtoId}/setor/${setorId}/etapas`);
-      if (!response.ok) return;
+      const response = await fetch(`/api/roteiros/produto/${produtoId}/setor/${setorId}/etapas`);
+      if (!response.ok) {
+        console.warn('Falha ao buscar etapas do setor de origem. Status:', response.status);
+        return;
+      }
 
       const etapas = await response.json();
 
       // Só pergunta quando existe ambiguidade real (mais de uma etapa no roteiro)
       if (etapas.length > 1) {
-        etapas.forEach(etapa => {
-          const option = document.createElement('option');
-          option.value = etapa.id;
-          option.textContent = etapa.nome;
-          selectEtapa.appendChild(option);
-        });
+        etapas.forEach(etapa => selectEtapa.appendChild(new Option(etapa.nome, etapa.id)));
         campoEtapa.style.display = 'flex';
         selectEtapa.required = true;
       }

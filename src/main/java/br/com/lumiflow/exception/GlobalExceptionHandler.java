@@ -19,6 +19,8 @@ import java.util.Locale;
 @Slf4j
 public class GlobalExceptionHandler {
 
+    private static final String DESTINO_PADRAO = "redirect:/dashboard/ordens-setor";
+
     private final MessageSource messageSource;
 
     @ExceptionHandler(AccessDeniedException.class)
@@ -33,7 +35,7 @@ public class GlobalExceptionHandler {
             HttpServletRequest request,
             Locale locale) {
 
-        String mensagem = messageSource.getMessage(ex.getMessageKey(), ex.getArgs(), locale);
+        String mensagem = messageSource.getMessage(ex.getMessageKey(), ex.getArgs(), ex.getMessageKey(), locale);
         redirectAttributes.addFlashAttribute("error", mensagem);
 
         return redirecionarComSeguranca(request);
@@ -62,14 +64,20 @@ public class GlobalExceptionHandler {
         return redirecionarComSeguranca(request);
     }
 
+    /**
+     * Volta para a página de origem somente quando ela é segura e diferente da requisição
+     * que falhou. Redirecionar para a própria página que gerou o erro causa loop infinito.
+     */
     private String redirecionarComSeguranca(HttpServletRequest request) {
         String referer = request.getHeader("Referer");
 
-        if (referer != null && isCaminhoInternoSeguro(referer, request)) {
+        if (referer != null
+                && isCaminhoInternoSeguro(referer, request)
+                && !apontaParaRequisicaoAtual(referer, request)) {
             return "redirect:" + referer;
         }
 
-        return "redirect:/dashboard";
+        return DESTINO_PADRAO;
     }
 
     private boolean isCaminhoInternoSeguro(String referer, HttpServletRequest request) {
@@ -77,6 +85,14 @@ public class GlobalExceptionHandler {
             URI uri = URI.create(referer);
             String host = uri.getHost();
             return host == null || host.equalsIgnoreCase(request.getServerName());
+        } catch (Exception e) {
+            return false;
+        }
+    }
+
+    private boolean apontaParaRequisicaoAtual(String referer, HttpServletRequest request) {
+        try {
+            return request.getRequestURI().equals(URI.create(referer).getPath());
         } catch (Exception e) {
             return false;
         }

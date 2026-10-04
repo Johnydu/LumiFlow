@@ -22,7 +22,13 @@
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
 </head>
 <body class="page-ordemproducao-lancamento"
-      th:data-url-voltar="@{/dashboard/ordens-setor/{setorId}(setorId=${ordemSetor.setor.id})}">
+      th:data-url-voltar="@{/dashboard/ordens-setor/{setorId}(setorId=${ordemSetor.setor.id})}"
+      th:data-produto-id="${ordem.produto.id}"
+      th:data-aba-erro="${#fields.hasErrors('producaoDTO.*') ? 'producao' :
+                          (#fields.hasErrors('refugoDTO.*') ? 'refugo' :
+                          (#fields.hasErrors('retrabalhoDTO.*') ? 'retrabalho' : ''))}">
+
+
 <div th:replace="~{fragments/messages :: alerts}"></div>
 
 <aside th:replace="~{fragments/sidebar :: sidebar(activePage='ordens-setor')}"></aside>
@@ -223,20 +229,9 @@
     </div>
 </main>
 
-<script>
-    // O Thymeleaf substitui o conteúdo dentro do comentário quando a página é renderizada
-    const abaComErro = /*[[${#fields.hasErrors('producaoDTO.*') ? 'producao' :
-                            (#fields.hasErrors('refugoDTO.*') ? 'refugo' :
-                            (#fields.hasErrors('retrabalhoDTO.*') ? 'retrabalho' : null))}]]*/ null;
-
-    const produtoId = /*[[${ordem?.produto?.id}]]*/ null;
-
-    if (produtoId) {
-        initEtapaOrigemRefugo(produtoId);
-    }
-</script>
 <script th:src="@{/js/sidebar.js}"></script>
 <script th:src="@{/js/alerts.js}"></script>
 <script th:src="@{/js/lancamento.js}"></script>
+
 </body>
 </html>
