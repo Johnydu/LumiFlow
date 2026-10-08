@@ -1,216 +1,322 @@
 /* ========================================
-   VARIABLES.CSS
+   VARIABLES.CSS — LumiFlow Design System
    ======================================== */
 
+/* =========================================================
+   1. TEMA IDENTIDADE (Original LumiFlow)
+   Design estilizado com cores da marca, efeitos e gradientes.
+   ========================================= */
 :root {
-  /* ============ TYPOGRAPHY / LAYOUT TOKENS ============ */
-  --font-family-base: "Inter", -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
-  --font-size-xs: 0.6875rem;
-  --font-size-sm: 0.75rem;
-  --font-size-md: 0.8125rem;
-  --font-size-lg: 1rem;
-  --font-size-xl: 1.125rem;
-  --font-size-2xl: 1.5rem;
-  --font-size-3xl: 2rem;
-  --font-size-display: 3.375rem;
-  --font-weight-medium: 500;
-  --font-weight-semibold: 600;
-  --font-weight-bold: 700;
-  --line-height-tight: 1.2;
-  --line-height-normal: 1.4;
-  --line-height-relaxed: 1.5;
-  --space-1: 0.25rem;
-  --space-2: 0.5rem;
-  --space-3: 0.75rem;
-  --space-4: 1rem;
-  --space-5: 1.25rem;
-  --space-6: 1.5rem;
-  --space-8: 2rem;
-  --space-10: 2.5rem;
-  --space-12: 3rem;
-  --content-max-width: 1440px;
-  --sidebar-width: 260px;
-  --topbar-height: 72px;
+    /* ============ TYPOGRAPHY / LAYOUT TOKENS ============ */
+    --font-family-base: "Inter", -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
+    --font-size-xs: 0.6875rem;
+    --font-size-sm: 0.75rem;
+    --font-size-md: 0.8125rem;
+    --font-size-lg: 1rem;
+    --font-size-xl: 1.125rem;
+    --font-size-2xl: 1.5rem;
+    --font-size-3xl: 2rem;
+    --font-size-display: 3.375rem;
+    --font-weight-medium: 500;
+    --font-weight-semibold: 600;
+    --font-weight-bold: 700;
+    --line-height-tight: 1.2;
+    --line-height-normal: 1.4;
+    --line-height-relaxed: 1.5;
+    --space-1: 0.25rem;
+    --space-2: 0.5rem;
+    --space-3: 0.75rem;
+    --space-4: 1rem;
+    --space-5: 1.25rem;
+    --space-6: 1.5rem;
+    --space-8: 2rem;
+    --space-10: 2.5rem;
+    --space-12: 3rem;
+    --content-max-width: 1440px;
+    --sidebar-width: 260px;
+    --topbar-height: 72px;
 
-  /* ============ COLORS - Primary ============ */
-  --color-primary: #6157ff;
-  --color-primary-strong: #6d5cff;
-  --color-primary-muted: #534ab7;
-  --color-primary-dark: #3c3489;
-  --color-primary-soft: #a89fff;
-  --color-primary-light: #c6bbff;
-  --color-primary-bg: #2b254d;
-  --color-primary-hover: #4e45e0;
-  --color-primary-gradient-start: #1a1740;
-  --color-primary-gradient-end: #0f0f2a;
+    /* ============ COLORS - Primary ============ */
+    --color-primary: #6157ff;
+    --color-primary-strong: #6d5cff;
+    --color-primary-muted: #534ab7;
+    --color-primary-dark: #3c3489;
+    --color-primary-soft: #a89fff;
+    --color-primary-light: #c6bbff;
+    --color-primary-bg: #2b254d;
+    --color-primary-hover: #4e45e0;
+    --color-primary-gradient-start: #1a1740;
+    --color-primary-gradient-end: #0f0f2a;
 
-  /* Raios de borda */
-  --radius-sm: 4px;
-  --radius-md: 8px;
-  --radius-lg: 10px;
-  --radius-xl: 14px;
-  --radius-2xl: 20px;
-  --radius-pill: 999px;
+    /* Raios de borda */
+    --radius-sm: 4px;
+    --radius-md: 8px;
+    --radius-lg: 10px;
+    --radius-xl: 14px;
+    --radius-2xl: 20px;
+    --radius-pill: 999px;
 
-  /* Cores de Alerta / Perigo */
-  --color-danger-hover: #bb2d3b;
-  --color-danger-light: rgba(220, 53, 69, 0.1);
+    /* Cores de Alerta / Perigo */
+    --color-danger-hover: #bb2d3b;
+    --color-danger-light: rgba(220, 53, 69, 0.1);
 
-  /* ============ COLORS - Background ============ */
-  --color-bg: #0c0c0f;
-  --color-bg-soft: #0f0f1a;
-  --color-surface: #1c1c1c;
-  --color-surface-2: #1a1a2e;
-  --color-surface-hover: #1a1b3b;
-  --color-panel: #232323;
-  --color-panel-alt: #1f1f1f;
-  --color-field: #161616;
-  --color-sidebar: #11122c;
+    /* ============ COLORS - Background (Identidade Visual) ============ */
+    --color-bg: #0c0c0f;
+    --color-bg-soft: #0f0f1a;
+    --color-surface: #1c1c1c;
+    --color-surface-2: #1a1a2e;
+    --color-surface-hover: #1a1b3b;
+    --color-panel: #232323;
+    --color-panel-alt: #1f1f1f;
+    --color-field: #161616;
+    --color-sidebar: #11122c;
 
-  /* ============ COLORS - Text ============ */
-  --color-text: #ffffff;
-  --color-muted: #888888;
-  --color-muted-2: #8f8f9e;
-  --color-muted-3: #7b7b8f;
-  --color-muted-4: #666666;
-  --color-muted-5: #555555;
-  --color-muted-6: #444444;
-  --color-muted-7: #333333;
-  --color-label: #8e8e8e;
-  --color-label-2: #8c8c8c;
-  --color-copy-muted: #9e9e9e;
-  --color-copy-muted-2: #9b9b9b;
+    /* ============ COLORS - Text & Labels ============ */
+    --color-text: #ffffff;
+    --color-muted: #888888;
+    --color-muted-2: #8f8f9e;
+    --color-muted-3: #7b7b8f;
+    --color-muted-4: #666666;
+    --color-muted-5: #555555;
+    --color-muted-6: #444444;
+    --color-muted-7: #333333;
+    --color-label: #8e8e8e;
+    --color-label-2: #8c8c8c;
+    --color-copy-muted: #9e9e9e;
+    --color-copy-muted-2: #9b9b9b;
 
-  /* ============ COLORS - Status ============ */
-  --color-success: #3ccf4e;
-  --color-success-soft: #8cff92;
-  --color-success-bg: #213b22;
-  --color-success-bg-soft: #1a2a1a;
-  --color-warning: #f6a623;
-  --color-warning-dark: #ba8a00;
-  --color-danger: #ff4d4d;
-  --color-danger-strong: #ff4f5e;
+    /* ============ COLORS - Status ============ */
+    --color-success: #3ccf4e;
+    --color-success-soft: #8cff92;
+    --color-success-bg: #213b22;
+    --color-success-bg-soft: #1a2a1a;
+    --color-warning: #f6a623;
+    --color-warning-dark: #ba8a00;
+    --color-danger: #ff4d4d;
+    --color-danger-strong: #ff4f5e;
 
-  /* ============ COLORS - Accent ============ */
-  --color-blue: #7bb8ff;
-  --color-blue-bg: #1a2a3a;
-  --color-lilac: #d4a0ff;
-  --color-lilac-bg: #2a1a3a;
-  --color-mint: #7bffaa;
-  --color-mint-bg: #1a2a20;
-  --color-teal: #0f6e56;
-  --color-teal-light: #3ccf9e;
-  --color-operator: #6c8ebf;
-  --color-amber: #ba7517;
-  --color-lamp-success: #ffcc33;
-  --color-cyan: #00f2fe;
-  --color-cyan-strong: #00c6ff;
-  --color-cyan-blue: #0072ff;
-  --color-night: #030712;
-  --color-slate-100: #f1f5f9;
-  --color-slate-200: #e2e8f0;
-  --color-slate-300: #cbd5e1;
-  --color-slate-400: #94a3b8;
-  --color-slate-500: #64748b;
+    /* ============ COLORS - Accent ============ */
+    --color-blue: #7bb8ff;
+    --color-blue-bg: #1a2a3a;
+    --color-lilac: #d4a0ff;
+    --color-lilac-bg: #2a1a3a;
+    --color-mint: #7bffaa;
+    --color-mint-bg: #1a2a20;
+    --color-teal: #0f6e56;
+    --color-teal-light: #3ccf9e;
+    --color-operator: #6c8ebf;
+    --color-amber: #ba7517;
+    --color-lamp-success: #ffcc33;
+    --color-cyan: #00f2fe;
+    --color-cyan-strong: #00c6ff;
+    --color-cyan-blue: #0072ff;
+    --color-night: #030712;
+    --color-slate-100: #f1f5f9;
+    --color-slate-200: #e2e8f0;
+    --color-slate-300: #cbd5e1;
+    --color-slate-400: #94a3b8;
+    --color-slate-500: #64748b;
 
-  /* ============ COLORS - Tracks ============ */
-  --color-track: #111111;
-  --color-track-soft: #222222;
+    /* ============ COLORS - Tracks & Borders ============ */
+    --color-track: #111111;
+    --color-track-soft: #222222;
+    --border-subtle: rgba(255,255,255,0.08);
+    --border-strong: rgba(255,255,255,0.15);
+    --border-color: var(--border-subtle);
 
-  /* ============ BORDERS ============ */
-  --border-subtle: rgba(255,255,255,0.08);
-  --border-strong: rgba(255,255,255,0.15);
-  --border-color: var(--border-subtle);
+    /* ============ BUTTONS ============ */
+    --btn-height: 32px;
+    --btn-font-size: 11px;
+    --btn-edit-bg: #1e293b;
+    --btn-edit-border: #334155;
+    --btn-edit-color: #93c5fd;
+    --btn-del-bg: #2b161a;
+    --btn-del-border: #4c2229;
+    --btn-del-color: #fca5a5;
+    --btn-success-bg: #132e25;
+    --btn-success-border: #1b4d3e;
+    --btn-success-color: #6ee7b7;
+    --btn-neutral-bg: #1f2937;
+    --btn-neutral-border: #374151;
+    --btn-neutral-color: #d1d5db;
 
+    /* ============ CORES TRANSLÚCIDAS ============ */
+    --primary-alpha-08: rgba(97, 87, 255, 0.08);
+    --primary-alpha-15: rgba(97, 87, 255, 0.15);
+    --primary-alpha-20: rgba(97, 87, 255, 0.2);
+    --primary-alpha-30: rgba(97, 87, 255, 0.3);
+    --primary-alpha-40: rgba(97, 87, 255, 0.4);
+    --success-alpha-10: rgba(60, 207, 78, 0.1);
+    --success-alpha-15: rgba(60, 207, 78, 0.15);
+    --success-alpha-20: rgba(60, 207, 78, 0.2);
+    --success-alpha-30: rgba(60, 207, 78, 0.3);
+    --warning-alpha-15: rgba(246, 166, 35, 0.15);
+    --warning-alpha-20: rgba(246, 166, 35, 0.2);
+    --danger-alpha-10: rgba(255, 77, 77, 0.1);
+    --danger-alpha-15: rgba(255, 77, 77, 0.15);
+    --danger-alpha-20: rgba(255, 77, 77, 0.2);
+    --danger-alpha-30: rgba(255, 77, 77, 0.3);
+    --white-alpha-03: rgba(255, 255, 255, 0.03);
+    --white-alpha-05: rgba(255, 255, 255, 0.05);
+    --white-alpha-06: rgba(255, 255, 255, 0.06);
+    --white-alpha-08: rgba(255, 255, 255, 0.08);
+    --white-alpha-10: rgba(255, 255, 255, 0.1);
+    --white-alpha-12: rgba(255, 255, 255, 0.12);
+    --white-alpha-15: rgba(255, 255, 255, 0.15);
+    --black-alpha-20: rgba(0, 0, 0, 0.2);
+    --black-alpha-60: rgba(0, 0, 0, 0.6);
 
+    /* ============ SURFACES / EFEITOS ============ */
+    --surface-glass: rgba(7, 13, 29, 0.25);
+    --surface-glass-strong: rgba(7, 13, 29, 0.35);
+    --surface-glass-solid: rgba(7, 13, 29, 0.92);
+    --surface-hover: rgba(255, 255, 255, 0.06);
+    --surface-subtle: rgba(255, 255, 255, 0.03);
+    --surface-overlay: rgba(0, 0, 0, 0.62);
+    --blur-sm: 8px;
+    --blur-md: 12px;
+    --blur-lg: 16px;
+    --shadow-glass: 0 8px 32px rgba(0, 0, 0, 0.37);
+    --shadow-focus: 0 0 0 3px rgba(97, 87, 255, 0.15);
 
-  /* ============ BUTTONS - SOLID FLAT SYSTEM (Sem Neon) ============ */
-  --btn-height: 32px;
-  --btn-font-size: 11px;
+    /* ============ COMPONENTES ============ */
+    --control-height-sm: 30px;
+    --control-height-md: 36px;
+    --control-height-lg: 40px;
+    --panel-padding: var(--space-4);
+    --panel-header-padding: var(--space-3) var(--space-5);
+    --table-cell-padding: var(--space-3) var(--space-4);
+    --control-height: 38px;
 
-  /* Editar (Azul calmo e fosco) */
-  --btn-edit-bg: #1e293b;
-  --btn-edit-border: #334155;
-  --btn-edit-color: #93c5fd;
+    --tag-etapa-bg: rgba(97, 87, 255, 0.10);
+    --tag-etapa-color: var(--color-primary);
+    --color-surface-subtle: #1f1f1f;
+}
 
-  /* Excluir (Vermelho fechado e sóbrio)[cite: 3] */
-  --btn-del-bg: #2b161a;
-  --btn-del-border: #4c2229;
-  --btn-del-color: #fca5a5;
+/* =========================================================
+   2. TEMA ESCURO (.dark) — SIMPLES E PADRÃO
+   Fundo preto puro/sóbrio, tabelas pretas e rótulos brancos.
+   ========================================================= */
+html.dark:not(.is-login) {
+    color-scheme: dark;
 
-  /* Liberar / Ver (Verde neutro e calmo) */
-  --btn-success-bg: #132e25;
-  --btn-success-border: #1b4d3e;
-  --btn-success-color: #6ee7b7;
+    /* Fundo da Página e Sidebar */
+    --color-bg: #0f0f0f;
+    --color-bg-soft: #141414;
+    --color-sidebar: #0a0a0a;
 
-  /* Lançar (Cinza ardósia neutro) */
-  --btn-neutral-bg: #1f2937;
-  --btn-neutral-border: #374151;
-  --btn-neutral-color: #d1d5db;
+    /* Superfícies, Painéis e Tabelas Pretas */
+    --color-surface: #141414;
+    --color-surface-2: #1a1a1a;
+    --color-surface-hover: #222222;
+    --color-panel: #141414;
+    --color-panel-alt: #0a0a0a;
+    --color-field: #1a1a1a;
 
-  /* Cores para o Botão Dividir / Alertas de Aviso */
-  --color-warning-text: #856404;
-  --color-warning-bg: #fff3cd;
-  --color-warning-border: #ffeeba;
-  --color-warning-hover: #ffe8a1;
-  --color-warning-border-hover: #ffeeba;
+    /* Texto e Rótulos em Branco Contrastante */
+    --color-text: #ffffff;
+    --color-label: #ffffff;
+    --color-label-2: #e5e5e5;
+    --color-muted: #a3a3a3;
+    --color-muted-2: #a3a3a3;
+    --color-muted-3: #737373;
+    --color-copy-muted: #a3a3a3;
 
-  /* ============ CORES TRANSLÚCIDAS ============ */
-  --primary-alpha-08: rgba(97, 87, 255, 0.08);
-  --primary-alpha-15: rgba(97, 87, 255, 0.15);
-  --primary-alpha-20: rgba(97, 87, 255, 0.2);
-  --primary-alpha-30: rgba(97, 87, 255, 0.3);
-  --primary-alpha-40: rgba(97, 87, 255, 0.4);
-  --success-alpha-10: rgba(60, 207, 78, 0.1);
-  --success-alpha-15: rgba(60, 207, 78, 0.15);
-  --success-alpha-20: rgba(60, 207, 78, 0.2);
-  --success-alpha-30: rgba(60, 207, 78, 0.3);
-  --warning-alpha-15: rgba(246, 166, 35, 0.15);
-  --warning-alpha-20: rgba(246, 166, 35, 0.2);
-  --danger-alpha-10: rgba(255, 77, 77, 0.1);
-  --danger-alpha-15: rgba(255, 77, 77, 0.15);
-  --danger-alpha-20: rgba(255, 77, 77, 0.2);
-  --danger-alpha-30: rgba(255, 77, 77, 0.3);
-  --white-alpha-03: rgba(255, 255, 255, 0.03);
-  --white-alpha-05: rgba(255, 255, 255, 0.05);
-  --white-alpha-06: rgba(255, 255, 255, 0.06);
-  --white-alpha-08: rgba(255, 255, 255, 0.08);
-  --white-alpha-10: rgba(255, 255, 255, 0.1);
-  --white-alpha-12: rgba(255, 255, 255, 0.12);
-  --white-alpha-15: rgba(255, 255, 255, 0.15);
-  --black-alpha-20: rgba(0, 0, 0, 0.2);
-  --black-alpha-60: rgba(0, 0, 0, 0.6);
-  --cyan-alpha-12: rgba(0, 198, 255, 0.12);
-  --cyan-alpha-20: rgba(0, 198, 255, 0.2);
-  --cyan-alpha-25: rgba(0, 242, 254, 0.25);
-  --cyan-alpha-35: rgba(0, 242, 254, 0.35);
-  --cyan-alpha-40: rgba(0, 242, 254, 0.4);
-  --cyan-alpha-50: rgba(0, 242, 254, 0.5);
+    /* Bordas Simples e Neutras */
+    --border-subtle: #262626;
+    --border-strong: #404040;
+    --border-color: #262626;
+    --color-track: #1f1f1f;
+    --color-track-soft: #2a2a2a;
 
-  /* ============ SURFACES / EFEITOS ============ */
-  --surface-glass: rgba(7, 13, 29, 0.25);
-  --surface-glass-strong: rgba(7, 13, 29, 0.35);
-  --surface-glass-solid: rgba(7, 13, 29, 0.92);
-  --surface-hover: rgba(255, 255, 255, 0.06);
-  --surface-subtle: rgba(255, 255, 255, 0.03);
-  --surface-overlay: rgba(0, 0, 0, 0.62);
-  --blur-sm: 8px;
-  --blur-md: 12px;
-  --blur-lg: 16px;
-  --shadow-glass: 0 8px 32px rgba(0, 0, 0, 0.37);
-  --shadow-focus: 0 0 0 3px rgba(97, 87, 255, 0.15);
+    /* Remoção de Efeitos de Vidro/Glow */
+    --surface-glass: #141414;
+    --surface-glass-strong: #141414;
+    --surface-glass-solid: #141414;
+    --surface-hover: #222222;
+    --surface-subtle: #1a1a1a;
+    --surface-overlay: rgba(0, 0, 0, 0.75);
+    --shadow-glass: none;
 
-  /* ============ DIMENSÕES DE COMPONENTES ============ */
-  --control-height-sm: 30px;
-  --control-height-md: 36px;
-  --control-height-lg: 40px;
-  --panel-padding: var(--space-4);
-  --panel-header-padding: var(--space-3) var(--space-5);
-  --table-cell-padding: var(--space-3) var(--space-4);
+    /* Botões Sóbrios */
+    --btn-edit-bg: #1c2430;
+    --btn-edit-border: #2b384e;
+    --btn-edit-color: #93c5fd;
+    --btn-del-bg: #2d181c;
+    --btn-del-border: #4d232a;
+    --btn-del-color: #fca5a5;
+    --btn-success-bg: #142e23;
+    --btn-success-border: #1e4d3a;
+    --btn-success-color: #6ee7b7;
+    --btn-neutral-bg: #262626;
+    --btn-neutral-border: #404040;
+    --btn-neutral-color: #ffffff;
 
-  /* Cores de apoio para tags e badges (ajuste conforme a sua paleta) */
-  --tag-etapa-bg: rgba(var(--color-primary-rgb, 79, 70, 229), 0.10); /* Fundo com tom leve da cor primária */
-  --tag-etapa-color: var(--color-primary, #4f46e5); /* Texto na cor primária */
-  --color-surface-subtle: #f8fafc;
-  --control-height: 38px;
+    --color-surface-subtle: #1a1a1a;
+}
+
+/* =========================================================
+   3. TEMA CLARO (.theme-light) — SIMPLES E PADRÃO
+   Fundo branco limpo, tabelas brancas e rótulos/textos escuros.
+   ========================================================= */
+html.theme-light:not(.is-login) {
+    color-scheme: light;
+
+    /* Fundo da Página e Sidebar */
+    --color-bg: #f8fafc;
+    --color-bg-soft: #f1f5f9;
+    --color-sidebar: #ffffff;
+
+    /* Superfícies, Painéis e Tabelas Brancas */
+    --color-surface: #ffffff;
+    --color-surface-2: #f8fafc;
+    --color-surface-hover: #f1f5f9;
+    --color-panel: #ffffff;
+    --color-panel-alt: #f8fafc;
+    --color-field: #ffffff;
+
+    /* Texto e Rótulos Escuros */
+    --color-text: #0f172a;
+    --color-label: #0f172a;
+    --color-label-2: #334155;
+    --color-muted: #64748b;
+    --color-muted-2: #64748b;
+    --color-muted-3: #64748b;
+    --color-copy-muted: #64748b;
+
+    /* Bordas Simples */
+    --border-subtle: #e2e8f0;
+    --border-strong: #cbd5e1;
+    --border-color: #e2e8f0;
+    --color-track: #e2e8f0;
+    --color-track-soft: #cbd5e1;
+
+    /* Remoção de Efeitos de Vidro/Glow */
+    --surface-glass: #ffffff;
+    --surface-glass-strong: #ffffff;
+    --surface-glass-solid: #ffffff;
+    --surface-hover: #f1f5f9;
+    --surface-subtle: #f8fafc;
+    --surface-overlay: rgba(15, 23, 42, 0.4);
+    --shadow-glass: 0 1px 3px rgba(0,0,0,0.05);
+
+    /* Botões Claro Sóbrios */
+    --btn-edit-bg: #eff6ff;
+    --btn-edit-border: #bfdbfe;
+    --btn-edit-color: #1d4ed8;
+    --btn-del-bg: #fef2f2;
+    --btn-del-border: #fecaca;
+    --btn-del-color: #b91c1c;
+    --btn-success-bg: #ecfdf5;
+    --btn-success-border: #a7f3d0;
+    --btn-success-color: #047857;
+    --btn-neutral-bg: #f1f5f9;
+    --btn-neutral-border: #cbd5e1;
+    --btn-neutral-color: #0f172a;
+
+    --color-surface-subtle: #f8fafc;
+}
+
+html:not(.theme-light) {
+    color-scheme: dark;
 }

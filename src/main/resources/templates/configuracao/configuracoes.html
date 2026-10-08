@@ -1,10 +1,124 @@
 <!DOCTYPE html>
-<html lang="en">
+<html lang="pt-BR" th:lang="${#locale.toLanguageTag()}" xmlns:th="http://www.thymeleaf.org"
+      xmlns:sec="http://www.thymeleaf.org/extras/spring-security">
 <head>
-  <meta charset="UTF-8">
-  <title>$Title$</title>
+    <th:block th:replace="~{fragments/theme :: init}"></th:block>
+    <meta charset="UTF-8"/>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+    <title>Configurações - LumiFlow</title>
+
+    <!-- 1. Variables & Globals -->
+    <link rel="stylesheet" th:href="@{/css/variables.css}">
+    <link rel="stylesheet" th:href="@{/css/globals.css}">
+
+    <!-- 2. Shared Layout -->
+    <link rel="stylesheet" th:href="@{/css/sidebar.css}">
+    <link rel="stylesheet" th:href="@{/css/topbar.css}">
+
+    <!-- 3. Components -->
+    <link rel="stylesheet" th:href="@{/css/components/buttons.css}">
+    <link rel="stylesheet" th:href="@{/css/components/forms.css}">
+    <link rel="stylesheet" th:href="@{/css/components/tables.css}">
+    <link rel="stylesheet" th:href="@{/css/components/cards.css}">
+    <link rel="stylesheet" th:href="@{/css/components/badges.css}">
+    <link rel="stylesheet" th:href="@{/css/components/status.css}">
+    <link rel="stylesheet" th:href="@{/css/components/alerts.css}">
+    <!-- Componente Modal Centralizado -->
+    <link rel="stylesheet" th:href="@{/css/components/modal.css}">
+
+    <!-- 4. Page Specific -->
+    <link rel="stylesheet" th:href="@{/css/pages/configuracoes.css}">
+
+    <!-- 5. Utils & Responsive -->
+    <link rel="stylesheet" th:href="@{/css/utils.css}">
+    <link rel="stylesheet" th:href="@{/css/responsive.css}">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
 </head>
-<body>
-$END$
+<body class="page-configuracao">
+<div th:replace="~{fragments/messages :: alerts}"></div>
+
+<!-- SIDEBAR -->
+<aside th:replace="~{fragments/sidebar :: sidebar(activePage='configuracoes')}"></aside>
+
+<main class="main">
+
+    <!-- TOPBAR -->
+    <div th:replace="~{fragments/topbar :: topbar(
+        'Configurações',
+        null,
+        null
+    )}"></div>
+
+    <div class="content">
+
+        <div class="panel">
+            <div class="panel-header">
+                <span class="panel-title">
+                    Preferências do Sistema
+                </span>
+            </div>
+
+            <div style="padding: var(--space-6); display: flex; flex-direction: column; gap: var(--space-6);">
+
+                <!-- SELETOR DE IDIOMA -->
+                <div class="field" style="display: flex; flex-direction: column; gap: 4px; max-width: 400px;">
+                    <label for="langSelect" style="font-size: var(--font-size-sm); font-weight: 500;">
+                        Idioma / Language
+                    </label>
+
+                    <select id="langSelect"
+                            onchange="mudarIdioma(this.value)"
+                            style="height: var(--control-height, 38px); padding: 0 var(--space-3); border: 1px solid var(--border-strong); border-radius: var(--radius-md); background: var(--color-field); color: var(--color-text); font-size: var(--font-size-sm);">
+                        <option value="pt-BR" th:selected="${#locale.language == 'pt'}">Português (Brasil)</option>
+                        <option value="en" th:selected="${#locale.language == 'en'}">English</option>
+                    </select>
+                </div>
+
+                <!-- SELETOR DE TEMA -->
+                <div class="field" style="display: flex; flex-direction: column; gap: 4px;">
+                    <label style="font-size: var(--font-size-sm); font-weight: 500; margin-bottom: 4px;">
+                        Tema do Sistema / Theme
+                    </label>
+
+                    <div style="display: flex; gap: var(--space-3); flex-wrap: wrap;">
+                        <!-- Botão Identidade (Original) -->
+                        <button type="button"
+                                onclick="mudarTema('identity')"
+                                data-theme="identity"
+                                class="btn-submit"
+                                style="background: var(--color-surface); color: var(--color-text); border: 1px solid var(--border-strong);">
+                            🎨 Identidade (Original)
+                        </button>
+
+                        <!-- Botão Claro -->
+                        <button type="button"
+                                onclick="mudarTema('light')"
+                                data-theme="light"
+                                class="btn-submit"
+                                style="background: var(--color-surface); color: var(--color-text); border: 1px solid var(--border-strong);">
+                            ☀️ Claro
+                        </button>
+
+                        <!-- Botão Escuro -->
+                        <button type="button"
+                                onclick="mudarTema('dark')"
+                                data-theme="dark"
+                                class="btn-submit">
+                            🌙 Escuro
+                        </button>
+                    </div>
+                </div>
+
+            </div>
+        </div>
+
+    </div>
+
+</main>
+
+<script th:src="@{/js/configuracoes.js}"></script>
+<script th:src="@{/js/sidebar.js}"></script>
+<script th:src="@{/js/alerts.js}"></script>
+
 </body>
 </html>

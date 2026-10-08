@@ -28,6 +28,20 @@ body {
   overflow-y: auto; /* A página inteira gerencia o scroll vertical no canto da tela */
 }
 
+/* =========================================================
+   REMOÇÃO DE IMAGEM DE FUNDO NOS TEMAS SIMPLES
+   Garante que apenas o tema Identidade (padrão) tenha a foto.
+   ========================================================= */
+/* Remove a imagem de fundo apenas se NÃO for a tela de login */
+html.dark:not(.is-login) body,
+html.dark:not(.is-login) .main,
+html.dark:not(.is-login) .page-wrapper,
+html.theme-light:not(.is-login) body,
+html.theme-light:not(.is-login) .main,
+html.theme-light:not(.is-login) .page-wrapper {
+  background-image: none !important;
+}
+
 button,
 input,
 select,

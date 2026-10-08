@@ -64,9 +64,9 @@
 
         <div class="menu-title">SISTEMA</div>
         <div class="menu">
-            <a th:href="@{/dashboard/configuracao}"
-               sec:authorize="hasRole('ADMIN')"
-               th:classappend="${activePage == 'configuracao'} ? 'active'"
+            <a th:href="@{/dashboard/configuracoes}"
+               sec:authorize="hasAnyRole('  OPERADOR', 'ADMIN', 'SUPERVISOR', 'GESTAO', 'PCP')"
+               th:classappend="${activePage == 'configuracoes'} ? 'active'"
                class="menu-item">Configurações</a>
 
             <form th:action="@{/logout}" method="post" class="logout-form">

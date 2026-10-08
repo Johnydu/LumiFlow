@@ -1,7 +1,8 @@
 <!DOCTYPE html>
-<html lang="pt-BR" xmlns:th="http://www.thymeleaf.org"
+<html lang="pt-BR" th:lang="${#locale.toLanguageTag()}" xmlns:th="http://www.thymeleaf.org"
       xmlns:sec="http://www.thymeleaf.org/extras/spring-security">
 <head>
+    <th:block th:replace="~{fragments/theme :: init}"></th:block>
     <meta charset="UTF-8"/>
     <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
     <title>Operadores - LumiFlow</title>

@@ -87,7 +87,7 @@ public class SecurityConfig {
                                 "/dashboard/usuario/**",
                                 "/dashboard/configuracao/**",
                                 "/dashboard/configuracoes/**"
-                        ).hasRole(ROLE_ADMIN)
+                        ).hasAnyRole(ROLE_ADMIN,ROLE_OPERADOR,ROLE_GESTAO,ROLE_PCP,ROLE_SUPERVISOR)
 
                         // Cadastros e criação de ordens: PCP (Supervisor e Admin por herança)
                         .requestMatchers(

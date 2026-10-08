@@ -194,3 +194,40 @@
   font-size: var(--font-size-xs);
   text-align: center;
 }
+
+/* =========================================================
+   AJUSTES DA SIDEBAR PARA TEMAS SIMPLES (CLARO E ESCURO)
+   Remove transparências, efeitos de vidro e brilhos neon.
+   ========================================================= */
+
+/* 1. Remove o fundo transparente e o desfoque (vidro) da sidebar inteira */
+html.dark .sidebar,
+html.theme-light .sidebar {
+  background: var(--color-sidebar) !important;
+  backdrop-filter: none !important;
+  -webkit-backdrop-filter: none !important;
+}
+
+/* 2. Remove o "brilho neon" (box-shadow) e a cor vibrante do menu ATIVO */
+html.dark .sidebar .menu-item.active,
+html.theme-light .sidebar .menu-item.active {
+  box-shadow: none !important;
+  background: var(--color-surface-hover) !important;
+  border-color: var(--border-strong) !important;
+  color: var(--color-text) !important;
+}
+
+/* 3. Garante que os itens de menu inativos fiquem com fundo neutro e limpo */
+html.dark .sidebar .menu-item,
+html.theme-light .sidebar .menu-item {
+  background: var(--color-surface) !important;
+  border-color: var(--border-subtle) !important;
+}
+
+/* 4. Neutraliza a cor ao passar o rato (hover), removendo o tom primário */
+html.dark .sidebar .menu-item:hover,
+html.theme-light .sidebar .menu-item:hover {
+  background: var(--color-surface-hover) !important;
+  border-color: var(--border-strong) !important;
+  color: var(--color-text) !important;
+}

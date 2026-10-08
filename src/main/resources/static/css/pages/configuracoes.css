@@ -1,0 +1,54 @@
+/* =================================================================â€”
+   CONFIGURAÇÕES — Estilos Específicos da Página
+   =================================================================== */
+
+.page-configuracao .content {
+    display: flex;
+    flex-direction: column;
+    gap: var(--space-6);
+    max-width: 800px;
+}
+
+.page-configuracao .panel {
+    background: var(--color-surface);
+    border: 1px solid var(--border-color, var(--border-strong));
+    border-radius: var(--radius-lg);
+    box-shadow: var(--shadow-sm);
+    overflow: hidden;
+}
+
+.page-configuracao .panel-header {
+    padding: var(--space-4) var(--space-6);
+    border-bottom: 1px solid var(--border-color, var(--border-strong));
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+}
+
+.page-configuracao .panel-title {
+    font-size: var(--font-size-md);
+    font-weight: 600;
+    color: var(--color-text);
+}
+
+/* Campos de Preferências */
+.page-configuracao .field label {
+    color: var(--color-text);
+}
+
+.page-configuracao select:focus,
+.page-configuracao button:focus {
+    outline: 2px solid var(--color-primary, #2563eb);
+    outline-offset: 2px;
+}
+
+/* Responsividade para dispositivos móveis */
+@media (max-width: 768px) {
+    .page-configuracao .content {
+        padding: var(--space-3);
+    }
+
+    .page-configuracao div[style*="display: flex; gap: var(--space-3)"] {
+        flex-direction: column;
+    }
+}

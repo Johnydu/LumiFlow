@@ -1,0 +1,13 @@
+<th:block th:fragment="init">
+    <script>
+        (function() {
+            const savedTheme = localStorage.getItem('theme');
+            if (savedTheme === 'dark') {
+                document.documentElement.classList.add('dark');
+            } else if (savedTheme === 'light') {
+                document.documentElement.classList.add('theme-light');
+            }
+        })();
+    </script>
+    <script th:src="@{/js/i18n.js}" defer></script>
+</th:block>

@@ -1,6 +1,7 @@
 <!DOCTYPE html>
-<html lang="pt-BR" xmlns:th="http://www.thymeleaf.org">
+<html lang="pt-BR" th:lang="${#locale.toLanguageTag()}" xmlns:th="http://www.thymeleaf.org">
 <head>
+    <th:block th:replace="~{fragments/theme :: init}"></th:block>
     <meta charset="UTF-8">
     <title>Acesso Negado - LumiFlow</title>
     <link rel="stylesheet" th:href="@{/css/variables.css}">
