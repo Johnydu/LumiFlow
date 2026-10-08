@@ -10,9 +10,13 @@ import br.com.lumiflow.entity.enums.DestinoRefugo;
 import br.com.lumiflow.entity.enums.EstatusOrdemProducao;
 import br.com.lumiflow.exception.BusinessException;
 import br.com.lumiflow.repository.*;
+import br.com.lumiflow.security.UsuarioDetails;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.dao.DataAccessException;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -404,17 +408,31 @@ public class LancamentoService {
     }
 
     @Transactional(readOnly = true)
-    public List<HistoricoLancamentosDTO> listarHistoricoLancamentos() {
-        List<Lancamento> lancamentos = lancamentoRepository.findAllComRelacionamentosOrderByDataHoraDesc();
+    public Page<HistoricoLancamentosDTO> listarHistoricoLancamentos(UsuarioDetails usuario, int pagina, int tamanho) {
+        Pageable pageable = PageRequest.of(Math.max(pagina, 0), Math.min(Math.max(tamanho, 1), 100));
 
-        return lancamentos.stream().map(l -> new HistoricoLancamentosDTO(
+        // OPERADOR enxerga apenas o próprio setor; os demais perfis enxergam todos
+        Long setorId = null;
+        if ("OPERADOR".equals(usuario.getNivelAcesso())) {
+            if (usuario.getSetorId() == null) {
+                return Page.empty(pageable);
+            }
+            setorId = usuario.getSetorId();
+        }
+
+        return lancamentoRepository.buscarHistorico(setorId, pageable).map(l -> new HistoricoLancamentosDTO(
+                l.getOrdemSetor().getOrdemProducao().getId(),
+                l.getOrdemSetor().getOrdemProducao().getNumero(),
+                l.getOrdemSetor().getOrdemProducao().getProduto().getNome(),
                 l.getOrdemSetor().getSetor().getNome(),
                 l.getEtapaSetor() != null ? l.getEtapaSetor().getNome() : null,
+                l.getOrdemSetor().getVariante(),
+                l.getMaquina().getNome(),
                 l.getQtdProduzida(),
                 l.getObservacao(),
                 l.getOperador().getNome(),
                 l.getDataHora()
-        )).toList();
+        ));
     }
 
     @Transactional(readOnly = true)

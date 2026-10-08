@@ -110,6 +110,9 @@ public class SecurityConfig {
                         // Ordens por setor: autenticados
                         .requestMatchers("/dashboard/ordens-setor/**").authenticated()
 
+                        .requestMatchers(HttpMethod.GET, "/dashboard/ordens/*/detalhes")
+                        .hasAnyRole(ROLE_GESTAO, ROLE_PCP)
+
                         // Lançamento de produção: Operador e acima
                         .requestMatchers("/dashboard/ordens/*/setor/*/lancar/**").hasRole(ROLE_OPERADOR)
 
@@ -122,6 +125,8 @@ public class SecurityConfig {
                         // Relatórios: Gestão (singular e plural, conforme o menu lateral)
                         .requestMatchers("/dashboard/relatorio/**", "/dashboard/relatorios/**")
                         .hasAnyRole(ROLE_GESTAO, ROLE_PCP, ROLE_SUPERVISOR)
+
+
 
                         // Dashboard (raiz)
                         .requestMatchers("/dashboard").hasAnyRole(ROLE_GESTAO, ROLE_PCP, ROLE_SUPERVISOR)

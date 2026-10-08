@@ -1,0 +1,17 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+
+<span th:fragment="badge(status)" class="status-badge"
+      th:classappend="${status.name() == 'DISPONIVEL'} ? 's-pen'
+        : (${status.name() == 'LIBERADA'} ? 's-lib'
+        : (${status.name() == 'EM_ANDAMENTO'} ? 's-and' : 's-con'))">
+    <span class="s-dot"></span>
+    <th:block th:switch="${status.name()}">
+        <th:block th:case="'DISPONIVEL'">Disponível</th:block>
+        <th:block th:case="'LIBERADA'">Liberada</th:block>
+        <th:block th:case="'EM_ANDAMENTO'">Em andamento</th:block>
+        <th:block th:case="*">Concluída</th:block>
+    </th:block>
+</span>
+
+</html>

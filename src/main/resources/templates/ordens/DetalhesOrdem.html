@@ -1,42 +1,36 @@
-
 <!DOCTYPE html>
 <html lang="pt-BR" xmlns:th="http://www.thymeleaf.org"
-     xmlns:sec="http://www.thymeleaf.org/extras/spring-security">
+      xmlns:sec="http://www.thymeleaf.org/extras/spring-security">
 <head>
-<meta charset="UTF-8"/>
+  <meta charset="UTF-8"/>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
   <title>Detalhes da Ordem - LumiFlow</title>
-<meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+
   <link rel="stylesheet" th:href="@{/css/variables.css}">
-<link rel="stylesheet" th:href="@{/css/globals.css}">
-<link rel="stylesheet" th:href="@{/css/sidebar.css}">
-<link rel="stylesheet" th:href="@{/css/topbar.css}">
-<link rel="stylesheet" th:href="@{/css/components/buttons.css}">
-<link rel="stylesheet" th:href="@{/css/components/forms.css}">
-<link rel="stylesheet" th:href="@{/css/components/tables.css}">
-<link rel="stylesheet" th:href="@{/css/components/cards.css}">
-<link rel="stylesheet" th:href="@{/css/components/badges.css}">
-<link rel="stylesheet" th:href="@{/css/components/status.css}">
-<link rel="stylesheet" th:href="@{/css/components/alerts.css}">
-<link rel="stylesheet" th:href="@{/css/pages/ordens.css}">
-<link rel="stylesheet" th:href="@{/css/utils.css}">
-<link rel="stylesheet" th:href="@{/css/responsive.css}"/>
-  <link rel="stylesheet" th:href="@{/css/error.css}">
+  <link rel="stylesheet" th:href="@{/css/globals.css}">
+  <link rel="stylesheet" th:href="@{/css/sidebar.css}">
+  <link rel="stylesheet" th:href="@{/css/topbar.css}">
+  <link rel="stylesheet" th:href="@{/css/components/buttons.css}">
+  <link rel="stylesheet" th:href="@{/css/components/forms.css}">
+  <link rel="stylesheet" th:href="@{/css/components/tables.css}">
+  <link rel="stylesheet" th:href="@{/css/components/cards.css}">
+  <link rel="stylesheet" th:href="@{/css/components/badges.css}">
+  <link rel="stylesheet" th:href="@{/css/components/status.css}">
+  <link rel="stylesheet" th:href="@{/css/components/alerts.css}">
+  <link rel="stylesheet" th:href="@{/css/pages/ordens.css}">
+  <link rel="stylesheet" th:href="@{/css/utils.css}">
+  <link rel="stylesheet" th:href="@{/css/responsive.css}">
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
 </head>
 <body class="page-ordemproducao-detalhesordem">
-<div th:replace="fragments/messages :: alerts"></div>
 
-<!-- SIDEBAR -->
-<aside th:replace="~{fragments/sidebar :: sidebar(activePage='DetalhesOrdem')}"></aside>
-<!-- MAIN -->
+<div th:replace="~{fragments/messages :: alerts}"></div>
+
+<aside th:replace="~{fragments/sidebar :: sidebar(activePage='dashboard')}"></aside>
+
 <main class="main">
 
-  <!-- TOPBAR -->
-  <div class="topbar">
-    <button class="btn-back">← Voltar</button>
-    <span class="topbar-title">Detalhe da Ordem</span>
-    <span class="op-num">OP-001</span>
-  </div>
+  <div th:replace="~{fragments/topbar :: topbar('Detalhe da Ordem', 'VOLTAR', 'history.back()')}"></div>
 
   <div class="content">
 
@@ -44,32 +38,44 @@
     <div class="info-cards">
       <div class="info-card">
         <div class="info-label">Produto</div>
-        <div class="info-val">Arandela 12W</div>
+        <div class="info-val"
+             th:text="${ordem.numero() + ' · ' + ordem.produtoNome() + ' - ' + ordem.produtoCodigo()}">
+          OP-0001 · Arandela 12W - 123
+        </div>
       </div>
       <div class="info-card">
         <div class="info-label">Quantidade total</div>
-        <div class="info-val">100 unid.</div>
+        <div class="info-val" th:text="${ordem.quantidade() + ' unid.'}">100 unid.</div>
       </div>
       <div class="info-card">
         <div class="info-label">Data de criação</div>
-        <div class="info-val">19/05/2026</div>
+        <div class="info-val" th:text="${#temporals.format(ordem.dataCriacao(), 'dd/MM/yyyy')}">19/05/2026</div>
       </div>
       <div class="info-card">
         <div class="info-label">Status</div>
         <div class="info-val">
-          <span class="status-badge s-and"><span class="s-dot"></span>Em andamento</span>
+          <span th:replace="~{fragments/status-badge :: badge(${ordem.status()})}"></span>
         </div>
       </div>
+    </div>
+
+    <!-- OBSERVAÇÃO (somente quando existir) -->
+    <div class="prog-card" th:if="${ordem.observacao() != null and !ordem.observacao().isBlank()}">
+      <div class="prog-label"><span>Observação</span></div>
+      <div th:text="${ordem.observacao()}"></div>
     </div>
 
     <!-- PROGRESSO GERAL -->
     <div class="prog-card">
       <div class="prog-label">
         <span>Progresso geral da ordem</span>
-        <span>60 / 100 unidades produzidas</span>
+        <span th:text="${ordem.produzidoFinal() + ' / ' + (ordem.quantidade() - ordem.descartado())
+                        + ' unidades concluídas' + (ordem.descartado() > 0 ? ' · ' + ordem.descartado() + ' descartadas' : '')}">
+                    60 / 100 unidades concluídas
+                </span>
       </div>
       <div class="prog-track">
-        <div class="prog-fill" style="width:60%"></div>
+        <div class="prog-fill" th:style="'width:' + ${ordem.percentual()} + '%'"></div>
       </div>
     </div>
 
@@ -77,156 +83,104 @@
     <div class="roteiro-card">
       <div class="card-title">Roteiro de produção</div>
       <div class="roteiro">
-        <span class="setor-pill done">✓ Corte</span>
-        <span class="setor-arr">›</span>
-        <span class="setor-pill done">✓ Dobra</span>
-        <span class="setor-arr">›</span>
-        <span class="setor-pill done">✓ Solda</span>
-        <span class="setor-arr">›</span>
-        <span class="setor-pill atual">📍 Pintura</span>
-        <span class="setor-arr">›</span>
-        <span class="setor-pill">Colagem</span>
-        <span class="setor-arr">›</span>
-        <span class="setor-pill">Acabamento</span>
+        <th:block th:each="passo, it : ${ordem.roteiro()}">
+                    <span class="setor-pill"
+                          th:classappend="${passo.situacao().name() == 'CONCLUIDO'} ? 'done'
+                              : (${passo.situacao().name() == 'ATUAL'} ? 'atual' : '')"
+                          th:text="${(passo.situacao().name() == 'CONCLUIDO' ? '✓ '
+                              : (passo.situacao().name() == 'ATUAL' ? '📍 ' : '')) + passo.rotulo()}">
+                        Corte
+                    </span>
+          <span class="setor-arr" th:unless="${it.last}">›</span>
+        </th:block>
+        <span th:if="${#lists.isEmpty(ordem.roteiro())}" style="color:var(--color-muted-5)">
+                    Este produto não possui roteiro cadastrado.
+                </span>
       </div>
     </div>
 
-    <!-- TABELA DE ITENS POR SETOR -->
+    <!-- TABELA DE LINHAS POR SETOR -->
     <div class="itens-card">
       <div class="itens-header">Itens por setor</div>
       <table>
         <thead>
-          <tr>
-            <th>Setor</th>
-            <th>Etapa</th>
-            <th style="width:60px">Recebido</th>
-            <th style="width:150px">Produzido</th>
-            <th style="width:70px">Pendente</th>
-            <th style="width:90px">Status</th>
-            <th style="width:80px">Ação</th>
-          </tr>
+        <tr>
+          <th>Setor</th>
+          <th>Etapa</th>
+          <th style="width:90px">Recebido</th>
+          <th style="width:170px">Produzido</th>
+          <th style="width:90px">Pendente</th>
+          <th style="width:140px">Status</th>
+          <th style="width:90px">Ação</th>
+        </tr>
         </thead>
         <tbody>
-
-          <!-- Setor concluído -->
-          <tr>
-            <td><span class="setor-tag" style="background:var(--color-success-bg);color:var(--color-success-soft)">Corte</span></td>
-            <td style="color:var(--color-muted-4);font-size:11px">—</td>
-            <td>100</td>
-            <td><div class="p-wrap"><div class="p-track"><div class="p-fill pf-con" style="width:100%"></div></div><span class="p-txt">100/100</span></div></td>
-            <td style="color:var(--color-muted-4)">0</td>
-            <td><span class="status-badge s-and" style="background:rgba(60,207,78,0.15);color:var(--color-success)"><span class="s-dot" style="background:var(--color-success)"></span>Concluído</span></td>
-            <td><button class="btn-dis">—</button></td>
-          </tr>
-
-          <!-- Dobra com etapas -->
-          <tr>
-            <td><span class="setor-tag" style="background:var(--color-success-bg);color:var(--color-success-soft)">Dobra</span></td>
-            <td><span class="etapa-tag">1ª Dobra</span></td>
-            <td>100</td>
-            <td><div class="p-wrap"><div class="p-track"><div class="p-fill pf-con" style="width:100%"></div></div><span class="p-txt">100/100</span></div></td>
-            <td style="color:var(--color-muted-4)">0</td>
-            <td><span class="status-badge s-and" style="background:rgba(60,207,78,0.15);color:var(--color-success)"><span class="s-dot" style="background:var(--color-success)"></span>Concluído</span></td>
-            <td><button class="btn-dis">—</button></td>
-          </tr>
-          <tr>
-            <td><span class="setor-tag" style="background:var(--color-success-bg);color:var(--color-success-soft)">Dobra</span></td>
-            <td><span class="etapa-tag">2ª Dobra</span></td>
-            <td>100</td>
-            <td><div class="p-wrap"><div class="p-track"><div class="p-fill pf-con" style="width:100%"></div></div><span class="p-txt">100/100</span></div></td>
-            <td style="color:var(--color-muted-4)">0</td>
-            <td><span class="status-badge s-and" style="background:rgba(60,207,78,0.15);color:var(--color-success)"><span class="s-dot" style="background:var(--color-success)"></span>Concluído</span></td>
-            <td><button class="btn-dis">—</button></td>
-          </tr>
-
-          <!-- Solda concluído -->
-          <tr>
-            <td><span class="setor-tag" style="background:var(--color-success-bg);color:var(--color-success-soft)">Solda</span></td>
-            <td style="color:var(--color-muted-4);font-size:11px">—</td>
-            <td>100</td>
-            <td><div class="p-wrap"><div class="p-track"><div class="p-fill pf-con" style="width:100%"></div></div><span class="p-txt">100/100</span></div></td>
-            <td style="color:var(--color-muted-4)">0</td>
-            <td><span class="status-badge s-and" style="background:rgba(60,207,78,0.15);color:var(--color-success)"><span class="s-dot" style="background:var(--color-success)"></span>Concluído</span></td>
-            <td><button class="btn-dis">—</button></td>
-          </tr>
-
-          <!-- Pintura - setorId atual em andamento -->
-          <tr style="background:rgba(97,87,255,0.05)">
-            <td><span class="setor-tag">Pintura</span></td>
-            <td style="color:var(--color-muted-4);font-size:11px">—</td>
-            <td>100</td>
-            <td><div class="p-wrap"><div class="p-track"><div class="p-fill pf-and" style="width:60%"></div></div><span class="p-txt">60/100</span></div></td>
-            <td style="color:var(--color-warning);font-weight:600">40</td>
-            <td><span class="status-badge s-and"><span class="s-dot"></span>Andamento</span></td>
-            <td><button class="btn-lancar">Lançar</button></td>
-          </tr>
-
-          <!-- Próximos setores -->
-          <tr style="opacity:0.4">
-            <td><span class="setor-tag">Colagem</span></td>
-            <td style="color:var(--color-muted-4);font-size:11px">—</td>
-            <td>—</td>
-            <td><div class="p-wrap"><div class="p-track"><div class="p-fill" style="width:0%"></div></div><span class="p-txt">0/—</span></div></td>
-            <td>—</td>
-            <td style="color:var(--color-muted-6);font-size:11px">Aguardando</td>
-            <td><button class="btn-dis">—</button></td>
-          </tr>
-          <tr style="opacity:0.4">
-            <td><span class="setor-tag">Acabamento</span></td>
-            <td style="color:var(--color-muted-4);font-size:11px">—</td>
-            <td>—</td>
-            <td><div class="p-wrap"><div class="p-track"><div class="p-fill" style="width:0%"></div></div><span class="p-txt">0/—</span></div></td>
-            <td>—</td>
-            <td style="color:var(--color-muted-6);font-size:11px">Aguardando</td>
-            <td><button class="btn-dis">—</button></td>
-          </tr>
-
+        <tr th:each="etapa : ${ordem.etapas()}">
+          <td>
+                        <span class="setor-tag"
+                              th:text="${etapa.setor() + (etapa.variante() != null ? ' (' + etapa.variante() + ')' : '')}">
+                            Pintura
+                        </span>
+            <span th:if="${etapa.origemRefugo()}" class="badge-refugo"
+                  title="Linha criada por refugo">🔧 Refugo</span>
+          </td>
+          <td>
+            <span th:if="${etapa.etapa() != null}" class="etapa-tag" th:text="${etapa.etapa()}">1ª Dobra</span>
+            <span th:if="${etapa.etapa() == null}"
+                  style="color:var(--color-muted-4);font-size:11px">—</span>
+          </td>
+          <td th:text="${etapa.recebido()}">100</td>
+          <td>
+            <div class="p-wrap">
+              <div class="p-track">
+                <div class="p-fill"
+                     th:classappend="${etapa.status().name() == 'CONCLUIDA'} ? 'pf-con' : 'pf-and'"
+                     th:style="'width:' + ${etapa.percentual()} + '%'"></div>
+              </div>
+              <span class="p-txt" th:text="${etapa.produzido() + '/' + etapa.recebido()}">60/100</span>
+            </div>
+          </td>
+          <td th:text="${etapa.pendente()}">40</td>
+          <td><span th:replace="~{fragments/status-badge :: badge(${etapa.status()})}"></span></td>
+          <td>
+            <a th:if="${etapa.status().name() == 'LIBERADA' or etapa.status().name() == 'EM_ANDAMENTO'}"
+               th:href="@{/dashboard/ordens/{id}/setor/{ordemSetorId}/lancar(id=${ordem.id()}, ordemSetorId=${etapa.ordemSetorId()})}"
+               class="btn-lancar">Lançar</a>
+            <button th:unless="${etapa.status().name() == 'LIBERADA' or etapa.status().name() == 'EM_ANDAMENTO'}"
+                    type="button" class="btn-dis" disabled>—</button>
+          </td>
+        </tr>
+        <tr th:if="${#lists.isEmpty(ordem.etapas())}">
+          <td colspan="7" style="text-align:center;color:var(--color-muted-5)">
+            Nenhuma etapa gerada para esta ordem.
+          </td>
+        </tr>
         </tbody>
       </table>
     </div>
 
-    <!-- HISTÓRICO DE LANÇAMENTOS -->
+    <!-- HISTÓRICO -->
     <div class="hist-card">
-      <div class="card-title">Histórico de lançamentos</div>
-      <div class="hist-item">
-        <div class="hist-dot"></div>
+      <div class="card-title">Histórico da ordem</div>
+      <div class="hist-item" th:each="ev : ${ordem.historico()}">
+        <div class="hist-dot" th:classappend="${ev.tipo().name() == 'REFUGO'} ? 'refugo'"></div>
         <div class="hist-info">
-          <div class="hist-title">Pintura — 60 unid. produzidas</div>
-          <div class="hist-sub">Cabine Preta · Carlos Silva · 19/05/2026 14:30</div>
+          <div class="hist-title" th:text="${ev.titulo()}">Pintura — 60 unid. produzidas</div>
+          <div class="hist-sub"
+               th:text="${ev.detalhe() + ' · ' + #temporals.format(ev.dataHora(), 'dd/MM/yyyy HH:mm')}">
+            Cabine Preta · Carlos Silva · 19/05/2026 14:30
+          </div>
         </div>
       </div>
-      <div class="hist-item">
-        <div class="hist-dot refugo"></div>
-        <div class="hist-info">
-          <div class="hist-title">Refugo — 5 unid. · Destino: Retrabalho</div>
-          <div class="hist-sub">Solda · Motivo: Solda irregular · Carlos Silva · 18/05/2026 16:00</div>
-        </div>
-      </div>
-      <div class="hist-item">
-        <div class="hist-dot"></div>
-        <div class="hist-info">
-          <div class="hist-title">Solda — 100 unid. produzidas</div>
-          <div class="hist-sub">Solda Alumínio · Maria Santos · 18/05/2026 15:00</div>
-        </div>
-      </div>
-      <div class="hist-item">
-        <div class="hist-dot"></div>
-        <div class="hist-info">
-          <div class="hist-title">Dobra 2ª Dobra — 100 unid. produzidas</div>
-          <div class="hist-sub">Dobradeira Argus 2 · Pedro Lima · 18/05/2026 11:00</div>
-        </div>
-      </div>
-      <div class="hist-item">
-        <div class="hist-dot"></div>
-        <div class="hist-info">
-          <div class="hist-title">Dobra 1ª Dobra — 100 unid. produzidas</div>
-          <div class="hist-sub">Dobradeira Argus 1 · João Souza · 18/05/2026 09:00</div>
-        </div>
+      <div th:if="${#lists.isEmpty(ordem.historico())}" style="color:var(--color-muted-5)">
+        Nenhum lançamento registrado até o momento.
       </div>
     </div>
 
   </div>
 </main>
+
 <script th:src="@{/js/sidebar.js}"></script>
+<script th:src="@{/js/alerts.js}"></script>
 </body>
 </html>

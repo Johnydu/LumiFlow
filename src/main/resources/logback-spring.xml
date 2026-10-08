@@ -1,47 +1,54 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <configuration>
-    <!-- Variáveis de padrão de log -->
-    <property name="LOG_PATTERN_DEV" value="%d{yyyy-MM-dd HH:mm:ss.SSS} [%thread] %highlight(%-5level) %cyan(%logger{36}) - %msg%n"/>
-    <property name="LOG_PATTERN_PROD" value="%d{yyyy-MM-dd HH:mm:ss.SSS} [%thread] %-5level [%logger{36}] - %msg%n"/>
 
-    <!-- CONFIGURAÇÃO PARA DESENVOLVIMENTO (Console colorido + Arquivo local ./logs) -->
+    <!-- Padrões de log: DEV com cores (somente console local); PROD/arquivos sem cores -->
+    <property name="LOG_PATTERN_DEV"
+              value="%d{yyyy-MM-dd HH:mm:ss.SSS} [%thread] %highlight(%-5level) %cyan(%logger{36}) - %msg%n"/>
+    <property name="LOG_PATTERN_PLAIN"
+              value="%d{yyyy-MM-dd HH:mm:ss.SSS} [%thread] %-5level [%logger{36}] - %msg%n"/>
+
+    <!-- ========================================================= -->
+    <!-- DESENVOLVIMENTO: console colorido + arquivos locais ./logs -->
+    <!-- ========================================================= -->
     <springProfile name="dev">
+        <property name="LOG_DIR" value="./logs"/>
+
         <appender name="CONSOLE" class="ch.qos.logback.core.ConsoleAppender">
-            <withJansi>true</withJansi>
             <encoder>
                 <pattern>${LOG_PATTERN_DEV}</pattern>
                 <charset>UTF-8</charset>
             </encoder>
         </appender>
 
-        <property name="LOG_DIR_DEV" value="./logs"/>
         <appender name="FILE" class="ch.qos.logback.core.rolling.RollingFileAppender">
-            <file>${LOG_DIR_DEV}/lumiflow.log</file>
+            <file>${LOG_DIR}/lumiflow.log</file>
             <rollingPolicy class="ch.qos.logback.core.rolling.SizeAndTimeBasedRollingPolicy">
-                <fileNamePattern>${LOG_DIR_DEV}/archived/lumiflow-%d{yyyy-MM-dd}.%i.log</fileNamePattern>
+                <fileNamePattern>${LOG_DIR}/archived/lumiflow-%d{yyyy-MM-dd}.%i.log</fileNamePattern>
                 <maxFileSize>10MB</maxFileSize>
                 <maxHistory>30</maxHistory>
+                <totalSizeCap>500MB</totalSizeCap>
             </rollingPolicy>
             <encoder>
-                <pattern>${LOG_PATTERN_PROD}</pattern>
+                <pattern>${LOG_PATTERN_PLAIN}</pattern>
                 <charset>UTF-8</charset>
             </encoder>
         </appender>
 
         <appender name="ERROR_FILE" class="ch.qos.logback.core.rolling.RollingFileAppender">
-            <file>${LOG_DIR_DEV}/errors.log</file>
+            <file>${LOG_DIR}/errors.log</file>
             <filter class="ch.qos.logback.classic.filter.LevelFilter">
                 <level>ERROR</level>
                 <onMatch>ACCEPT</onMatch>
                 <onMismatch>DENY</onMismatch>
             </filter>
             <rollingPolicy class="ch.qos.logback.core.rolling.SizeAndTimeBasedRollingPolicy">
-                <fileNamePattern>${LOG_DIR_DEV}/archived/errors-%d{yyyy-MM-dd}.%i.log</fileNamePattern>
+                <fileNamePattern>${LOG_DIR}/archived/errors-%d{yyyy-MM-dd}.%i.log</fileNamePattern>
                 <maxFileSize>10MB</maxFileSize>
                 <maxHistory>30</maxHistory>
+                <totalSizeCap>200MB</totalSizeCap>
             </rollingPolicy>
             <encoder>
-                <pattern>${LOG_PATTERN_PROD}</pattern>
+                <pattern>${LOG_PATTERN_PLAIN}</pattern>
                 <charset>UTF-8</charset>
             </encoder>
         </appender>
@@ -51,26 +58,48 @@
             <appender-ref ref="FILE"/>
             <appender-ref ref="ERROR_FILE"/>
         </root>
+
+        <logger name="br.com.lumiflow" level="DEBUG"/>
+        <!-- SQL do Hibernate fica desligado por padrão. Para ligar, use application-dev.properties:
+             logging.level.org.hibernate.SQL=DEBUG -->
     </springProfile>
 
-    <!-- CONFIGURAÇÃO PARA PRODUÇÃO / CLOUD / RAILWAY (Apenas Console) -->
+    <!-- ========================================================= -->
+    <!-- PRODUÇÃO / RAILWAY: somente console, sem cores             -->
+    <!-- ========================================================= -->
     <springProfile name="prod">
         <appender name="CONSOLE" class="ch.qos.logback.core.ConsoleAppender">
             <encoder>
-                <pattern>${LOG_PATTERN_PROD}</pattern>
+                <pattern>${LOG_PATTERN_PLAIN}</pattern>
                 <charset>UTF-8</charset>
             </encoder>
         </appender>
 
-        <!-- Em produção na nuvem, enviamos apenas para o Console/STDOUT -->
+        <root level="INFO">
+            <appender-ref ref="CONSOLE"/>
+        </root>
+
+        <logger name="br.com.lumiflow" level="INFO"/>
+    </springProfile>
+
+    <!-- ========================================================= -->
+    <!-- QUALQUER OUTRO PERFIL (ex.: testes): console simples       -->
+    <!-- Sem este bloco, nenhum appender existiria e nada seria logado -->
+    <!-- ========================================================= -->
+    <springProfile name="!dev &amp; !prod">
+        <appender name="CONSOLE" class="ch.qos.logback.core.ConsoleAppender">
+            <encoder>
+                <pattern>${LOG_PATTERN_PLAIN}</pattern>
+                <charset>UTF-8</charset>
+            </encoder>
+        </appender>
+
         <root level="INFO">
             <appender-ref ref="CONSOLE"/>
         </root>
     </springProfile>
 
-    <!-- Loggers específicos por pacote -->
-    <logger name="br.com.lumiflow" level="INFO"/>
-    <logger name="br.com.lumiflow.exception" level="DEBUG"/>
+    <!-- Loggers por pacote (valem para todos os perfis) -->
     <logger name="org.springframework.web" level="WARN"/>
     <logger name="org.springframework.security" level="WARN"/>
     <logger name="org.springframework.data" level="WARN"/>

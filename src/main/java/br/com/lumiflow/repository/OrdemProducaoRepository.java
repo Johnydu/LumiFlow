@@ -11,6 +11,7 @@ import org.springframework.data.repository.query.Param;
 
 import java.time.LocalDateTime;
 import java.util.List;
+import java.util.Optional;
 
 
 public interface OrdemProducaoRepository extends JpaRepository<OrdemProducao, Long> {
@@ -45,4 +46,6 @@ public interface OrdemProducaoRepository extends JpaRepository<OrdemProducao, Lo
     Long proximoNumeroSequencial();
 
 
+    @Query("SELECT o FROM OrdemProducao o JOIN FETCH o.produto WHERE o.id = :id")
+    Optional<OrdemProducao> buscarComProduto(@Param("id") Long id);
 }

@@ -1,0 +1,33 @@
+/* ========================================
+   HISTÓRICO DE LANÇAMENTOS
+   ======================================== */
+
+body.page-lancamentos .col-data {
+    color: var(--color-muted);
+    font-size: var(--font-size-sm);
+    white-space: nowrap;
+}
+
+body.page-lancamentos .col-detalhes {
+    max-width: 320px;
+    color: var(--color-muted-5);
+    overflow-wrap: anywhere;
+}
+
+body.page-lancamentos .paginacao {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: var(--space-3) var(--space-5);
+    border-top: 1px solid var(--border-subtle);
+}
+
+body.page-lancamentos .pag-info {
+    color: var(--color-muted-4);
+    font-size: var(--font-size-xs);
+}
+
+body.page-lancamentos .pag-btns {
+    display: flex;
+    gap: var(--space-1);
+}

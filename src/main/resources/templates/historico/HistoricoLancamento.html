@@ -17,19 +17,15 @@
     <link rel="stylesheet" th:href="@{/css/components/status.css}">
     <link rel="stylesheet" th:href="@{/css/components/alerts.css}">
     <link rel="stylesheet" th:href="@{/css/utils.css}">
-    <link rel="stylesheet" th:href="@{/css/pages/historicoLancamentos.css}">
+    <link rel="stylesheet" th:href="@{/css/pages/historicoLancamento.css}">
     <link rel="stylesheet" th:href="@{/css/responsive.css}"/>
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
 </head>
 <body class="page-lancamentos">
 <div th:replace="~{fragments/messages :: alerts}"></div>
 
-<!-- SIDEBAR - MENU LATERAL -->
 <aside th:replace="~{fragments/sidebar :: sidebar(activePage='lancamentos')}"></aside>
 
-<!-- ================================ -->
-<!-- CONTEÚDO PRINCIPAL               -->
-<!-- ================================ -->
 <main class="main">
     <div th:replace="~{fragments/topbar :: topbar(
         'Histórico de Lançamentos',
@@ -41,53 +37,74 @@
         <div class="panel">
             <div class="panel-header">
                 <span class="panel-title">HISTÓRICO</span>
-                <span class="panel-count"
-                      th:text="${#lists.size(historicos) + ' registros'}">
-                </span>
+                <span class="panel-count" th:text="${pagina.totalElements + ' registros'}"></span>
             </div>
 
             <table>
                 <thead>
                 <tr>
                     <th>Data / Hora</th>
-                    <th>Setor</th>
-                    <th>Etapa</th>
+                    <th>Ordem</th>
+                    <th>Produto</th>
+                    <th>Setor / Etapa</th>
+                    <th>Máquina</th>
                     <th>Qtd. Produzida</th>
                     <th>Operador</th>
-                    <th>Detalhes / Observação</th>
+                    <th>Observação</th>
                 </tr>
                 </thead>
                 <tbody>
-                <tr th:each="hist : ${historicos}">
-                    <!-- Data e Hora -->
+                <tr th:each="hist : ${pagina.content}">
                     <td class="col-data"
-                        th:text="${#temporals.format(hist.dataHora, 'dd/MM/yyyy HH:mm')}">
+                        th:text="${#temporals.format(hist.dataHora, 'dd/MM/yyyy HH:mm')}"></td>
+
+                    <td>
+                        <a sec:authorize="hasAnyRole('ADMIN','SUPERVISOR','GESTAO','PCP')"
+                           class="num"
+                           th:href="@{/dashboard/ordens/{id}/detalhes(id=${hist.ordemId})}"
+                           th:text="${hist.numeroOrdem}">OP-0001</a>
+                        <span sec:authorize="!hasAnyRole('ADMIN','SUPERVISOR','GESTAO','PCP')"
+                              class="num" th:text="${hist.numeroOrdem}">OP-0001</span>
                     </td>
 
-                    <!-- Setor -->
+                    <td th:text="${hist.produto + (hist.variante != null ? ' (' + hist.variante + ')' : '')}">Produto</td>
+
                     <td>
                         <span class="setor-tag" th:text="${hist.setor}">Setor</span>
+                        <span th:if="${hist.etapa != null}" class="etapa-tag" th:text="${hist.etapa}">Etapa</span>
                     </td>
 
-                    <!-- Etapa -->
-                    <td th:text="${hist.etapa}">Etapa</td>
+                    <td th:text="${hist.maquina}">Máquina</td>
 
-                    <!-- Quantidade -->
-                    <td>
-                        <strong th:text="${hist.quantidadeProduzida + ' unid.'}">0 unid.</strong>
-                    </td>
+                    <td><strong th:text="${hist.quantidadeProduzida + ' unid.'}">0 unid.</strong></td>
 
-                    <!-- Operador -->
                     <td th:text="${hist.operador}">Operador</td>
 
-                    <!-- Detalhes / Observação -->
                     <td class="col-detalhes"
-                        th:text="${hist.detalhes != null && hist.detalhes != '' ? hist.detalhes : '-'}">
-                        Detalhes
+                        th:text="${hist.detalhes != null and !hist.detalhes.isBlank() ? hist.detalhes : '—'}">—</td>
+                </tr>
+
+                <tr th:if="${#lists.isEmpty(pagina.content)}">
+                    <td colspan="8" style="text-align:center;color:var(--color-muted-5)">
+                        Nenhum lançamento registrado até o momento.
                     </td>
                 </tr>
                 </tbody>
             </table>
+
+            <div class="paginacao" th:if="${pagina.totalPages > 1}">
+                <span class="pag-info"
+                      th:text="${'Página ' + (pagina.number + 1) + ' de ' + pagina.totalPages}"></span>
+                <div class="pag-btns">
+                    <a th:if="${!pagina.first}" class="pag-btn"
+                       th:href="@{/dashboard/lancamentos(page=${pagina.number - 1})}">&lsaquo;</a>
+                    <span th:if="${pagina.first}" class="pag-btn" style="opacity:.4">&lsaquo;</span>
+
+                    <a th:if="${!pagina.last}" class="pag-btn"
+                       th:href="@{/dashboard/lancamentos(page=${pagina.number + 1})}">&rsaquo;</a>
+                    <span th:if="${pagina.last}" class="pag-btn" style="opacity:.4">&rsaquo;</span>
+                </div>
+            </div>
         </div>
     </div>
 </main>

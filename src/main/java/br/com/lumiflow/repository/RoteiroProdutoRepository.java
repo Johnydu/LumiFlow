@@ -49,4 +49,13 @@ public interface RoteiroProdutoRepository extends JpaRepository<RoteiroProduto, 
 """)
     Optional<RoteiroProduto> findProximoPasso(@Param("produtoId") Long produtoId,
                                               @Param("sequenciaAtual") Integer sequenciaAtual);
+
+    @Query("""
+    SELECT r FROM RoteiroProduto r
+    JOIN FETCH r.setor
+    LEFT JOIN FETCH r.etapaSetor
+    WHERE r.produto.id = :produtoId
+    ORDER BY r.sequencia ASC
+""")
+    List<RoteiroProduto> buscarPassosComSetorEEtapa(@Param("produtoId") Long produtoId);
 }

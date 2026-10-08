@@ -83,4 +83,11 @@ public interface OrdemSetorRepository extends JpaRepository<OrdemSetor, Long> {
 
     boolean existsByOrdemProducaoIdAndStatusNot(Long ordemProducaoId, EstatusOrdemProducao status);
 
+    @Query("""
+    SELECT os FROM OrdemSetor os
+    JOIN FETCH os.setor
+    WHERE os.ordemProducao.id = :ordemId
+    ORDER BY os.sequencia ASC, os.origemRefugo ASC, os.id ASC
+""")
+    List<OrdemSetor> buscarLinhasDaOrdem(@Param("ordemId") Long ordemId);
 }
