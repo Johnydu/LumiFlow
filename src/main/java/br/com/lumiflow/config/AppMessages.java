@@ -98,5 +98,6 @@ public final class AppMessages {
 
     // ==================== GENÉRICO / SISTEMA ====================
     public static final String ERROR_VALIDATION_FAILED = "error.validation.failed";
+    public static final String ERROR_RECORD_IN_USE = "error.record.in.use";
     public static final String ERROR_SYSTEM_INTERNAL = "error.system.internal";
 }

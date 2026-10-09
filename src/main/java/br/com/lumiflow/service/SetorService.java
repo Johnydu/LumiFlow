@@ -67,7 +67,7 @@ public class SetorService {
                 throw new BusinessException(AppMessages.ERROR_VALIDATION_FAILED);
             }
 
-            if (setorRepository.findByNome(dto.nome().trim()).isPresent()) {
+            if (setorRepository.findByNome(normalizeName(dto.nome())).isPresent()) {
                 throw new BusinessException(AppMessages.ERROR_SECTOR_NAME_DUPLICATE);
             }
 
@@ -95,6 +95,7 @@ public class SetorService {
 
             etapaSetorRepository.deleteAllBySetorId(id);
             setorRepository.delete(setor);
+            setorRepository.flush();
 
         } catch (BusinessException e) {
             throw e;
@@ -119,7 +120,7 @@ public class SetorService {
 
             Setor setor = buscarSetorPorId(id);
 
-            setorRepository.findByNome(dto.nome().trim())
+            setorRepository.findByNome(normalizeName(dto.nome()))
                     .filter(s -> !s.getId().equals(id))
                     .ifPresent(s -> {
                         throw new BusinessException(AppMessages.ERROR_SECTOR_NAME_DUPLICATE);
@@ -183,7 +184,7 @@ public class SetorService {
             if (etapaDto.nome() == null || etapaDto.nome().isBlank()) continue;
 
             EtapaSetor etapa = new EtapaSetor();
-            etapa.setNome(etapaDto.nome().trim());
+            etapa.setNome(normalizeName(etapaDto.nome()));
             etapa.setSetor(setor);
             etapa.setOrdem(etapaDto.ordem() == null ? i + 1 : etapaDto.ordem());
             etapaSetorRepository.save(etapa);
@@ -197,7 +198,7 @@ public class SetorService {
                 return listarSetores();
             }
 
-            List<Setor> setores = setorRepository.findByNomeContainingIgnoreCaseOrderByNomeAsc(nome.trim());
+            List<Setor> setores = setorRepository.findByNomeContainingIgnoreCaseOrderByNomeAsc(normalizeName(nome));
             return setores.stream().map(s -> new SetorListagemDTO(
                     s.getId(),
                     s.getNome(),
@@ -211,5 +212,9 @@ public class SetorService {
             log.error("Erro inesperado ao buscar setores por nome: {}", e.getMessage(), e);
             throw new BusinessException(AppMessages.ERROR_VALIDATION_FAILED);
         }
+    }
+
+    private String normalizeName(String name) {
+        return name == null ? null : name.trim().toLowerCase();
     }
 }

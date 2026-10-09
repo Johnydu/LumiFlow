@@ -78,7 +78,7 @@
                     <div class="panel-header">
                         <span class="panel-title">Ordens em andamento</span>
                         <span class="panel-count"
-                              th:text="${(paginaDeOrdens != null ? paginaDeOrdens.totalElements : 0) + ' ordem(ns)'}">0 ordem(ns)</span>
+                              th:text="${#lists.size(ordensAtivas) + ' ordem(ns)'}">0 ordem(ns)</span>
                     </div>
 
                     <table>
