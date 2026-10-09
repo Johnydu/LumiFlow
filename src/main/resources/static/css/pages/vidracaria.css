@@ -73,8 +73,8 @@ body.page-vidracaria-vidracaria #btn-limpar {
 /* Wrapper isolado para a tabela do histórico */
 body.page-vidracaria-vidracaria #tabela-historico-wrapper {
   width: 100%;
-  overflow-x: auto;
-  -webkit-overflow-scrolling: touch;
+  min-width: 0;
+  overflow-x: clip;
 }
 
 body.page-vidracaria-vidracaria .saldo-card {
@@ -182,13 +182,15 @@ body.page-vidracaria-vidracaria .tipo-con {
 
   body.page-vidracaria-vidracaria .panel > table,
   body.page-vidracaria-vidracaria #tabela-historico-wrapper > table {
-    min-width: 680px;
-    table-layout: auto;
+    width: 100%;
+    min-width: 0;
+    table-layout: fixed;
   }
 
   body.page-vidracaria-vidracaria .panel th,
   body.page-vidracaria-vidracaria .panel td {
-    white-space: nowrap;
-    overflow-wrap: normal;
+    width: auto !important;
+    white-space: normal !important;
+    overflow-wrap: anywhere;
   }
 }
