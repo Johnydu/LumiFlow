@@ -23,6 +23,10 @@
   overflow: hidden;
 }
 
+.sidebar-overlay {
+  display: none;
+}
+
 .sidebar .sidebar-header {
   display: flex;
   align-items: center;

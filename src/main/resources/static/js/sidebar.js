@@ -28,7 +28,13 @@ function closeSidebar() {
 // ========================
 
 document.addEventListener('DOMContentLoaded', () => {
-    const overlay = document.querySelector('.sidebar-overlay');
+    let overlay = document.querySelector('.sidebar-overlay');
+    if (!overlay && document.querySelector('.sidebar')) {
+        overlay = document.createElement('div');
+        overlay.className = 'sidebar-overlay';
+        overlay.setAttribute('aria-hidden', 'true');
+        document.body.appendChild(overlay);
+    }
 
     // fecha o sidebar ao clicar no overlay
     if (overlay) {
