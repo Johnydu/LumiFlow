@@ -10,9 +10,11 @@ public record UsuarioDTO(
         Long id,
 
         @NotBlank
+        @Size(max = 50)
         String nome,
 
         @NotBlank
+        @Size(max = 20)
         String login,
 
         @NotBlank

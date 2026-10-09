@@ -19,7 +19,9 @@ public class CustomAuthenticationSuccessHandler implements AuthenticationSuccess
 
         boolean podeAcessarDashboard = authentication.getAuthorities().stream()
                 .map(GrantedAuthority::getAuthority)
-                .anyMatch(role -> role.equals("ROLE_PCP_SUPERVISOR") || role.equals("ROLE_GESTAO"));
+                .anyMatch(role -> role.equals("ROLE_PCP") || role.equals("ROLE_GESTAO") ||
+                        role.equals("ROLE_ADMIN")
+                        || role.equals("ROLE_SUPERVISOR"));
 
         String destino = podeAcessarDashboard ? "/dashboard" : "/dashboard/ordens-setor";
 

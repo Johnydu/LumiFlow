@@ -4,3 +4,5 @@ dockerfile = "Dockerfile"
 
 [deploy]
 numReplicas = 1
+healthcheckPath = "/actuator/health"
+healthcheckTimeout = 100

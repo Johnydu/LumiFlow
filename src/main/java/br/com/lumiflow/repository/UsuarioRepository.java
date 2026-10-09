@@ -1,7 +1,10 @@
 package br.com.lumiflow.repository;
 
 import br.com.lumiflow.entity.Usuario;
+import br.com.lumiflow.entity.enums.Descricao;
+import jakarta.persistence.LockModeType;
 import org.springframework.data.jpa.repository.JpaRepository;
+import org.springframework.data.jpa.repository.Lock;
 import org.springframework.data.jpa.repository.Modifying;
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.query.Param;
@@ -17,6 +20,10 @@ public interface UsuarioRepository extends JpaRepository<Usuario, Long> {
     Optional<Usuario> findByLogin(String login);
 
     List<Usuario> findAllByOrderByNomeAsc();
+
+    @Lock(LockModeType.PESSIMISTIC_WRITE)
+    @Query("SELECT u FROM Usuario u JOIN u.nivelAcesso n WHERE n.descricao = :descricao")
+    List<Usuario> findAllByNivelAcessoForUpdate(@Param("descricao") Descricao descricao);
 
     /**
      * Incremento atômico feito no banco: duas falhas simultâneas não perdem contagem.

@@ -3,6 +3,7 @@ package br.com.lumiflow.dto.vidracaria;
 import br.com.lumiflow.entity.enums.TipoMovimentacao;
 import jakarta.validation.constraints.NotNull;
 import jakarta.validation.constraints.Positive;
+import jakarta.validation.constraints.Size;
 import java.time.LocalDateTime;
 
 public record MovimentacaoVidroDTO(
@@ -10,7 +11,7 @@ public record MovimentacaoVidroDTO(
         Long chapaVidroId,
 
         @NotNull
-        TipoMovimentacao tipoMovimentacao, // ENTRADA ou CONSUMO
+        TipoMovimentacao tipoMovimentacao,
 
         @NotNull(message = "A quantidade é obrigatória")
         @Positive(message = "A quantidade deve ser maior que zero")
@@ -21,5 +22,6 @@ public record MovimentacaoVidroDTO(
 
         LocalDateTime dataHora,
 
+        @Size(max = 255)
         String observacao
 ) {}

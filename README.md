@@ -268,13 +268,13 @@ Se o PostgreSQL estiver fora do contêiner, não use `localhost` em `PGHOST`: us
 
 O projeto inclui `railway.toml` (build por Dockerfile, uma réplica). Para produção:
 
-- use o perfil `prod` (já ativo na imagem Docker);
+- use o perfil `prod` (já ativo na imagem Docker), com verificação de saúde em `/actuator/health`;
 - no serviço da aplicação, referencie as variáveis `PGHOST`, `PGPORT`, `PGDATABASE`, `PGUSER` e `PGPASSWORD` do serviço PostgreSQL do Railway;
 - mantenha `spring.jpa.hibernate.ddl-auto=validate` e deixe o Flyway aplicar as migrações;
 - garanta HTTPS e monitore logs e falhas de migração;
 - mantenha backups do banco.
 
-O perfil `prod` habilita cache de templates e de recursos estáticos, reduz o nível de log e define cookies de sessão `HttpOnly`, `Secure` e `SameSite=Strict`.
+O perfil `prod` habilita cache de templates e de recursos estáticos, reduz o nível de log, define cookies de sessão `HttpOnly`, `Secure` e `SameSite=Strict`, e expõe somente o endpoint de saúde do Actuator. O container usa o fuso `America/Sao_Paulo` e dimensiona o heap conforme a memória disponível.
 
 ## Segurança
 

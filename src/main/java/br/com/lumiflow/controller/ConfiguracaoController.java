@@ -30,10 +30,7 @@ public class ConfiguracaoController {
                     .getMessage(AppMessages.ERROR_VALIDATION_FAILED, null, locale));
         }
 
-        // Suporte a requisições AJAX seguindo o padrão dos outros modais/telas
-        if ("XMLHttpRequest".equals(request.getHeader("X-Requested-With"))) {
-            return "configuracao/Configuracoes :: conteudoConfiguracoes";
-        }
+
 
         return "configuracao/Configuracoes";
     }

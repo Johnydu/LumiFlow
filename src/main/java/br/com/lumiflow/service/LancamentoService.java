@@ -17,6 +17,7 @@ import org.springframework.dao.DataAccessException;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
+import org.springframework.orm.ObjectOptimisticLockingFailureException;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -67,7 +68,7 @@ public class LancamentoService {
 
     @Transactional(readOnly = true)
     public List<Operador> listarOperadoresDoSetor(Long setorId) {
-        return operadorRepository.findBySetorPadraoId(setorId);
+        return operadorRepository.findBySetorPadraoIdOrSetorPadraoIsNullOrderByNomeAsc(setorId);
     }
 
     @Transactional
@@ -89,7 +90,8 @@ public class LancamentoService {
                     .orElseThrow(() -> new BusinessException(AppMessages.ERROR_MACHINE_NOTFOUND));
 
             Operador operador = operadorRepository.findById(dto.operadorId())
-                    .filter(o -> o.getSetorPadrao().getId().equals(ordemSetor.getSetor().getId()))
+                    .filter(o -> o.getSetorPadrao() == null
+                            || o.getSetorPadrao().getId().equals(ordemSetor.getSetor().getId()))
                     .orElseThrow(() -> new BusinessException(AppMessages.ERROR_OPERATOR_NOTFOUND));
 
             EtapaSetor etapaSetor = roteiroProdutoRepository
@@ -127,6 +129,8 @@ public class LancamentoService {
 
         } catch (BusinessException e) {
             // Relança exceções de negócio tratadas para o Controller exibir ao utilizador
+            throw e;
+        } catch (ObjectOptimisticLockingFailureException e) {
             throw e;
         } catch (DataAccessException e) {
             log.error("Erro de base de dados ao lançar produção para a ordem {}: {}", ordemId, e.getMessage(), e);
@@ -210,8 +214,8 @@ public class LancamentoService {
             Setor setorOrigem = setorService.buscarSetorPorId(dto.setorOrigemId());
             Operador operador = operadorService.buscarOperadorPorId(dto.operadorId());
 
-            if (operador.getSetorPadrao() == null
-                    || !operador.getSetorPadrao().getId().equals(ordemSetorAtual.getSetor().getId())) {
+            if (operador.getSetorPadrao() != null
+                    && !operador.getSetorPadrao().getId().equals(ordemSetorAtual.getSetor().getId())) {
                 throw new BusinessException(AppMessages.ERROR_OPERATOR_NOTFOUND);
             }
 

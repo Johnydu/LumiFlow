@@ -1,4 +1,3 @@
-```gitignore
 # ============================================================
 # Maven
 # ============================================================
@@ -29,7 +28,6 @@ target/
 *.iml
 *.ipr
 src/main/resources/application-dev.properties
-src/main/resources/logback-spring.xml
 
 # ============================================================
 # Visual Studio Code
@@ -80,6 +78,5 @@ RELATORIO_SEGURANCA.md
 # ============================================================
 .DS_Store
 Thumbs.db
-```
 /SECURITY-REVIEW.md
 /AUTHENTICATION-SECURITY-REVIEW.md

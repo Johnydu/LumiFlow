@@ -12,7 +12,7 @@ import java.util.Locale;
 @Setter
 @NoArgsConstructor
 @AllArgsConstructor
-@EqualsAndHashCode(callSuper = true,of = "id")
+@EqualsAndHashCode(callSuper = false,of = "id")
 public class Usuario extends Auditoria  {
 
     @Id
@@ -49,4 +49,3 @@ public class Usuario extends Auditoria  {
     }
 
 }
-

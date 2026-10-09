@@ -5,8 +5,10 @@ import br.com.lumiflow.dto.etapaSetor.EtapaSetorDTO;
 import br.com.lumiflow.dto.roteiro.PassoRoteiroDTO;
 import br.com.lumiflow.dto.roteiro.RoteiroDTO;
 import br.com.lumiflow.dto.roteiro.RoteiroListagemDTO;
+import br.com.lumiflow.entity.enums.EstatusOrdemProducao;
 import br.com.lumiflow.exception.BusinessException;
 import br.com.lumiflow.entity.RoteiroProduto;
+import br.com.lumiflow.repository.OrdemProducaoRepository;
 import br.com.lumiflow.repository.RoteiroProdutoRepository;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -26,6 +28,7 @@ public class RoteiroService {
     private final ProdutoService produtoService;
     private final SetorService setorService;
     private final EtapaSetorService etapaSetorService;
+    private final OrdemProducaoRepository ordemProducaoRepository;
 
     @Transactional(readOnly = true)
     public RoteiroDTO buscarRoteiroPorProdutoId(Long produtoId) {
@@ -93,8 +96,16 @@ public class RoteiroService {
     @Transactional
     public void atualizar(Long produtoIdOriginal, RoteiroDTO dto) {
         try {
-            if (produtoIdOriginal == null) {
+            if (produtoIdOriginal == null || dto == null) {
                 throw new BusinessException(AppMessages.ERROR_ROUTE_PRODUCT_REQUIRED);
+            }
+            // Valida se o produto do DTO corresponde ao da URL
+            if (!produtoIdOriginal.equals(dto.produtoId())) {
+                throw new BusinessException(AppMessages.ERROR_VALIDATION_FAILED);
+            }
+            // Impede a atualização se existirem ordens em andamento/abertas para este produto
+            if (ordemProducaoRepository.existsByProdutoIdAndStatusNot(produtoIdOriginal, EstatusOrdemProducao.CONCLUIDA)) {
+                throw new BusinessException(AppMessages.ERROR_ROUTE_IN_USE);
             }
             validarRoteiro(dto);
             roteiroProdutoRepository.deletarPorProdutoId(produtoIdOriginal);
@@ -115,6 +126,10 @@ public class RoteiroService {
         try {
             if (produtoId == null) {
                 throw new BusinessException(AppMessages.ERROR_ROUTE_PRODUCT_REQUIRED);
+            }
+            // Impede a exclusão se existirem ordens em andamento/abertas para este produto
+            if (ordemProducaoRepository.existsByProdutoIdAndStatusNot(produtoId, EstatusOrdemProducao.CONCLUIDA)) {
+                throw new BusinessException(AppMessages.ERROR_ROUTE_IN_USE);
             }
             roteiroProdutoRepository.deletarPorProdutoId(produtoId);
         } catch (BusinessException e) {
@@ -149,10 +164,18 @@ public class RoteiroService {
             item.setProduto(produto);
             item.setSetor(setorService.buscarSetorPorId(passo.setorId()));
             item.setSequencia(sequencia);
-            if (passo.etapaSetorId() != null)
-                item.setEtapaSetor(java.util.Optional.ofNullable(etapaSetorService.buscarPorId(passo.etapaSetorId()))
+            if (passo.etapaSetorId() != null) {
+                var etapa = java.util.Optional.ofNullable(etapaSetorService.buscarPorId(passo.etapaSetorId()))
                         .orElseThrow(() -> new BusinessException(AppMessages.ERROR_ROUTE_STEP_NOTFOUND,
-                                new Object[]{passo.etapaSetorId()})));
+                                new Object[]{passo.etapaSetorId()}));
+
+                // Valida se a etapa pertence de facto ao setor indicado no passo
+                if (!etapa.getSetor().getId().equals(passo.setorId())) {
+                    throw new BusinessException(AppMessages.ERROR_VALIDATION_FAILED);
+                }
+
+                item.setEtapaSetor(etapa);
+            }
             roteiro.add(item);
             sequencia += 10;
         }

@@ -10,7 +10,7 @@ import lombok.*;
 @Setter
 @NoArgsConstructor
 @AllArgsConstructor
-@EqualsAndHashCode(of = "id",callSuper = true)
+@EqualsAndHashCode(of = "id",callSuper = false)
 public class NivelAcesso extends Auditoria {
 
     @Id

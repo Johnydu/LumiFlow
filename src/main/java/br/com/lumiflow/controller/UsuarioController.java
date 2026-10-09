@@ -7,11 +7,13 @@ import br.com.lumiflow.exception.BusinessException;
 import br.com.lumiflow.service.NivelAcessoService;
 import br.com.lumiflow.service.SetorService;
 import br.com.lumiflow.service.UsuarioService;
+import br.com.lumiflow.security.UsuarioDetails;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.context.MessageSource;
 import org.springframework.security.access.prepost.PreAuthorize;
+import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.validation.BindingResult;
@@ -32,9 +34,11 @@ public class UsuarioController {
     private final MessageSource messageSource;
 
     @GetMapping
+    @PreAuthorize("hasRole('ADMIN')")
     public String listarUsuarios(Model model, Locale locale) {
         try {
             carregarPagina(model);
+
             return "usuario/ListaUsuario";
         } catch (Exception e) {
             log.error("Erro inesperado ao carregar a página de listagem de usuários: {}", e.getMessage(), e);
@@ -73,9 +77,11 @@ public class UsuarioController {
 
     @PostMapping("/{id}/excluir")
     @PreAuthorize("hasRole('ADMIN')")
-    public String deletarUsuario(@PathVariable Long id, RedirectAttributes attributes, Locale locale) {
+    public String deletarUsuario(@PathVariable Long id,
+                                 @AuthenticationPrincipal UsuarioDetails usuarioLogado,
+                                 RedirectAttributes attributes, Locale locale) {
         try {
-            usuarioService.excluirUsuario(id);
+            usuarioService.excluirUsuario(id, usuarioLogado.getId());
             attributes.addFlashAttribute("success", messageSource
                     .getMessage(AppMessages.SUCCESS_USER_DELETED, null, locale));
         } catch (BusinessException e) {

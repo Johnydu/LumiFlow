@@ -129,10 +129,21 @@ public class VidracariaService {
             if (dto == null) {
                 throw new BusinessException(AppMessages.ERROR_VALIDATION_FAILED);
             }
-            var chapa = chapaVidroRepository.findById(dto.chapaVidroId()).
-                    orElseThrow(() -> new BusinessException(AppMessages.ERROR_GLASS_SHEET_NOTFOUND));
-            var operador = operadorRepository.findById(dto.operadorId()).
-                    orElseThrow(() -> new BusinessException(AppMessages.ERROR_GLASS_OPERATOR_NOTFOUND));
+            var chapa = chapaVidroRepository.findByIdForUpdate(dto.chapaVidroId())
+                    .orElseThrow(() -> new BusinessException(AppMessages.ERROR_GLASS_SHEET_NOTFOUND));
+            var operador = operadorRepository.findById(dto.operadorId())
+                    .orElseThrow(() -> new BusinessException(AppMessages.ERROR_GLASS_OPERATOR_NOTFOUND));
+
+            // Validação de stock se for uma SAÍDA
+            if (dto.tipoMovimentacao() == TipoMovimentacao.SAIDA) {
+                int entradas = movimentacaoVidroRepository.somarQuantidadePorChapaETipo(chapa.getId(), TipoMovimentacao.ENTRADA);
+                int saidas = movimentacaoVidroRepository.somarQuantidadePorChapaETipo(chapa.getId(), TipoMovimentacao.SAIDA);
+                int saldo = entradas - saidas;
+
+                if (dto.quantidade() > saldo) {
+                    throw new BusinessException(AppMessages.ERROR_GLASS_INSUFFICIENT_STOCK);
+                }
+            }
 
             var movimentacao = new MovimentacaoVidro();
             movimentacao.setChapaVidro(chapa);
@@ -146,10 +157,10 @@ public class VidracariaService {
         } catch (BusinessException e) {
             throw e;
         } catch (DataAccessException e) {
-            log.error("Erro de base de dados ao registrar movimentação de vidro: {}", e.getMessage(), e);
+            log.error("Erro de base de dados ao registar movimentação de vidro: {}", e.getMessage(), e);
             throw new BusinessException(AppMessages.ERROR_VALIDATION_FAILED);
         } catch (Exception e) {
-            log.error("Erro inesperado ao registrar movimentação de vidro: {}", e.getMessage(), e);
+            log.error("Erro inesperado ao registar movimentação de vidro: {}", e.getMessage(), e);
             throw new BusinessException(AppMessages.ERROR_VALIDATION_FAILED);
         }
     }

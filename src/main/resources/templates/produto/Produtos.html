@@ -207,50 +207,6 @@
 
                 </form>
 
-                <!-- ABA ROTEIRO (Integrada dentro do Modal se acionada) -->
-                <div id="tab-roteiro" style="display:none; margin-top: 16px;">
-                    <form id="roteiro-form"
-                          th:action="@{/dashboard/produtos/roteiro}"
-                          method="post">
-
-                        <input type="hidden"
-                               th:name="${_csrf.parameterName}"
-                               th:value="${_csrf.token}"/>
-
-                        <input type="hidden"
-                               id="roteiro-produto-id"
-                               name="produtoId"/>
-
-                        <div class="form-title" style="font-size: var(--font-size-md); font-weight: 600; margin-bottom: 12px;">
-                            Roteiro de Produção
-                        </div>
-
-                        <!-- PRÉVIA DO ROTEIRO -->
-                        <div class="preview-box" style="padding: 12px; border: 1px solid var(--border-strong);
-                         border-radius: var(--radius-md); background: var(--color-surface-subtle); margin-bottom: 16px;">
-                            <div class="preview-label" style="font-size: var(--font-size-xs); font-weight: 500; color: var(--color-muted); margin-bottom: 6px;">Prévia do roteiro</div>
-                            <div class="preview-pills" id="preview-pills" style="display: flex; flex-wrap: wrap; gap: 6px; align-items: center;">
-                                <span style="color:var(--color-muted-5);font-size:12px">
-                                    Nenhum setor selecionado.
-                                </span>
-                            </div>
-                        </div>
-
-                        <div class="modal-actions">
-                            <button type="button"
-                                    class="btn-cancel"
-                                    onclick="hideForm()">
-                                Cancelar
-                            </button>
-
-                            <button type="submit"
-                                    class="btn-submit">
-                                Salvar Roteiro
-                            </button>
-                        </div>
-                    </form>
-                </div>
-
             </div>
         </div>
 

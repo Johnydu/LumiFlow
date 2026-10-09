@@ -11,7 +11,7 @@ import java.util.Locale;
 @Getter
 @Setter
 @Table(name = "operador")
-@EqualsAndHashCode(of = "id", callSuper = true)
+@EqualsAndHashCode(of = "id", callSuper = false)
 public class Operador extends Auditoria {
 
     @Id
@@ -26,7 +26,7 @@ public class Operador extends Auditoria {
 
 
     @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "setor_padrao_id",nullable = false)
+    @JoinColumn(name = "setor_padrao_id")
     private Setor setorPadrao;
 
     @PrePersist

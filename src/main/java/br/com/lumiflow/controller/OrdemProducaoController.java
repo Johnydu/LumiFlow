@@ -60,7 +60,7 @@ public class OrdemProducaoController {
         }
 
         try {
-            ordemProducaoService.criar(dto, usuarioLogado.getUsuario());
+            ordemProducaoService.criar(dto, usuarioLogado.getId());
             attributes.addFlashAttribute("success", messageSource
                     .getMessage(AppMessages.SUCCESS_ORDER_CREATED, null, locale));
             return "redirect:/dashboard";

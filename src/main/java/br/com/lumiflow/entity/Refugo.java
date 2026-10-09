@@ -13,7 +13,7 @@ import java.util.Locale;
 @Table(name = "refugo")
 @AllArgsConstructor
 @NoArgsConstructor
-@EqualsAndHashCode(of = "id", callSuper = true)
+@EqualsAndHashCode(of = "id", callSuper = false)
 public class Refugo extends Auditoria {
 
     @Id

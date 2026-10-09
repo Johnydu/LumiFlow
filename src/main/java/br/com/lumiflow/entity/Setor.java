@@ -4,10 +4,8 @@ import jakarta.persistence.*;
 import lombok.*;
 
 import java.util.ArrayList;
-import java.util.HashSet;
 import java.util.List;
 import java.util.Locale;
-import java.util.Set;
 
 @Entity
 @AllArgsConstructor
@@ -15,7 +13,7 @@ import java.util.Set;
 @Getter
 @Setter
 @Table(name = "setor")
-@EqualsAndHashCode(of = "id", callSuper = true)
+@EqualsAndHashCode(of = "id", callSuper = false)
 public class Setor extends Auditoria {
 
     @Id
@@ -27,14 +25,6 @@ public class Setor extends Auditoria {
 
     @OneToMany(mappedBy = "setor", cascade = CascadeType.ALL, orphanRemoval = true, fetch = FetchType.LAZY)
     private List<EtapaSetor> etapas = new ArrayList<>();
-
-    @ManyToMany(fetch = FetchType.LAZY)
-    @JoinTable(
-            name = "setor_operador",
-            joinColumns = @JoinColumn(name = "setor_id"),
-            inverseJoinColumns = @JoinColumn(name = "operador_id")
-    )
-    private Set<Operador> operadores = new HashSet<>();
 
     @PrePersist
     @PreUpdate

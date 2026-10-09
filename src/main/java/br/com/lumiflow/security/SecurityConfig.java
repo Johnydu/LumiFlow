@@ -74,6 +74,9 @@ public class SecurityConfig {
         http
                 .authorizeHttpRequests(auth -> auth
 
+                        // Health check público para o container e a plataforma de deploy
+                        .requestMatchers("/actuator/health", "/actuator/health/**").permitAll()
+
                         // Recursos estáticos
                         .requestMatchers("/css/**", "/js/**", "/image/**", "/images/**",
                                 "/style.css", "/webjars/**").permitAll()
@@ -83,11 +86,9 @@ public class SecurityConfig {
 
                         // ADMIN: usuários e configurações
                         // (inclui as rotas no singular usadas pelo menu lateral)
-                        .requestMatchers(
-                                "/dashboard/usuario/**",
-                                "/dashboard/configuracao/**",
-                                "/dashboard/configuracoes/**"
-                        ).hasAnyRole(ROLE_ADMIN,ROLE_OPERADOR,ROLE_GESTAO,ROLE_PCP,ROLE_SUPERVISOR)
+                        .requestMatchers("/dashboard/usuario/**").hasRole(ROLE_ADMIN)
+                        .requestMatchers("/dashboard/configuracao/**",
+                                "/dashboard/configuracoes/**").authenticated()
 
                         // Cadastros e criação de ordens: PCP (Supervisor e Admin por herança)
                         .requestMatchers(
@@ -122,11 +123,8 @@ public class SecurityConfig {
                         // Vidraçaria: autenticados
                         .requestMatchers("/dashboard/vidracaria/**").authenticated()
 
-                        // Relatórios: Gestão (singular e plural, conforme o menu lateral)
-                        .requestMatchers("/dashboard/relatorio/**", "/dashboard/relatorios/**")
+                        .requestMatchers("/dashboard/relatorios/**")
                         .hasAnyRole(ROLE_GESTAO, ROLE_PCP, ROLE_SUPERVISOR)
-
-
 
                         // Dashboard (raiz)
                         .requestMatchers("/dashboard").hasAnyRole(ROLE_GESTAO, ROLE_PCP, ROLE_SUPERVISOR)

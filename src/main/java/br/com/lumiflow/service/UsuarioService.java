@@ -2,15 +2,16 @@ package br.com.lumiflow.service;
 
 import br.com.lumiflow.config.AppMessages;
 import br.com.lumiflow.dto.usuario.*;
+import br.com.lumiflow.entity.NivelAcesso;
 import br.com.lumiflow.exception.BusinessException;
 import br.com.lumiflow.mapper.UsuarioMapper;
 import br.com.lumiflow.entity.Usuario;
 import br.com.lumiflow.repository.UsuarioRepository;
+import br.com.lumiflow.entity.enums.Descricao;
 import br.com.lumiflow.validation.LoginValidator;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.dao.DataAccessException;
-import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -36,6 +37,25 @@ public class UsuarioService {
         }
     }
 
+    private void validarNome(String nome) {
+        if (nome == null || nome.isBlank() || nome.trim().length() > 50) {
+            throw new BusinessException(AppMessages.ERROR_VALIDATION_FAILED);
+        }
+    }
+
+    private void validarSetorObrigatorio(NivelAcesso nivelAcesso, Long setorId) {
+        if (nivelAcesso.getDescricao() == Descricao.OPERADOR && setorId == null) {
+            throw new BusinessException(AppMessages.ERROR_USER_OPERATOR_SECTOR_REQUIRED);
+        }
+    }
+
+    private void validarQueNaoEUltimoAdmin(Usuario usuario) {
+        if (usuario.getNivelAcesso().getDescricao() == Descricao.ADMIN
+                && usuarioRepository.findAllByNivelAcessoForUpdate(Descricao.ADMIN).size() <= 1) {
+            throw new BusinessException(AppMessages.ERROR_USER_LAST_ADMIN);
+        }
+    }
+
     private Usuario validarUsuarioPorId(Long id) {
         if (id == null) {
             throw new BusinessException(AppMessages.ERROR_USER_NOTFOUND);
@@ -50,11 +70,15 @@ public class UsuarioService {
             if (dto == null) {
                 throw new BusinessException(AppMessages.ERROR_VALIDATION_FAILED);
             }
+            validarNome(dto.nome());
             validarLogin(dto.login());
             validarSenha(dto.senha());
 
             Usuario usuario = usuarioMapper.toEntity(dto);
-            usuario.setNivelAcesso(nivelAcessoService.buscarNivelAcessoPorId(dto.nivelAcessoId()));
+            NivelAcesso nivelAcesso = nivelAcessoService.buscarNivelAcessoPorId(dto.nivelAcessoId());
+            validarSetorObrigatorio(nivelAcesso, dto.setorId());
+            usuario.setNivelAcesso(nivelAcesso);
+            usuario.setLogin(dto.login().trim());
             usuario.setSetor(dto.setorId() == null ? null : setorService.buscarSetorPorId(dto.setorId()));
             usuario.setSenha(passwordEncoder.encode(dto.senha()));
 
@@ -85,9 +109,13 @@ public class UsuarioService {
     }
 
     @Transactional
-    public void excluirUsuario(Long id) {
+    public void excluirUsuario(Long id, Long usuarioAtualId) {
         try {
             Usuario usuario = validarUsuarioPorId(id);
+            if (usuario.getId().equals(usuarioAtualId)) {
+                throw new BusinessException(AppMessages.ERROR_USER_CANNOT_DELETE_SELF);
+            }
+            validarQueNaoEUltimoAdmin(usuario);
             usuarioRepository.delete(usuario);
         } catch (BusinessException e) {
             throw e;
@@ -107,6 +135,7 @@ public class UsuarioService {
                 throw new BusinessException(AppMessages.ERROR_VALIDATION_FAILED);
             }
             Usuario usuario = validarUsuarioPorId(id);
+            validarNome(dto.nome());
 
             if (dto.login() == null || !LoginValidator.isValidLogin(dto.login())) {
                 throw new BusinessException(AppMessages.ERROR_USER_LOGIN_INVALID);
@@ -118,9 +147,16 @@ public class UsuarioService {
                         throw new BusinessException(AppMessages.ERROR_USER_ALREADY_EXISTS);
                     });
 
-            usuario.setNome(dto.nome());
+            NivelAcesso nivelAcesso = nivelAcessoService.buscarNivelAcessoPorId(dto.nivelAcessoId());
+            validarSetorObrigatorio(nivelAcesso, dto.setorId());
+            if (usuario.getNivelAcesso().getDescricao() == Descricao.ADMIN
+                    && nivelAcesso.getDescricao() != Descricao.ADMIN) {
+                validarQueNaoEUltimoAdmin(usuario);
+            }
+
+            usuario.setNome(dto.nome().trim());
             usuario.setLogin(dto.login().trim());
-            usuario.setNivelAcesso(nivelAcessoService.buscarNivelAcessoPorId(dto.nivelAcessoId()));
+            usuario.setNivelAcesso(nivelAcesso);
             usuario.setSetor(dto.setorId() == null ? null : setorService.buscarSetorPorId(dto.setorId()));
 
             if (dto.senha() != null && !dto.senha().isBlank()) {
@@ -138,16 +174,6 @@ public class UsuarioService {
         } catch (Exception e) {
             log.error("Erro inesperado ao editar o utilizador id {}: {}", id, e.getMessage(), e);
             throw new BusinessException(AppMessages.ERROR_VALIDATION_FAILED);
-        }
-    }
-
-    public UsuarioLogadoDTO obterUsuarioLogado() {
-        try {
-            Usuario usuario = (Usuario) SecurityContextHolder.getContext().getAuthentication().getPrincipal();
-            return new UsuarioLogadoDTO(usuario.getNome(), usuario.getNivelAcesso().getDescricao().name());
-        } catch (Exception e) {
-            log.error("Erro ao obter o utilizador logado: {}", e.getMessage(), e);
-            throw new BusinessException(AppMessages.ERROR_USER_NOTFOUND);
         }
     }
 

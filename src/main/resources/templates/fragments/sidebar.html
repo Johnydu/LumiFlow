@@ -25,10 +25,6 @@
             <a th:href="@{/dashboard/lancamentos}"
                th:classappend="${activePage == 'lancamentos'} ? 'active'"
                class="menu-item">Lançamentos</a>
-            <a th:href="@{/dashboard/relatorio}"
-               sec:authorize="hasAnyRole('ADMIN', 'SUPERVISOR', 'GESTAO', 'PCP')"
-               th:classappend="${activePage == 'relatorio'} ? 'active'"
-               class="menu-item">Relatórios</a>
             <a th:href="@{/dashboard/vidracaria}"
                th:classappend="${activePage == 'vidracaria'} ? 'active'"
                class="menu-item">Vidraçaria</a>
@@ -65,7 +61,7 @@
         <div class="menu-title">SISTEMA</div>
         <div class="menu">
             <a th:href="@{/dashboard/configuracoes}"
-               sec:authorize="hasAnyRole('  OPERADOR', 'ADMIN', 'SUPERVISOR', 'GESTAO', 'PCP')"
+               sec:authorize="hasAnyRole('OPERADOR','ADMIN','SUPERVISOR','GESTAO','PCP')"
                th:classappend="${activePage == 'configuracoes'} ? 'active'"
                class="menu-item">Configurações</a>
 

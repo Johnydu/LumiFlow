@@ -20,7 +20,7 @@ public class MessageSourceConfig implements WebMvcConfigurer {
         messageSource.setBasename("messages");
         messageSource.setDefaultEncoding("UTF-8");
         messageSource.setCacheSeconds(-1);
-        messageSource.setFallbackToSystemLocale(true);
+        messageSource.setFallbackToSystemLocale(false);
         return messageSource;
     }
 

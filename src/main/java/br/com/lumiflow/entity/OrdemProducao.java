@@ -15,7 +15,7 @@ import java.util.Locale;
 @NoArgsConstructor
 @Getter
 @Setter
-@EqualsAndHashCode(of = "id", callSuper = true)
+@EqualsAndHashCode(of = "id", callSuper = false)
 public class OrdemProducao extends Auditoria{
 
     @Id

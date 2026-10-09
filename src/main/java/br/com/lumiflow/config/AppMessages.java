@@ -18,6 +18,9 @@ public final class AppMessages {
     public static final String ERROR_USER_LOGIN_INVALID = "error.user.login.invalid";
     public static final String ERROR_USER_PASSWORD_WEAK = "error.user.password.weak";
     public static final String ERROR_USER_INVALID_CREDENTIALS = "error.user.invalid.credentials";
+    public static final String ERROR_USER_OPERATOR_SECTOR_REQUIRED = "error.user.operator.sector.required";
+    public static final String ERROR_USER_CANNOT_DELETE_SELF = "error.user.cannot.delete.self";
+    public static final String ERROR_USER_LAST_ADMIN = "error.user.last.admin";
     public static final String ERROR_ACCESS_LEVEL_NOTFOUND = "error.access.level.notfound";
 
     // ==================== PRODUTO ====================
@@ -62,6 +65,7 @@ public final class AppMessages {
     public static final String ERROR_ROUTE_STEP_NOTFOUND = "error.route.step.notfound";
     public static final String ERROR_ROTEIRO_ETAPA_NAO_CRIADA = "error.roteiro.etapa.naocriada";
     public static final String ERROR_REFUGO_ETAPA_REQUIRED = "error.refugo.etapa.required";
+    public static final String ERROR_ROUTE_IN_USE = "error.route.in.use";
 
     // ==================== ORDEM DE PRODUÇÃO ====================
     public static final String SUCCESS_ORDER_CREATED = "success.order.created";
@@ -71,6 +75,7 @@ public final class AppMessages {
     public static final String ERROR_ORDER_NOT_AVAILABLE = "error.order.not.available";
     public static final String ERROR_DIVISION_SUM_MISMATCH = "error.division.sum.mismatch";
     public static final String ERROR_ORDER_NOTFOUND = "error.order.notfound";
+    public static final String ERROR_DIVISION_VARIANT_DUPLICATE = "error.division.variant.duplicate";
     // ==================== LANÇAMENTO / APONTAMENTO ====================
     public static final String SUCCESS_LAUNCH_REGISTERED = "success.launch.registered";
     public static final String ERROR_LAUNCH_EXCEEDS_PENDING = "error.launch.exceeds.pending";
@@ -89,6 +94,7 @@ public final class AppMessages {
     public static final String ERROR_GLASS_SHEET_NOTFOUND = "error.glass.sheet.notfound";
     public static final String ERROR_GLASS_OPERATOR_NOTFOUND = "error.glass.operator.notfound";
     public static final String ERROR_GLASS_TYPE_DUPLICATE = "error.glass.type.duplicate";
+    public static final String ERROR_GLASS_INSUFFICIENT_STOCK = "error.glass.insufficient.stock";
 
     // ==================== GENÉRICO / SISTEMA ====================
     public static final String ERROR_VALIDATION_FAILED = "error.validation.failed";

@@ -90,28 +90,24 @@ IMPORT SEQUENCE (Most Specific Below):
     - Order details page styles (body.page-ordemproducao-detalhesordem)
     - Dependencies: all component files
 
-19. css/pages/relatorio.css
-    - Reports page styles (body.page-relatorio-relatoriotempo)
-    - Dependencies: all component files
-
-20. css/pages/vidracaria.css
+19. css/pages/vidracaria.css
     - Glass department page styles (body.page-vidracaria-vidracaria)
     - Dependencies: all component files
 
-21. css/pages/novaordem.css
+20. css/pages/novaordem.css
     - New order creation page styles (body.page-ordemproducao-novaordem)
     - Dependencies: all component files
 
-22. css/pages/listaordem.css
+21. css/pages/listaordem.css
     - Order list page styles (body.page-ordemproducao-listaordem)
     - Dependencies: all component files
 
-23. css/utils.css
+22. css/utils.css
     - Utility classes (.orange, .green, .red color utilities)
     - Applied selectively for quick styling
     - Dependencies: all other files
 
-24. css/responsive.css
+23. css/responsive.css
     - Media queries for responsive design (@media max-width: 1200px, 900px)
     - Should be last to ensure responsive breakpoints override fixed styles
     - Dependencies: all other files
@@ -138,7 +134,6 @@ HTML LINK TAGS EXAMPLE:
     <link rel="stylesheet" href="css/pages/produtos.css">
     <link rel="stylesheet" href="css/pages/setores.css">
     <link rel="stylesheet" href="css/pages/ordens.css">
-    <link rel="stylesheet" href="css/pages/relatorio.css">
     <link rel="stylesheet" href="css/pages/vidracaria.css">
     <link rel="stylesheet" href="css/pages/novaordem.css">
     <link rel="stylesheet" href="css/pages/listaordem.css">

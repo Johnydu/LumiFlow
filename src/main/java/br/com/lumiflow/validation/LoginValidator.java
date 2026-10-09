@@ -14,7 +14,7 @@ public final class LoginValidator {
 
     /**
      * Login:
-     * - 3 a 50 caracteres
+     * - 3 a 20 caracteres
      * - letras
      * - números
      * - ponto
@@ -22,7 +22,7 @@ public final class LoginValidator {
      * - hífen
      */
     private static final Pattern LOGIN_PATTERN =
-            Pattern.compile("^[a-zA-Z0-9._-]{3,50}$");
+            Pattern.compile("^[a-zA-Z0-9._-]{3,20}$");
 
     /**
      * Senha:

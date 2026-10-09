@@ -12,7 +12,7 @@ import java.util.Locale;
 @NoArgsConstructor
 @Getter
 @Setter
-@EqualsAndHashCode(of = "id",callSuper = true)
+@EqualsAndHashCode(of = "id",callSuper = false)
 public class ChapaVidro extends Auditoria {
 
     @Id

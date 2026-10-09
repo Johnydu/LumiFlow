@@ -32,7 +32,6 @@ css/
     ├── produtos.css        # Products page
     ├── setores.css         # Sectors page
     ├── ordens.css          # Order details page
-    ├── relatorio.css       # Reports page
     ├── vidracaria.css      # Glass department page
     ├── novaordem.css       # New order page
     └── listaordem.css      # Order list page
@@ -185,12 +184,11 @@ If you find the same style in multiple page files:
 16. pages/produtos.css
 17. pages/setores.css
 18. pages/ordens.css
-19. pages/relatorio.css
-20. pages/vidracaria.css
-21. pages/novaordem.css
-22. pages/listaordem.css
-23. utils.css
-24. responsive.css
+19. pages/vidracaria.css
+20. pages/novaordem.css
+21. pages/listaordem.css
+22. utils.css
+23. responsive.css
 
 **Critical**: Maintain this order in your HTML. Variables must come first, responsive last.
 

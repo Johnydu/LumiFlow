@@ -11,7 +11,7 @@ import java.util.Locale;
 @Table(name = "etapa_setor")
 @AllArgsConstructor
 @NoArgsConstructor
-@EqualsAndHashCode(of = "id", callSuper = true)
+@EqualsAndHashCode(of = "id", callSuper = false)
 public class EtapaSetor extends Auditoria {
 
     @Id

@@ -19,9 +19,10 @@ public interface OperadorRepository extends JpaRepository<Operador, Long> {
 
     List<Operador>findBySetorPadraoId(Long setorId);
 
-    // ADICIONE ESTE MÉTODO:
+    List<Operador> findBySetorPadraoIdOrSetorPadraoIsNullOrderByNomeAsc(Long setorId);
+
     @Query("SELECT o FROM Operador o LEFT JOIN o.setorPadrao s WHERE " +
             "(:termo IS NULL OR :termo = '' OR LOWER(o.nome) LIKE LOWER(CONCAT('%', :termo, '%'))) " +
-            "AND (:setorId IS NULL OR s.id = :setorId)")
+            "AND (:setorId IS NULL OR s.id = :setorId OR s.id IS NULL)")
     List<Operador> buscarPorNomeESetor(@Param("termo") String termo, @Param("setorId") Long setorId);
 }

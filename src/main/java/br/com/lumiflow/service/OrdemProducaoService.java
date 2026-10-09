@@ -9,6 +9,7 @@ import br.com.lumiflow.mapper.OrdemProducaoMapper;
 import br.com.lumiflow.repository.OrdemProducaoRepository;
 import br.com.lumiflow.repository.OrdemSetorRepository;
 import br.com.lumiflow.repository.RoteiroProdutoRepository;
+import br.com.lumiflow.repository.UsuarioRepository;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.dao.DataAccessException;
@@ -18,10 +19,7 @@ import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
-import java.util.List;
-import java.util.Locale;
-import java.util.Map;
-import java.util.Set;
+import java.util.*;
 import java.util.stream.Collectors;
 
 @Slf4j
@@ -34,6 +32,7 @@ public class OrdemProducaoService {
     private final RoteiroProdutoRepository roteiroProdutoRepository;
     private final OrdemSetorRepository ordemSetorRepository;
     private final OrdemProducaoMapper ordemProducaoMapper;
+    private final UsuarioRepository usuarioRepository;
 
     @Transactional(readOnly = true)
     public List<OrdemListagemDTO> listarPorSetorIdEFiltros(Long setorId, OrdemFiltroDTO filtro) {
@@ -122,9 +121,9 @@ public class OrdemProducaoService {
     }
 
     @Transactional
-    public void criar(OrdemProducaoDTO dto, Usuario usuarioLogado) {
+    public void criar(OrdemProducaoDTO dto, Long usuarioId) {
         try {
-            if (dto == null) {
+            if (dto == null || usuarioId == null) {
                 throw new BusinessException(AppMessages.ERROR_VALIDATION_FAILED);
             }
             var produto = produtoService.buscarProdutoPorId(dto.produtoId());
@@ -134,7 +133,7 @@ public class OrdemProducaoService {
             ordem.setQuantidade(dto.quantidade());
             ordem.setStatus(EstatusOrdemProducao.DISPONIVEL);
             ordem.setProduto(produto);
-            ordem.setCriadoPor(usuarioLogado);
+            ordem.setCriadoPor(usuarioRepository.getReferenceById(usuarioId));
             ordem.setDataCriacao(dto.dataCriacao() != null ? dto.dataCriacao().atStartOfDay() : java.time.LocalDateTime.now());
             ordem.setObservacao(dto.observacao());
 
@@ -228,12 +227,25 @@ public class OrdemProducaoService {
             Setor setor = ordemOriginal.getSetor();
             Integer sequencia = ordemOriginal.getSequencia();
 
+            Set<String> variantes = new HashSet<>();
+            for (DivisaoItemDTO item : dto.divisoes()) {
+                String variante = item.variante().trim().toUpperCase(Locale.ROOT);
+                boolean repetidaNaDivisao = !variantes.add(variante);
+                boolean jaExisteNaOrdem = ordemSetorRepository
+                        .findByOrdemProducaoIdAndSequenciaAndVariante(
+                                ordemOriginal.getOrdemProducao().getId(), ordemOriginal.getSequencia(), variante)
+                        .isPresent();
+                if (repetidaNaDivisao || jaExisteNaOrdem) {
+                    throw new BusinessException(AppMessages.ERROR_DIVISION_VARIANT_DUPLICATE);
+                }
+            }
+
             for (DivisaoItemDTO item : dto.divisoes()) {
                 OrdemSetor novaEtapa = new OrdemSetor();
                 novaEtapa.setOrdemProducao(ordem);
                 novaEtapa.setSetor(setor);
                 novaEtapa.setSequencia(sequencia);
-                novaEtapa.setVariante(item.variante() != null ? item.variante().toUpperCase(Locale.ROOT) : null);
+                novaEtapa.setVariante(item.variante().trim().toUpperCase(Locale.ROOT));
                 novaEtapa.setQtdRecebida(item.quantidade());
                 novaEtapa.setQtdProduzida(0);
                 novaEtapa.setQtdPendente(item.quantidade());
@@ -260,18 +272,6 @@ public class OrdemProducaoService {
         } catch (Exception e) {
             log.error("Erro inesperado ao dividir etapa da ordem setor id {}: {}", ordemSetorId, e.getMessage(), e);
             throw new BusinessException(AppMessages.ERROR_VALIDATION_FAILED);
-        }
-
-
-    }
-
-    private void verificarConclusaoOrdem(OrdemProducao ordem) {
-        boolean existeEtapaAberta = ordemSetorRepository
-                .existsByOrdemProducaoIdAndStatusNot(ordem.getId(), EstatusOrdemProducao.CONCLUIDA);
-
-        if (!existeEtapaAberta) {
-            ordem.setStatus(EstatusOrdemProducao.CONCLUIDA);
-            ordemProducaoRepository.save(ordem);
         }
     }
 
