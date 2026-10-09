@@ -10,7 +10,6 @@ import br.com.lumiflow.entity.enums.DestinoRefugo;
 import br.com.lumiflow.entity.enums.EstatusOrdemProducao;
 import br.com.lumiflow.exception.BusinessException;
 import br.com.lumiflow.repository.*;
-import br.com.lumiflow.security.UsuarioDetails;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.dao.DataAccessException;
@@ -412,19 +411,12 @@ public class LancamentoService {
     }
 
     @Transactional(readOnly = true)
-    public Page<HistoricoLancamentosDTO> listarHistoricoLancamentos(UsuarioDetails usuario, int pagina, int tamanho) {
+    public Page<HistoricoLancamentosDTO> listarHistoricoLancamentos(int pagina, int tamanho) {
         Pageable pageable = PageRequest.of(Math.max(pagina, 0), Math.min(Math.max(tamanho, 1), 100));
 
-        // OPERADOR enxerga apenas o próprio setor; os demais perfis enxergam todos
-        Long setorId = null;
-        if ("OPERADOR".equals(usuario.getNivelAcesso())) {
-            if (usuario.getSetorId() == null) {
-                return Page.empty(pageable);
-            }
-            setorId = usuario.getSetorId();
-        }
 
-        return lancamentoRepository.buscarHistorico(setorId, pageable).map(l -> new HistoricoLancamentosDTO(
+
+        return lancamentoRepository.buscarHistorico(null, pageable).map(l -> new HistoricoLancamentosDTO(
                 l.getOrdemSetor().getOrdemProducao().getId(),
                 l.getOrdemSetor().getOrdemProducao().getNumero(),
                 l.getOrdemSetor().getOrdemProducao().getProduto().getNome(),

@@ -1,5 +1,6 @@
 package br.com.lumiflow.validation;
 
+import java.nio.charset.StandardCharsets;
 import java.util.regex.Pattern;
 
 /**
@@ -54,7 +55,9 @@ public final class LoginValidator {
         if (password == null) {
             return false;
         }
-
+        if (password.getBytes(StandardCharsets.UTF_8).length <= 72) {
+            return false;
+        }
         return PASSWORD_PATTERN.matcher(password).matches();
     }
 

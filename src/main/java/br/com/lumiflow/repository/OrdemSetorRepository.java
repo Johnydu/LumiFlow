@@ -32,8 +32,8 @@ public interface OrdemSetorRepository extends JpaRepository<OrdemSetor, Long> {
 
     @Query("""
     SELECT DISTINCT os FROM OrdemSetor os
-    JOIN os.ordemProducao o
-    JOIN o.produto p
+    JOIN FETCH os.ordemProducao o
+    JOIN FETCH o.produto p
     WHERE os.setor.id = :setorId
       AND (:busca IS NULL OR :busca = '' OR 
            LOWER(o.numero) LIKE LOWER(CONCAT('%', :busca, '%')) OR 

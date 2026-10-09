@@ -12,6 +12,7 @@ import br.com.lumiflow.validation.LoginValidator;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.dao.DataAccessException;
+import org.springframework.dao.DataIntegrityViolationException;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -117,8 +118,12 @@ public class UsuarioService {
             }
             validarQueNaoEUltimoAdmin(usuario);
             usuarioRepository.delete(usuario);
+            usuarioRepository.flush();
         } catch (BusinessException e) {
             throw e;
+        } catch (DataIntegrityViolationException e) {
+            log.error("Violação de integridade ao excluir o utilizador id {}: {}", id, e.getMessage(), e);
+            throw new BusinessException(AppMessages.ERROR_RECORD_IN_USE);
         } catch (DataAccessException e) {
             log.error("Erro de base de dados ao excluir o utilizador id {}: {}", id, e.getMessage(), e);
             throw new BusinessException(AppMessages.ERROR_VALIDATION_FAILED);
