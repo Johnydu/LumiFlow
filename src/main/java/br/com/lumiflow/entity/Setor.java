@@ -24,6 +24,7 @@ public class Setor extends Auditoria {
     private String nome;
 
     @OneToMany(mappedBy = "setor", cascade = CascadeType.ALL, orphanRemoval = true, fetch = FetchType.LAZY)
+    @OrderBy("ordem ASC")
     private List<EtapaSetor> etapas = new ArrayList<>();
 
     @PrePersist

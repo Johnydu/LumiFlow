@@ -256,10 +256,8 @@ public class OrdemProducaoService {
             int restante = ordemOriginal.getQtdPendente() - somaDivisoes;
 
             if (restante > 0) {
-                // Sobra fica como uma linha "sem variante" — o próprio registro original é reaproveitado
                 ordemOriginal.setQtdRecebida(restante);
                 ordemOriginal.setQtdPendente(restante);
-                ordemOriginal.setVariante(null);
                 ordemSetorRepository.save(ordemOriginal);
             } else {
                 ordemSetorRepository.delete(ordemOriginal);

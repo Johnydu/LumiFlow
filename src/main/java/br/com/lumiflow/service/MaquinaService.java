@@ -9,10 +9,12 @@ import br.com.lumiflow.repository.MaquinaRepository;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.dao.DataAccessException;
+import org.springframework.dao.DataIntegrityViolationException;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
+import java.util.Locale;
 
 @Slf4j
 @Service
@@ -42,13 +44,13 @@ public class MaquinaService {
             if (dto == null || dto.nome() == null || dto.nome().isBlank()) {
                 throw new BusinessException(AppMessages.ERROR_VALIDATION_FAILED);
             }
-            String nomeTrim = dto.nome().trim();
-            if (maquinaRepository.findByNome(nomeTrim).isPresent()) {
+            String nomeTrimUppercase = normalizeName(dto.nome());
+            if (maquinaRepository.findByNome(nomeTrimUppercase).isPresent()) {
                 throw new BusinessException(AppMessages.ERROR_MACHINE_NAME_DUPLICATE);
             }
 
             Maquina maquina = maquinaMapper.toEntity(dto);
-            maquina.setNome(nomeTrim);
+            maquina.setNome(nomeTrimUppercase);
             if (dto.setorId() != null) {
                 maquina.setSetor(setorService.buscarSetorPorId(dto.setorId()));
             }
@@ -73,8 +75,12 @@ public class MaquinaService {
             }
             Maquina maquina = buscarPorId(id);
             maquinaRepository.delete(maquina);
+            maquinaRepository.flush();
         } catch (BusinessException e) {
             throw e;
+        } catch (DataIntegrityViolationException e) {
+            log.error("Violação de integridade ao excluir máquina id {}: {}", id, e.getMessage(), e);
+            throw new BusinessException(AppMessages.ERROR_RECORD_IN_USE);
         } catch (DataAccessException e) {
             log.error("Erro de base de dados ao excluir máquina id {}: {}", id, e.getMessage(), e);
             throw new BusinessException(AppMessages.ERROR_VALIDATION_FAILED);
@@ -93,13 +99,11 @@ public class MaquinaService {
             Maquina maquina = buscarPorId(id);
 
             if (dto.nome() != null && !dto.nome().isBlank()) {
-                String nomeTrim = dto.nome().trim();
-                maquinaRepository.findByNome(nomeTrim)
+                maquinaRepository.findByNome(normalizeName(dto.nome()))
                         .filter(outra -> !outra.getId().equals(id))
                         .ifPresent(outra -> {
                             throw new BusinessException(AppMessages.ERROR_MACHINE_NAME_DUPLICATE);
                         });
-                maquina.setNome(nomeTrim);
             }
 
             if (dto.setorId() != null) {
@@ -135,5 +139,9 @@ public class MaquinaService {
             log.error("Erro inesperado ao buscar máquina id {}: {}", id, e.getMessage(), e);
             throw new BusinessException(AppMessages.ERROR_MACHINE_NOTFOUND);
         }
+    }
+
+    private String normalizeName(String name) {
+        return name == null ? null : name.trim().toUpperCase(Locale.ROOT);
     }
 }

@@ -16,6 +16,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
+import java.util.Locale;
 
 @Slf4j
 @Service
@@ -28,7 +29,7 @@ public class ProdutoService {
         if (nome == null || nome.isBlank()) {
             throw new BusinessException(AppMessages.ERROR_VALIDATION_FAILED);
         }
-        if (produtoRepository.existsByNome(nome.trim())) {
+        if (produtoRepository.existsByNome(nome.trim().toUpperCase(Locale.ROOT))) {
             throw new BusinessException(AppMessages.ERROR_PRODUCT_NOME_DUPLICATE);
         }
     }
@@ -37,7 +38,7 @@ public class ProdutoService {
         if (codigo == null || codigo.isBlank()) {
             throw new BusinessException(AppMessages.ERROR_VALIDATION_FAILED);
         }
-        if (produtoRepository.existsByCodigo(codigo.trim())) {
+        if (produtoRepository.existsByCodigo(codigo.trim().toUpperCase(Locale.ROOT))) {
             throw new BusinessException(AppMessages.ERROR_PRODUCT_CODIGO_DUPLICATE);
         }
     }
@@ -105,6 +106,7 @@ public class ProdutoService {
         try {
             Produto produto = buscarProdutoPorId(id);
             produtoRepository.delete(produto);
+            produtoRepository.flush();
         } catch (BusinessException e) {
             throw e;
         } catch (DataIntegrityViolationException ex) {
@@ -128,19 +130,19 @@ public class ProdutoService {
             Produto produto = buscarProdutoPorId(id);
 
             if (dto.nome() != null && !dto.nome().isBlank()) {
-                String novoNomeTrim = dto.nome().trim();
-                if (!novoNomeTrim.equalsIgnoreCase(produto.getNome()) && produtoRepository.existsByNome(novoNomeTrim)) {
+                String novoNome = normalizeName(dto.nome());
+                if (!novoNome.equalsIgnoreCase(produto.getNome()) && produtoRepository.existsByNome(novoNome)) {
                     throw new BusinessException(AppMessages.ERROR_PRODUCT_NOME_DUPLICATE);
                 }
-                produto.setNome(novoNomeTrim);
+                produto.setNome(novoNome);
             }
 
             if (dto.codigo() != null && !dto.codigo().isBlank()) {
-                String novoCodigoTrim = dto.codigo().trim();
-                if (!novoCodigoTrim.equalsIgnoreCase(produto.getCodigo()) && produtoRepository.existsByCodigo(novoCodigoTrim)) {
+                String novoCodigo = normalizeName(dto.codigo());
+                if (!novoCodigo.equalsIgnoreCase(produto.getCodigo()) && produtoRepository.existsByCodigo(novoCodigo)) {
                     throw new BusinessException(AppMessages.ERROR_PRODUCT_CODIGO_DUPLICATE);
                 }
-                produto.setCodigo(novoCodigoTrim);
+                produto.setCodigo(novoCodigo);
             }
 
             produto.setDescricao(dto.descricao());
@@ -163,7 +165,7 @@ public class ProdutoService {
             if (termo == null || termo.isBlank()) {
                 return listarProdutos();
             }
-            String termoTrim = termo.trim();
+            String termoTrim = normalizeName(termo);
             List<Produto> produtos = produtoRepository
                     .findByNomeContainingIgnoreCaseOrCodigoContainingIgnoreCase(termoTrim, termoTrim);
             return produtoMapper.toListagemDTO(produtos);
@@ -174,5 +176,9 @@ public class ProdutoService {
             log.error("Erro inesperado ao pesquisar produtos por termo '{}': {}", termo, e.getMessage(), e);
             throw new BusinessException(AppMessages.ERROR_VALIDATION_FAILED);
         }
+    }
+
+    private String normalizeName(String name) {
+        return name == null ? null : name.trim().toUpperCase(Locale.ROOT);
     }
 }

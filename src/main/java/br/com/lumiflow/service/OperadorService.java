@@ -10,6 +10,7 @@ import br.com.lumiflow.repository.OperadorRepository;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.dao.DataAccessException;
+import org.springframework.dao.DataIntegrityViolationException;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -108,8 +109,12 @@ public class OperadorService {
             }
             Operador operador = buscarOperadorPorId(id);
             operadorRepository.delete(operador);
+            operadorRepository.flush();
         } catch (BusinessException e) {
             throw e;
+        } catch (DataIntegrityViolationException e) {
+            log.error("Violação de integridade ao excluir operador id {}: {}", id, e.getMessage(), e);
+            throw new BusinessException(AppMessages.ERROR_RECORD_IN_USE);
         } catch (DataAccessException e) {
             log.error("Erro de base de dados ao excluir operador id {}: {}", id, e.getMessage(), e);
             throw new BusinessException(AppMessages.ERROR_VALIDATION_FAILED);
