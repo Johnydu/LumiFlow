@@ -1,6 +1,6 @@
 package br.com.lumiflow.repository;
 
-import br.com.lumiflow.dto.dashboard.SetorResumoDTO;
+
 import br.com.lumiflow.entity.OrdemProducao;
 import br.com.lumiflow.entity.enums.EstatusOrdemProducao;
 import org.springframework.data.domain.Page;
