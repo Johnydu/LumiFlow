@@ -91,7 +91,7 @@ public class OrdemSetorController {
 
 
     @PostMapping("/{setorId}/ordens/{ordemSetorId}/liberar")
-    @PreAuthorize("hasAnyRole('PCP','SUPERVISOR')")
+    @PreAuthorize("hasAnyRole('ADMIN','PCP','SUPERVISOR')")
     public String liberarOrdem(@PathVariable Long setorId, @PathVariable Long ordemSetorId,
                                RedirectAttributes attributes, Locale locale) {
 
@@ -112,7 +112,7 @@ public class OrdemSetorController {
         return "redirect:/dashboard/ordens-setor/" + setorId;
     }
 
-    @PreAuthorize("hasAnyRole('PCP','SUPERVISOR')")
+    @PreAuthorize("hasAnyRole('ADMIN','PCP','SUPERVISOR')")
     @PostMapping("/{setorId}/ordens/{ordemSetorId}/dividir")
     public String dividirEtapa(@PathVariable Long setorId, @PathVariable Long ordemSetorId,
                                @Valid @ModelAttribute("dividirDTO") DividirEtapaDTO dto, BindingResult result,

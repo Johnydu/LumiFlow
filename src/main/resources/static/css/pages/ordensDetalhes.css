@@ -167,3 +167,55 @@ body.page-ordemproducao-detalhesordem .hist-sub {
   color: var(--color-muted-4);
   font-size: var(--font-size-xs);
 }
+
+/* ========================================
+   AJUSTES DE PROPORÇÃO E ALINHAMENTO DA TABELA
+   ======================================== */
+
+.page-ordemproducao-detalhesordem .itens-card table th:nth-child(1),
+.page-ordemproducao-detalhesordem .itens-card table td:nth-child(1) {
+  width: 160px;
+  min-width: 160px;
+}
+
+.page-ordemproducao-detalhesordem .itens-card table th:nth-child(2),
+.page-ordemproducao-detalhesordem .itens-card table td:nth-child(2) {
+  width: 160px;
+  min-width: 160px;
+}
+
+.page-ordemproducao-detalhesordem .itens-card table th:nth-child(3),
+.page-ordemproducao-detalhesordem .itens-card table td:nth-child(3) {
+  width: 90px;
+}
+
+.page-ordemproducao-detalhesordem .itens-card table th:nth-child(4),
+.page-ordemproducao-detalhesordem .itens-card table td:nth-child(4) {
+  width: 170px;
+}
+
+.page-ordemproducao-detalhesordem .itens-card table th:nth-child(5),
+.page-ordemproducao-detalhesordem .itens-card table td:nth-child(5) {
+  width: 90px;
+}
+
+.page-ordemproducao-detalhesordem .itens-card table th:nth-child(6),
+.page-ordemproducao-detalhesordem .itens-card table td:nth-child(6) {
+  width: 140px;
+}
+
+.page-ordemproducao-detalhesordem .itens-card table th:nth-child(7),
+.page-ordemproducao-detalhesordem .itens-card table td:nth-child(7) {
+  width: 130px;
+  min-width: 130px;
+  text-align: center;
+}
+
+/* Centralização do contentor de ações e alinhamento flexível dos botões */
+.page-ordemproducao-detalhesordem .table-actions {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 6px;
+  width: 100%;
+}

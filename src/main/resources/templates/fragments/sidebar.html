@@ -30,32 +30,30 @@
                class="menu-item">Vidraçaria</a>
         </div>
 
-        <div class="menu-title">CADASTROS</div>
-        <div class="menu">
-            <a th:href="@{/dashboard/produtos}"
-               sec:authorize="hasAnyRole('ADMIN', 'PCP', 'SUPERVISOR')"
-               th:classappend="${activePage == 'produtos'} ? 'active'"
-               class="menu-item">Produtos</a>
-            <a th:href="@{/dashboard/setores}"
-               sec:authorize="hasAnyRole('ADMIN', 'PCP', 'SUPERVISOR')"
-               th:classappend="${activePage == 'setores'} ? 'active'"
-               class="menu-item">Setores</a>
-            <a th:href="@{/dashboard/maquinas}"
-               sec:authorize="hasAnyRole('ADMIN', 'PCP', 'SUPERVISOR')"
-               th:classappend="${activePage == 'maquinas'} ? 'active'"
-               class="menu-item">Máquinas</a>
-            <a th:href="@{/dashboard/roteiros}"
-               sec:authorize="hasAnyRole('ADMIN', 'PCP', 'SUPERVISOR')"
-               th:classappend="${activePage == 'roteiros'} ? 'active'"
-               class="menu-item">Roteiros</a>
-            <a th:href="@{/dashboard/operadores}"
-               sec:authorize="hasAnyRole('ADMIN', 'PCP', 'SUPERVISOR')"
-               th:classappend="${activePage == 'operadores'} ? 'active'"
-               class="menu-item">Operadores</a>
-            <a th:href="@{/dashboard/usuario}"
-               sec:authorize="hasRole('ADMIN')"
-               th:classappend="${activePage == 'usuario'} ? 'active'"
-               class="menu-item">Usuários</a>
+        <!-- CADASTROS (Oculta o título e todos os links se não tiver permissão) -->
+        <div sec:authorize="hasAnyRole('ADMIN', 'PCP', 'SUPERVISOR')">
+            <div class="menu-title">CADASTROS</div>
+            <div class="menu">
+                <a th:href="@{/dashboard/produtos}"
+                   th:classappend="${activePage == 'produtos'} ? 'active'"
+                   class="menu-item">Produtos</a>
+                <a th:href="@{/dashboard/setores}"
+                   th:classappend="${activePage == 'setores'} ? 'active'"
+                   class="menu-item">Setores</a>
+                <a th:href="@{/dashboard/maquinas}"
+                   th:classappend="${activePage == 'maquinas'} ? 'active'"
+                   class="menu-item">Máquinas</a>
+                <a th:href="@{/dashboard/roteiros}"
+                   th:classappend="${activePage == 'roteiros'} ? 'active'"
+                   class="menu-item">Roteiros</a>
+                <a th:href="@{/dashboard/operadores}"
+                   th:classappend="${activePage == 'operadores'} ? 'active'"
+                   class="menu-item">Operadores</a>
+                <a th:href="@{/dashboard/usuario}"
+                   sec:authorize="hasRole('ADMIN')"
+                   th:classappend="${activePage == 'usuario'} ? 'active'"
+                   class="menu-item">Usuários</a>
+            </div>
         </div>
 
         <div class="menu-title">SISTEMA</div>
@@ -75,9 +73,7 @@
             </form>
         </div>
 
-
     </nav>
-
 
     <!-- Rodapé: Perfil do usuário e Ações -->
     <div class="sidebar-footer">
@@ -88,7 +84,6 @@
                 <div class="nivel-tag" sec:authentication="principal.nivelAcesso">Nível</div>
             </div>
         </div>
-
 
         <div class="app-version">
             LumiFlow v1.0.0

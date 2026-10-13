@@ -18,7 +18,7 @@
   <link rel="stylesheet" th:href="@{/css/components/badges.css}">
   <link rel="stylesheet" th:href="@{/css/components/status.css}">
   <link rel="stylesheet" th:href="@{/css/components/alerts.css}">
-  <link rel="stylesheet" th:href="@{/css/pages/ordens.css}">
+  <link rel="stylesheet" th:href="@{/css/pages/ordensDetalhes.css}">
   <link rel="stylesheet" th:href="@{/css/utils.css}">
   <link rel="stylesheet" th:href="@{/css/responsive.css}">
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
@@ -118,10 +118,10 @@
         <tbody>
         <tr th:each="etapa : ${ordem.etapas()}">
           <td>
-                        <span class="setor-tag"
-                              th:text="${etapa.setor() + (etapa.variante() != null ? ' (' + etapa.variante() + ')' : '')}">
-                            Pintura
-                        </span>
+            <span class="setor-tag"
+                  th:text="${etapa.setor() + (etapa.variante() != null ? ' (' + etapa.variante() + ')' : '')}">
+                Pintura
+            </span>
             <span th:if="${etapa.origemRefugo()}" class="badge-refugo"
                   title="Linha criada por refugo">🔧 Refugo</span>
           </td>
@@ -135,7 +135,7 @@
             <div class="p-wrap">
               <div class="p-track">
                 <div class="p-fill"
-                     th:classappend="${etapa.status().name() == 'CONCLUIDA'} ? 'pf-con' : 'pf-and'"
+                     th:classappend="${etapa.status().name() == 'CONCLUIDO'} ? 'pf-con' : 'pf-and'"
                      th:style="'width:' + ${etapa.percentual()} + '%'"></div>
               </div>
               <span class="p-txt" th:text="${etapa.produzido() + '/' + etapa.recebido()}">60/100</span>
@@ -143,12 +143,40 @@
           </td>
           <td th:text="${etapa.pendente()}">40</td>
           <td><span th:replace="~{fragments/status-badge :: badge(${etapa.status()})}"></span></td>
-          <td>
-            <a th:if="${etapa.status().name() == 'LIBERADA' or etapa.status().name() == 'EM_ANDAMENTO'}"
-               th:href="@{/dashboard/ordens/{id}/setor/{ordemSetorId}/lancar(id=${ordem.id()}, ordemSetorId=${etapa.ordemSetorId()})}"
-               class="btn-lancar">Lançar</a>
-            <button th:unless="${etapa.status().name() == 'LIBERADA' or etapa.status().name() == 'EM_ANDAMENTO'}"
-                    type="button" class="btn-dis" disabled>—</button>
+          <td style="text-align: center;">
+            <div class="table-actions">
+              <!-- Botão Liberar Etapa/Setor -->
+              <form th:if="${etapa.status() != null && etapa.status().name() == 'DISPONIVEL'}"
+                    sec:authorize="hasAnyRole('ADMIN', 'GESTAO', 'SUPERVISOR','PCP')"
+                    method="post"
+                    th:action="@{/dashboard/ordens/0/ordens/{ordemSetorId}/liberar(ordemSetorId=${etapa.ordemSetorId()})}"
+                    style="display:inline;">
+                <input type="hidden" th:name="${_csrf.parameterName}" th:value="${_csrf.token}"/>
+                <button type="submit" class="btn-liberar">Liberar</button>
+              </form>
+
+              <!-- Botão Dividir Etapa/Setor -->
+              <button th:if="${etapa.status() != null && etapa.status().name() == 'DISPONIVEL' && !etapa.origemRefugo()}"
+                      sec:authorize="hasAnyRole('ADMIN', 'GESTAO', 'SUPERVISOR','PCP')"
+                      type="button" class="btn-dividir"
+                      th:data-id="${etapa.ordemSetorId()}"
+                      th:data-qtd="${etapa.pendente()}"
+                      th:data-nome="${ordem.produtoNome()}"
+                      onclick="abrirModalDivisaoDetalhes(
+                          this.getAttribute('data-id'),
+                          this.getAttribute('data-qtd'),
+                          this.getAttribute('data-nome')
+                      )">
+                Dividir
+              </button>
+
+              <!-- Botão de Lançamento -->
+              <a th:if="${etapa.status() != null && (etapa.status().name() == 'LIBERADA' || etapa.status().name() == 'EM_ANDAMENTO')}"
+                 th:href="@{/dashboard/ordens/{id}/setor/{setorId}/lancar(id=${ordem.id()}, setorId=${etapa.ordemSetorId()})}"
+                 class="btn-lancar">
+                lançar
+              </a>
+            </div>
           </td>
         </tr>
         <tr th:if="${#lists.isEmpty(ordem.etapas())}">
@@ -181,7 +209,49 @@
   </div>
 </main>
 
+<!-- MODAL DE DIVISÃO PADRÃO LUMIFLOW -->
+<div id="modalDivisao" class="modal-overlay" style="display:none;"
+     sec:authorize="hasAnyRole('ADMIN', 'GESTAO', 'SUPERVISOR', 'PCP')">
+  <div class="modal-box">
+    <div class="modal-header">
+      <span class="modal-title">Dividir Ordem</span>
+      <button type="button" class="modal-close" onclick="fecharModalDivisao()">&times;</button>
+    </div>
+
+    <form id="formDivisao"
+          method="post"
+          th:action="@{/dashboard/ordens-setor/0/ordens/0/dividir}">
+      <input type="hidden" th:name="${_csrf.parameterName}" th:value="${_csrf.token}"/>
+
+      <div class="modal-body">
+        <p class="modal-info">
+          <span id="modalProdutoNome"></span> —
+          Quantidade pendente: <strong id="modalQtdTotal"></strong>
+        </p>
+
+        <div id="linhasDivisao"></div>
+
+        <button type="button" class="btn-add-divisao" onclick="adicionarLinhaDivisao()">
+          + Adicionar variante
+        </button>
+
+        <div class="modal-resumo">
+          Soma: <span id="somaAtual">0</span> / <span id="qtdEsperada">0</span>
+          <span id="restanteInfo" class="hint"></span>
+        </div>
+      </div>
+
+      <div class="modal-actions">
+        <button type="button" class="btn-cancel" onclick="fecharModalDivisao()">Cancelar</button>
+        <button type="submit" class="btn-submit" id="btnConfirmarDivisao">Confirmar Divisão</button>
+      </div>
+    </form>
+  </div>
+</div>
+
 <script th:src="@{/js/sidebar.js}"></script>
 <script th:src="@{/js/alerts.js}"></script>
+<script th:src="@{/js/lista-ordem.js}"></script>
+<script th:src="@{/js/detalhes-ordem.js}"></script>
 </body>
 </html>
