@@ -1,7 +1,7 @@
 package br.com.lumiflow.controller;
 
 import br.com.lumiflow.config.AppMessages;
-import br.com.lumiflow.dto.ordens.DividirEtapaDTO;
+import br.com.lumiflow.dto.etapaSetor.DividirEtapaDTO;
 import br.com.lumiflow.dto.ordens.OrdemFiltroDTO;
 import br.com.lumiflow.dto.ordens.OrdemListagemDTO;
 import br.com.lumiflow.dto.ordens.ResumoSetorDTO;
@@ -116,12 +116,10 @@ public class OrdemSetorController {
     @PostMapping("/{setorId}/ordens/{ordemSetorId}/dividir")
     public String dividirEtapa(@PathVariable Long setorId, @PathVariable Long ordemSetorId,
                                @Valid @ModelAttribute("dividirDTO") DividirEtapaDTO dto, BindingResult result,
-                               RedirectAttributes attributes, Locale locale) {
+                               Model model, RedirectAttributes attributes, Locale locale) {
 
         if (result.hasErrors()) {
-            attributes.addFlashAttribute("error", messageSource
-                    .getMessage(AppMessages.ERROR_VALIDATION_FAILED, null, locale));
-            return "redirect:/dashboard/ordens-setor/" + setorId;
+            return erroValidacao(setorId, dto, result, model, locale);
         }
 
         try {
@@ -139,5 +137,31 @@ public class OrdemSetorController {
         }
 
         return "redirect:/dashboard/ordens-setor/" + setorId;
+    }
+
+    private String erroValidacao(Long setorId, DividirEtapaDTO dto, BindingResult result,
+                                 Model model, Locale locale) {
+        List<OrdemListagemDTO> ordens = ordemProducaoService.listarPorSetorIdEFiltros(
+                setorId, new OrdemFiltroDTO(null, null, null));
+        Setor setor = setorService.buscarSetorPorId(setorId);
+        model.addAttribute("ordens", ordens);
+        model.addAttribute("setorAtual", setor != null ? setor.getNome() : "Desconhecido");
+        model.addAttribute("setorIdAtual", setorId);
+        model.addAttribute("buscaAtual", null);
+        model.addAttribute("statusAtual", null);
+        model.addAttribute("totalOrdens", ordens.size());
+        model.addAttribute("dividirDTO", dto);
+
+        String mensagem = result.getAllErrors().stream()
+                .findFirst()
+                .map(error -> {
+                    String defaultMessage = error.getDefaultMessage();
+                    return defaultMessage == null ? "" :
+                            messageSource.getMessage(defaultMessage, null, defaultMessage, locale);
+                })
+                .orElseGet(() -> messageSource.getMessage(
+                        AppMessages.ERROR_VALIDATION_FAILED, null, locale));
+        model.addAttribute("error", mensagem);
+        return "ordens/ListaOrdem";
     }
 }

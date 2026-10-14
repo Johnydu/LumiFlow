@@ -38,7 +38,7 @@
     <div th:replace="~{fragments/topbar :: topbar(
         'LANÇAR PRODUÇÃO',
         'VOLTAR',
-        'voltarPagina()'
+        'voltarPagina'
     )}">
     </div>
 
@@ -59,9 +59,9 @@
 
         <!-- ABAS -->
         <div class="tabs">
-            <button class="tab active" id="tab-btn-prod" type="button" onclick="showTab('producao')">Produção</button>
-            <button class="tab" id="tab-btn-ref" type="button" onclick="showTab('refugo')">Refugo</button>
-            <button class="tab" id="tab-btn-ret" type="button" onclick="showTab('retrabalho')">Retrabalho</button>
+            <button class="tab active" id="tab-btn-prod" type="button" data-csp-action="showTab" data-csp-value="producao">Produção</button>
+            <button class="tab" id="tab-btn-ref" type="button" data-csp-action="showTab" data-csp-value="refugo">Refugo</button>
+            <button class="tab" id="tab-btn-ret" type="button" data-csp-action="showTab" data-csp-value="retrabalho">Retrabalho</button>
         </div>
 
         <!-- FORM PRODUÇÃO -->
@@ -101,21 +101,21 @@
 
 
 
-                <div class="field" style="margin-bottom:14px">
+                <div class="field csp-style-2b583d7389">
                     <label>Observação</label>
                     <input type="text" th:field="*{observacao}" placeholder="Opcional..."/>
                 </div>
 
                 <div class="form-actions">
                     <a th:href="@{/dashboard/ordens-setor/{setorId}(setorId=${ordemSetor.setor.id})}"
-                       class="btn-cancel" style="text-decoration:none;">Cancelar</a>
+                       class="btn-cancel csp-style-4edeb9e71d">Cancelar</a>
                     <button type="submit" class="btn-submit">Confirmar</button>
                 </div>
             </form>
         </div>
 
         <!-- FORM REFUGO -->
-        <div id="tab-refugo" class="form-card" style="display:none">
+        <div id="tab-refugo" class="form-card csp-style-6b99de8b69">
             <form method="post" th:action="@{/dashboard/ordens/{ordemId}/setor/{ordemSetorId}/lancar/refugo
             (ordemId=${ordem.id}, ordemSetorId=${ordemSetor.id})}"
                   th:object="${refugoDTO}">
@@ -134,7 +134,7 @@
                         </select>
                     </div>
 
-                    <div class="field" id="campoEtapaOrigemRefugo" style="display:none">
+                    <div class="field csp-style-6b99de8b69" id="campoEtapaOrigemRefugo">
                         <label>Etapa específica <span>*</span></label>
                         <select th:field="*{etapaSetorId}" id="selectEtapaOrigemRefugo">
                             <option value="">Selecione a etapa</option>
@@ -160,21 +160,21 @@
                     </div>
                 </div>
 
-                <div class="field" style="margin-bottom:14px">
+                <div class="field csp-style-2b583d7389">
                     <label>Motivo <span>*</span></label>
                     <textarea th:field="*{motivo}" placeholder="Descreva o motivo do refugo..." required></textarea>
                 </div>
 
                 <div class="form-actions">
                     <a th:href="@{/dashboard/ordens-setor/{setorId}(setorId=${ordemSetor.setor.id})}"
-                       class="btn-cancel" style="text-decoration:none;">Cancelar</a>
+                       class="btn-cancel csp-style-4edeb9e71d">Cancelar</a>
                     <button type="submit" class="btn-submit refugo">Confirmar Refugo</button>
                 </div>
             </form>
         </div>
 
         <!-- FORM RETRABALHO -->
-        <div id="tab-retrabalho" class="form-card" style="display:none">
+        <div id="tab-retrabalho" class="form-card csp-style-6b99de8b69">
             <form method="post" th:action="@{/dashboard/ordens/{ordemId}/setor/{ordemSetorId}/lancar/retrabalho
             (ordemId=${ordem.id}, ordemSetorId=${ordemSetor.id})}"
                   th:object="${retrabalhoDTO}">
@@ -183,7 +183,7 @@
                 <div class="form-grid">
                     <div class="field">
                         <label>Refugo vinculado <span>*</span></label>
-                        <select th:field="*{refugoId}" id="selectRefugoRetrabalho" onchange="filtrarMaquinasRetrabalho()">
+                        <select th:field="*{refugoId}" id="selectRefugoRetrabalho" data-csp-change="filtrarMaquinasRetrabalho">
                             <option value="">Selecione o refugo</option>
                             <option th:each="r : ${refugosParaRetrabalho}" th:value="${r.id}"
                                     th:data-setor-origem="${r.setorOrigem.id}"
@@ -214,14 +214,14 @@
                     </div>
                 </div>
 
-                <div class="field" style="margin-bottom:14px">
+                <div class="field csp-style-2b583d7389">
                     <label>Observação</label>
                     <textarea th:field="*{observacao}" placeholder="Descreva o que foi corrigido..."></textarea>
                 </div>
 
                 <div class="form-actions">
                     <a th:href="@{/dashboard/ordens-setor/{setorId}(setorId=${ordemSetor.setor.id})}"
-                       class="btn-cancel" style="text-decoration:none;">Cancelar</a>
+                       class="btn-cancel csp-style-4edeb9e71d">Cancelar</a>
                     <button type="submit" class="btn-submit retrab">Confirmar Retrabalho</button>
                 </div>
             </form>

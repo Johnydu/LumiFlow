@@ -5,6 +5,7 @@ import java.time.LocalDateTime;
 public record HistoricoLancamentosDTO(
         Long ordemId,
         String numeroOrdem,
+        String codigoProduto,
         String produto,
         String setor,
         String etapa,

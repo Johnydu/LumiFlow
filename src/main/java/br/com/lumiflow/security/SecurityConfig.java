@@ -45,14 +45,13 @@ public class SecurityConfig {
     private static final String LOGIN_PAGE = "/login";
 
     /**
-     * CSP em modo "report-only": não bloqueia nada, apenas relata no console do
-     * navegador o que seria bloqueado. Os templates ainda usam scripts, estilos
-     * e handlers inline ('unsafe-inline'). Depois de remover os inline, endureça
-     * e troque para enforcement.
+     * CSP em modo de imposição (enforcement) ativa.
+     * Os blocos inline foram eliminados dos templates, permitindo bloquear estritamente
+     * scripts e estilos não autorizados para blindagem contra XSS.
      */
     private static final String CSP_POLICY = "default-src 'self'; "
-            + "script-src 'self' 'unsafe-inline'; "
-            + "style-src 'self' 'unsafe-inline' https://cdnjs.cloudflare.com; "
+            + "script-src 'self'; "
+            + "style-src 'self' https://cdnjs.cloudflare.com; "
             + "font-src 'self' https://cdnjs.cloudflare.com; "
             + "img-src 'self' data:; "
             + "object-src 'none'; base-uri 'self'; form-action 'self'; frame-ancestors 'none'";
@@ -85,7 +84,6 @@ public class SecurityConfig {
                         .requestMatchers(LOGIN_PAGE).permitAll()
 
                         // ADMIN: usuários e configurações
-                        // (inclui as rotas no singular usadas pelo menu lateral)
                         .requestMatchers("/dashboard/usuario/**").hasRole(ROLE_ADMIN)
                         .requestMatchers("/dashboard/configuracao/**",
                                 "/dashboard/configuracoes/**").authenticated()
@@ -165,7 +163,7 @@ public class SecurityConfig {
                 )
 
                 .headers(headers -> headers
-                        .contentSecurityPolicy(csp -> csp.policyDirectives(CSP_POLICY).reportOnly())
+                        .contentSecurityPolicy(csp -> csp.policyDirectives(CSP_POLICY))
                         .referrerPolicy(referrer -> referrer
                                 .policy(ReferrerPolicyHeaderWriter.ReferrerPolicy.STRICT_ORIGIN_WHEN_CROSS_ORIGIN))
                 )

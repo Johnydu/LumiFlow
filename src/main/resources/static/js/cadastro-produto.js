@@ -17,14 +17,14 @@ document.addEventListener('DOMContentLoaded', () => {
 function showForm() {
   const panel = document.getElementById('form-panel');
   if (panel) {
-    panel.style.display = 'flex'; // Exibe o overlay do modal centralizado
+    panel.classList.add('is-open');
   }
 }
 
 function hideForm() {
   const panel = document.getElementById('form-panel');
   if (panel) {
-    panel.style.display = 'none';
+    panel.classList.remove('is-open');
     const form = document.getElementById('produto-form');
     if (form) form.reset();
   }

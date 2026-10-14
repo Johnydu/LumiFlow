@@ -32,7 +32,7 @@ public class LancamentoController {
     private final MessageSource messageSource;
 
     @GetMapping
-    public String form(@PathVariable Long ordemId, @PathVariable Long ordemSetorId, Model model) {
+    public String lancamento(@PathVariable Long ordemId, @PathVariable Long ordemSetorId, Model model) {
         OrdemSetor ordemSetor = lancamentoService.buscarEtapaAtiva(ordemId, ordemSetorId);
 
         model.addAttribute("ordem", ordemSetor.getOrdemProducao());
@@ -65,10 +65,10 @@ public class LancamentoController {
     @PostMapping("/producao")
     public String producao(@PathVariable Long ordemId, @PathVariable Long ordemSetorId,
                            @Valid @ModelAttribute("producaoDTO") LancamentoProducaoDTO dto,
-                           BindingResult result, RedirectAttributes attributes, Locale locale) {
+                           BindingResult result, Model model, RedirectAttributes attributes, Locale locale) {
 
         if (result.hasErrors()) {
-            return recarregarComErro(ordemId, ordemSetorId, "producaoDTO", dto, result, attributes);
+            return recarregarComErro(ordemId, ordemSetorId, result, model, locale);
         }
 
         try {
@@ -93,10 +93,10 @@ public class LancamentoController {
     @PostMapping("/refugo")
     public String refugo(@PathVariable Long ordemId, @PathVariable Long ordemSetorId,
                          @Valid @ModelAttribute("refugoDTO") RefugoDTO dto, BindingResult result,
-                         RedirectAttributes attributes, Locale locale) {
+                         Model model, RedirectAttributes attributes, Locale locale) {
 
         if (result.hasErrors()) {
-            return recarregarComErro(ordemId, ordemSetorId, "refugoDTO", dto, result, attributes);
+            return recarregarComErro(ordemId, ordemSetorId, result, model, locale);
         }
 
         try {
@@ -120,10 +120,10 @@ public class LancamentoController {
     @PostMapping("/retrabalho")
     public String retrabalho(@PathVariable Long ordemId, @PathVariable Long ordemSetorId,
                              @Valid @ModelAttribute("retrabalhoDTO") RetrabalhoDTO dto, BindingResult result,
-                             RedirectAttributes attributes, Locale locale) {
+                             Model model, RedirectAttributes attributes, Locale locale) {
 
         if (result.hasErrors()) {
-            return recarregarComErro(ordemId, ordemSetorId, "retrabalhoDTO", dto, result, attributes);
+            return recarregarComErro(ordemId, ordemSetorId, result, model, locale);
         }
 
         try {
@@ -146,11 +146,20 @@ public class LancamentoController {
         }
     }
 
-    private String recarregarComErro(Long ordemId, Long ordemSetorId, String nomeDto, Object dto,
-                                     BindingResult result, RedirectAttributes attributes) {
-        attributes.addFlashAttribute("org.springframework.validation.BindingResult." + nomeDto, result);
-        attributes.addFlashAttribute(nomeDto, dto);
-        return "redirect:/dashboard/ordens/" + ordemId + "/setor/" + ordemSetorId + "/lancar";
+    private String recarregarComErro(Long ordemId, Long ordemSetorId, BindingResult result,
+                                     Model model, Locale locale) {
+        lancamento(ordemId, ordemSetorId, model);
+        String mensagem = result.getAllErrors().stream()
+                .findFirst()
+                .map(error -> {
+                    String defaultMessage = error.getDefaultMessage();
+                    return defaultMessage == null ? "" :
+                            messageSource.getMessage(defaultMessage, null, defaultMessage, locale);
+                })
+                .orElseGet(() -> messageSource.getMessage(
+                        AppMessages.ERROR_VALIDATION_FAILED, null, locale));
+        model.addAttribute("error", mensagem);
+        return "ordens/Lancamento";
     }
 
     private String traduzir(BusinessException e, Locale locale) {

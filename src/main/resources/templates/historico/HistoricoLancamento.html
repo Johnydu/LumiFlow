@@ -68,7 +68,12 @@
                               class="num" th:text="${hist.numeroOrdem}">OP-0001</span>
                     </td>
 
-                    <td th:text="${hist.produto + (hist.variante != null ? ' (' + hist.variante + ')' : '')}">Produto</td>
+                    <!-- Exibe Código do Produto · Nome (Variante se houver) -->
+                    <td th:text="${(hist.codigoProduto != null ? hist.codigoProduto + ' · ' : '')
+                                  + hist.produto
+                                  + (hist.variante != null and !hist.variante.isBlank() ? ' (' + hist.variante + ')' : '')}">
+                        Produto
+                    </td>
 
                     <td>
                         <span class="setor-tag" th:text="${hist.setor}">Setor</span>
@@ -99,11 +104,11 @@
                 <div class="pag-btns">
                     <a th:if="${!pagina.first}" class="pag-btn"
                        th:href="@{/dashboard/lancamentos(page=${pagina.number - 1})}">&lsaquo;</a>
-                    <span th:if="${pagina.first}" class="pag-btn" style="opacity:.4">&lsaquo;</span>
+                    <span th:if="${pagina.first}" class="pag-btn" style="opacity:0.5; pointer-events:none;">&lsaquo;</span>
 
                     <a th:if="${!pagina.last}" class="pag-btn"
                        th:href="@{/dashboard/lancamentos(page=${pagina.number + 1})}">&rsaquo;</a>
-                    <span th:if="${pagina.last}" class="pag-btn" style="opacity:.4">&rsaquo;</span>
+                    <span th:if="${pagina.last}" class="pag-btn" style="opacity:0.5; pointer-events:none;">&rsaquo;</span>
                 </div>
             </div>
         </div>

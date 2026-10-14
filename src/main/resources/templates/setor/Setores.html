@@ -35,7 +35,7 @@
   <div th:replace="~{fragments/topbar :: topbar(
     'Setores',
     '+ Novo Setor',
-    'novoSetorForm()'
+    'novoSetorForm'
 )}"></div>
 
   <div class="content">
@@ -65,12 +65,12 @@
             <th>Setor</th>
             <th>Máquinas</th>
             <th>Etapas do Setor</th>
-            <th style="width:120px">Ações</th>
+            <th class="csp-style-465bfea3ed">Ações</th>
           </tr>
           </thead>
           <tbody>
           <tr th:each="setor : ${setores}">
-            <td style="font-weight:500" th:text="${setor.nome}"></td>
+            <td th:text="${setor.nome}" class="csp-style-02a2d333e2"></td>
             <td>
               <span class="tag-maq"
                     th:text="${setor.quantidadeMaquinas + ' máquina(s)'}">
@@ -84,8 +84,8 @@
                       th:data-ordem="${etapa.ordem}"
                       th:text="${etapa.nome}">
                 </span>
-                <span th:if="${#lists.isEmpty(setor.etapas)}"
-                      style="color: var(--color-muted-5); font-size: 12px;">
+                <span th:if="${#lists.isEmpty(setor.etapas)}" class="csp-style-2ed273af07"
+                     >
                     Nenhuma etapa
                 </span>
               </div>
@@ -96,19 +96,20 @@
                         class="btn-edit"
                         th:data-id="${setor.id}"
                         th:data-nome="${setor.nome}"
-                        onclick="editarSetorDoBotao(this)">
+                       data-csp-action="editarSetorDoBotao" data-csp-argument="element">
                   ✏ Editar
                 </button>
-                <form th:action="@{/dashboard/setores/{id}/excluir(id=${setor.id})}"
+                <form class="csp-style-cccfa4560d"
+                      th:action="@{/dashboard/setores/{id}/excluir(id=${setor.id})}"
                       method="post"
-                      style="display:inline">
+                     >
                   <input type="hidden"
                          th:name="${_csrf.parameterName}"
                          th:value="${_csrf.token}"/>
 
                   <button type="submit"
                           class="btn-del"
-                          onclick="return confirm('Tem certeza que deseja excluir este setor?');">
+                         data-csp-confirm="Tem certeza que deseja excluir este setor?">
                     🗑 Excluir
                   </button>
                 </form>
@@ -117,8 +118,8 @@
           </tr>
 
           <tr th:if="${#lists.isEmpty(setores)}">
-            <td colspan="4"
-                style="text-align:center;color:var(--color-muted-5)">
+            <td colspan="4" class="csp-style-23258bbf2b"
+               >
               Nenhum setor cadastrado.
             </td>
           </tr>
@@ -128,12 +129,12 @@
     </div>
 
     <!-- MODAL DE CADASTRO / EDIÇÃO DE SETOR -->
-    <div class="modal-overlay" id="form-panel" style="display:none;"
+    <div class="modal-overlay" id="form-panel"
          sec:authorize="hasAnyRole('ADMIN', 'PCP', 'SUPERVISOR')">
-      <div class="modal-box" style="max-width: 560px;">
+      <div class="modal-box csp-style-eb1967695a">
         <div class="modal-header">
           <span class="modal-title" id="form-title">Novo Setor</span>
-          <button type="button" class="modal-close" onclick="hideForm()">&times;</button>
+          <button type="button" class="modal-close" data-csp-action="hideForm">&times;</button>
         </div>
 
         <form id="setor-form"
@@ -148,28 +149,28 @@
           <input type="hidden" th:field="*{id}"/>
 
           <div class="modal-body">
-            <div class="field" style="display: flex; flex-direction: column; gap: 4px;">
-              <label for="nome" style="font-size: var(--font-size-sm); font-weight: 500;">Nome do Setor <span style="color: var(--color-danger);">*</span></label>
-              <input type="text" id="nome" th:field="*{nome}" class="form-control"
+            <div class="field csp-style-ef1f3a5dff">
+              <label for="nome" class="csp-style-e4c9ee3efa">Nome do Setor <span class="csp-style-1f62937642">*</span></label>
+              <input type="text" id="nome" th:field="*{nome}" class="form-control csp-style-51fd58adb1"
                      placeholder="Ex: Costura, Acabamento..." required
-                     style="height: var(--control-height, 38px); padding: 0 var(--space-3); border: 1px solid var(--border-strong); border-radius: var(--radius-md); background: var(--color-field); color: var(--color-text); font-size: var(--font-size-sm);"/>
+                    />
             </div>
 
             <!-- Container fixo e visível das etapas do setor -->
-            <div class="field" id="container-etapas-setor" style="display:flex; flex-direction: column; gap: 4px;">
-              <label style="font-size: var(--font-size-sm); font-weight: 500;">Etapas/Processos do Setor <span style="color: var(--color-danger);">*</span></label>
-              <div class="etapas-list" id="etapas-setor-list" style="max-height: 200px; overflow-y: auto; display: flex; flex-direction: column; gap: 8px;">
+            <div class="field csp-style-86a6ebb7fa" id="container-etapas-setor">
+              <label class="csp-style-e4c9ee3efa">Etapas/Processos do Setor <span class="csp-style-1f62937642">*</span></label>
+              <div class="etapas-list csp-style-04723d1d2e" id="etapas-setor-list">
                 <!-- Preenchido via JavaScript -->
               </div>
-              <button type="button" class="btn-add-etapa" onclick="adicionarEtapaSetor()"
-                      style="margin-top: 4px; padding: 8px; border: 1px dashed var(--border-strong); border-radius: var(--radius-md); background: transparent; color: var(--color-muted); font-size: var(--font-size-sm); cursor: pointer; text-align: center;">
+              <button type="button" class="btn-add-etapa csp-style-de911b4bb1" data-csp-action="adicionarEtapaSetor"
+                     >
                 + Adicionar Etapa
               </button>
             </div>
           </div>
 
           <div class="modal-actions">
-            <button type="button" class="btn-cancel" onclick="hideForm()">Cancelar</button>
+            <button type="button" class="btn-cancel" data-csp-action="hideForm">Cancelar</button>
             <button type="submit" class="btn-submit">Salvar</button>
           </div>
 

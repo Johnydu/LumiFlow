@@ -414,11 +414,10 @@ public class LancamentoService {
     public Page<HistoricoLancamentosDTO> listarHistoricoLancamentos(int pagina, int tamanho) {
         Pageable pageable = PageRequest.of(Math.max(pagina, 0), Math.min(Math.max(tamanho, 1), 100));
 
-
-
         return lancamentoRepository.buscarHistorico(null, pageable).map(l -> new HistoricoLancamentosDTO(
                 l.getOrdemSetor().getOrdemProducao().getId(),
                 l.getOrdemSetor().getOrdemProducao().getNumero(),
+                l.getOrdemSetor().getOrdemProducao().getProduto().getCodigo(), // <--- ADICIONADO AQUI
                 l.getOrdemSetor().getOrdemProducao().getProduto().getNome(),
                 l.getOrdemSetor().getSetor().getNome(),
                 l.getEtapaSetor() != null ? l.getEtapaSetor().getNome() : null,

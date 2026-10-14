@@ -12,14 +12,14 @@ let etapaIndex = 0;
 function showForm() {
     const panel = document.getElementById('form-panel');
     if (panel) {
-        panel.style.display = 'flex'; // Exibe o overlay do modal centralizado
+        panel.classList.add('is-open');
     }
 }
 
 function hideForm() {
     const panel = document.getElementById('form-panel');
     if (panel) {
-        panel.style.display = 'none';
+        panel.classList.remove('is-open');
 
         // Limpa o formulário de forma segura
         const form = document.getElementById('roteiro-form');
@@ -69,21 +69,16 @@ function criarLinhaEtapa(setorId = '', etapaSetorId = '') {
     const templateSetor = document.getElementById('setor-options-template');
 
     const row = document.createElement('div');
-    row.className = 'etapa-item';
-    row.style.display = 'flex';
-    row.style.gap = '10px';
-    row.style.alignItems = 'center';
+    row.className = 'etapa-item etapa-row';
 
     const numeroEtapa = document.createElement('span');
     numeroEtapa.className = 'etapa-num';
-    numeroEtapa.style.fontWeight = 'bold';
-    numeroEtapa.style.minWidth = '24px';
     numeroEtapa.textContent = `${index + 1}º`;
 
     const selectSetor = document.createElement('select');
     selectSetor.name = `passos[${index}].setorId`;
     selectSetor.className = 'form-control setor-select';
-    selectSetor.style.cssText = 'flex: 1; height: var(--control-height, 38px); padding: 0 var(--space-2); border: 1px solid var(--border-strong); border-radius: var(--radius-md); background: var(--color-field); color: var(--color-text); font-size: var(--font-size-sm);';
+    selectSetor.classList.add('etapa-row-select');
     selectSetor.addEventListener('change', () => aoMudarSetor(selectSetor));
     if (templateSetor) {
         Array.from(templateSetor.options).forEach(option => {
@@ -94,7 +89,7 @@ function criarLinhaEtapa(setorId = '', etapaSetorId = '') {
     const selectEtapa = document.createElement('select');
     selectEtapa.name = `passos[${index}].etapaSetorId`;
     selectEtapa.className = 'form-control etapa-setor-select';
-    selectEtapa.style.cssText = selectSetor.style.cssText;
+    selectEtapa.classList.add('etapa-row-select');
     const optionEtapa = document.createElement('option');
     optionEtapa.value = '';
     optionEtapa.textContent = 'Selecione o processo...';
@@ -102,27 +97,21 @@ function criarLinhaEtapa(setorId = '', etapaSetorId = '') {
 
     const actions = document.createElement('div');
     actions.className = 'etapa-actions';
-    actions.style.display = 'flex';
-    actions.style.gap = '4px';
 
-    const createActionButton = (label, className, handler, padding) => {
+    const createActionButton = (label, className, handler) => {
         const button = document.createElement('button');
         button.type = 'button';
         button.className = className;
         button.textContent = label;
-        button.style.padding = padding;
+        button.classList.add('etapa-action-button');
         button.addEventListener('click', () => handler(button));
         return button;
     };
 
-    const moveUp = createActionButton('↑', 'etapa-move', button => moverEtapa(button, -1), '6px 8px');
-    const moveDown = createActionButton('↓', 'etapa-move', button => moverEtapa(button, 1), '6px 8px');
-    const remove = createActionButton('✕', 'btn-del', removerEtapa, '6px 10px');
+    const moveUp = createActionButton('↑', 'etapa-move', button => moverEtapa(button, -1));
+    const moveDown = createActionButton('↓', 'etapa-move', button => moverEtapa(button, 1));
+    const remove = createActionButton('✕', 'btn-del', removerEtapa);
     [moveUp, moveDown].forEach(button => {
-        button.style.border = '1px solid var(--border-strong)';
-        button.style.background = 'transparent';
-        button.style.borderRadius = 'var(--radius-sm)';
-        button.style.cursor = 'pointer';
     });
 
     actions.append(moveUp, moveDown, remove);

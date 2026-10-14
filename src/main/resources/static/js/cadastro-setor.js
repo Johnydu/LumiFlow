@@ -1,11 +1,11 @@
 function showForm() {
   const panel = document.getElementById('form-panel');
-  if (panel) panel.style.display = 'flex'; // Exibe o overlay do modal centralizado
+  if (panel) panel.classList.add('is-open');
 }
 
 function hideForm() {
   const panel = document.getElementById('form-panel');
-  if (panel) panel.style.display = 'none';
+  if (panel) panel.classList.remove('is-open');
   limparFormularioSetor();
 }
 
@@ -40,10 +40,7 @@ function adicionarEtapaSetor(nomeEtapa = '', idEtapa = '', ordemEtapa = '') {
   const index = container.children.length;
 
   const row = document.createElement('div');
-  row.className = 'etapa-item';
-  row.style.display = 'flex';
-  row.style.gap = '10px';
-  row.style.alignItems = 'center';
+  row.className = 'etapa-item etapa-row';
 
   // Input de ID da etapa (Mantém o ID real recebido do banco, ou vazio se for nova)
   const inputId = document.createElement('input');
@@ -61,25 +58,16 @@ function adicionarEtapaSetor(nomeEtapa = '', idEtapa = '', ordemEtapa = '') {
   const inputNome = document.createElement('input');
   inputNome.type = 'text';
   inputNome.name = `etapas[${index}].nome`;
-  inputNome.className = 'form-control input-etapa-nome';
+  inputNome.className = 'form-control input-etapa-nome etapa-name-control';
   inputNome.placeholder = 'Nome da etapa (Ex: 1ª Dobra)';
   inputNome.value = nomeEtapa || '';
   inputNome.required = true;
-  inputNome.style.flex = '1';
-  inputNome.style.height = 'var(--control-height, 38px)';
-  inputNome.style.padding = '0 var(--space-3)';
-  inputNome.style.border = '1px solid var(--border-strong)';
-  inputNome.style.borderRadius = 'var(--radius-md)';
-  inputNome.style.background = 'var(--color-field)';
-  inputNome.style.color = 'var(--color-text)';
-  inputNome.style.fontSize = 'var(--font-size-sm)';
 
   // Botão de remover
   const btnRemover = document.createElement('button');
   btnRemover.type = 'button';
-  btnRemover.className = 'btn-del';
+  btnRemover.className = 'btn-del etapa-remove';
   btnRemover.textContent = '✕';
-  btnRemover.style.padding = '6px 12px';
   btnRemover.addEventListener('click', () => removerLinhaEtapaSetor(btnRemover));
 
   row.appendChild(inputId);

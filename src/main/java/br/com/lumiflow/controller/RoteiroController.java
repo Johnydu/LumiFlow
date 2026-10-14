@@ -86,7 +86,7 @@ public class RoteiroController {
     public String salvar(@Valid @ModelAttribute("roteiroDTO") RoteiroDTO dto, BindingResult result,
                          Model model, RedirectAttributes attributes, Locale locale) {
         if (result.hasErrors()) {
-            return erroValidacao(model, locale);
+            return erroValidacao(model, result, locale);
         }
 
         try {
@@ -112,7 +112,7 @@ public class RoteiroController {
     public String editar(@PathVariable Long produtoId, @Valid @ModelAttribute("roteiroDTO") RoteiroDTO dto,
                          BindingResult result, Model model, RedirectAttributes attributes, Locale locale) {
         if (result.hasErrors()) {
-            return erroValidacao(model, locale);
+            return erroValidacao(model, result, locale);
         }
 
         try {
@@ -151,10 +151,18 @@ public class RoteiroController {
         return "redirect:/dashboard/roteiros";
     }
 
-    private String erroValidacao(Model model, Locale locale) {
+    private String erroValidacao(Model model, BindingResult result, Locale locale) {
         carregarPagina(model, null);
-        model.addAttribute("error",
-                messageSource.getMessage(AppMessages.ERROR_VALIDATION_FAILED, null, locale));
+        String mensagem = result.getAllErrors().stream()
+                .findFirst()
+                .map(error -> {
+                    String defaultMessage = error.getDefaultMessage();
+                    return defaultMessage == null ? "" :
+                            messageSource.getMessage(defaultMessage, null, defaultMessage, locale);
+                })
+                .orElseGet(() -> messageSource.getMessage(
+                        AppMessages.ERROR_VALIDATION_FAILED, null, locale));
+        model.addAttribute("error", mensagem);
         return "roteiro/Roteiros";
     }
 

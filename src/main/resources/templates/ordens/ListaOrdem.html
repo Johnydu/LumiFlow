@@ -18,6 +18,7 @@
     <link rel="stylesheet" th:href="@{/css/components/cards.css}">
     <link rel="stylesheet" th:href="@{/css/components/status.css}">
     <link rel="stylesheet" th:href="@{/css/components/alerts.css}">
+    <link rel="stylesheet" th:href="@{/css/components/modal.css}">
     <link rel="stylesheet" th:href="@{/css/pages/listaordem.css}">
     <link rel="stylesheet" th:href="@{/css/utils.css}">
     <link rel="stylesheet" th:href="@{/css/responsive.css}">
@@ -35,7 +36,7 @@
     <div th:replace="~{fragments/topbar :: topbar(
         'Ordens de Produção',
         'VOLTAR',
-        'voltarPagina()'
+        'voltarPagina'
     )}">
     </div>
 
@@ -87,7 +88,7 @@
                     <th>OBSERVAÇÃO</th>
                     <th>DATA CRIAÇÃO</th>
                     <th>STATUS</th>
-                    <th style="width:100px; text-align: center;">AÇÃO</th>
+                    <th class="csp-style-699c3e909c">AÇÃO</th>
                 </tr>
                 </thead>
 
@@ -119,10 +120,10 @@
                     <td>
                         <div class="prog-wrap">
                             <div class="prog-track">
-                                <div class="prog-fill"
+                                <div class="prog-fill progress-value"
                                      th:classappend="${ordem.status() != null &&
                                       ordem.status().name() == 'CONCLUIDA' ? 'p-con' : 'p-and'}"
-                                     th:style="'width:' + ${ordem.percentual()} + '%'">
+                                     th:data-progress="${ordem.percentual()}">
                                 </div>
                             </div>
                             <span class="prog-txt" th:text="${ordem.produzido() + '/' + ordem.quantidade()}"></span>
@@ -162,14 +163,15 @@
                     </td>
 
                     <!-- 9. AÇÃO -->
-                    <td style="text-align: center;">
+                    <td class="csp-style-72a68ac344">
                         <div class="table-actions">
-                            <form th:if="${ordem.status() != null && ordem.status().name() == 'DISPONIVEL'}"
+                            <form class="csp-style-0cd28ce9ba"
+                                  th:if="${ordem.status() != null && ordem.status().name() == 'DISPONIVEL'}"
                                   sec:authorize="hasAnyRole('ADMIN', 'GESTAO', 'SUPERVISOR','PCP')"
                                   method="post"
                                   th:action="@{/dashboard/ordens-setor/{setorId}/ordens/{ordemSetorId}/liberar
                                                 (setorId=${setorIdAtual}, ordemSetorId=${ordem.ordemSetorId()})}"
-                                  style="display:inline;">
+                                 >
                                 <input type="hidden" th:name="${_csrf.parameterName}" th:value="${_csrf.token}"/>
                                 <button type="submit" class="btn-liberar">Liberar</button>
                             </form>
@@ -181,8 +183,7 @@
                                     th:data-id="${ordem.ordemSetorId()}"
                                     th:data-qtd="${ordem.quantidade()}"
                                     th:data-nome="${ordem.produtoNome()}"
-                                    onclick="abrirModalDivisao(this.getAttribute('data-id'),
-                                    this.getAttribute('data-qtd'), this.getAttribute('data-nome'))">
+                                   data-csp-action="abrirModalDivisao" data-csp-argument="dataset">
                                 Dividir
                             </button>
 
@@ -198,7 +199,7 @@
                 </tr>
 
                 <tr th:if="${ordens == null || #lists.isEmpty(ordens)}">
-                    <td colspan="9" style="text-align:center; color:var(--color-muted-5); padding: 30px 0;">
+                    <td colspan="9" class="csp-style-2b8dd6a649">
                         Nenhuma ordem encontrada.
                     </td>
                 </tr>
@@ -223,12 +224,12 @@
     </div>
 
     <!-- MODAL DE DIVISÃO -->
-    <div id="modalDivisao" class="modal-overlay" style="display:none;"
+    <div id="modalDivisao" class="modal-overlay"
          sec:authorize="hasAnyRole('ADMIN', 'GESTAO', 'SUPERVISOR', 'PCP')">
         <div class="modal-box">
             <div class="modal-header">
                 <span class="modal-title">Dividir Ordem</span>
-                <button type="button" class="modal-close" onclick="fecharModalDivisao()">&times;</button>
+                <button type="button" class="modal-close" data-csp-action="fecharModalDivisao">&times;</button>
             </div>
 
             <form id="formDivisao"
@@ -245,7 +246,7 @@
 
                     <div id="linhasDivisao"></div>
 
-                    <button type="button" class="btn-add-divisao" onclick="adicionarLinhaDivisao()">+ Adicionar
+                    <button type="button" class="btn-add-divisao" data-csp-action="adicionarLinhaDivisao">+ Adicionar
                         variante
                     </button>
 
@@ -257,7 +258,7 @@
                 </div>
 
                 <div class="modal-actions">
-                    <button type="button" class="btn-cancel" onclick="fecharModalDivisao()">Cancelar</button>
+                    <button type="button" class="btn-cancel" data-csp-action="fecharModalDivisao">Cancelar</button>
                     <button type="submit" class="btn-submit" id="btnConfirmarDivisao">Confirmar Divisão</button>
                 </div>
             </form>

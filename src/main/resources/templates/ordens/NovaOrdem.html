@@ -46,11 +46,11 @@
             <!-- DADOS DA ORDEM -->
             <div class="form-card">
                 <div class="card-title">Dados da ordem</div>
-                <div class="form-grid" style="margin-bottom:14px">
+                <div class="form-grid csp-style-2b583d7389">
 
                     <div class="field">
                         <label for="produtoId">Produto <span>*</span></label>
-                        <select id="produtoId" name="produtoId" required onchange="updateRoteiro(this.value)">
+                        <select id="produtoId" name="produtoId" required data-csp-change="updateRoteiro" data-csp-argument="value">
                             <option value="">Selecione o produto</option>
                             <option th:each="p : ${produtos}"
                                     th:value="${p.id}"
@@ -85,14 +85,14 @@
                     <div class="roteiro-pills" id="roteiro-pills">
                         <span class="r-empty">Selecione um produto para ver o roteiro.</span>
                     </div>
-                    <div class="roteiro-info" id="roteiro-info" style="display:none">
+                    <div class="roteiro-info csp-style-6b99de8b69" id="roteiro-info">
                         ℹ️ Roteiro carregado automaticamente do cadastro do produto.
                     </div>
                 </div>
             </div>
 
             <div class="form-actions">
-                <a th:href="@{/dashboard/ordens-setor}" class="btn-cancel" style="text-decoration: none;">Cancelar</a>
+                <a th:href="@{/dashboard/ordens-setor}" class="btn-cancel csp-style-bc605c49f5">Cancelar</a>
                 <button type="submit" class="btn-submit">Criar Ordem</button>
             </div>
 

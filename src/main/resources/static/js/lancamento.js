@@ -1,8 +1,9 @@
 function showTab(nome) {
-  document.querySelectorAll('.form-card').forEach(card => card.style.display = 'none');
+  document.querySelectorAll('.form-card').forEach(card => card.classList.add('is-hidden'));
   document.querySelectorAll('.tab').forEach(tab => tab.classList.remove('active'));
 
-  document.getElementById('tab-' + nome).style.display = 'block';
+  document.getElementById('tab-' + nome).classList.remove('is-hidden');
+  document.getElementById('tab-' + nome).classList.add('is-visible');
   document.getElementById('tab-btn-' + (nome === 'producao' ? 'prod' : nome === 'refugo' ? 'ref' : 'ret'))
       .classList.add('active');
 }
@@ -29,10 +30,10 @@ function filtrarMaquinasRetrabalho() {
 
   Array.from(selectMaquina.options).forEach(opt => {
     if (!opt.value) {
-      opt.style.display = '';
+      opt.hidden = false;
       return;
     }
-    opt.style.display = (opt.getAttribute('data-setor') === setorOrigemId) ? '' : 'none';
+    opt.hidden = opt.getAttribute('data-setor') !== setorOrigemId;
   });
 
   selectMaquina.value = '';
@@ -49,7 +50,7 @@ function initEtapaOrigemRefugo(produtoId) {
     const setorId = selectSetor.value;
 
     selectEtapa.replaceChildren(new Option('Selecione a etapa', ''));
-    campoEtapa.style.display = 'none';
+    campoEtapa.classList.remove('is-visible');
     selectEtapa.required = false;
 
     if (!setorId) return;
@@ -66,7 +67,7 @@ function initEtapaOrigemRefugo(produtoId) {
       // Só pergunta quando existe ambiguidade real (mais de uma etapa no roteiro)
       if (etapas.length > 1) {
         etapas.forEach(etapa => selectEtapa.appendChild(new Option(etapa.nome, etapa.id)));
-        campoEtapa.style.display = 'flex';
+        campoEtapa.classList.add('is-visible');
         selectEtapa.required = true;
       }
     } catch (e) {

@@ -1,5 +1,5 @@
 /* ========================================
-   MODAL DO SISTEMA - LUMIFLOW (Modern UI)
+   MODAL DE DIVISÃO & SISTEMA - LUMIFLOW (Modern UI)
    ======================================== */
 
 .modal-overlay {
@@ -10,7 +10,7 @@
     align-items: center;
     justify-content: center;
     padding: var(--space-5);
-    background: rgba(5, 7, 12, 0.75); /* Fundo escuro imersivo com efeito de profundidade */
+    background: rgba(5, 7, 12, 0.75); /* Fundo escuro imersivo com profundidade */
     backdrop-filter: blur(8px); /* Desfoque moderno */
     animation: fadeInModal 0.2s ease-out;
 }
@@ -36,8 +36,8 @@
 }
 
 .modal-title {
-    font-size: 1.15rem; /* Título elegante e perfeitamente proporcional */
-    font-weight: 600; /* Peso moderno (limpo e nítido) */
+    font-size: 1.15rem;
+    font-weight: 600;
     letter-spacing: -0.01em;
     color: var(--color-text);
 }
@@ -73,79 +73,90 @@
     font-size: 0.95rem;
 }
 
-/* Campos de formulário */
-.modal-body .field {
+/* Linhas de Divisão (Variantes e Quantidades) adaptadas ao padrão Modern UI */
+.linha-divisao {
     display: flex;
-    flex-direction: column;
-    gap: 8px;
-    margin: 0;
+    align-items: center;
+    gap: var(--space-3);
 }
 
-.modal-body label {
-    font-size: 0.95rem; /* Rótulo limpo, proporcional e legível */
-    font-weight: 500;
-    color: var(--color-text);
-    letter-spacing: -0.01em;
-}
-
-.modal-body label span {
-    color: var(--color-danger);
-}
-
-/* Inputs, Selects e Textareas com tamanho grande (18px) mas estrutura moderna */
-.modal-body .form-control,
-.modal-body input[type="text"],
-.modal-body input[type="number"],
-.modal-body select,
-.modal-body textarea {
+.linha-divisao .input-variante,
+.linha-divisao .input-qtd {
     height: 48px !important;
     padding: 0 var(--space-4) !important;
     border: 1px solid rgba(255, 255, 255, 0.12) !important;
     border-radius: var(--radius-md) !important;
     background: rgba(0, 0, 0, 0.25) !important;
     color: var(--color-text) !important;
-    font-size: 1.125rem !important; /* 18px mantido para digitação confortável */
-    width: 100% !important;
+    font-size: 1.05rem !important;
     transition: border-color 0.2s ease, box-shadow 0.2s ease;
 }
 
-/* Efeito Glow moderno ao focar num campo */
-.modal-body .form-control:focus,
-.modal-body input[type="text"]:focus,
-.modal-body input[type="number"]:focus,
-.modal-body select:focus,
-.modal-body textarea:focus {
+.linha-divisao .input-variante {
+    flex: 1;
+    min-width: 0;
+}
+
+.linha-divisao .input-qtd {
+    width: 110px !important;
+}
+
+/* Efeito Glow moderno ao focar nos inputs de divisão */
+.linha-divisao .input-variante:focus,
+.linha-divisao .input-qtd:focus {
     border-color: var(--color-primary, #6366f1) !important;
     outline: none;
     box-shadow: 0 0 0 3px rgba(99, 102, 241, 0.15) !important;
 }
 
-.modal-body input::placeholder,
-.modal-body textarea::placeholder {
-    font-size: 1.125rem !important;
-    color: var(--color-muted-5) !important;
-    opacity: 0.5;
+.btn-remove-linha {
+    border: 0;
+    background: rgba(239, 68, 68, 0.1);
+    color: var(--color-danger, #ef4444);
+    width: 38px;
+    height: 38px;
+    border-radius: var(--radius-md);
+    font-size: 1.25rem;
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    transition: background 0.2s ease;
+    flex-shrink: 0;
 }
 
-.modal-body textarea {
-    height: auto !important;
-    min-height: 110px !important;
-    padding: var(--space-3) var(--space-4) !important;
-    resize: vertical;
+.btn-remove-linha:hover {
+    background: rgba(239, 68, 68, 0.2);
 }
 
-.modal-body select {
-    appearance: none;
-    background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='16' height='16' viewBox='0 0 24 24' fill='none' stroke='%239ca3af' stroke-width='2' stroke-linecap='round' stroke-linejoin='round'%3E%3Cpolyline points='6 9 12 15 18 9'%3E%3C/polyline%3E%3C/svg%3E");
-    background-repeat: no-repeat;
-    background-position: right 16px center;
-    padding-right: 48px !important;
+.btn-add-divisao {
+    width: 100%;
+    padding: var(--space-3);
+    border: 1px dashed rgba(255, 255, 255, 0.15);
+    border-radius: var(--radius-md);
+    background: rgba(255, 255, 255, 0.02);
+    color: var(--color-muted);
+    font-size: 0.95rem;
+    font-weight: 500;
+    cursor: pointer;
+    transition: all 0.2s ease;
 }
 
-.modal-body .hint {
-    font-size: 0.875rem;
-    color: var(--color-muted-5);
-    margin-top: 2px;
+.btn-add-divisao:hover {
+    background: rgba(255, 255, 255, 0.05);
+    border-color: var(--color-primary, #6366f1);
+    color: var(--color-primary, #6366f1);
+}
+
+.modal-resumo {
+    padding: var(--space-4);
+    background: rgba(0, 0, 0, 0.2);
+    border: 1px solid rgba(255, 255, 255, 0.06);
+    border-radius: var(--radius-md);
+    font-size: 0.95rem;
+    font-weight: 600;
+    text-align: right;
+    color: var(--color-text);
 }
 
 .modal-actions {

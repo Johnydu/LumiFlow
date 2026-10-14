@@ -64,7 +64,7 @@ public class SetorController {
             Locale locale) {
 
         if (result.hasErrors()) {
-            return erroValidacao(model, locale);
+            return erroValidacao(model, result, locale);
         }
 
         try {
@@ -119,7 +119,7 @@ public class SetorController {
             Locale locale) {
 
         if (result.hasErrors()) {
-            return erroValidacao(model, locale);
+            return erroValidacao(model, result, locale);
         }
 
         try {
@@ -140,10 +140,18 @@ public class SetorController {
         return "redirect:/dashboard/setores";
     }
 
-    private String erroValidacao(Model model, Locale locale) {
+    private String erroValidacao(Model model, BindingResult result, Locale locale) {
         carregarPagina(model, null);
-        model.addAttribute("error", messageSource
-                .getMessage(AppMessages.ERROR_VALIDATION_FAILED, null, locale));
+        String mensagem = result.getAllErrors().stream()
+                .findFirst()
+                .map(error -> {
+                    String defaultMessage = error.getDefaultMessage();
+                    return defaultMessage == null ? "" :
+                            messageSource.getMessage(defaultMessage, null, defaultMessage, locale);
+                })
+                .orElseGet(() -> messageSource.getMessage(
+                        AppMessages.ERROR_VALIDATION_FAILED, null, locale));
+        model.addAttribute("error", mensagem);
         return "setor/Setores";
     }
 

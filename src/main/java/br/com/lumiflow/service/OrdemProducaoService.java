@@ -1,6 +1,7 @@
 package br.com.lumiflow.service;
 
 import br.com.lumiflow.config.AppMessages;
+import br.com.lumiflow.dto.etapaSetor.DividirEtapaDTO;
 import br.com.lumiflow.dto.ordens.*;
 import br.com.lumiflow.entity.*;
 import br.com.lumiflow.entity.enums.EstatusOrdemProducao;

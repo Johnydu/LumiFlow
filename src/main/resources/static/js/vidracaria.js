@@ -13,12 +13,13 @@ const VidracariaModule = (() => {
 
     // 1. Esconde todos os cards
     const formCards = document.querySelectorAll('.form-card');
-    formCards.forEach(card => card.style.display = 'none');
+    formCards.forEach(card => card.classList.add('is-hidden'));
 
     // 2. Exibe o card selecionado
     const selectedCard = document.getElementById(`tab-${tabName}`);
     if (selectedCard) {
-      selectedCard.style.display = 'block';
+      selectedCard.classList.remove('is-hidden');
+      selectedCard.classList.add('is-visible');
     }
 
     // 3. Gerencia classe ativa dos botões

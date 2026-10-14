@@ -24,7 +24,7 @@ window.novoOperadorForm = function() {
     if (formTitle) formTitle.textContent = 'Novo operador';
 
     if (formPanel) {
-        formPanel.style.display = 'flex'; // Exibe o overlay do modal centralizado
+        formPanel.classList.add('is-open');
     }
 
     // Foco automático no primeiro campo
@@ -66,7 +66,7 @@ window.handleEditarOperador = function(button) {
     if (formTitle) formTitle.textContent = 'Editar operador';
 
     if (formPanel) {
-        formPanel.style.display = 'flex'; // Exibe o overlay do modal centralizado
+        formPanel.classList.add('is-open');
     }
 };
 
@@ -76,7 +76,7 @@ window.handleEditarOperador = function(button) {
 window.hideForm = function() {
     const formPanel = document.getElementById('form-panel');
     if (formPanel) {
-        formPanel.style.display = 'none';
+        formPanel.classList.remove('is-open');
     }
 };
 

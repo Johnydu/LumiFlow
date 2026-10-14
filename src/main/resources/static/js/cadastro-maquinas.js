@@ -1,9 +1,9 @@
 function showForm() {
-  document.getElementById('form-panel').style.display = 'flex';
+  document.getElementById('form-panel').classList.add('is-open');
 }
 
 function hideForm() {
-  document.getElementById('form-panel').style.display = 'none';
+  document.getElementById('form-panel').classList.remove('is-open');
 }
 
 function novaMaquinaForm() {
@@ -50,9 +50,9 @@ function handleFiltrarSetorSelect(selectElement) {
     const setorLinha = linha.getAttribute('data-setor').toLowerCase();
 
     if (setorSelecionado === 'todos' || setorLinha === setorSelecionado) {
-      linha.style.display = '';
+      linha.hidden = false;
     } else {
-      linha.style.display = 'none';
+      linha.hidden = true;
     }
   });
 }

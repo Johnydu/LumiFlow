@@ -2,26 +2,27 @@
 <html lang="pt-BR" th:lang="${#locale.toLanguageTag()}" xmlns:th="http://www.thymeleaf.org"
       xmlns:sec="http://www.thymeleaf.org/extras/spring-security">
 <head>
-  <th:block th:replace="~{fragments/theme :: init}"></th:block>
-  <meta charset="UTF-8"/>
-  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
-  <title>Detalhes da Ordem - LumiFlow</title>
+    <th:block th:replace="~{fragments/theme :: init}"></th:block>
+    <meta charset="UTF-8"/>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+    <title>Detalhes da Ordem - LumiFlow</title>
 
-  <link rel="stylesheet" th:href="@{/css/variables.css}">
-  <link rel="stylesheet" th:href="@{/css/globals.css}">
-  <link rel="stylesheet" th:href="@{/css/sidebar.css}">
-  <link rel="stylesheet" th:href="@{/css/topbar.css}">
-  <link rel="stylesheet" th:href="@{/css/components/buttons.css}">
-  <link rel="stylesheet" th:href="@{/css/components/forms.css}">
-  <link rel="stylesheet" th:href="@{/css/components/tables.css}">
-  <link rel="stylesheet" th:href="@{/css/components/cards.css}">
-  <link rel="stylesheet" th:href="@{/css/components/badges.css}">
-  <link rel="stylesheet" th:href="@{/css/components/status.css}">
-  <link rel="stylesheet" th:href="@{/css/components/alerts.css}">
-  <link rel="stylesheet" th:href="@{/css/pages/ordensDetalhes.css}">
-  <link rel="stylesheet" th:href="@{/css/utils.css}">
-  <link rel="stylesheet" th:href="@{/css/responsive.css}">
-  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <link rel="stylesheet" th:href="@{/css/variables.css}">
+    <link rel="stylesheet" th:href="@{/css/globals.css}">
+    <link rel="stylesheet" th:href="@{/css/sidebar.css}">
+    <link rel="stylesheet" th:href="@{/css/topbar.css}">
+    <link rel="stylesheet" th:href="@{/css/components/buttons.css}">
+    <link rel="stylesheet" th:href="@{/css/components/forms.css}">
+    <link rel="stylesheet" th:href="@{/css/components/tables.css}">
+    <link rel="stylesheet" th:href="@{/css/components/cards.css}">
+    <link rel="stylesheet" th:href="@{/css/components/badges.css}">
+    <link rel="stylesheet" th:href="@{/css/components/status.css}">
+    <link rel="stylesheet" th:href="@{/css/components/alerts.css}">
+    <link rel="stylesheet" th:href="@{/css/components/modal.css}">
+    <link rel="stylesheet" th:href="@{/css/pages/ordensDetalhes.css}">
+    <link rel="stylesheet" th:href="@{/css/utils.css}">
+    <link rel="stylesheet" th:href="@{/css/responsive.css}">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
 </head>
 <body class="page-ordemproducao-detalhesordem">
 
@@ -31,60 +32,60 @@
 
 <main class="main">
 
-  <div th:replace="~{fragments/topbar :: topbar('Detalhe da Ordem', 'VOLTAR', 'history.back()')}"></div>
+    <div th:replace="~{fragments/topbar :: topbar('Detalhe da Ordem', 'VOLTAR', 'goBack')}"></div>
 
-  <div class="content">
+    <div class="content">
 
-    <!-- CARDS DE INFORMAÇÃO -->
-    <div class="info-cards">
-      <div class="info-card">
-        <div class="info-label">Produto</div>
-        <div class="info-val"
-             th:text="${ordem.numero() + ' · ' + ordem.produtoNome() + ' - ' + ordem.produtoCodigo()}">
-          OP-0001 · Arandela 12W - 123
+        <!-- CARDS DE INFORMAÇÃO -->
+        <div class="info-cards">
+            <div class="info-card">
+                <div class="info-label">Produto</div>
+                <div class="info-val"
+                     th:text="${ordem.numero() + ' · ' + ordem.produtoNome() + ' - ' + ordem.produtoCodigo()}">
+                    OP-0001 · Arandela 12W - 123
+                </div>
+            </div>
+            <div class="info-card">
+                <div class="info-label">Quantidade total</div>
+                <div class="info-val" th:text="${ordem.quantidade() + ' unid.'}">100 unid.</div>
+            </div>
+            <div class="info-card">
+                <div class="info-label">Data de criação</div>
+                <div class="info-val" th:text="${#temporals.format(ordem.dataCriacao(), 'dd/MM/yyyy')}">19/05/2026</div>
+            </div>
+            <div class="info-card">
+                <div class="info-label">Status</div>
+                <div class="info-val">
+                    <span th:replace="~{fragments/status-badge :: badge(${ordem.status()})}"></span>
+                </div>
+            </div>
         </div>
-      </div>
-      <div class="info-card">
-        <div class="info-label">Quantidade total</div>
-        <div class="info-val" th:text="${ordem.quantidade() + ' unid.'}">100 unid.</div>
-      </div>
-      <div class="info-card">
-        <div class="info-label">Data de criação</div>
-        <div class="info-val" th:text="${#temporals.format(ordem.dataCriacao(), 'dd/MM/yyyy')}">19/05/2026</div>
-      </div>
-      <div class="info-card">
-        <div class="info-label">Status</div>
-        <div class="info-val">
-          <span th:replace="~{fragments/status-badge :: badge(${ordem.status()})}"></span>
+
+        <!-- OBSERVAÇÃO (somente quando existir) -->
+        <div class="prog-card" th:if="${ordem.observacao() != null and !ordem.observacao().isBlank()}">
+            <div class="prog-label"><span>Observação</span></div>
+            <div th:text="${ordem.observacao()}"></div>
         </div>
-      </div>
-    </div>
 
-    <!-- OBSERVAÇÃO (somente quando existir) -->
-    <div class="prog-card" th:if="${ordem.observacao() != null and !ordem.observacao().isBlank()}">
-      <div class="prog-label"><span>Observação</span></div>
-      <div th:text="${ordem.observacao()}"></div>
-    </div>
-
-    <!-- PROGRESSO GERAL -->
-    <div class="prog-card">
-      <div class="prog-label">
-        <span>Progresso geral da ordem</span>
-        <span th:text="${ordem.produzidoFinal() + ' / ' + (ordem.quantidade() - ordem.descartado())
+        <!-- PROGRESSO GERAL -->
+        <div class="prog-card">
+            <div class="prog-label">
+                <span>Progresso geral da ordem</span>
+                <span th:text="${ordem.produzidoFinal() + ' / ' + (ordem.quantidade() - ordem.descartado())
                         + ' unidades concluídas' + (ordem.descartado() > 0 ? ' · ' + ordem.descartado() + ' descartadas' : '')}">
                     60 / 100 unidades concluídas
                 </span>
-      </div>
-      <div class="prog-track">
-        <div class="prog-fill" th:style="'width:' + ${ordem.percentual()} + '%'"></div>
-      </div>
-    </div>
+            </div>
+            <div class="prog-track">
+                <div class="prog-fill progress-value" th:data-progress="${ordem.percentual()}"></div>
+            </div>
+        </div>
 
-    <!-- ROTEIRO DE SETORES -->
-    <div class="roteiro-card">
-      <div class="card-title">Roteiro de produção</div>
-      <div class="roteiro">
-        <th:block th:each="passo, it : ${ordem.roteiro()}">
+        <!-- ROTEIRO DE SETORES -->
+        <div class="roteiro-card">
+            <div class="card-title">Roteiro de produção</div>
+            <div class="roteiro">
+                <th:block th:each="passo, it : ${ordem.roteiro()}">
                     <span class="setor-pill"
                           th:classappend="${passo.situacao().name() == 'CONCLUIDO'} ? 'done'
                               : (${passo.situacao().name() == 'ATUAL'} ? 'atual' : '')"
@@ -92,161 +93,160 @@
                               : (passo.situacao().name() == 'ATUAL' ? '📍 ' : '')) + passo.rotulo()}">
                         Corte
                     </span>
-          <span class="setor-arr" th:unless="${it.last}">›</span>
-        </th:block>
-        <span th:if="${#lists.isEmpty(ordem.roteiro())}" style="color:var(--color-muted-5)">
+                    <span class="setor-arr" th:unless="${it.last}">›</span>
+                </th:block>
+                <span th:if="${#lists.isEmpty(ordem.roteiro())}" class="csp-style-8493b8cd7d">
                     Este produto não possui roteiro cadastrado.
                 </span>
-      </div>
-    </div>
+            </div>
+        </div>
 
-    <!-- TABELA DE LINHAS POR SETOR -->
-    <div class="itens-card">
-      <div class="itens-header">Itens por setor</div>
-      <table>
-        <thead>
-        <tr>
-          <th>Setor</th>
-          <th>Etapa</th>
-          <th style="width:90px">Recebido</th>
-          <th style="width:170px">Produzido</th>
-          <th style="width:90px">Pendente</th>
-          <th style="width:140px">Status</th>
-          <th style="width:90px">Ação</th>
-        </tr>
-        </thead>
-        <tbody>
-        <tr th:each="etapa : ${ordem.etapas()}">
-          <td>
+        <!-- TABELA DE LINHAS POR SETOR -->
+        <div class="itens-card">
+            <div class="itens-header">Itens por setor</div>
+            <table>
+                <thead>
+                <tr>
+                    <th>Setor</th>
+                    <th>Etapa</th>
+                    <th class="csp-style-581be415aa">Recebido</th>
+                    <th class="csp-style-d52ddd0894">Produzido</th>
+                    <th class="csp-style-581be415aa">Pendente</th>
+                    <th class="csp-style-830eb98674">Status</th>
+                    <th class="csp-style-581be415aa">Ação</th>
+                </tr>
+                </thead>
+                <tbody>
+                <tr th:each="etapa : ${ordem.etapas()}">
+                    <td>
             <span class="setor-tag"
                   th:text="${etapa.setor() + (etapa.variante() != null ? ' (' + etapa.variante() + ')' : '')}">
                 Pintura
             </span>
-            <span th:if="${etapa.origemRefugo()}" class="badge-refugo"
-                  title="Linha criada por refugo">🔧 Refugo</span>
-          </td>
-          <td>
-            <span th:if="${etapa.etapa() != null}" class="etapa-tag" th:text="${etapa.etapa()}">1ª Dobra</span>
-            <span th:if="${etapa.etapa() == null}"
-                  style="color:var(--color-muted-4);font-size:11px">—</span>
-          </td>
-          <td th:text="${etapa.recebido()}">100</td>
-          <td>
-            <div class="p-wrap">
-              <div class="p-track">
-                <div class="p-fill"
-                     th:classappend="${etapa.status().name() == 'CONCLUIDO'} ? 'pf-con' : 'pf-and'"
-                     th:style="'width:' + ${etapa.percentual()} + '%'"></div>
-              </div>
-              <span class="p-txt" th:text="${etapa.produzido() + '/' + etapa.recebido()}">60/100</span>
-            </div>
-          </td>
-          <td th:text="${etapa.pendente()}">40</td>
-          <td><span th:replace="~{fragments/status-badge :: badge(${etapa.status()})}"></span></td>
-          <td style="text-align: center;">
-            <div class="table-actions">
-              <!-- Botão Liberar Etapa/Setor -->
-              <form th:if="${etapa.status() != null && etapa.status().name() == 'DISPONIVEL'}"
-                    sec:authorize="hasAnyRole('ADMIN', 'GESTAO', 'SUPERVISOR','PCP')"
-                    method="post"
-                    th:action="@{/dashboard/ordens/0/ordens/{ordemSetorId}/liberar(ordemSetorId=${etapa.ordemSetorId()})}"
-                    style="display:inline;">
-                <input type="hidden" th:name="${_csrf.parameterName}" th:value="${_csrf.token}"/>
-                <button type="submit" class="btn-liberar">Liberar</button>
-              </form>
+                        <span th:if="${etapa.origemRefugo()}" class="badge-refugo"
+                              title="Linha criada por refugo">🔧 Refugo</span>
+                    </td>
+                    <td>
+                        <span th:if="${etapa.etapa() != null}" class="etapa-tag"
+                              th:text="${etapa.etapa()}">1ª Dobra</span>
+                        <span class="csp-style-33752f337f"
+                              th:if="${etapa.etapa() == null}">—</span>
+                    </td>
+                    <td th:text="${etapa.recebido()}">100</td>
+                    <td>
+                        <div class="p-wrap">
+                            <div class="p-track">
+                                <div class="p-fill progress-value"
+                                     th:classappend="${etapa.status().name() == 'CONCLUIDO'} ? 'pf-con' : 'pf-and'"
+                                         th:data-progress="${etapa.percentual()}"></div>
+                            </div>
+                            <span class="p-txt" th:text="${etapa.produzido() + '/' + etapa.recebido()}">60/100</span>
+                        </div>
+                    </td>
+                    <td th:text="${etapa.pendente()}">40</td>
+                    <td><span th:replace="~{fragments/status-badge :: badge(${etapa.status()})}"></span></td>
+                    <td class="csp-style-72a68ac344">
+                        <div class="table-actions">
+                            <!-- Botão Liberar Etapa/Setor com a classe form-liberar para o padrão AJAX -->
+                            <form th:if="${etapa.status() != null && etapa.status().name() == 'DISPONIVEL'}"
+                                  sec:authorize="hasAnyRole('ADMIN', 'GESTAO', 'SUPERVISOR','PCP')"
+                                  method="post"
+                                  class="form-liberar csp-style-0cd28ce9ba"
+                                  th:action="@{/dashboard/ordens/{ordemId}/etapas/{ordemSetorId}/liberar(ordemId=${ordem.id()}, ordemSetorId=${etapa.ordemSetorId()})}"
+                                 >
+                                <input type="hidden" th:name="${_csrf.parameterName}" th:value="${_csrf.token}"/>
+                                <button type="submit" class="btn-liberar">Liberar</button>
+                            </form>
 
-              <!-- Botão Dividir Etapa/Setor -->
-              <button th:if="${etapa.status() != null && etapa.status().name() == 'DISPONIVEL' && !etapa.origemRefugo()}"
-                      sec:authorize="hasAnyRole('ADMIN', 'GESTAO', 'SUPERVISOR','PCP')"
-                      type="button" class="btn-dividir"
-                      th:data-id="${etapa.ordemSetorId()}"
-                      th:data-qtd="${etapa.pendente()}"
-                      th:data-nome="${ordem.produtoNome()}"
-                      onclick="abrirModalDivisaoDetalhes(
-                          this.getAttribute('data-id'),
-                          this.getAttribute('data-qtd'),
-                          this.getAttribute('data-nome')
-                      )">
-                Dividir
-              </button>
+                            <!-- Botão Dividir Etapa/Setor -->
+                            <button th:if="${etapa.status() != null && etapa.status().name() == 'DISPONIVEL' && !etapa.origemRefugo()}"
+                                    sec:authorize="hasAnyRole('ADMIN', 'GESTAO', 'SUPERVISOR','PCP')"
+                                    type="button" class="btn-dividir"
+                                    th:data-id="${etapa.ordemSetorId()}"
+                                    th:data-qtd="${etapa.pendente()}"
+                                    th:data-nome="${ordem.produtoNome()}"
+                                   data-csp-action="abrirModalDivisaoDetalhes" data-csp-argument="dataset">
+                                Dividir
+                            </button>
 
-              <!-- Botão de Lançamento -->
-              <a th:if="${etapa.status() != null && (etapa.status().name() == 'LIBERADA' || etapa.status().name() == 'EM_ANDAMENTO')}"
-                 th:href="@{/dashboard/ordens/{id}/setor/{setorId}/lancar(id=${ordem.id()}, setorId=${etapa.ordemSetorId()})}"
-                 class="btn-lancar">
-                lançar
-              </a>
-            </div>
-          </td>
-        </tr>
-        <tr th:if="${#lists.isEmpty(ordem.etapas())}">
-          <td colspan="7" style="text-align:center;color:var(--color-muted-5)">
-            Nenhuma etapa gerada para esta ordem.
-          </td>
-        </tr>
-        </tbody>
-      </table>
-    </div>
-
-    <!-- HISTÓRICO -->
-    <div class="hist-card">
-      <div class="card-title">Histórico da ordem</div>
-      <div class="hist-item" th:each="ev : ${ordem.historico()}">
-        <div class="hist-dot" th:classappend="${ev.tipo().name() == 'REFUGO'} ? 'refugo'"></div>
-        <div class="hist-info">
-          <div class="hist-title" th:text="${ev.titulo()}">Pintura — 60 unid. produzidas</div>
-          <div class="hist-sub"
-               th:text="${ev.detalhe() + ' · ' + #temporals.format(ev.dataHora(), 'dd/MM/yyyy HH:mm')}">
-            Cabine Preta · Carlos Silva · 19/05/2026 14:30
-          </div>
+                            <!-- Botão de Lançamento -->
+                            <a th:if="${etapa.status() != null && (etapa.status().name() == 'LIBERADA' || etapa.status().name() == 'EM_ANDAMENTO')}"
+                               th:href="@{/dashboard/ordens/{id}/setor/{setorId}/lancar(id=${ordem.id()}, setorId=${etapa.ordemSetorId()})}"
+                               class="btn-lancar">
+                                lançar
+                            </a>
+                        </div>
+                    </td>
+                </tr>
+                <tr th:if="${#lists.isEmpty(ordem.etapas())}">
+                    <td colspan="7" class="csp-style-23258bbf2b">
+                        Nenhuma etapa gerada para esta ordem.
+                    </td>
+                </tr>
+                </tbody>
+            </table>
         </div>
-      </div>
-      <div th:if="${#lists.isEmpty(ordem.historico())}" style="color:var(--color-muted-5)">
-        Nenhum lançamento registrado até o momento.
-      </div>
-    </div>
 
-  </div>
+        <!-- HISTÓRICO -->
+        <div class="hist-card">
+            <div class="card-title">Histórico da ordem</div>
+            <div class="hist-item" th:each="ev : ${ordem.historico()}">
+                <div class="hist-dot" th:classappend="${ev.tipo().name() == 'REFUGO'} ? 'refugo'"></div>
+                <div class="hist-info">
+                    <div class="hist-title" th:text="${ev.titulo()}">Pintura — 60 unid. produzidas</div>
+                    <div class="hist-sub"
+                         th:text="${ev.detalhe() + ' · ' + #temporals.format(ev.dataHora(), 'dd/MM/yyyy HH:mm')}">
+                        Cabine Preta · Carlos Silva · 19/05/2026 14:30
+                    </div>
+                </div>
+            </div>
+            <div th:if="${#lists.isEmpty(ordem.historico())}" class="csp-style-8493b8cd7d">
+                Nenhum lançamento registrado até o momento.
+            </div>
+        </div>
+
+    </div>
 </main>
 
-<!-- MODAL DE DIVISÃO PADRÃO LUMIFLOW -->
-<div id="modalDivisao" class="modal-overlay" style="display:none;"
+<!-- MODAL DE DIVISÃO COM ROTA PADRONIZADA BASEADA EM ORDEM ID -->
+<div id="modalDivisao" class="modal-overlay"
      sec:authorize="hasAnyRole('ADMIN', 'GESTAO', 'SUPERVISOR', 'PCP')">
-  <div class="modal-box">
-    <div class="modal-header">
-      <span class="modal-title">Dividir Ordem</span>
-      <button type="button" class="modal-close" onclick="fecharModalDivisao()">&times;</button>
-    </div>
-
-    <form id="formDivisao"
-          method="post"
-          th:action="@{/dashboard/ordens-setor/0/ordens/0/dividir}">
-      <input type="hidden" th:name="${_csrf.parameterName}" th:value="${_csrf.token}"/>
-
-      <div class="modal-body">
-        <p class="modal-info">
-          <span id="modalProdutoNome"></span> —
-          Quantidade pendente: <strong id="modalQtdTotal"></strong>
-        </p>
-
-        <div id="linhasDivisao"></div>
-
-        <button type="button" class="btn-add-divisao" onclick="adicionarLinhaDivisao()">
-          + Adicionar variante
-        </button>
-
-        <div class="modal-resumo">
-          Soma: <span id="somaAtual">0</span> / <span id="qtdEsperada">0</span>
-          <span id="restanteInfo" class="hint"></span>
+    <div class="modal-box">
+        <div class="modal-header">
+            <span class="modal-title">Dividir Ordem</span>
+            <button type="button" class="modal-close" data-csp-action="fecharModalDivisao">&times;</button>
         </div>
-      </div>
 
-      <div class="modal-actions">
-        <button type="button" class="btn-cancel" onclick="fecharModalDivisao()">Cancelar</button>
-        <button type="submit" class="btn-submit" id="btnConfirmarDivisao">Confirmar Divisão</button>
-      </div>
-    </form>
-  </div>
+        <form id="formDivisao"
+              method="post"
+              th:action="@{/dashboard/ordens/{ordemId}/etapas/0/dividir(ordemId=${ordem.id()})}">
+            <input type="hidden" th:name="${_csrf.parameterName}" th:value="${_csrf.token}"/>
+
+            <div class="modal-body">
+                <p class="modal-info">
+                    <span id="modalProdutoNome"></span> —
+                    Quantidade pendente: <strong id="modalQtdTotal"></strong>
+                </p>
+
+                <div id="linhasDivisao"></div>
+
+                <button type="button" class="btn-add-divisao" data-csp-action="adicionarLinhaDivisao">+ Adicionar
+                    variante
+                </button>
+
+                <div class="modal-resumo">
+                    Soma: <span id="somaAtual">0</span> / <span id="qtdEsperada">0</span>
+                    <span id="restanteInfo" class="hint"></span>
+                </div>
+
+            </div>
+
+            <div class="modal-actions">
+                <button type="button" class="btn-cancel" data-csp-action="fecharModalDivisao">Cancelar</button>
+                <button type="submit" class="btn-submit" id="btnConfirmarDivisao">Confirmar Divisão</button>
+            </div>
+        </form>
+    </div>
 </div>
 
 <script th:src="@{/js/sidebar.js}"></script>

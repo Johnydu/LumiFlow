@@ -26,19 +26,19 @@
 <body class="page-dashboard-dashboard">
 <div th:replace="~{fragments/messages :: alerts}"></div>
 
-<div class="app-container" style="display: flex; min-height: 100vh;">
+<div class="app-container csp-style-5aebbd7b97">
 
     <!-- SIDEBAR -->
     <aside th:replace="~{fragments/sidebar :: sidebar(activePage='dashboard')}"></aside>
 
     <!-- ÁREA PRINCIPAL -->
-    <main class="main" style="flex: 1; min-width: 0;">
+    <main class="main csp-style-15fa32aebf">
 
         <!-- TOPBAR -->
         <div th:replace="~{fragments/topbar :: topbar(
         'Dashboard',
         '+ Nova Ordem',
-        'novaOrdemForm()'
+        'novaOrdemForm'
     )}"></div>
 
         <div class="content">
@@ -89,7 +89,7 @@
                             <th>Qtd</th>
                             <th>Progresso</th>
                             <th>Etapa atual</th>
-                            <th style="width:90px; text-align:center;">Ação</th>
+                            <th class="csp-style-bda9996f7a">Ação</th>
                         </tr>
                         </thead>
                         <tbody>
@@ -99,7 +99,7 @@
                             <td class="num" th:text="${ordem.quantidade()}">0</td>
                             <td>
                                 <div class="table-progress">
-                                    <span th:style="'width:' + ${#numbers.formatDecimal(ordem.progresso(), 1, 0)} + '%;'"></span>
+                                    <span class="progress-value" th:data-progress="${#numbers.formatDecimal(ordem.progresso(), 1, 0)}"></span>
                                 </div>
                             </td>
                             <td>
@@ -109,13 +109,13 @@
                 -
             </span>
                             </td>
-                            <td style="text-align:center;">
+                            <td class="csp-style-dac4fe6c9b">
                                 <a th:href="@{/dashboard/ordens/{id}/detalhes(id=${ordem.id()})}" class="btn-ver">Detalhes</a>
                             </td>
                         </tr>
 
                         <tr th:if="${ordensAtivas == null || #lists.isEmpty(ordensAtivas)}">
-                            <td colspan="6" style="text-align:center; color:var(--color-muted-5); padding: 2rem;">
+                            <td colspan="6" class="csp-style-d94bd11901">
                                 Nenhuma ordem ativa no momento.
                             </td>
                         </tr>
@@ -142,8 +142,8 @@
                             </div>
                         </div>
 
-                        <div th:if="${resumoSetores == null || #lists.isEmpty(resumoSetores)}"
-                             style="text-align:center; color:var(--color-muted-5); padding: 2rem;">
+                        <div class="csp-style-d94bd11901"
+                             th:if="${resumoSetores == null || #lists.isEmpty(resumoSetores)}">
                             Nenhum setor encontrado.
                         </div>
                     </div>

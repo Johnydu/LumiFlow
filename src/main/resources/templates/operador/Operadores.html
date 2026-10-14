@@ -46,7 +46,7 @@
     <div th:replace="~{fragments/topbar :: topbar(
     'Operadores',
     '+ Novo Operador',
-    'novoOperadorForm()'
+    'novoOperadorForm'
 )}"></div>
 
     <div class="content">
@@ -89,7 +89,7 @@
                         <th>Nome</th>
                         <th>Função</th>
                         <th>Setor Padrão</th>
-                        <th style="width:120px">Ações</th>
+                        <th class="csp-style-465bfea3ed">Ações</th>
                     </tr>
                     </thead>
 
@@ -122,19 +122,20 @@
                                         th:data-nome="${operador.nome}"
                                         th:data-funcao="${operador.funcao}"
                                         th:data-setor-id="${operador.setorPadraoId}"
-                                        onclick="handleEditarOperador(this)">
+                                       data-csp-action="handleEditarOperador" data-csp-argument="element">
                                     ✏ Editar
                                 </button>
 
-                                <form th:action="@{/dashboard/operadores/{id}/excluir(id=${operador.id})}"
+                                <form class="csp-style-0cd28ce9ba"
+                                      th:action="@{/dashboard/operadores/{id}/excluir(id=${operador.id})}"
                                       method="post"
-                                      style="display:inline;">
+                                     >
 
                                     <!-- th:action gera o input CSRF automaticamente -->
 
                                     <button type="submit"
                                             class="btn-del"
-                                            onclick="return confirm('Tem certeza que deseja excluir este operador?');">
+                                           data-csp-confirm="Tem certeza que deseja excluir este operador?">
                                         🗑 Excluir
                                     </button>
 
@@ -146,8 +147,8 @@
                     </tr>
 
                     <tr th:if="${#lists.isEmpty(operadores)}">
-                        <td colspan="4"
-                            style="text-align:center;color:var(--color-muted-5)">
+                        <td colspan="4" class="csp-style-23258bbf2b"
+                           >
                             Nenhum operador cadastrado.
                         </td>
                     </tr>
@@ -160,12 +161,12 @@
         </div>
 
         <!-- MODAL DE CADASTRO / EDIÇÃO DE OPERADORES -->
-        <div class="modal-overlay" id="form-panel" style="display:none"
+        <div class="modal-overlay" id="form-panel"
              sec:authorize="hasAnyRole('ADMIN', 'PCP', 'SUPERVISOR')">
-            <div class="modal-box" style="max-width: 520px;">
+            <div class="modal-box csp-style-ffa089e03c">
                 <div class="modal-header">
                     <span class="modal-title" id="form-title">Novo operador</span>
-                    <button type="button" class="modal-close" onclick="hideForm()">&times;</button>
+                    <button type="button" class="modal-close" data-csp-action="hideForm">&times;</button>
                 </div>
 
                 <form id="operador-form"
@@ -179,40 +180,40 @@
                            id="id"
                            th:field="*{id}" />
 
-                    <div class="modal-body" style="display: flex; flex-direction: column; gap: var(--space-4);">
-                        <div class="field" style="display: flex; flex-direction: column; gap: 4px;">
-                            <label for="nome" style="font-size: var(--font-size-sm); font-weight: 500;">
-                                Nome do operador <span style="color: var(--color-danger);">*</span>
+                    <div class="modal-body csp-style-dbc770e380">
+                        <div class="field csp-style-ef1f3a5dff">
+                            <label for="nome" class="csp-style-e4c9ee3efa">
+                                Nome do operador <span class="csp-style-1f62937642">*</span>
                             </label>
 
-                            <input type="text"
+                            <input type="text" class="csp-style-51fd58adb1"
                                    id="nome"
                                    th:field="*{nome}"
                                    placeholder="Ex: Carlos Silva"
                                    required
-                                   style="height: var(--control-height, 38px); padding: 0 var(--space-3); border: 1px solid var(--border-strong); border-radius: var(--radius-md); background: var(--color-field); color: var(--color-text); font-size: var(--font-size-sm);">
+                                  >
                         </div>
 
-                        <div class="field" style="display: flex; flex-direction: column; gap: 4px;">
-                            <label for="funcao" style="font-size: var(--font-size-sm); font-weight: 500;">
+                        <div class="field csp-style-ef1f3a5dff">
+                            <label for="funcao" class="csp-style-e4c9ee3efa">
                                 Função
                             </label>
 
-                            <input type="text"
+                            <input type="text" class="csp-style-51fd58adb1"
                                    id="funcao"
                                    th:field="*{funcao}"
                                    placeholder="Ex: Soldador, Pintor"
                                    maxlength="30"
-                                   style="height: var(--control-height, 38px); padding: 0 var(--space-3); border: 1px solid var(--border-strong); border-radius: var(--radius-md); background: var(--color-field); color: var(--color-text); font-size: var(--font-size-sm);">
+                                  >
                         </div>
 
-                        <div class="field" style="display: flex; flex-direction: column; gap: 4px;">
-                            <label for="setorPadraoId" style="font-size: var(--font-size-sm); font-weight: 500;">
+                        <div class="field csp-style-ef1f3a5dff">
+                            <label for="setorPadraoId" class="csp-style-e4c9ee3efa">
                                 Setor Padrão
                             </label>
 
-                            <select id="setorPadraoId" th:field="*{setorPadraoId}"
-                                    style="height: var(--control-height, 38px); padding: 0 var(--space-3); border: 1px solid var(--border-strong); border-radius: var(--radius-md); background: var(--color-field); color: var(--color-text); font-size: var(--font-size-sm);">
+                            <select id="setorPadraoId" class="csp-style-51fd58adb1" th:field="*{setorPadraoId}"
+                                   >
                                 <option value="">Nenhum / Volante</option>
                                 <option th:each="setor : ${listaSetores}"
                                         th:value="${setor.id}"
@@ -225,7 +226,7 @@
                     <div class="modal-actions">
                         <button type="button"
                                 class="btn-cancel"
-                                onclick="hideForm()">
+                               data-csp-action="hideForm">
                             Cancelar
                         </button>
 

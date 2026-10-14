@@ -54,10 +54,10 @@ function filtrarPorStatus(statusSelecionado) {
         const statusLinha = linha.getAttribute('data-status');
 
         if (statusSelecionado === '' || statusLinha === statusSelecionado) {
-            linha.style.display = '';
+            linha.hidden = false;
             contadorVisiveis++;
         } else {
-            linha.style.display = 'none';
+            linha.hidden = true;
         }
     });
 
@@ -75,15 +75,7 @@ function initProgressBarAnimation() {
     const progressFills = document.querySelectorAll('.prog-fill');
 
     progressFills.forEach(fill => {
-        const targetWidth = fill.style.width;
-        fill.style.width = '0%';
-
-        requestAnimationFrame(() => {
-            setTimeout(() => {
-                fill.style.transition = 'width 0.6s cubic-bezier(0.4, 0, 0.2, 1)';
-                fill.style.width = targetWidth;
-            }, 50);
-        });
+        fill.classList.add('progress-animated');
     });
 }
 
@@ -98,7 +90,7 @@ let contadorLinhas = 0;
 let qtdTotalDivisao = 0;
 
 function abrirModalDivisao(ordemSetorId, quantidadeTotal, produtoNome) {
-    document.getElementById('modalDivisao').style.display = 'flex';
+    document.getElementById('modalDivisao').classList.add('is-open');
     document.getElementById('modalProdutoNome').textContent = produtoNome;
     document.getElementById('modalQtdTotal').textContent = quantidadeTotal;
     document.getElementById('qtdEsperada').textContent = quantidadeTotal;
@@ -128,7 +120,7 @@ function abrirModalDivisao(ordemSetorId, quantidadeTotal, produtoNome) {
 }
 
 function fecharModalDivisao() {
-    document.getElementById('modalDivisao').style.display = 'none';
+    document.getElementById('modalDivisao').classList.remove('is-open');
 }
 
 function adicionarLinhaDivisao() {
@@ -189,10 +181,12 @@ function atualizarSoma() {
     const btnConfirmar = document.getElementById('btnConfirmarDivisao');
     if (soma > 0 && soma <= qtdTotalDivisao) {
         btnConfirmar.disabled = false;
-        document.getElementById('somaAtual').style.color = 'var(--color-success)';
+        document.getElementById('somaAtual').classList.add('text-success');
+        document.getElementById('somaAtual').classList.remove('text-danger');
     } else {
         btnConfirmar.disabled = true;
-        document.getElementById('somaAtual').style.color = 'var(--color-danger)';
+        document.getElementById('somaAtual').classList.add('text-danger');
+        document.getElementById('somaAtual').classList.remove('text-success');
     }
 }
 

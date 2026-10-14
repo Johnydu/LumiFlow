@@ -8,7 +8,7 @@ function updateRoteiro(produtoId) {
     empty.className = 'r-empty';
     empty.textContent = 'Selecione um produto para ver o roteiro.';
     pillsContainer.appendChild(empty);
-    infoBox.style.display = 'none';
+    infoBox.classList.add('is-hidden');
     return;
   }
 
@@ -25,7 +25,7 @@ function updateRoteiro(produtoId) {
         erro.className = 'r-empty';
         erro.textContent = 'Erro ao carregar o roteiro deste produto.';
         pillsContainer.appendChild(erro);
-        infoBox.style.display = 'none';
+        infoBox.classList.add('is-hidden');
       });
 }
 
@@ -40,7 +40,7 @@ function renderRoteiro(fluxo) {
     empty.className = 'r-empty';
     empty.textContent = 'Este produto ainda não possui roteiro cadastrado.';
     pillsContainer.appendChild(empty);
-    infoBox.style.display = 'none';
+    infoBox.classList.add('is-hidden');
     return;
   }
 
@@ -58,5 +58,6 @@ function renderRoteiro(fluxo) {
     }
   });
 
-  infoBox.style.display = 'block';
+  infoBox.classList.remove('is-hidden');
+  infoBox.classList.add('is-visible');
 }

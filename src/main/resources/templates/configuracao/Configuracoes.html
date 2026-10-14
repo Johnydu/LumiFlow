@@ -58,50 +58,50 @@
                 </span>
             </div>
 
-            <div style="padding: var(--space-6); display: flex; flex-direction: column; gap: var(--space-6);">
+            <div class="csp-style-44fbd9927b">
 
                 <!-- SELETOR DE IDIOMA -->
-                <div class="field" style="display: flex; flex-direction: column; gap: 4px; max-width: 400px;">
-                    <label for="langSelect" style="font-size: var(--font-size-sm); font-weight: 500;">
+                <div class="field csp-style-fb86a60aff">
+                    <label for="langSelect" class="csp-style-e4c9ee3efa">
                         Idioma / Language
                     </label>
 
-                    <select id="langSelect"
-                            onchange="mudarIdioma(this.value)"
-                            style="height: var(--control-height, 38px); padding: 0 var(--space-3); border: 1px solid var(--border-strong); border-radius: var(--radius-md); background: var(--color-field); color: var(--color-text); font-size: var(--font-size-sm);">
+                    <select id="langSelect" class="csp-style-51fd58adb1"
+                           data-csp-change="mudarIdioma" data-csp-argument="value"
+                           >
                         <option value="pt-BR" th:selected="${#locale.language == 'pt'}">Português (Brasil)</option>
                         <option value="en" th:selected="${#locale.language == 'en'}">English</option>
                     </select>
                 </div>
 
                 <!-- SELETOR DE TEMA -->
-                <div class="field" style="display: flex; flex-direction: column; gap: 4px;">
-                    <label style="font-size: var(--font-size-sm); font-weight: 500; margin-bottom: 4px;">
+                <div class="field csp-style-ef1f3a5dff">
+                    <label class="csp-style-9ca608d952">
                         Tema do Sistema / Theme
                     </label>
 
-                    <div style="display: flex; gap: var(--space-3); flex-wrap: wrap;">
+                    <div class="csp-style-9f131dbf15">
                         <!-- Botão Identidade (Original) -->
                         <button type="button"
-                                onclick="mudarTema('identity')"
+                                data-csp-action="mudarTema" data-csp-value="identity"
                                 data-theme="identity"
-                                class="btn-submit"
-                                style="background: var(--color-surface); color: var(--color-text); border: 1px solid var(--border-strong);">
+                                class="btn-submit csp-style-07a6abd024"
+                               >
                             🎨 Identidade (Original)
                         </button>
 
                         <!-- Botão Claro -->
                         <button type="button"
-                                onclick="mudarTema('light')"
+                                data-csp-action="mudarTema" data-csp-value="light"
                                 data-theme="light"
-                                class="btn-submit"
-                                style="background: var(--color-surface); color: var(--color-text); border: 1px solid var(--border-strong);">
+                                class="btn-submit csp-style-07a6abd024"
+                               >
                             ☀️ Claro
                         </button>
 
                         <!-- Botão Escuro -->
                         <button type="button"
-                                onclick="mudarTema('dark')"
+                                data-csp-action="mudarTema" data-csp-value="dark"
                                 data-theme="dark"
                                 class="btn-submit">
                             🌙 Escuro

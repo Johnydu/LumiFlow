@@ -5,14 +5,14 @@
 function showForm() {
   const formPanel = document.getElementById('form-panel');
   if (formPanel) {
-    formPanel.style.display = 'flex'; // Exibe o overlay do modal centralizado
+    formPanel.classList.add('is-open');
   }
 }
 
 function hideForm() {
   const formPanel = document.getElementById('form-panel');
   if (formPanel) {
-    formPanel.style.display = 'none';
+    formPanel.classList.remove('is-open');
 
     const form = document.querySelector('.modal-box form');
     if (form) {
@@ -99,7 +99,7 @@ document.addEventListener('DOMContentLoaded', () => {
 
   if (alert) {
     setTimeout(() => {
-      alert.style.opacity = '0';
+      alert.classList.add('is-dismissing');
 
       setTimeout(() => {
         alert.remove();
