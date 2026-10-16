@@ -23,7 +23,6 @@
     <link rel="stylesheet" th:href="@{/css/components/badges.css}">
     <link rel="stylesheet" th:href="@{/css/components/status.css}">
     <link rel="stylesheet" th:href="@{/css/components/alerts.css}">
-    <!-- Componente Modal Centralizado -->
     <link rel="stylesheet" th:href="@{/css/components/modal.css}">
 
     <!-- 4. Page Specific -->
@@ -58,52 +57,50 @@
                 </span>
             </div>
 
-            <div class="csp-style-44fbd9927b">
+            <div class="config-body">
 
                 <!-- SELETOR DE IDIOMA -->
-                <div class="field csp-style-fb86a60aff">
-                    <label for="langSelect" class="csp-style-e4c9ee3efa">
+                <div class="field config-field">
+                    <label for="langSelect" class="config-label">
                         Idioma / Language
                     </label>
 
-                    <select id="langSelect" class="csp-style-51fd58adb1"
-                           data-csp-change="mudarIdioma" data-csp-argument="value"
-                           >
+                    <select id="langSelect" class="config-select"
+                            data-csp-change="mudarIdioma"
+                            data-csp-argument="value">
                         <option value="pt-BR" th:selected="${#locale.language == 'pt'}">Português (Brasil)</option>
                         <option value="en" th:selected="${#locale.language == 'en'}">English</option>
                     </select>
                 </div>
 
                 <!-- SELETOR DE TEMA -->
-                <div class="field csp-style-ef1f3a5dff">
-                    <label class="csp-style-9ca608d952">
+                <div class="field config-field">
+                    <label class="config-label">
                         Tema do Sistema / Theme
                     </label>
 
-                    <div class="csp-style-9f131dbf15">
+                    <div class="theme-buttons-group">
                         <!-- Botão Identidade (Original) -->
                         <button type="button"
-                                data-csp-action="mudarTema" data-csp-value="identity"
-                                data-theme="identity"
-                                class="btn-submit csp-style-07a6abd024"
-                               >
+                                data-csp-action="mudarTema"
+                                data-csp-value="identity"
+                                class="btn-submit theme-btn">
                             🎨 Identidade (Original)
                         </button>
 
                         <!-- Botão Claro -->
                         <button type="button"
-                                data-csp-action="mudarTema" data-csp-value="light"
-                                data-theme="light"
-                                class="btn-submit csp-style-07a6abd024"
-                               >
+                                data-csp-action="mudarTema"
+                                data-csp-value="light"
+                                class="btn-submit theme-btn">
                             ☀️ Claro
                         </button>
 
                         <!-- Botão Escuro -->
                         <button type="button"
-                                data-csp-action="mudarTema" data-csp-value="dark"
-                                data-theme="dark"
-                                class="btn-submit">
+                                data-csp-action="mudarTema"
+                                data-csp-value="dark"
+                                class="btn-submit theme-btn">
                             🌙 Escuro
                         </button>
                     </div>
@@ -116,9 +113,9 @@
 
 </main>
 
-<script th:src="@{/js/configuracoes.js}"></script>
-<script th:src="@{/js/sidebar.js}"></script>
-<script th:src="@{/js/alerts.js}"></script>
+<script th:src="@{/js/csp-actions.js}" defer></script>
+<script th:src="@{/js/sidebar.js}" defer></script>
+<script th:src="@{/js/alerts.js}" defer></script>
 
 </body>
 </html>

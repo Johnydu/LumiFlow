@@ -319,7 +319,8 @@
         "🌙 Escuro": "🌙 Dark",
         "🎨 Identidade (Original)": "🎨 Brand (Default)",
         "🔧 Refugo": "🔧 Scrap",
-        "🗑 Excluir": "🗑 Delete"
+        "🗑 Excluir": "🗑 Delete",
+        "Pausar": "Pause",
     };
 
     if (!document.documentElement.lang.toLowerCase().startsWith('en')) {

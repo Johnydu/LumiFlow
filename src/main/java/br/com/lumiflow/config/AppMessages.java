@@ -76,6 +76,9 @@ public final class AppMessages {
     public static final String ERROR_DIVISION_SUM_MISMATCH = "error.division.sum.mismatch";
     public static final String ERROR_ORDER_NOTFOUND = "error.order.notfound";
     public static final String ERROR_DIVISION_VARIANT_DUPLICATE = "error.division.variant.duplicate";
+    public static final String SUCCESS_ORDER_PAUSADA = "success.order.pausada";
+    public static final String ERROR_DIVISION_ALREADY_STARTED = "error.division.already.started";
+    public static final String ERROR_ORDER_NOT_PAUSABLE = "error.order.not.pausable";
     // ==================== LANÇAMENTO / APONTAMENTO ====================
     public static final String SUCCESS_LAUNCH_REGISTERED = "success.launch.registered";
     public static final String ERROR_LAUNCH_EXCEEDS_PENDING = "error.launch.exceeds.pending";

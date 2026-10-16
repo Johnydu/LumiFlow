@@ -114,8 +114,8 @@ public class OrdemDetalheService {
         if (ordem.getStatus() == EstatusOrdemProducao.CONCLUIDA) {
             return EstatusOrdemProducao.CONCLUIDA;
         }
-        boolean emAndamento = linhas.stream().anyMatch(l ->
-                l.getStatus() == EstatusOrdemProducao.EM_ANDAMENTO || l.getQtdProduzida() > 0);
+        boolean emAndamento = linhas.stream()
+                .anyMatch(l -> l.getStatus() == EstatusOrdemProducao.EM_ANDAMENTO);
         if (emAndamento) {
             return EstatusOrdemProducao.EM_ANDAMENTO;
         }
@@ -163,6 +163,7 @@ public class OrdemDetalheService {
         return linhas.stream()
                 .map(l -> new EtapaOrdemDetalheDTO(
                         l.getId(),
+                        l.getSetor().getId(),
                         l.getSetor().getNome(),
                         etapaPorSequencia.get(l.getSequencia()),
                         l.getVariante(),

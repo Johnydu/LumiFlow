@@ -185,17 +185,16 @@ public class LancamentoService {
         proximaEtapa.setQtdRecebida(proximaEtapa.getQtdRecebida() + quantidadeLancada);
         proximaEtapa.setQtdPendente(proximaEtapa.getQtdPendente() + quantidadeLancada);
 
-        if (proximaEtapa.getQtdPendente() > 0) {
-            // Apenas estados válidos do enum
-            if (proximaEtapa.getStatus() == EstatusOrdemProducao.CONCLUIDA ||
-                    proximaEtapa.getStatus() == EstatusOrdemProducao.DISPONIVEL) {
-                if (proximaEtapa.getQtdProduzida() > 0) {
-                    proximaEtapa.setStatus(EstatusOrdemProducao.EM_ANDAMENTO);
-                } else {
-                    proximaEtapa.setStatus(EstatusOrdemProducao.DISPONIVEL); // <--- Garante que fica DISPONIVEL
-                }
-                proximaEtapa.setFim(null);
-            }
+        if (proximaEtapa.getQtdPendente() > 0
+                && proximaEtapa.getStatus() == EstatusOrdemProducao.CONCLUIDA) {
+
+            proximaEtapa.setStatus(
+                    proximaEtapa.getQtdProduzida() > 0
+                            ? EstatusOrdemProducao.EM_ANDAMENTO
+                            : EstatusOrdemProducao.DISPONIVEL
+            );
+
+            proximaEtapa.setFim(null);
         }
 
         ordemSetorRepository.save(proximaEtapa);

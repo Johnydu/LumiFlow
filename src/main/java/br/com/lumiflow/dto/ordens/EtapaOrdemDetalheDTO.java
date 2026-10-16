@@ -4,6 +4,7 @@ import br.com.lumiflow.entity.enums.EstatusOrdemProducao;
 
 public record EtapaOrdemDetalheDTO(
         Long ordemSetorId,
+        Long setorId,
         String setor,
         String etapa,
         String variante,

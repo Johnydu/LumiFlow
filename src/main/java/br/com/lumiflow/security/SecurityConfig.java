@@ -105,6 +105,9 @@ public class SecurityConfig {
                         .hasAnyRole(ROLE_GESTAO, ROLE_PCP, ROLE_SUPERVISOR)
                         .requestMatchers(HttpMethod.POST, "/dashboard/ordens-setor/*/ordens/*/dividir")
                         .hasAnyRole(ROLE_GESTAO, ROLE_PCP, ROLE_SUPERVISOR)
+                        .requestMatchers(HttpMethod.POST, "/dashboard/ordens-setor/*/ordens/*/pausar"
+                        )
+                        .hasAnyRole(ROLE_ADMIN, ROLE_GESTAO, ROLE_PCP, ROLE_SUPERVISOR)
 
                         // Ordens por setor: autenticados
                         .requestMatchers("/dashboard/ordens-setor/**").authenticated()

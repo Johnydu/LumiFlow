@@ -1,4 +1,4 @@
-/* =================================================================â€”
+/* =================================================================
    CONFIGURAÇÕES — Estilos Específicos da Página
    =================================================================== */
 
@@ -17,6 +17,14 @@
     overflow: hidden;
 }
 
+/* Força o efeito translúcido (vidro) especificamente no Tema Identidade original */
+html:not(.theme-light):not(.theme-dark) .page-configuracao .panel {
+    background: rgba(15, 23, 42, 0.65) !important;
+    backdrop-filter: blur(12px);
+    -webkit-backdrop-filter: blur(12px);
+    border-color: rgba(255, 255, 255, 0.1);
+}
+
 .page-configuracao .panel-header {
     padding: var(--space-4) var(--space-6);
     border-bottom: 1px solid var(--border-color, var(--border-strong));
@@ -31,9 +39,47 @@
     color: var(--color-text);
 }
 
-/* Campos de Preferências */
-.page-configuracao .field label {
+/* Corpo e Campos de Preferências */
+.config-body {
+    padding: var(--space-6);
+    display: flex;
+    flex-direction: column;
+    gap: var(--space-6);
+}
+
+.config-field {
+    display: flex;
+    flex-direction: column;
+    gap: var(--space-2);
+}
+
+.config-label {
+    font-size: var(--font-size-sm);
+    font-weight: 500;
     color: var(--color-text);
+}
+
+.config-select {
+    padding: var(--space-3);
+    border-radius: var(--radius-md);
+    border: 1px solid var(--border-strong);
+    background: var(--color-surface);
+    color: var(--color-text);
+    font-size: var(--font-size-md);
+    width: 100%;
+    max-width: 300px;
+}
+
+/* Grupo de botões de tema */
+.theme-buttons-group {
+    display: flex;
+    gap: var(--space-3);
+    flex-wrap: wrap;
+}
+
+.theme-btn {
+    flex: 1;
+    min-width: 160px;
 }
 
 .page-configuracao select:focus,
@@ -48,7 +94,7 @@
         padding: var(--space-3);
     }
 
-    .page-configuracao div[style*="display: flex; gap: var(--space-3)"] {
+    .theme-buttons-group {
         flex-direction: column;
     }
 }

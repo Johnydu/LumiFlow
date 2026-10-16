@@ -205,6 +205,38 @@ public class OrdemProducaoService {
     }
 
     @Transactional
+    public void pausarEtapa(Long ordemSetorId) {
+        try {
+            if (ordemSetorId == null) {
+                throw new BusinessException(AppMessages.ERROR_ORDER_SECTOR_NOTFOUND);
+            }
+
+            OrdemSetor ordemSetor = ordemSetorRepository.findById(ordemSetorId)
+                    .orElseThrow(() ->
+                            new BusinessException(AppMessages.ERROR_ORDER_SECTOR_NOTFOUND));
+
+            if (ordemSetor.getStatus() != EstatusOrdemProducao.LIBERADA
+                    && ordemSetor.getStatus() != EstatusOrdemProducao.EM_ANDAMENTO) {
+                throw new BusinessException(AppMessages.ERROR_ORDER_NOT_PAUSABLE);
+            }
+
+            ordemSetor.setStatus(EstatusOrdemProducao.DISPONIVEL);
+            ordemSetorRepository.save(ordemSetor);
+
+        } catch (BusinessException e) {
+            throw e;
+        } catch (DataAccessException e) {
+            log.error("Erro de base de dados ao pausar etapa {}: {}",
+                    ordemSetorId, e.getMessage(), e);
+            throw new BusinessException(AppMessages.ERROR_VALIDATION_FAILED);
+        } catch (Exception e) {
+            log.error("Erro inesperado ao pausar etapa {}: {}",
+                    ordemSetorId, e.getMessage(), e);
+            throw new BusinessException(AppMessages.ERROR_VALIDATION_FAILED);
+        }
+    }
+
+    @Transactional
     public void dividirEtapa(Long ordemSetorId, DividirEtapaDTO dto) {
         try {
             if (ordemSetorId == null || dto == null || dto.divisoes() == null) {
@@ -216,6 +248,16 @@ public class OrdemProducaoService {
 
             if (ordemOriginal.getStatus() != EstatusOrdemProducao.DISPONIVEL) {
                 throw new BusinessException(AppMessages.ERROR_ORDER_NOT_AVAILABLE);
+            }
+
+            // Linha de refugo não pode ser dividida: o retrabalho está vinculado a ela
+            if (ordemOriginal.isOrigemRefugo()) {
+                throw new BusinessException(AppMessages.ERROR_ORDER_NOT_AVAILABLE);
+            }
+
+            // Etapa que já teve produção (por exemplo, pausada pelo PCP) não pode ser dividida
+            if (ordemOriginal.getQtdProduzida() > 0) {
+                throw new BusinessException(AppMessages.ERROR_DIVISION_ALREADY_STARTED);
             }
 
             int somaDivisoes = dto.divisoes().stream().mapToInt(DivisaoItemDTO::quantidade).sum();
@@ -257,6 +299,7 @@ public class OrdemProducaoService {
             int restante = ordemOriginal.getQtdPendente() - somaDivisoes;
 
             if (restante > 0) {
+                // A sobra mantém a variante que a linha já tinha (null quando não havia divisão)
                 ordemOriginal.setQtdRecebida(restante);
                 ordemOriginal.setQtdPendente(restante);
                 ordemSetorRepository.save(ordemOriginal);

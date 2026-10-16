@@ -6,6 +6,7 @@ import br.com.lumiflow.dto.ordens.OrdemFiltroDTO;
 import br.com.lumiflow.dto.ordens.OrdemListagemDTO;
 import br.com.lumiflow.dto.ordens.ResumoSetorDTO;
 import br.com.lumiflow.entity.Setor;
+import org.springframework.security.core.Authentication;
 import br.com.lumiflow.exception.BusinessException;
 import br.com.lumiflow.service.OrdemProducaoService;
 import br.com.lumiflow.service.OrdemSetorService;
@@ -89,14 +90,17 @@ public class OrdemSetorController {
         return "ordens/ListaOrdem";
     }
 
-
     @PostMapping("/{setorId}/ordens/{ordemSetorId}/liberar")
-    @PreAuthorize("hasAnyRole('ADMIN','PCP','SUPERVISOR')")
+    @PreAuthorize("hasAnyRole('ADMIN','PCP','GESTAO','SUPERVISOR')")
     public String liberarOrdem(@PathVariable Long setorId, @PathVariable Long ordemSetorId,
+                               @RequestParam(value = "ordemId", required = false) Long ordemId,
+                               @RequestParam(value = "retorno", required = false) String retorno,
+                               Authentication authentication,
                                RedirectAttributes attributes, Locale locale) {
 
         try {
             ordemProducaoService.liberarOrdem(ordemSetorId);
+            log.info("Etapa {} liberada por {}", ordemSetorId, authentication.getName());
             attributes.addFlashAttribute("success", messageSource
                     .getMessage(AppMessages.SUCCESS_ORDER_LIBERADA, null, locale));
         } catch (BusinessException e) {
@@ -109,21 +113,53 @@ public class OrdemSetorController {
                     .getMessage(AppMessages.ERROR_VALIDATION_FAILED, null, locale));
         }
 
-        return "redirect:/dashboard/ordens-setor/" + setorId;
+        return destino(setorId, ordemId, retorno);
     }
 
-    @PreAuthorize("hasAnyRole('ADMIN','PCP','SUPERVISOR')")
+    @PostMapping("/{setorId}/ordens/{ordemSetorId}/pausar")
+    @PreAuthorize("hasAnyRole('ADMIN','PCP','GESTAO','SUPERVISOR')")
+    public String pausarEtapa(@PathVariable Long setorId, @PathVariable Long ordemSetorId,
+                              @RequestParam(value = "ordemId", required = false) Long ordemId,
+                              @RequestParam(value = "retorno", required = false) String retorno,
+                              Authentication authentication,
+                              RedirectAttributes attributes, Locale locale) {
+
+        try {
+            ordemProducaoService.pausarEtapa(ordemSetorId);
+            log.info("Etapa {} devolvida para DISPONIVEL por {}", ordemSetorId, authentication.getName());
+            attributes.addFlashAttribute("success", messageSource
+                    .getMessage(AppMessages.SUCCESS_ORDER_PAUSADA, null, locale));
+        } catch (BusinessException e) {
+            log.warn("Erro de negócio ao pausar ordem setor id {}: {}", ordemSetorId, e.getMessage());
+            String errorMessage = messageSource.getMessage(e.getMessage(), null, e.getMessage(), locale);
+            attributes.addFlashAttribute("error", errorMessage);
+        } catch (Exception e) {
+            log.error("Erro inesperado ao pausar ordem setor id {}: {}", ordemSetorId, e.getMessage(), e);
+            attributes.addFlashAttribute("error", messageSource
+                    .getMessage(AppMessages.ERROR_VALIDATION_FAILED, null, locale));
+        }
+
+        return destino(setorId, ordemId, retorno);
+    }
+
     @PostMapping("/{setorId}/ordens/{ordemSetorId}/dividir")
+    @PreAuthorize("hasAnyRole('ADMIN','PCP','GESTAO','SUPERVISOR')")
     public String dividirEtapa(@PathVariable Long setorId, @PathVariable Long ordemSetorId,
                                @Valid @ModelAttribute("dividirDTO") DividirEtapaDTO dto, BindingResult result,
-                               Model model, RedirectAttributes attributes, Locale locale) {
+                               @RequestParam(value = "ordemId", required = false) Long ordemId,
+                               @RequestParam(value = "retorno", required = false) String retorno,
+                               Authentication authentication,
+                               RedirectAttributes attributes, Locale locale) {
 
         if (result.hasErrors()) {
-            return erroValidacao(setorId, dto, result, model, locale);
+            attributes.addFlashAttribute("error", messageSource
+                    .getMessage(AppMessages.ERROR_VALIDATION_FAILED, null, locale));
+            return destino(setorId, ordemId, retorno);
         }
 
         try {
             ordemProducaoService.dividirEtapa(ordemSetorId, dto);
+            log.info("Etapa {} dividida por {}", ordemSetorId, authentication.getName());
             attributes.addFlashAttribute("success", messageSource
                     .getMessage(AppMessages.SUCCESS_ORDER_DIVIDED, null, locale));
         } catch (BusinessException e) {
@@ -136,32 +172,23 @@ public class OrdemSetorController {
                     .getMessage(AppMessages.ERROR_VALIDATION_FAILED, null, locale));
         }
 
+        return destino(setorId, ordemId, retorno);
+    }
+
+    /**
+     * Destino após a ação: volta para os detalhes da ordem quando a ação veio de lá;
+     * caso contrário, volta para a lista do setor. O destino é montado só com ids numéricos,
+     * sem aceitar URL vinda do formulário (evita open redirect).
+     */
+    private String destino(Long setorId, Long ordemId, String retorno) {
+        if ("detalhes".equals(retorno) && ordemId != null) {
+            return "redirect:/dashboard/ordens/" + ordemId + "/detalhes";
+        }
         return "redirect:/dashboard/ordens-setor/" + setorId;
     }
 
-    private String erroValidacao(Long setorId, DividirEtapaDTO dto, BindingResult result,
-                                 Model model, Locale locale) {
-        List<OrdemListagemDTO> ordens = ordemProducaoService.listarPorSetorIdEFiltros(
-                setorId, new OrdemFiltroDTO(null, null, null));
-        Setor setor = setorService.buscarSetorPorId(setorId);
-        model.addAttribute("ordens", ordens);
-        model.addAttribute("setorAtual", setor != null ? setor.getNome() : "Desconhecido");
-        model.addAttribute("setorIdAtual", setorId);
-        model.addAttribute("buscaAtual", null);
-        model.addAttribute("statusAtual", null);
-        model.addAttribute("totalOrdens", ordens.size());
-        model.addAttribute("dividirDTO", dto);
 
-        String mensagem = result.getAllErrors().stream()
-                .findFirst()
-                .map(error -> {
-                    String defaultMessage = error.getDefaultMessage();
-                    return defaultMessage == null ? "" :
-                            messageSource.getMessage(defaultMessage, null, defaultMessage, locale);
-                })
-                .orElseGet(() -> messageSource.getMessage(
-                        AppMessages.ERROR_VALIDATION_FAILED, null, locale));
-        model.addAttribute("error", mensagem);
-        return "ordens/ListaOrdem";
-    }
+
+
+
 }
