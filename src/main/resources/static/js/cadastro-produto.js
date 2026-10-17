@@ -69,13 +69,13 @@ function editarProduto(id, nome, codigo, descricao) {
   const idInput = document.getElementById('id');
   if (idInput) idInput.value = id;
 
-  const nomeInput = document.getElementById('nome');
+  const nomeInput = document.getElementById('nomeProduto');
   if (nomeInput) nomeInput.value = nome;
 
-  const codigoInput = document.getElementById('codigo');
+  const codigoInput = document.getElementById('codigoProduto');
   if (codigoInput) codigoInput.value = codigo;
 
-  const descInput = document.getElementById('descricao');
+  const descInput = document.getElementById('descricaoProduto');
   if (descInput) descInput.value = descricao || '';
 
   const titleEl = document.getElementById('form-title');
@@ -88,11 +88,11 @@ function resetarFormularios() {
   // Reseta aba de dados
   const idInput = document.getElementById('id');
   if (idInput) idInput.value = '';
-  const nomeInput = document.getElementById('nome');
+  const nomeInput = document.getElementById('nomeProduto');
   if (nomeInput) nomeInput.value = '';
-  const codigoInput = document.getElementById('codigo');
+  const codigoInput = document.getElementById('codigoProduto');
   if (codigoInput) codigoInput.value = '';
-  const descInput = document.getElementById('descricao');
+  const descInput = document.getElementById('descricaoProduto');
   if (descInput) descInput.value = '';
 
   const form = document.getElementById('produto-form');

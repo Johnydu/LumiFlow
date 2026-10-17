@@ -27,7 +27,9 @@
     <link rel="stylesheet" th:href="@{/css/utils.css}">
     <link rel="stylesheet" th:href="@{/css/responsive.css}">
     <link rel="stylesheet"
-          href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+          href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css"
+          integrity="sha384-iw3OoTErCYJJB9mCa8LNS2hbsQ7M3C0EpIsO/H5+EGAkPGc6rk+V8i04oW/K5xq0"
+          crossorigin="anonymous" referrerpolicy="no-referrer">
 </head>
 
 <body class="page-ordemproducao-detalhesordem">
@@ -205,13 +207,14 @@
 
                     <!-- CORRIGIDO: Apenas uma célula de ação limpa, sem duplicações -->
                     <td>
-                        <div class="table-actions">
+                        <div class="table-actions"
+                             sec:authorize="hasAnyRole('ADMIN','GESTAO','SUPERVISOR','PCP')">
                             <form th:if="${etapa.status().name() == 'DISPONIVEL'}"
                                   method="post"
                                   th:action="@{/dashboard/ordens-setor/{setorId}/ordens/{ordemSetorId}/liberar(setorId=${etapa.setorId()}, ordemSetorId=${etapa.ordemSetorId()})}"
-                                  style="display:inline;">
-                                <input type="hidden" name="retorno" value="detalhes"/>
-                                <input type="hidden" name="ordemId" th:value="${ordem.id()}"/>
+                                  class="detail-action-form">
+                                <input type="hidden" th:id="|retornoLiberar-${etapa.ordemSetorId()}|" name="retorno" value="detalhes"/>
+                                <input type="hidden" th:id="|ordemLiberar-${etapa.ordemSetorId()}|" name="ordemId" th:value="${ordem.id()}"/>
                                 <button type="submit" class="btn-liberar">Liberar</button>
                             </form>
 
@@ -232,10 +235,10 @@
                             <form th:if="${etapa.status().name() == 'LIBERADA' or etapa.status().name() == 'EM_ANDAMENTO'}"
                                   method="post"
                                   th:action="@{/dashboard/ordens-setor/{setorId}/ordens/{ordemSetorId}/pausar(setorId=${etapa.setorId()}, ordemSetorId=${etapa.ordemSetorId()})}"
-                                  onsubmit="return confirm('Voltar esta etapa para Disponível? A produção será interrompida até uma nova liberação.');"
-                                  style="display:inline;">
-                                <input type="hidden" name="retorno" value="detalhes"/>
-                                <input type="hidden" name="ordemId" th:value="${ordem.id()}"/>
+                                  data-confirm="Voltar esta etapa para Disponível? A produção será interrompida até uma nova liberação."
+                                  class="detail-action-form">
+                                <input type="hidden" th:id="|retornoPausar-${etapa.ordemSetorId()}|" name="retorno" value="detalhes"/>
+                                <input type="hidden" th:id="|ordemPausar-${etapa.ordemSetorId()}|" name="ordemId" th:value="${ordem.id()}"/>
                                 <button type="submit" class="btn-pausar">Pausar</button>
                             </form>
 

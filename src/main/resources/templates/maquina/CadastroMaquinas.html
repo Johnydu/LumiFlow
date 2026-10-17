@@ -22,7 +22,9 @@
   <link rel="stylesheet" th:href="@{/css/utils.css}">
   <link rel="stylesheet" th:href="@{/css/pages/maquinas.css}">
   <link rel="stylesheet" th:href="@{/css/responsive.css}"/>
-  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css"
+        integrity="sha384-iw3OoTErCYJJB9mCa8LNS2hbsQ7M3C0EpIsO/H5+EGAkPGc6rk+V8i04oW/K5xq0"
+        crossorigin="anonymous" referrerpolicy="no-referrer">
 </head>
 <body class="page-maquina-cadastromaquinas">
 <div th:replace="~{fragments/messages :: alerts}"></div>
@@ -49,6 +51,7 @@
       <!-- Filtro por setor via Dropdown -->
       <div class="filtros-bar csp-style-8c3010604d">
         <div class="field csp-style-9d89611fc9">
+          <label for="filtroSetorSelect">Filtrar por setor</label>
           <select id="filtroSetorSelect" class="form-control" data-csp-change="handleFiltrarSetorSelect" data-csp-argument="element">
             <option value="todos">Todos os setores</option>
             <option th:each="setor : ${setores}"
@@ -104,6 +107,7 @@
                      >
 
                   <input type="hidden"
+                         th:id="|csrfExcluirMaquina-${maquina.id}|"
                          th:name="${_csrf.parameterName}"
                          th:value="${_csrf.token}" />
 
@@ -142,19 +146,20 @@
              >
 
           <input type="hidden"
+                 id="csrfMaquina"
                  th:name="${_csrf.parameterName}"
                  th:value="${_csrf.token}" />
 
-          <input type="hidden" th:field="*{id}"/>
+          <input type="hidden" id="maquinaId" th:field="*{id}"/>
 
           <div class="modal-body csp-style-dbc770e380">
             <div class="field csp-style-954c7a14fa">
-              <label for="nome" class="csp-style-e4c9ee3efa">
+              <label for="nomeMaquina" class="csp-style-e4c9ee3efa">
                 Nome da máquina <span class="csp-style-1f62937642">*</span>
               </label>
 
               <input type="text"
-                     id="nome"
+                     id="nomeMaquina"
                      th:field="*{nome}"
                      class="form-control csp-style-51fd58adb1"
                      placeholder="Ex: Dobradeira Argus 1" required
@@ -162,11 +167,11 @@
             </div>
 
             <div class="field csp-style-954c7a14fa">
-              <label class="csp-style-e4c9ee3efa">
+              <label for="setorMaquinaId" class="csp-style-e4c9ee3efa">
                 Setor vinculado <span class="csp-style-1f62937642">*</span>
               </label>
 
-              <select th:field="*{setorId}" class="csp-style-51fd58adb1"
+              <select id="setorMaquinaId" th:field="*{setorId}" class="csp-style-51fd58adb1"
                      >
                 <option value="">Selecione o setor</option>
 

@@ -47,6 +47,13 @@
   transition: border-color 0.2s ease, box-shadow 0.2s ease, background 0.2s ease;
 }
 
+.field select {
+  min-height: var(--control-height, 38px);
+  padding-top: 0;
+  padding-bottom: 0;
+  line-height: normal;
+}
+
 .field input:focus,
 .field select:focus,
 .field textarea:focus {

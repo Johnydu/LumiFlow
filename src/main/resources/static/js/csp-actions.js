@@ -49,6 +49,30 @@ document.addEventListener('submit', event => {
   }
 });
 
+document.addEventListener('keydown', event => {
+  if (!['ArrowLeft', 'ArrowRight', 'Home', 'End'].includes(event.key)) return;
+
+  const currentTab = event.target instanceof Element
+    ? event.target.closest('[role="tab"]')
+    : null;
+  const tabList = currentTab?.closest('[role="tablist"]');
+  if (!currentTab || !tabList) return;
+
+  const tabs = Array.from(tabList.querySelectorAll('[role="tab"]:not(:disabled)'));
+  const currentIndex = tabs.indexOf(currentTab);
+  if (currentIndex < 0 || tabs.length < 2) return;
+
+  event.preventDefault();
+  const nextIndex = event.key === 'Home'
+    ? 0
+    : event.key === 'End'
+      ? tabs.length - 1
+      : (currentIndex + (event.key === 'ArrowRight' ? 1 : -1) + tabs.length) % tabs.length;
+
+  tabs[nextIndex].focus();
+  tabs[nextIndex].click();
+});
+
 document.addEventListener('DOMContentLoaded', () => {
   document.querySelectorAll('.progress-value[data-progress]').forEach(element => {
     const rawPercent = Number(element.dataset.progress.replace(',', '.'));

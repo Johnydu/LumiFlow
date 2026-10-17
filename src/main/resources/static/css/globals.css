@@ -82,6 +82,16 @@ textarea {
   max-width: 100%;
 }
 
+.visually-hidden {
+  position: absolute;
+  width: 1px;
+  height: 1px;
+  overflow: hidden;
+  clip: rect(0, 0, 0, 0);
+  clip-path: inset(50%);
+  white-space: nowrap;
+}
+
 /* Estilização global da barra de rolagem no canto da janela */
 ::-webkit-scrollbar {
   width: 12px;
@@ -130,4 +140,41 @@ table td button,
 table td a.btn {
   padding: 8px 14px;
   font-size: 0.9rem;
+}
+
+/* ======================================== */
+/* CORREÇÃO GLOBAL PARA SELECTS E INPUTS (GLASS) */
+/* ======================================== */
+
+select,
+.filtro-select,
+.form-control,
+.input {
+  background-color: var(--surface-subtle);
+  color: var(--color-text);
+  border: 1px solid var(--border-subtle);
+  border-radius: var(--radius-md);
+  backdrop-filter: blur(var(--blur-sm));
+  color-scheme: dark light;
+}
+
+/* Estado de foco com leve realce em vidro */
+select:focus,
+.filtro-select:focus,
+.form-control:focus,
+.input:focus {
+  background-color: var(--surface-glass);
+  color: var(--color-text);
+  border-color: var(--color-primary);
+  outline: none;
+  box-shadow: var(--shadow-focus);
+}
+
+/* IMPORTANTE: As opções do menu dropdown precisam de fundo sólido
+   para o texto não ficar ilegível ao abrir a lista suspensa */
+select option,
+.filtro-select option {
+  background-color: var(--color-surface);
+  color: var(--color-text);
+  padding: var(--space-2);
 }

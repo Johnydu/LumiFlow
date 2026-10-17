@@ -19,12 +19,16 @@
                sec:authorize="hasAnyRole('ADMIN', 'SUPERVISOR', 'GESTAO', 'PCP')"
                th:classappend="${activePage == 'dashboard'} ? 'active'"
                class="menu-item">Dashboard</a>
+
             <a th:href="@{/dashboard/ordens-setor}"
                th:classappend="${activePage == 'ordens-setor'} ? 'active' : ''"
                class="menu-item">Ordens</a>
-            <a th:href="@{/dashboard/lancamentos}"
-               th:classappend="${activePage == 'lancamentos'} ? 'active'"
-               class="menu-item">Lançamentos</a>
+
+            <a th:href="@{/dashboard/historico}"
+               sec:authorize="hasAnyRole('ADMIN', 'PCP', 'GESTAO', 'SUPERVISOR')"
+               th:classappend="${activePage == 'historico'} ? 'active'"
+               class="menu-item">Histórico / Lançamentos</a>
+
             <a th:href="@{/dashboard/vidracaria}"
                th:classappend="${activePage == 'vidracaria'} ? 'active'"
                class="menu-item">Vidraçaria</a>
@@ -37,22 +41,28 @@
                 <a th:href="@{/dashboard/produtos}"
                    th:classappend="${activePage == 'produtos'} ? 'active'"
                    class="menu-item">Produtos</a>
+
                 <a th:href="@{/dashboard/setores}"
                    th:classappend="${activePage == 'setores'} ? 'active'"
                    class="menu-item">Setores</a>
+
                 <a th:href="@{/dashboard/maquinas}"
                    th:classappend="${activePage == 'maquinas'} ? 'active'"
                    class="menu-item">Máquinas</a>
+
                 <a th:href="@{/dashboard/roteiros}"
                    th:classappend="${activePage == 'roteiros'} ? 'active'"
                    class="menu-item">Roteiros</a>
+
                 <a th:href="@{/dashboard/operadores}"
                    th:classappend="${activePage == 'operadores'} ? 'active'"
                    class="menu-item">Operadores</a>
+
                 <a th:href="@{/dashboard/usuario}"
                    sec:authorize="hasRole('ADMIN')"
                    th:classappend="${activePage == 'usuario'} ? 'active'"
                    class="menu-item">Usuários</a>
+
             </div>
         </div>
 
@@ -65,6 +75,7 @@
 
             <form th:action="@{/logout}" method="post" class="logout-form">
                 <input type="hidden"
+                       id="csrfLogout"
                        th:name="${_csrf.parameterName}"
                        th:value="${_csrf.token}"/>
                 <button type="submit" class="menu-item logout-btn">

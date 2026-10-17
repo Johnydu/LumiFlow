@@ -21,7 +21,9 @@
     <link rel="stylesheet" th:href="@{/css/pages/dashboard.css}">
     <link rel="stylesheet" th:href="@{/css/utils.css}">
     <link rel="stylesheet" th:href="@{/css/responsive.css}">
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css"
+          integrity="sha384-iw3OoTErCYJJB9mCa8LNS2hbsQ7M3C0EpIsO/H5+EGAkPGc6rk+V8i04oW/K5xq0"
+          crossorigin="anonymous" referrerpolicy="no-referrer">
 </head>
 <body class="page-dashboard-dashboard">
 <div th:replace="~{fragments/messages :: alerts}"></div>
@@ -110,7 +112,10 @@
             </span>
                             </td>
                             <td class="csp-style-dac4fe6c9b">
-                                <a th:href="@{/dashboard/ordens/{id}/detalhes(id=${ordem.id()})}" class="btn-ver">Detalhes</a>
+                                <a sec:authorize="hasAnyRole('ADMIN','GESTAO','SUPERVISOR','PCP')"
+                                   th:href="@{/dashboard/ordens/{id}/detalhes(id=${ordem.id()})}"
+                                   class="btn-ver">Detalhes</a>
+                                <span sec:authorize="!hasAnyRole('ADMIN','GESTAO','SUPERVISOR','PCP')">—</span>
                             </td>
                         </tr>
 

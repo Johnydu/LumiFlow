@@ -23,7 +23,9 @@
     <link rel="stylesheet" th:href="@{/css/pages/produtos.css}">
     <link rel="stylesheet" th:href="@{/css/utils.css}">
     <link rel="stylesheet" th:href="@{/css/responsive.css}">
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css"
+          integrity="sha384-iw3OoTErCYJJB9mCa8LNS2hbsQ7M3C0EpIsO/H5+EGAkPGc6rk+V8i04oW/K5xq0"
+          crossorigin="anonymous" referrerpolicy="no-referrer">
 </head>
 <body class="page-produto-cadastroproduto">
 <div th:replace="~{fragments/messages :: alerts}"></div>
@@ -46,7 +48,9 @@
 
     <div class="content">
         <form method="get" th:action="@{/dashboard/produtos}" id="form-busca-produto">
+            <label for="buscaProduto">Buscar produto</label>
             <input type="text"
+                   id="buscaProduto"
                    name="nome"
                    th:value="${param.nome}"
                    class="search"
@@ -106,7 +110,8 @@
 
                                 <form th:action="@{/dashboard/produtos/{id}/excluir(id=${produto.id})}"
                                       method="post">
-                                    <input type="hidden" th:name="${_csrf.parameterName}" th:value="${_csrf.token}"/>
+                                    <input type="hidden" th:id="|csrfExcluirProduto-${produto.id}|"
+                                           th:name="${_csrf.parameterName}" th:value="${_csrf.token}"/>
                                     <button type="submit"
                                             class="btn-del"
                                            data-csp-confirm="Tem certeza que deseja excluir este produto?">
@@ -145,6 +150,7 @@
                       method="post">
 
                     <input type="hidden"
+                           id="csrfProduto"
                            th:name="${_csrf.parameterName}"
                            th:value="${_csrf.token}"/>
 
@@ -154,35 +160,35 @@
 
                     <div class="modal-body csp-style-dbc770e380">
                         <div class="field csp-style-ef1f3a5dff">
-                            <label for="nome" class="csp-style-e4c9ee3efa">
+                            <label for="nomeProduto" class="csp-style-e4c9ee3efa">
                                 Nome do produto <span class="csp-style-1f62937642">*</span>
                             </label>
 
                             <input type="text" class="csp-style-51fd58adb1"
-                                   id="nome"
+                                   id="nomeProduto"
                                    th:field="*{nome}"
                                    placeholder="Ex: Plafon"
                                   >
                         </div>
 
                         <div class="field csp-style-ef1f3a5dff">
-                            <label for="codigo" class="csp-style-e4c9ee3efa">
+                            <label for="codigoProduto" class="csp-style-e4c9ee3efa">
                                 Código <span class="csp-style-1f62937642">*</span>
                             </label>
 
                             <input type="text" class="csp-style-51fd58adb1"
-                                   id="codigo"
+                                   id="codigoProduto"
                                    th:field="*{codigo}"
                                    placeholder="Ex: 123456" required
                                   >
                         </div>
 
                         <div class="field csp-style-ef1f3a5dff">
-                            <label for="descricao" class="csp-style-e4c9ee3efa">
+                            <label for="descricaoProduto" class="csp-style-e4c9ee3efa">
                                 Descrição
                             </label>
 
-                            <textarea id="descricao" class="csp-style-55a3a2bfc9"
+                            <textarea id="descricaoProduto" class="csp-style-55a3a2bfc9"
                                       th:field="*{descricao}"
                                       maxlength="500"
                                       rows="4"

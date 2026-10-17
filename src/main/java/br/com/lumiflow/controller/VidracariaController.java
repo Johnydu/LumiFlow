@@ -85,7 +85,7 @@ public class VidracariaController {
 
 
     @PostMapping("/cadastrar-chapa")
-    @PreAuthorize("hasAnyRole('PCP','SUPERVISOR')")
+    @PreAuthorize("hasAnyRole('PCP','SUPERVISOR','ADMIN','GESTAO')")
     public String cadastrarChapa(@Valid @ModelAttribute("chapaDTO") ChapaVidroDTO dto, BindingResult result,
                                  Model model, RedirectAttributes attributes, Locale locale) {
         if (result.hasErrors()) {

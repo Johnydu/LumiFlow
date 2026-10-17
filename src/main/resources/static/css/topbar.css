@@ -111,6 +111,8 @@
 
 .filtro-select {
   min-width: 160px;
+  height: 42px;
+  line-height: normal;
 }
 
 .filtro-input:focus,

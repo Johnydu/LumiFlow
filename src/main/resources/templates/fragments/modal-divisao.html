@@ -4,8 +4,7 @@
 
 <div th:fragment="modal(retorno)"
      id="modalDivisao"
-     class="modal-overlay"
-     style="display: none;"
+     class="modal-overlay is-hidden"
      sec:authorize="hasAnyRole('ADMIN', 'GESTAO', 'SUPERVISOR', 'PCP')">
 
     <div class="modal-box">
@@ -21,7 +20,7 @@
               method="post"
               th:action="@{/dashboard/ordens-setor/0/ordens/0/dividir}">
 
-            <input type="hidden" name="retorno" th:value="${retorno}">
+            <input type="hidden" id="retornoDivisao" name="retorno" th:value="${retorno}">
             <input type="hidden" name="ordemId" id="divisaoOrdemId">
 
             <div class="modal-body">

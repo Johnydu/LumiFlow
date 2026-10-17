@@ -2,30 +2,154 @@
    AJUSTES DE PAGINAÇÃO E LAYOUT RESPONSIVO
    ======================================== */
 
+body.page-ordemproducao-listaordem .history-link {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.5rem;
+  text-decoration: none;
+  height: 38px;
+  padding: 0 var(--space-4);
+  white-space: nowrap;
+}
+
+body.page-ordemproducao-listaordem .pause-form {
+  display: inline;
+}
+
+/* Painel de filtro ocupa toda a largura em linha */
+body.page-ordemproducao-listaordem .order-filter-panel {
+  padding: var(--space-4);
+  background: var(--surface-glass);
+  border: 1px solid var(--border-subtle);
+  border-radius: var(--radius-lg);
+  backdrop-filter: blur(var(--blur-md));
+  box-shadow: var(--shadow-glass);
+  width: 100%;
+}
+
+/* Força os elementos a ficarem alinhados estritamente na mesma linha */
+body.page-ordemproducao-listaordem .order-filters {
+  margin-bottom: 0;
+  display: flex;
+  flex-direction: row;
+  align-items: center;
+  gap: var(--space-3);
+  width: 100%;
+}
+
+/* O campo de busca cresce dinamicamente na linha */
+body.page-ordemproducao-listaordem .order-filters .search-input-wrapper {
+  flex: 1 1 auto;
+  min-width: 200px;
+}
+
+body.page-ordemproducao-listaordem .order-filters .filtro-input {
+  width: 100%;
+  height: 38px;
+  padding: var(--space-2) var(--space-3);
+  border: 1px solid var(--border-subtle);
+  border-radius: var(--radius-md);
+  background-color: var(--surface-subtle);
+  color: var(--color-text);
+  font-size: var(--font-size-sm);
+  transition: all 0.15s ease;
+}
+
+body.page-ordemproducao-listaordem .order-filters .filtro-input:focus {
+  outline: none;
+  border-color: var(--color-primary);
+  background-color: var(--surface-glass);
+  box-shadow: var(--shadow-focus);
+}
+
+/* Select de status compacto na mesma linha */
+body.page-ordemproducao-listaordem .order-filters .filtro-select {
+  flex: 0 0 170px;
+  height: 38px;
+  padding: 0 var(--space-3);
+  border: 1px solid var(--border-subtle);
+  border-radius: var(--radius-md);
+  background-color: var(--surface-subtle);
+  color: var(--color-text);
+  font-size: var(--font-size-sm);
+  transition: all 0.15s ease;
+}
+
+body.page-ordemproducao-listaordem .order-filters .filtro-select:focus {
+  outline: none;
+  border-color: var(--color-primary);
+  background-color: var(--surface-glass);
+  box-shadow: var(--shadow-focus);
+}
+
+/* Empurra o botão para o final da mesma linha na direita */
+body.page-ordemproducao-listaordem .filter-actions-right {
+  margin-left: auto;
+  flex-shrink: 0;
+}
+
+body.page-ordemproducao-listaordem .order-list-panel {
+  min-width: 0;
+  background: var(--surface-glass);
+  border: 1px solid var(--border-subtle);
+  border-radius: var(--radius-lg);
+  backdrop-filter: blur(var(--blur-md));
+  box-shadow: var(--shadow-glass);
+}
+
+body.page-ordemproducao-listaordem .order-table-scroll {
+  overflow-x: auto;
+}
+
+body.page-ordemproducao-listaordem .order-table-scroll table {
+  min-width: 900px;
+}
+
 body.page-ordemproducao-listaordem .paginacao {
   display: flex;
   align-items: center;
   justify-content: space-between;
-  flex-wrap: wrap; /* Permite que quebre com segurança se o zoom estiver alto */
+  flex-wrap: wrap;
   gap: var(--space-3);
   padding: var(--space-3) var(--space-5);
   border-top: 1px solid var(--border-subtle);
+  background: transparent;
 }
 
 body.page-ordemproducao-listaordem .pag-btns {
   display: flex;
   gap: var(--space-1);
-  flex-shrink: 0; /* Impede que os botões de paginação fiquem espremidos */
+  flex-shrink: 0;
 }
 
-/* Reposiciona o botão para o canto esquerdo e ajusta o visual na página de listagem */
+/* Responsividade para telas muito pequenas (Smartphones) */
+@media (max-width: 768px) {
+  body.page-ordemproducao-listaordem .order-filters {
+    flex-direction: column;
+    align-items: stretch;
+  }
+
+  body.page-ordemproducao-listaordem .order-filters .search-input-wrapper,
+  body.page-ordemproducao-listaordem .order-filters .filtro-select,
+  body.page-ordemproducao-listaordem .filter-actions-right,
+  body.page-ordemproducao-listaordem .history-link {
+    width: 100%;
+    flex: none;
+  }
+
+  body.page-ordemproducao-listaordem .filter-actions-right {
+    margin-left: 0;
+  }
+}
+
+/* Alinha os itens da topbar à esquerda na página de lançamento */
 body.page-ordemproducao-listaordem .topbar {
   justify-content: flex-start;
   gap: var(--space-4);
 }
 
 body.page-ordemproducao-listaordem .topbar > .btn-novo {
-  order: -1; /* Joga o botão para a primeira posição (à esquerda) */
+  order: -1;
   background: var(--surface-subtle);
   color: var(--color-text);
   min-height: 40px;
@@ -33,7 +157,6 @@ body.page-ordemproducao-listaordem .topbar > .btn-novo {
   font-size: 0.9rem;
   box-shadow: none;
   transform: none;
-  border-color: var(--border-subtle);
 }
 
 body.page-ordemproducao-listaordem .topbar > .btn-novo:hover {

@@ -23,7 +23,9 @@
     <link rel="stylesheet" th:href="@{/css/pages/vidracaria.css}">
     <link rel="stylesheet" th:href="@{/css/utils.css}">
     <link rel="stylesheet" th:href="@{/css/responsive.css}"/>
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css"
+          integrity="sha384-iw3OoTErCYJJB9mCa8LNS2hbsQ7M3C0EpIsO/H5+EGAkPGc6rk+V8i04oW/K5xq0"
+          crossorigin="anonymous" referrerpolicy="no-referrer">
 </head>
 <body class="page-vidracaria-vidracaria">
 <div th:replace="fragments/messages :: alerts"></div>
@@ -63,28 +65,35 @@
         </div>
 
         <!-- 2. ABAS -->
-        <div class="tabs">
-            <button class="tab active" data-csp-action="showTab" data-csp-value="consumo" data-csp-argument="element">Registrar Consumo</button>
-            <button class="tab entrada" data-csp-action="showTab" data-csp-value="entrada" data-csp-argument="element">Registrar Entrada</button>
-            <button class="tab cadastro" data-csp-action="showTab" data-csp-value="cadastro" data-csp-argument="element">+ Novo Vidro</button>
+        <div class="tabs" role="tablist" aria-label="Movimentação de vidros">
+            <button class="tab active" id="tab-btn-consumo" role="tab" aria-controls="tab-consumo" aria-selected="true" tabindex="0"
+                    data-csp-action="showTab" data-csp-value="consumo" data-csp-argument="element">Registrar Consumo</button>
+            <button class="tab entrada" id="tab-btn-entrada" role="tab" aria-controls="tab-entrada" aria-selected="false" tabindex="-1"
+                    data-csp-action="showTab" data-csp-value="entrada" data-csp-argument="element">Registrar Entrada</button>
+
+            <!-- Visível apenas para PCP, Supervisor, Gestão e Admin -->
+            <button class="tab cadastro" id="tab-btn-cadastro" role="tab" aria-controls="tab-cadastro" aria-selected="false" tabindex="-1"
+                    data-csp-action="showTab" data-csp-value="cadastro" data-csp-argument="element"
+                    sec:authorize="hasAnyRole('ADMIN', 'SUPERVISOR', 'PCP', 'GESTAO')">+ Novo Vidro</button>
         </div>
 
         <!-- 3. FORMULÁRIO DE CONSUMO/SAÍDA -->
-        <div id="tab-consumo" class="form-card">
+        <div id="tab-consumo" class="form-card is-visible" role="tabpanel" aria-labelledby="tab-btn-consumo">
             <form th:action="@{/dashboard/vidracaria/movimentar}" method="post">
                 <input type="hidden"
+                       id="csrfConsumo"
                        th:name="${_csrf.parameterName}"
                        th:value="${_csrf.token}"/>
 
                 <!-- Define o tipo como SAIDA -->
-                <input type="hidden" name="tipoMovimentacao" value="SAIDA"/>
+                <input type="hidden" id="tipoMovimentacaoConsumo" name="tipoMovimentacao" value="SAIDA"/>
 
                 <div class="card-title">Consumo de chapas de vidro</div>
                 <div class="form-grid">
 
                     <div class="field">
-                        <label>Tipo de vidro <span>*</span></label>
-                        <select name="chapaVidroId" required>
+                        <label for="chapaConsumo">Tipo de vidro <span>*</span></label>
+                        <select id="chapaConsumo" name="chapaVidroId" required>
                             <option value="">Selecione o tipo</option>
                             <option th:each="c : ${chapas}"
                                     th:value="${c.id}"
@@ -94,20 +103,20 @@
                     </div>
 
                     <div class="field">
-                        <label>Quantidade <span>*</span></label>
-                        <input type="number" name="quantidade" min="1" placeholder="0" required/>
+                        <label for="qtdConsumo">Quantidade <span>*</span></label>
+                        <input type="number" id="qtdConsumo" name="quantidade" min="1" placeholder="0" required/>
                     </div>
 
                     <div class="field">
-                        <label>Data e hora</label>
-                        <input type="datetime-local" name="dataHora"/>
+                        <label for="dataConsumo">Data e hora</label>
+                        <input type="datetime-local" id="dataConsumo" name="dataHora"/>
                     </div>
 
                 </div>
 
                 <div class="field csp-style-2b583d7389">
-                    <label>Observação</label>
-                    <input type="text" name="observacao" placeholder="Opcional..."/>
+                    <label for="obsConsumo">Observação</label>
+                    <input type="text" id="obsConsumo" name="observacao" placeholder="Opcional..."/>
                 </div>
 
                 <div class="field">
@@ -130,21 +139,22 @@
         </div>
 
         <!-- 4. FORMULÁRIO DE ENTRADA -->
-        <div id="tab-entrada" class="form-card csp-style-6b99de8b69">
+        <div id="tab-entrada" class="form-card is-hidden" role="tabpanel" aria-labelledby="tab-btn-entrada">
             <form th:action="@{/dashboard/vidracaria/movimentar}" method="post">
                 <input type="hidden"
+                       id="csrfEntrada"
                        th:name="${_csrf.parameterName}"
                        th:value="${_csrf.token}"/>
 
                 <!-- Define o tipo como ENTRADA -->
-                <input type="hidden" name="tipoMovimentacao" value="ENTRADA"/>
+                <input type="hidden" id="tipoMovimentacaoEntrada" name="tipoMovimentacao" value="ENTRADA"/>
 
                 <div class="card-title">Entrada de chapas de vidro</div>
                 <div class="form-grid">
 
                     <div class="field">
-                        <label>Tipo de vidro <span>*</span></label>
-                        <select name="chapaVidroId" required>
+                        <label for="chapaEntrada">Tipo de vidro <span>*</span></label>
+                        <select id="chapaEntrada" name="chapaVidroId" required>
                             <option value="">Selecione o tipo</option>
                             <option th:each="c : ${chapas}"
                                     th:value="${c.id}"
@@ -154,20 +164,20 @@
                     </div>
 
                     <div class="field">
-                        <label>Quantidade recebida <span>*</span></label>
-                        <input type="number" name="quantidade" min="1" placeholder="0" required/>
+                        <label for="qtdEntrada">Quantidade recebida <span>*</span></label>
+                        <input type="number" id="qtdEntrada" name="quantidade" min="1" placeholder="0" required/>
                     </div>
 
                     <div class="field">
-                        <label>Data e hora</label>
-                        <input type="datetime-local" name="dataHora"/>
+                        <label for="dataEntrada">Data e hora</label>
+                        <input type="datetime-local" id="dataEntrada" name="dataHora"/>
                     </div>
 
                 </div>
 
                 <div class="field csp-style-2b583d7389">
-                    <label>Observação</label>
-                    <input type="text" name="observacao" placeholder="Ex: Nota fiscal 1234..."/>
+                    <label for="obsEntrada">Observação</label>
+                    <input type="text" id="obsEntrada" name="observacao" placeholder="Ex: Nota fiscal 1234..."/>
                 </div>
 
                 <div class="field">
@@ -190,9 +200,12 @@
         </div>
 
         <!-- FORM CADASTRAR NOVO VIDRO -->
-        <div id="tab-cadastro" class="form-card csp-style-6b99de8b69">
+        <div id="tab-cadastro" class="form-card is-hidden"
+             role="tabpanel" aria-labelledby="tab-btn-cadastro"
+             sec:authorize="hasAnyRole('ADMIN', 'SUPERVISOR', 'PCP', 'GESTAO')">
             <form th:action="@{/dashboard/vidracaria/cadastrar-chapa}" method="post">
                 <input type="hidden"
+                       id="csrfCadastroVidro"
                        th:name="${_csrf.parameterName}"
                        th:value="${_csrf.token}"/>
 
@@ -200,9 +213,8 @@
                 <div class="form-grid">
 
                     <div class="field">
-                        <label>Tipo de vidro <span>*</span></label>
-                        <!-- Preenche com todas as opções do seu Enum TipoVidro -->
-                        <select name="tipoVidro" required>
+                        <label for="tipoVidroCadastro">Tipo de vidro <span>*</span></label>
+                        <select id="tipoVidroCadastro" name="tipoVidro" required>
                             <option value="">Selecione o tipo</option>
                             <option th:each="tipo : ${T(br.com.lumiflow.entity.enums.TipoVidro).values()}"
                                     th:value="${tipo}"
@@ -212,13 +224,13 @@
                     </div>
 
                     <div class="field">
-                        <label>Estoque Mínimo (Alerta) <span>*</span></label>
-                        <input type="number" name="estoqueMinimo" min="0" value="5" required/>
+                        <label for="estoqueMinimoCadastro">Estoque Mínimo (Alerta) <span>*</span></label>
+                        <input type="number" id="estoqueMinimoCadastro" name="estoqueMinimo" min="0" value="5" required/>
                     </div>
 
                     <div class="field">
-                        <label>Descrição / Espessura</label>
-                        <input type="text" name="descricao" placeholder="Ex: Chapa 4mm - 2200x3210"/>
+                        <label for="descricaoCadastro">Descrição / Espessura</label>
+                        <input type="text" id="descricaoCadastro" name="descricao" placeholder="Ex: Chapa 4mm - 2200x3210"/>
                     </div>
 
                 </div>
@@ -239,11 +251,10 @@
             </div>
 
             <!-- FORMULÁRIO DE FILTROS ALINHADO EM CIMA (EM LINHA) -->
-            <form id="filter-form" class="csp-style-37bf32a560"
-                 >
+            <form id="filter-form" class="csp-style-37bf32a560">
 
                 <div class="field csp-style-201859ab6c">
-                    <label>Tipo de Movimentação</label>
+                    <label for="filtroTipoMov">Tipo de Movimentação</label>
                     <select name="tipoMovimentacao" id="filtroTipoMov" class="form-control">
                         <option value="">Todas</option>
                         <option value="ENTRADA" th:selected="${param.tipoMovimentacao == 'ENTRADA'}">Entrada</option>
@@ -253,7 +264,7 @@
                 </div>
 
                 <div class="field csp-style-201859ab6c">
-                    <label>Tipo do Vidro</label>
+                    <label for="filtroTipoVidro">Tipo do Vidro</label>
                     <select name="tipoVidroFiltro" id="filtroTipoVidro" class="form-control">
                         <option value="">Todos os Vidros</option>
                         <option th:each="c : ${chapas}"

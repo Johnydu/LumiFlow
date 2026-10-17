@@ -1,5 +1,5 @@
 /**
- * LumiFlow - Gerenciamento de Usuários (Modais Otimizados)
+ - LumiFlow - Gerenciamento de Usuários (Modais Otimizados)
  */
 
 function showForm() {
@@ -37,9 +37,9 @@ function novoUsuarioForm() {
     if (idInput) idInput.value = '';
   }
 
-  const senha = document.getElementById('senha');
+  const senha = document.getElementById('senhaUsuario');
   if (senha) {
-    senha.placeholder = 'Mínimo 12 caracteres...';
+    senha.placeholder = 'Mínimo 8 caracteres (maiúscula, minúscula e número)...';
     senha.value = '';
   }
 
@@ -74,11 +74,11 @@ function editarUsuario(id, nome, login, nivelAcessoId, setorId) {
   }
 
   // Preencher campos
-  const nomeInput = document.getElementById('nome');
-  const loginInput = document.getElementById('login');
-  const nivelSelect = document.getElementById('nivelAcessoId');
-  const setorSelect = document.getElementById('setorId');
-  const senhaInput = document.getElementById('senha');
+  const nomeInput = document.getElementById('nomeUsuario');
+  const loginInput = document.getElementById('loginUsuario');
+  const nivelSelect = document.getElementById('nivelAcessoUsuarioId');
+  const setorSelect = document.getElementById('setorUsuarioId');
+  const senhaInput = document.getElementById('senhaUsuario');
 
   if (nomeInput) nomeInput.value = nome || '';
   if (loginInput) loginInput.value = login || '';

@@ -123,7 +123,7 @@ function abrirModalDivisao(
     adicionarLinhaDivisao();
     atualizarSoma();
 
-    modal.style.display = 'flex';
+    modal.classList.remove('is-hidden');
     modal.classList.add('is-open');
 }
 
@@ -135,7 +135,7 @@ function fecharModalDivisao() {
     }
 
     modal.classList.remove('is-open');
-    modal.style.display = 'none';
+    modal.classList.add('is-hidden');
 }
 
 function adicionarLinhaDivisao() {
@@ -153,6 +153,7 @@ function adicionarLinhaDivisao() {
 
     const inputVariante = document.createElement('input');
     inputVariante.type = 'text';
+    inputVariante.id = `varianteDivisao-${index}`;
     inputVariante.name = `divisoes[${index}].variante`;
     inputVariante.placeholder = 'Ex.: Branco, PT...';
     inputVariante.maxLength = 100;
@@ -160,14 +161,25 @@ function adicionarLinhaDivisao() {
     inputVariante.autocomplete = 'off';
     inputVariante.className = 'input-variante';
 
+    const labelVariante = document.createElement('label');
+    labelVariante.htmlFor = inputVariante.id;
+    labelVariante.className = 'visually-hidden';
+    labelVariante.textContent = `Variante da divisão ${index + 1}`;
+
     const inputQuantidade = document.createElement('input');
     inputQuantidade.type = 'number';
+    inputQuantidade.id = `quantidadeDivisao-${index}`;
     inputQuantidade.name = `divisoes[${index}].quantidade`;
     inputQuantidade.placeholder = 'Qtd';
     inputQuantidade.min = '1';
     inputQuantidade.step = '1';
     inputQuantidade.required = true;
     inputQuantidade.className = 'input-qtd';
+
+    const labelQuantidade = document.createElement('label');
+    labelQuantidade.htmlFor = inputQuantidade.id;
+    labelQuantidade.className = 'visually-hidden';
+    labelQuantidade.textContent = `Quantidade da divisão ${index + 1}`;
 
     inputQuantidade.addEventListener('input', atualizarSoma);
 
@@ -182,7 +194,7 @@ function adicionarLinhaDivisao() {
         atualizarSoma();
     });
 
-    linha.append(inputVariante, inputQuantidade, botaoRemover);
+    linha.append(labelVariante, inputVariante, labelQuantidade, inputQuantidade, botaoRemover);
     container.appendChild(linha);
 
     atualizarSoma();

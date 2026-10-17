@@ -23,7 +23,9 @@
     <link rel="stylesheet" th:href="@{/css/pages/roteiros.css}">
     <link rel="stylesheet" th:href="@{/css/utils.css}">
     <link rel="stylesheet" th:href="@{/css/responsive.css}">
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css"
+          integrity="sha384-iw3OoTErCYJJB9mCa8LNS2hbsQ7M3C0EpIsO/H5+EGAkPGc6rk+V8i04oW/K5xq0"
+          crossorigin="anonymous" referrerpolicy="no-referrer">
 </head>
 <body class="page-roteiro-cadastroroteiros">
 <div th:replace="~{fragments/messages :: alerts}"></div>
@@ -47,7 +49,9 @@
 
         <!-- FORMULÁRIO DE BUSCA DINÂMICA (AJAX) -->
         <form method="get" th:action="@{/dashboard/roteiros}" class="filter-form">
+            <label for="buscaRoteiro">Buscar produto por nome ou código</label>
             <input type="text"
+                   id="buscaRoteiro"
                    name="nomeProduto"
                    th:value="${param.nomeProduto}"
                    class="search"
@@ -100,6 +104,7 @@
                                       method="post"
                                      >
                                     <input type="hidden"
+                                           th:id="|csrfExcluirRoteiro-${roteiro.produtoId()}|"
                                            th:name="${_csrf.parameterName}"
                                            th:value="${_csrf.token}"/>
 
@@ -138,6 +143,7 @@
                       method="post">
 
                     <input type="hidden"
+                           id="csrfRoteiro"
                            th:name="${_csrf.parameterName}"
                            th:value="${_csrf.token}" />
 
@@ -154,7 +160,7 @@
                         </div>
 
                         <div class="field csp-style-ef1f3a5dff">
-                            <label class="csp-style-e4c9ee3efa">Fluxo de produção (Etapas) <span class="csp-style-1f62937642">*</span></label>
+                            <label for="novaEtapaSetor" class="csp-style-e4c9ee3efa">Fluxo de produção (Etapas) <span class="csp-style-1f62937642">*</span></label>
 
                             <!-- Renderiza caso já venha preenchido no binding -->
                             <div class="etapas-list csp-style-3dea91b04e" id="etapas-list">
@@ -162,7 +168,11 @@
                                     <span class="etapa-num csp-style-195707c17f" th:text="${iterStat.index + 1} + 'º'"></span>
 
                                     <!-- Select de Setor -->
-                                    <select th:field="*{passos[__${iterStat.index}__].setorId}" class="form-control setor-select csp-style-77b82e9aee" data-csp-change="aoMudarSetor" data-csp-argument="element"
+                                    <label th:for="|setorEtapa-${iterStat.index}|"
+                                           class="visually-hidden"
+                                           th:text="|Setor da etapa ${iterStat.count}|">Setor da etapa</label>
+                                    <select th:id="|setorEtapa-${iterStat.index}|"
+                                            th:field="*{passos[__${iterStat.index}__].setorId}" class="form-control setor-select csp-style-77b82e9aee" data-csp-change="aoMudarSetor" data-csp-argument="element"
                                            >
                                         <option value="">Selecione o setor</option>
                                         <option th:each="setor : ${setores}"
@@ -171,7 +181,11 @@
                                     </select>
 
                                     <!-- Select de Etapa do Setor -->
-                                    <select th:field="*{passos[__${iterStat.index}__].etapaSetorId}" class="form-control etapa-setor-select csp-style-77b82e9aee"
+                                    <label th:for="|processoEtapa-${iterStat.index}|"
+                                           class="visually-hidden"
+                                           th:text="|Processo da etapa ${iterStat.count}|">Processo da etapa</label>
+                                    <select th:id="|processoEtapa-${iterStat.index}|"
+                                            th:field="*{passos[__${iterStat.index}__].etapaSetorId}" class="form-control etapa-setor-select csp-style-77b82e9aee"
                                            >
                                         <option value="">Selecione o processo...</option>
                                     </select>
@@ -200,6 +214,7 @@
                 </form>
 
                 <!-- Templates ocultos que o roteiros.js usa para clonar os selects dinamicamente -->
+                <label for="setor-options-template" class="visually-hidden">Opções de setor para novas etapas</label>
                 <select id="setor-options-template" class="csp-style-6b99de8b69">
                     <option value="">Selecione o setor</option>
                     <option th:each="setor : ${setores}"

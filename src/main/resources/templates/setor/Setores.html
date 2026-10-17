@@ -24,7 +24,9 @@
   <link rel="stylesheet" th:href="@{/css/pages/setores.css}">
   <link rel="stylesheet" th:href="@{/css/utils.css}">
   <link rel="stylesheet" th:href="@{/css/responsive.css}">
-  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css"
+        integrity="sha384-iw3OoTErCYJJB9mCa8LNS2hbsQ7M3C0EpIsO/H5+EGAkPGc6rk+V8i04oW/K5xq0"
+        crossorigin="anonymous" referrerpolicy="no-referrer">
 </head>
 <body class="page-setor-cadastrosetor">
 <div th:replace="~{fragments/messages :: alerts}"></div>
@@ -42,7 +44,9 @@
 
     <!-- Formulário de busca dinâmica por AJAX -->
     <form method="get" th:action="@{/dashboard/setores}" class="filter-form">
+      <label for="buscaSetor">Buscar setor</label>
       <input type="text"
+             id="buscaSetor"
              name="nome"
              th:value="${param.nome}"
              class="search"
@@ -104,6 +108,7 @@
                       method="post"
                      >
                   <input type="hidden"
+                         th:id="|csrfExcluirSetor-${setor.id}|"
                          th:name="${_csrf.parameterName}"
                          th:value="${_csrf.token}"/>
 
@@ -143,10 +148,11 @@
               method="post">
 
           <input type="hidden"
+                 id="csrfSetor"
                  th:name="${_csrf.parameterName}"
                  th:value="${_csrf.token}"/>
 
-          <input type="hidden" th:field="*{id}"/>
+          <input type="hidden" id="setorId" th:field="*{id}"/>
 
           <div class="modal-body">
             <div class="field csp-style-ef1f3a5dff">
@@ -158,7 +164,7 @@
 
             <!-- Container fixo e visível das etapas do setor -->
             <div class="field csp-style-86a6ebb7fa" id="container-etapas-setor">
-              <label class="csp-style-e4c9ee3efa">Etapas/Processos do Setor <span class="csp-style-1f62937642">*</span></label>
+              <span class="csp-style-e4c9ee3efa">Etapas/Processos do Setor <span class="csp-style-1f62937642">*</span></span>
               <div class="etapas-list csp-style-04723d1d2e" id="etapas-setor-list">
                 <!-- Preenchido via JavaScript -->
               </div>

@@ -32,7 +32,9 @@
     <!-- 5. Utils & Responsive -->
     <link rel="stylesheet" th:href="@{/css/utils.css}">
     <link rel="stylesheet" th:href="@{/css/responsive.css}">
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css"
+          integrity="sha384-iw3OoTErCYJJB9mCa8LNS2hbsQ7M3C0EpIsO/H5+EGAkPGc6rk+V8i04oW/K5xq0"
+          crossorigin="anonymous" referrerpolicy="no-referrer">
 </head>
 <body class="page-operador-cadastrooperador">
 <div th:replace="~{fragments/messages :: alerts}"></div>
@@ -51,14 +53,20 @@
 
     <div class="content">
 
-        <form method="get" th:action="@{/dashboard/operadores}">
+        <form method="get" th:action="@{/dashboard/operadores}" class="filtros">
+            <div class="field">
+                <label for="buscaOperador">Buscar operador</label>
             <input type="text"
+                   id="buscaOperador"
                    name="nome"
                    th:value="${param.nome}"
                    class="search"
                    placeholder="Buscar operador...">
+            </div>
 
-            <select name="setorId" class="filtro-select">
+            <div class="field">
+            <label for="filtroSetorOperador">Filtrar por setor</label>
+            <select id="filtroSetorOperador" name="setorId" class="filtro-select">
                 <option value="">Todos os setores</option>
                 <option th:each="setor : ${listaSetores}"
                         th:value="${setor.id}"
@@ -66,6 +74,7 @@
                         th:selected="${param.setorId != null and #strings.toString(setor.id) == param.setorId}">
                 </option>
             </select>
+            </div>
         </form>
 
         <!-- LISTA -->

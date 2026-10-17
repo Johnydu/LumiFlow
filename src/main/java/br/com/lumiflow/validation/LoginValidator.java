@@ -51,13 +51,16 @@ public final class LoginValidator {
      * Valida senha.
      */
     public static boolean isValidPassword(String password) {
-
         if (password == null) {
             return false;
         }
-        if (password.getBytes(StandardCharsets.UTF_8).length <= 72) {
+
+        byte[] passwordBytes = password.getBytes(StandardCharsets.UTF_8);
+        // Valida o intervalo correto: mínimo de 8 e máximo de 72 bytes
+        if (passwordBytes.length < 8 || passwordBytes.length > 72) {
             return false;
         }
+
         return PASSWORD_PATTERN.matcher(password).matches();
     }
 

@@ -1,11 +1,24 @@
 function showTab(nome) {
-  document.querySelectorAll('.form-card').forEach(card => card.classList.add('is-hidden'));
-  document.querySelectorAll('.tab').forEach(tab => tab.classList.remove('active'));
+  document.querySelectorAll('.tabs .tab').forEach(tab => {
+    tab.classList.remove('active');
+    tab.setAttribute('aria-selected', 'false');
+    tab.tabIndex = -1;
+  });
+  document.querySelectorAll('.content > .form-card').forEach(card => {
+    card.classList.add('is-hidden');
+    card.classList.remove('is-visible');
+  });
 
-  document.getElementById('tab-' + nome).classList.remove('is-hidden');
-  document.getElementById('tab-' + nome).classList.add('is-visible');
-  document.getElementById('tab-btn-' + (nome === 'producao' ? 'prod' : nome === 'refugo' ? 'ref' : 'ret'))
-      .classList.add('active');
+  const selectedCard = document.getElementById(`tab-${nome}`);
+  const tabId = `tab-btn-${nome === 'producao' ? 'prod' : nome === 'refugo' ? 'ref' : 'ret'}`;
+  const selectedTab = document.getElementById(tabId);
+  if (selectedCard && selectedTab) {
+    selectedCard.classList.remove('is-hidden');
+    selectedCard.classList.add('is-visible');
+    selectedTab.classList.add('active');
+    selectedTab.setAttribute('aria-selected', 'true');
+    selectedTab.tabIndex = 0;
+  }
 }
 
 document.addEventListener('DOMContentLoaded', () => {
@@ -51,6 +64,7 @@ function initEtapaOrigemRefugo(produtoId) {
 
     selectEtapa.replaceChildren(new Option('Selecione a etapa', ''));
     campoEtapa.classList.remove('is-visible');
+    campoEtapa.classList.add('is-hidden');
     selectEtapa.required = false;
 
     if (!setorId) return;
@@ -67,6 +81,7 @@ function initEtapaOrigemRefugo(produtoId) {
       // Só pergunta quando existe ambiguidade real (mais de uma etapa no roteiro)
       if (etapas.length > 1) {
         etapas.forEach(etapa => selectEtapa.appendChild(new Option(etapa.nome, etapa.id)));
+        campoEtapa.classList.remove('is-hidden');
         campoEtapa.classList.add('is-visible');
         selectEtapa.required = true;
       }

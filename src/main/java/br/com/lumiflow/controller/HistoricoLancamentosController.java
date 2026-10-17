@@ -1,41 +1,74 @@
 package br.com.lumiflow.controller;
 
-import br.com.lumiflow.config.AppMessages;
-import br.com.lumiflow.service.LancamentoService;
+import br.com.lumiflow.dto.lancamento.HistoricoLancamentoFiltroDTO;
+import br.com.lumiflow.security.UsuarioDetails;
+import br.com.lumiflow.service.EtapaSetorService;
+import br.com.lumiflow.service.HistoricoLancamentosService;
+import br.com.lumiflow.service.OperadorService;
+import br.com.lumiflow.service.SetorService;
 import lombok.RequiredArgsConstructor;
-import lombok.extern.slf4j.Slf4j;
-import org.springframework.context.MessageSource;
-import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.security.core.Authentication;
+import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.bind.annotation.RequestParam;
+import org.springframework.web.bind.annotation.RequestMapping;
 
-import java.util.Locale;
+import java.util.List;
 
-@Slf4j
 @Controller
-@RequestMapping("/dashboard/lancamentos")
+@RequestMapping("/dashboard/historico")
 @RequiredArgsConstructor
 public class HistoricoLancamentosController {
 
     private static final int TAMANHO_PAGINA = 50;
 
-    private final LancamentoService lancamentoService;
-    private final MessageSource messageSource;
+    private final HistoricoLancamentosService historicoLancamentosService;
+    private final SetorService setorService;
+    private final OperadorService operadorService;
+    private final EtapaSetorService etapaSetorService;
 
     @GetMapping
-    public String lancamentos(@RequestParam(value = "page", defaultValue = "0") int page,
-                              Model model, Locale locale) {
-        try {
-            model.addAttribute("pagina",
-                    lancamentoService.listarHistoricoLancamentos( page, TAMANHO_PAGINA));
-        } catch (Exception e) {
-            log.error("Erro inesperado ao carregar a página de histórico de lançamentos: {}", e.getMessage(), e);
-            model.addAttribute("error", messageSource.getMessage(AppMessages.ERROR_VALIDATION_FAILED, null, locale));
-            model.addAttribute("pagina", Page.empty());
+    public String listarHistorico(@ModelAttribute("filtro") HistoricoLancamentoFiltroDTO filtro,
+                                  Authentication authentication,
+                                  @AuthenticationPrincipal UsuarioDetails usuarioLogado,
+                                  @RequestParam(value = "page", defaultValue = "0") int page,
+                                  Model model) {
+
+        boolean isSuperior = authentication.getAuthorities().stream().anyMatch(a ->
+                a.getAuthority().equals("ROLE_ADMIN") ||
+                        a.getAuthority().equals("ROLE_PCP") ||
+                        a.getAuthority().equals("ROLE_GESTAO") ||
+                        a.getAuthority().equals("ROLE_SUPERVISOR")
+        );
+
+        if (filtro == null) {
+            filtro = new HistoricoLancamentoFiltroDTO(null, null, null);
         }
+
+        if (!isSuperior && (usuarioLogado == null
+                || usuarioLogado.getSetorId() == null
+                || usuarioLogado.getSetorId() <= 0)) {
+            return "redirect:/dashboard/ordens-setor";
+        }
+
+        Long setorId = isSuperior ? filtro.setorId() : usuarioLogado.getSetorId();
+        Long operadorId = isSuperior ? filtro.operadorId() : null;
+        HistoricoLancamentoFiltroDTO filtroAplicado =
+                new HistoricoLancamentoFiltroDTO(setorId, filtro.etapaSetorId(), operadorId);
+
+        model.addAttribute("pagina", historicoLancamentosService.listarComFiltros(
+                filtroAplicado, PageRequest.of(Math.max(page, 0), TAMANHO_PAGINA)));
+        model.addAttribute("setores", isSuperior ? setorService.listarSetores() : List.of());
+        model.addAttribute("operadores", isSuperior ? operadorService.listarOperadores() : List.of());
+        model.addAttribute("etapas", setorId == null
+                ? List.of()
+                : etapaSetorService.listarPorSetorId(setorId));
+        model.addAttribute("filtro", filtroAplicado);
+        model.addAttribute("isSuperior", isSuperior);
 
         return "historico/HistoricoLancamento";
     }

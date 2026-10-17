@@ -1,11 +1,15 @@
 <!DOCTYPE html>
-<html lang="pt-BR" th:lang="${#locale.toLanguageTag()}" xmlns:th="http://www.thymeleaf.org"
+<html lang="pt-BR"
+      th:lang="${#locale.toLanguageTag()}"
+      xmlns:th="http://www.thymeleaf.org"
       xmlns:sec="http://www.thymeleaf.org/extras/spring-security">
+
 <head>
     <th:block th:replace="~{fragments/theme :: init}"></th:block>
-    <title>Histórico de Lançamentos - LumiFlow</title>
     <meta charset="UTF-8"/>
     <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+    <title>Histórico de Lançamentos - LumiFlow</title>
+
     <link rel="stylesheet" th:href="@{/css/variables.css}">
     <link rel="stylesheet" th:href="@{/css/globals.css}">
     <link rel="stylesheet" th:href="@{/css/sidebar.css}">
@@ -17,107 +21,197 @@
     <link rel="stylesheet" th:href="@{/css/components/badges.css}">
     <link rel="stylesheet" th:href="@{/css/components/status.css}">
     <link rel="stylesheet" th:href="@{/css/components/alerts.css}">
-    <link rel="stylesheet" th:href="@{/css/utils.css}">
     <link rel="stylesheet" th:href="@{/css/pages/historicoLancamento.css}">
-    <link rel="stylesheet" th:href="@{/css/responsive.css}"/>
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <link rel="stylesheet" th:href="@{/css/utils.css}">
+    <link rel="stylesheet" th:href="@{/css/responsive.css}">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css"
+          integrity="sha384-iw3OoTErCYJJB9mCa8LNS2hbsQ7M3C0EpIsO/H5+EGAkPGc6rk+V8i04oW/K5xq0"
+          crossorigin="anonymous" referrerpolicy="no-referrer">
 </head>
+
 <body class="page-lancamentos">
+
 <div th:replace="~{fragments/messages :: alerts}"></div>
 
-<aside th:replace="~{fragments/sidebar :: sidebar(activePage='lancamentos')}"></aside>
+<aside th:replace="~{fragments/sidebar :: sidebar(activePage='historico')}"></aside>
 
 <main class="main">
+    <!-- Se estiver utilizando a Topbar com o fragmento padrão -->
     <div th:replace="~{fragments/topbar :: topbar(
-        'Histórico de Lançamentos',
-        null,
-        null
-    )}"></div>
+    'Histórico de Lançamentos',
+    'VOLTAR',
+    'voltarParaSetor'
+)}"></div>
+
+
 
     <div class="content">
-        <div class="panel">
+
+        <section class="panel history-filter-panel" aria-label="Filtros do histórico">
+            <form method="get"
+                  th:action="@{/dashboard/historico}"
+                  class="history-filter-form">
+
+                <div class="field" th:if="${isSuperior}">
+                    <label for="setorId" class="label">Setor</label>
+                    <select name="setorId" id="setorId" class="input">
+                        <option value="">Todos os Setores</option>
+                        <option th:each="s : ${setores}"
+                                th:value="${s.id()}"
+                                th:text="${s.nome()}"
+                                th:selected="${filtro != null and filtro.setorId() == s.id()}">
+                        </option>
+                    </select>
+                </div>
+
+                <input type="hidden"
+                       id="setorUsuarioFiltro"
+                       name="setorId"
+                       th:if="${!isSuperior}"
+                       th:value="${filtro.setorId()}"/>
+
+                <div class="field">
+                    <label for="etapaSetorId" class="label">Etapa</label>
+                    <select name="etapaSetorId"
+                            id="etapaSetorId"
+                            class="input"
+                            th:disabled="${filtro.setorId() == null}">
+                        <option value=""
+                                th:text="${filtro.setorId() == null
+                                    ? 'Selecione um setor primeiro'
+                                    : 'Todas as etapas'}">
+                            Todas as etapas
+                        </option>
+                        <option th:each="etapa : ${etapas}"
+                                th:value="${etapa.id()}"
+                                th:text="${etapa.nome()}"
+                                th:selected="${filtro.etapaSetorId() == etapa.id()}">
+                        </option>
+                    </select>
+                </div>
+
+                <div class="field" th:if="${isSuperior}">
+                    <label for="operadorId" class="label">Operador</label>
+                    <select name="operadorId" id="operadorId" class="input">
+                        <option value="">Todos os Operadores</option>
+                        <option th:each="op : ${operadores}"
+                                th:value="${op.id()}"
+                                th:text="${op.nome()}"
+                                th:selected="${filtro != null and filtro.operadorId() == op.id()}">
+                        </option>
+                    </select>
+                </div>
+
+                <div class="form-actions history-filter-actions">
+                    <button type="submit" class="btn-submit">
+                        <i class="fa-solid fa-filter"></i> Filtrar
+                    </button>
+                    <a th:href="@{/dashboard/historico}"
+                       th:if="${isSuperior}"
+                       class="btn-cancel">Limpar</a>
+                </div>
+            </form>
+        </section>
+
+        <section class="panel history-table-panel" aria-label="Lançamentos">
             <div class="panel-header">
-                <span class="panel-title">HISTÓRICO</span>
-                <span class="panel-count" th:text="${pagina.totalElements + ' registros'}"></span>
+                <span class="panel-title">Histórico</span>
+                <span class="panel-count"
+                      th:text="|${pagina.totalElements} lançamento(s)|">0 lançamentos</span>
             </div>
-
-            <table>
-                <thead>
-                <tr>
-                    <th>Data / Hora</th>
-                    <th>Ordem</th>
-                    <th>Produto</th>
-                    <th>Setor / Etapa</th>
-                    <th>Máquina</th>
-                    <th>Qtd. Produzida</th>
-                    <th>Operador</th>
-                    <th>Observação</th>
-                </tr>
-                </thead>
-                <tbody>
-                <tr th:each="hist : ${pagina.content}">
-                    <td class="col-data"
-                        th:text="${#temporals.format(hist.dataHora, 'dd/MM/yyyy HH:mm')}"></td>
-
-                    <td>
-                        <a sec:authorize="hasAnyRole('ADMIN','SUPERVISOR','GESTAO','PCP')"
-                           class="num"
-                           th:href="@{/dashboard/ordens/{id}/detalhes(id=${hist.ordemId})}"
-                           th:text="${hist.numeroOrdem}">OP-0001</a>
-                        <span sec:authorize="!hasAnyRole('ADMIN','SUPERVISOR','GESTAO','PCP')"
-                              class="num" th:text="${hist.numeroOrdem}">OP-0001</span>
-                    </td>
-
-                    <!-- Exibe Código do Produto · Nome (Variante se houver) -->
-                    <td th:text="${(hist.codigoProduto != null ? hist.codigoProduto + ' · ' : '')
-                                  + hist.produto
-                                  + (hist.variante != null and !hist.variante.isBlank() ? ' (' + hist.variante + ')' : '')}">
-                        Produto
-                    </td>
-
-                    <td>
-                        <span class="setor-tag" th:text="${hist.setor}">Setor</span>
-                        <span th:if="${hist.etapa != null}" class="etapa-tag" th:text="${hist.etapa}">Etapa</span>
-                    </td>
-
-                    <td th:text="${hist.maquina}">Máquina</td>
-
-                    <td><strong th:text="${hist.quantidadeProduzida + ' unid.'}">0 unid.</strong></td>
-
-                    <td th:text="${hist.operador}">Operador</td>
-
-                    <td class="col-detalhes"
-                        th:text="${hist.detalhes != null and !hist.detalhes.isBlank() ? hist.detalhes : '—'}">—</td>
-                </tr>
-
-                <tr th:if="${#lists.isEmpty(pagina.content)}">
-                    <td colspan="8" style="text-align:center;color:var(--color-muted-5)">
-                        Nenhum lançamento registrado até o momento.
-                    </td>
-                </tr>
-                </tbody>
-            </table>
+            <div class="history-table-scroll">
+                <table>
+                    <thead>
+                    <tr>
+                        <th class="col-data">Data/Hora</th>
+                        <th>Ordem</th>
+                        <th>Produto</th>
+                        <th>Setor</th>
+                        <th class="col-center">Etapa</th>
+                        <th>Operador</th>
+                        <th>Máquina</th>
+                        <th class="col-num">Qtd. Prod.</th>
+                        <th class="col-obs">Observação</th>
+                    </tr>
+                    </thead>
+                    <tbody>
+                    <tr th:each="item : ${pagina.content}">
+                        <td class="col-data"
+                            th:text="${#temporals.format(item.dataHora(), 'dd/MM/yyyy HH:mm')}">19/05/2026 14:30</td>
+                        <td>
+                            <a sec:authorize="hasAnyRole('ADMIN','SUPERVISOR','GESTAO','PCP')"
+                               class="num"
+                               th:href="@{/dashboard/ordens/{id}/detalhes(id=${item.ordemId()})}"
+                               th:text="${item.numeroOrdem()}">OP-0001</a>
+                            <span sec:authorize="!hasAnyRole('ADMIN','SUPERVISOR','GESTAO','PCP')"
+                                  class="num"
+                                  th:text="${item.numeroOrdem()}">OP-0001</span>
+                        </td>
+                        <td th:text="${(item.codigoProduto() != null ? item.codigoProduto() + ' · ' : '')
+                                      + item.produto()
+                                      + (item.variante() != null and !item.variante().isBlank()
+                                          ? ' (' + item.variante() + ')' : '')}">
+                            Arandela
+                        </td>
+                        <td th:text="${item.setor()}">Pintura</td>
+                        <td class="col-center" th:text="${item.etapa()}">1</td>
+                        <td th:text="${item.operador()}">Carlos</td>
+                        <td th:text="${item.maquina()}">Cabine 1</td>
+                        <td class="col-num" th:text="${item.quantidadeProduzida()}">50</td>
+                        <td class="col-obs"
+                            th:title="${item.detalhes()}"
+                            th:text="${item.detalhes() != null and !item.detalhes().isBlank()
+                                      ? item.detalhes() : '—'}">—</td>
+                    </tr>
+                    <tr th:if="${pagina.empty}">
+                        <td colspan="9" class="history-empty-state">
+                            Nenhum lançamento encontrado.
+                        </td>
+                    </tr>
+                    </tbody>
+                </table>
+            </div>
 
             <div class="paginacao" th:if="${pagina.totalPages > 1}">
                 <span class="pag-info"
-                      th:text="${'Página ' + (pagina.number + 1) + ' de ' + pagina.totalPages}"></span>
-                <div class="pag-btns">
-                    <a th:if="${!pagina.first}" class="pag-btn"
-                       th:href="@{/dashboard/lancamentos(page=${pagina.number - 1})}">&lsaquo;</a>
-                    <span th:if="${pagina.first}" class="pag-btn" style="opacity:0.5; pointer-events:none;">&lsaquo;</span>
+                      th:text="|Mostrando ${(pagina.number * pagina.size) + 1}–${(pagina.number * pagina.size) + pagina.numberOfElements} de ${pagina.totalElements} lançamentos|">
+                    Mostrando 1–50 de 100 lançamentos
+                </span>
+                <div class="pag-buttons">
+                    <a class="pag-btn"
+                       th:if="${pagina.hasPrevious()}"
+                       aria-label="Página anterior"
+                       th:href="@{/dashboard/historico(page=${pagina.number - 1},setorId=${filtro.setorId()},etapaSetorId=${filtro.etapaSetorId()},operadorId=${filtro.operadorId()})}">
+                        &lsaquo;
+                    </a>
+                    <span class="pag-btn is-disabled"
+                          th:unless="${pagina.hasPrevious()}"
+                          aria-disabled="true"
+                          aria-label="Página anterior">&lsaquo;</span>
 
-                    <a th:if="${!pagina.last}" class="pag-btn"
-                       th:href="@{/dashboard/lancamentos(page=${pagina.number + 1})}">&rsaquo;</a>
-                    <span th:if="${pagina.last}" class="pag-btn" style="opacity:0.5; pointer-events:none;">&rsaquo;</span>
+                    <span class="pag-info page-current"
+                          th:text="|Página ${pagina.number + 1} de ${pagina.totalPages}|">
+                        Página 1 de 2
+                    </span>
+
+                    <a class="pag-btn"
+                       th:if="${pagina.hasNext()}"
+                       aria-label="Próxima página"
+                       th:href="@{/dashboard/historico(page=${pagina.number + 1},setorId=${filtro.setorId()},etapaSetorId=${filtro.etapaSetorId()},operadorId=${filtro.operadorId()})}">
+                        &rsaquo;
+                    </a>
+                    <span class="pag-btn is-disabled"
+                          th:unless="${pagina.hasNext()}"
+                          aria-disabled="true"
+                          aria-label="Próxima página">&rsaquo;</span>
                 </div>
             </div>
-        </div>
+        </section>
+
     </div>
 </main>
 
-<script th:src="@{/js/historicoLancamento.js}"></script>
-<script th:src="@{/js/sidebar.js}"></script>
-<script th:src="@{/js/alerts.js}"></script>
-
+<script th:src="@{/js/sidebar.js}" defer></script>
+<script th:src="@{/js/historicoLancamentos.js}" defer></script>
 </body>
 </html>

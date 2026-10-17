@@ -1,7 +1,6 @@
 package br.com.lumiflow.service;
 
 import br.com.lumiflow.config.AppMessages;
-import br.com.lumiflow.dto.lancamento.HistoricoLancamentosDTO;
 import br.com.lumiflow.dto.lancamento.LancamentoProducaoDTO;
 import br.com.lumiflow.dto.lancamento.RefugoDTO;
 import br.com.lumiflow.dto.lancamento.RetrabalhoDTO;
@@ -13,9 +12,6 @@ import br.com.lumiflow.repository.*;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.dao.DataAccessException;
-import org.springframework.data.domain.Page;
-import org.springframework.data.domain.PageRequest;
-import org.springframework.data.domain.Pageable;
 import org.springframework.orm.ObjectOptimisticLockingFailureException;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -409,25 +405,7 @@ public class LancamentoService {
                 .orElse(null);
     }
 
-    @Transactional(readOnly = true)
-    public Page<HistoricoLancamentosDTO> listarHistoricoLancamentos(int pagina, int tamanho) {
-        Pageable pageable = PageRequest.of(Math.max(pagina, 0), Math.min(Math.max(tamanho, 1), 100));
 
-        return lancamentoRepository.buscarHistorico(null, pageable).map(l -> new HistoricoLancamentosDTO(
-                l.getOrdemSetor().getOrdemProducao().getId(),
-                l.getOrdemSetor().getOrdemProducao().getNumero(),
-                l.getOrdemSetor().getOrdemProducao().getProduto().getCodigo(), // <--- ADICIONADO AQUI
-                l.getOrdemSetor().getOrdemProducao().getProduto().getNome(),
-                l.getOrdemSetor().getSetor().getNome(),
-                l.getEtapaSetor() != null ? l.getEtapaSetor().getNome() : null,
-                l.getOrdemSetor().getVariante(),
-                l.getMaquina().getNome(),
-                l.getQtdProduzida(),
-                l.getObservacao(),
-                l.getOperador().getNome(),
-                l.getDataHora()
-        ));
-    }
 
     @Transactional(readOnly = true)
     public List<Maquina> listarMaquinasParaRetrabalho(Long ordemProducaoId) {

@@ -19,7 +19,9 @@
     <link rel="stylesheet" th:href="@{/css/pages/listaordemsetores.css}">
     <link rel="stylesheet" th:href="@{/css/utils.css}">
     <link rel="stylesheet" th:href="@{/css/responsive.css}">
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css"
+          integrity="sha384-iw3OoTErCYJJB9mCa8LNS2hbsQ7M3C0EpIsO/H5+EGAkPGc6rk+V8i04oW/K5xq0"
+          crossorigin="anonymous" referrerpolicy="no-referrer">
 </head>
 
 <body class="page-ordemproducao-listaordemsetores">
@@ -41,17 +43,25 @@
 
         <!-- FILTROS UNIFICADOS -->
         <form method="get" th:action="@{/dashboard/ordens-setor}" id="formFiltros" class="filtros">
+            <div class="field">
+            <label for="buscaSetorOrdens">Buscar por setor</label>
             <input type="text"
+                   id="buscaSetorOrdens"
                    name="busca"
                    th:value="${param.busca}"
                    class="filtro-input"
                    placeholder="🔍 Buscar por setor..."
                    autocomplete="off">
+            </div>
 
+            <div class="field">
+            <label for="dataOrdensSetor">Filtrar por data</label>
             <input type="date"
+                   id="dataOrdensSetor"
                    name="data"
                    th:value="${param.data}"
                    class="filtro-date">
+            </div>
         </form>
 
         <!-- PANEL / LISTA -->

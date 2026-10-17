@@ -12,7 +12,7 @@ function novaMaquinaForm() {
   form.reset();
   form.action = '/dashboard/maquinas';
 
-  document.getElementById('id').value = '';
+  document.getElementById('maquinaId').value = '';
   document.getElementById('form-title').textContent = 'Nova Máquina';
 
   showForm();
@@ -27,11 +27,11 @@ function handleEditarMaquina(button) {
   const form = document.querySelector('.form-card');
   form.action = '/dashboard/maquinas/' + id + '/editar';
 
-  document.getElementById('id').value = id;
-  document.getElementById('nome').value = nome;
+  document.getElementById('maquinaId').value = id;
+  document.getElementById('nomeMaquina').value = nome;
 
   // Define o valor no select de setores do formulário
-  const selectSetor = document.querySelector('select[th\\:field="*{setorId}"], select[id="setorId"], select[name="setorId"]');
+  const selectSetor = document.getElementById('setorMaquinaId');
   if (selectSetor) {
     selectSetor.value = setorId;
   }

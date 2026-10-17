@@ -8,12 +8,18 @@ const VidracariaModule = (() => {
   /**
    * Alterna a visibilidade dos cards de formulário
    */
+  /**
+   * Alterna a visibilidade dos cards de formulário
+   */
   const showTab = (tabName, targetButton) => {
     if (!tabName) return;
 
-    // 1. Esconde todos os cards
-    const formCards = document.querySelectorAll('.form-card');
-    formCards.forEach(card => card.classList.add('is-hidden'));
+    // 1. Esconde todos os cards de formulário
+    const formCards = document.querySelectorAll('.content > .form-card');
+    formCards.forEach(card => {
+      card.classList.add('is-hidden');
+      card.classList.remove('is-visible');
+    });
 
     // 2. Exibe o card selecionado
     const selectedCard = document.getElementById(`tab-${tabName}`);
@@ -22,12 +28,18 @@ const VidracariaModule = (() => {
       selectedCard.classList.add('is-visible');
     }
 
-    // 3. Gerencia classe ativa dos botões
+    // 3. Gerencia classe ativa dos botões das abas
     const tabs = document.querySelectorAll('.tab');
-    tabs.forEach(tab => tab.classList.remove('active'));
+    tabs.forEach(tab => {
+      tab.classList.remove('active');
+      tab.setAttribute('aria-selected', 'false');
+      tab.tabIndex = -1;
+    });
 
     if (targetButton && targetButton instanceof HTMLElement) {
       targetButton.classList.add('active');
+      targetButton.setAttribute('aria-selected', 'true');
+      targetButton.tabIndex = 0;
     }
   };
 

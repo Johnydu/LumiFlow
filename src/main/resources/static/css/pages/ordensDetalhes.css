@@ -219,3 +219,7 @@ body.page-ordemproducao-detalhesordem .hist-sub {
   gap: 6px;
   width: 100%;
 }
+
+.page-ordemproducao-detalhesordem .detail-action-form {
+  display: inline;
+}

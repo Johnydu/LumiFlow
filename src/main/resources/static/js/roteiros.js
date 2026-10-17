@@ -75,7 +75,13 @@ function criarLinhaEtapa(setorId = '', etapaSetorId = '') {
     numeroEtapa.className = 'etapa-num';
     numeroEtapa.textContent = `${index + 1}º`;
 
+    const labelSetor = document.createElement('label');
+    labelSetor.htmlFor = `setorEtapa-${index}`;
+    labelSetor.className = 'visually-hidden';
+    labelSetor.textContent = `Setor da etapa ${index + 1}`;
+
     const selectSetor = document.createElement('select');
+    selectSetor.id = labelSetor.htmlFor;
     selectSetor.name = `passos[${index}].setorId`;
     selectSetor.className = 'form-control setor-select';
     selectSetor.classList.add('etapa-row-select');
@@ -86,7 +92,13 @@ function criarLinhaEtapa(setorId = '', etapaSetorId = '') {
         });
     }
 
+    const labelEtapa = document.createElement('label');
+    labelEtapa.htmlFor = `processoEtapa-${index}`;
+    labelEtapa.className = 'visually-hidden';
+    labelEtapa.textContent = `Processo da etapa ${index + 1}`;
+
     const selectEtapa = document.createElement('select');
+    selectEtapa.id = labelEtapa.htmlFor;
     selectEtapa.name = `passos[${index}].etapaSetorId`;
     selectEtapa.className = 'form-control etapa-setor-select';
     selectEtapa.classList.add('etapa-row-select');
@@ -115,7 +127,7 @@ function criarLinhaEtapa(setorId = '', etapaSetorId = '') {
     });
 
     actions.append(moveUp, moveDown, remove);
-    row.append(numeroEtapa, selectSetor, selectEtapa, actions);
+    row.append(numeroEtapa, labelSetor, selectSetor, labelEtapa, selectEtapa, actions);
 
     if (selectSetor && setorId) {
         selectSetor.value = String(setorId);
@@ -178,8 +190,24 @@ function reindexarPassos() {
         const selectSetor = item.querySelector('.setor-select');
         const selectEtapa = item.querySelector('.etapa-setor-select');
 
-        if (selectSetor) selectSetor.name = `passos[${index}].setorId`;
-        if (selectEtapa) selectEtapa.name = `passos[${index}].etapaSetorId`;
+        if (selectSetor) {
+            selectSetor.id = `setorEtapa-${index}`;
+            selectSetor.name = `passos[${index}].setorId`;
+            const label = item.querySelector(`label[for^="setorEtapa-"]`);
+            if (label) {
+                label.htmlFor = selectSetor.id;
+                label.textContent = `Setor da etapa ${index + 1}`;
+            }
+        }
+        if (selectEtapa) {
+            selectEtapa.id = `processoEtapa-${index}`;
+            selectEtapa.name = `passos[${index}].etapaSetorId`;
+            const label = item.querySelector(`label[for^="processoEtapa-"]`);
+            if (label) {
+                label.htmlFor = selectEtapa.id;
+                label.textContent = `Processo da etapa ${index + 1}`;
+            }
+        }
     });
 }
 

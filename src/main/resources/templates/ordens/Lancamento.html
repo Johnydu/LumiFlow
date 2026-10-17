@@ -20,7 +20,9 @@
     <link rel="stylesheet" th:href="@{/css/components/tabs.css}">
     <link rel="stylesheet" th:href="@{/css/pages/lancamento.css}">
     <link rel="stylesheet" th:href="@{/css/responsive.css}"/>
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css"
+          integrity="sha384-iw3OoTErCYJJB9mCa8LNS2hbsQ7M3C0EpIsO/H5+EGAkPGc6rk+V8i04oW/K5xq0"
+          crossorigin="anonymous" referrerpolicy="no-referrer">
 </head>
 <body class="page-ordemproducao-lancamento"
       th:data-url-voltar="@{/dashboard/ordens-setor/{setorId}(setorId=${ordemSetor.setor.id})}"
@@ -58,24 +60,30 @@
         </div>
 
         <!-- ABAS -->
-        <div class="tabs">
-            <button class="tab active" id="tab-btn-prod" type="button" data-csp-action="showTab" data-csp-value="producao">Produção</button>
-            <button class="tab" id="tab-btn-ref" type="button" data-csp-action="showTab" data-csp-value="refugo">Refugo</button>
-            <button class="tab" id="tab-btn-ret" type="button" data-csp-action="showTab" data-csp-value="retrabalho">Retrabalho</button>
+        <div class="tabs" role="tablist" aria-label="Tipo de lançamento">
+            <button class="tab active" id="tab-btn-prod" type="button" role="tab"
+                    aria-controls="tab-producao" aria-selected="true" tabindex="0"
+                    data-csp-action="showTab" data-csp-value="producao">Produção</button>
+            <button class="tab" id="tab-btn-ref" type="button" role="tab"
+                    aria-controls="tab-refugo" aria-selected="false" tabindex="-1"
+                    data-csp-action="showTab" data-csp-value="refugo">Refugo</button>
+            <button class="tab" id="tab-btn-ret" type="button" role="tab"
+                    aria-controls="tab-retrabalho" aria-selected="false" tabindex="-1"
+                    data-csp-action="showTab" data-csp-value="retrabalho">Retrabalho</button>
         </div>
 
         <!-- FORM PRODUÇÃO -->
-        <div id="tab-producao" class="form-card">
+        <div id="tab-producao" class="form-card is-visible" role="tabpanel" aria-labelledby="tab-btn-prod">
             <form method="post" th:action="@{/dashboard/ordens/{ordemId}/setor/{ordemSetorId}/lancar/producao
             (ordemId=${ordem.id}, ordemSetorId=${ordemSetor.id})}"
                   th:object="${producaoDTO}">
-                <input type="hidden" th:name="${_csrf.parameterName}" th:value="${_csrf.token}"/>
+                <input type="hidden" id="csrfProducao" th:name="${_csrf.parameterName}" th:value="${_csrf.token}"/>
 
                 <div class="form-grid">
                     
                     <div class="field">
-                        <label>Quantidade produzida <span>*</span></label>
-                        <input type="number" th:field="*{quantidade}" min="1" th:max="${ordemSetor.qtdPendente}"
+                        <label for="quantidadeProducao">Quantidade produzida <span>*</span></label>
+                        <input type="number" id="quantidadeProducao" th:field="*{quantidade}" min="1" th:max="${ordemSetor.qtdPendente}"
                                placeholder="0"/>
                         <span class="hint warn" th:text="'Máximo: ' + ${ordemSetor.qtdPendente} +
                          ' unid.'">Máximo: 40 unid.
@@ -84,15 +92,15 @@
                 </div>
                 <div class="form-grid">
                     <div class="field">
-                        <label>Máquina <span>*</span></label>
-                        <select th:field="*{maquinaId}">
+                        <label for="maquinaProducaoId">Máquina <span>*</span></label>
+                        <select id="maquinaProducaoId" th:field="*{maquinaId}">
                             <option value="">Selecione a máquina</option>
                             <option th:each="m : ${maquinas}" th:value="${m.id}" th:text="${m.nome}"></option>
                         </select>
                     </div>
                     <div class="field">
-                        <label>Operador <span>*</span></label>
-                        <select th:field="*{operadorId}">
+                        <label for="operadorProducaoId">Operador <span>*</span></label>
+                        <select id="operadorProducaoId" th:field="*{operadorId}">
                             <option value="">Selecione o operador</option>
                             <option th:each="o : ${operadores}" th:value="${o.id}" th:text="${o.nome}"></option>
                         </select>
@@ -102,8 +110,8 @@
 
 
                 <div class="field csp-style-2b583d7389">
-                    <label>Observação</label>
-                    <input type="text" th:field="*{observacao}" placeholder="Opcional..."/>
+                    <label for="observacaoProducao">Observação</label>
+                    <input type="text" id="observacaoProducao" th:field="*{observacao}" placeholder="Opcional..."/>
                 </div>
 
                 <div class="form-actions">
@@ -115,27 +123,27 @@
         </div>
 
         <!-- FORM REFUGO -->
-        <div id="tab-refugo" class="form-card csp-style-6b99de8b69">
+        <div id="tab-refugo" class="form-card is-hidden" role="tabpanel" aria-labelledby="tab-btn-ref">
             <form method="post" th:action="@{/dashboard/ordens/{ordemId}/setor/{ordemSetorId}/lancar/refugo
             (ordemId=${ordem.id}, ordemSetorId=${ordemSetor.id})}"
                   th:object="${refugoDTO}">
-                <input type="hidden" th:name="${_csrf.parameterName}" th:value="${_csrf.token}"/>
+                <input type="hidden" id="csrfRefugo" th:name="${_csrf.parameterName}" th:value="${_csrf.token}"/>
 
                 <div class="form-grid">
                     <div class="field">
-                        <label>Quantidade refugada <span>*</span></label>
-                        <input type="number" th:field="*{quantidade}" min="1" placeholder="0"/>
+                        <label for="quantidadeRefugo">Quantidade refugada <span>*</span></label>
+                        <input type="number" id="quantidadeRefugo" th:field="*{quantidade}" min="1" placeholder="0"/>
                     </div>
                     <div class="field">
-                        <label>Setor de origem do erro <span>*</span></label>
+                        <label for="selectSetorOrigemRefugo">Setor de origem do erro <span>*</span></label>
                         <select th:field="*{setorOrigemId}" id="selectSetorOrigemRefugo">
                             <option value="">Selecione o setor</option>
                             <option th:each="s : ${setores}" th:value="${s.id}" th:text="${s.nome}"></option>
                         </select>
                     </div>
 
-                    <div class="field csp-style-6b99de8b69" id="campoEtapaOrigemRefugo">
-                        <label>Etapa específica <span>*</span></label>
+                    <div class="field is-hidden" id="campoEtapaOrigemRefugo">
+                        <label for="selectEtapaOrigemRefugo">Etapa específica <span>*</span></label>
                         <select th:field="*{etapaSetorId}" id="selectEtapaOrigemRefugo">
                             <option value="">Selecione a etapa</option>
                         </select>
@@ -144,15 +152,15 @@
 
                 <div class="form-grid">
                     <div class="field">
-                        <label>Operador <span>*</span></label>
-                        <select th:field="*{operadorId}">
+                        <label for="operadorRefugoId">Operador <span>*</span></label>
+                        <select id="operadorRefugoId" th:field="*{operadorId}">
                             <option value="">Selecione o operador</option>
                             <option th:each="o : ${operadores}" th:value="${o.id}" th:text="${o.nome}"></option>
                         </select>
                     </div>
                     <div class="field">
-                        <label>Destino <span>*</span></label>
-                        <select th:field="*{destino}">
+                        <label for="destinoRefugo">Destino <span>*</span></label>
+                        <select id="destinoRefugo" th:field="*{destino}">
                             <option value="">Selecione</option>
                             <option value="RETRABALHO">Retrabalho</option>
                             <option value="DESCARTE">Descarte</option>
@@ -161,8 +169,8 @@
                 </div>
 
                 <div class="field csp-style-2b583d7389">
-                    <label>Motivo <span>*</span></label>
-                    <textarea th:field="*{motivo}" placeholder="Descreva o motivo do refugo..." required></textarea>
+                    <label for="motivoRefugo">Motivo <span>*</span></label>
+                    <textarea id="motivoRefugo" th:field="*{motivo}" placeholder="Descreva o motivo do refugo..." required></textarea>
                 </div>
 
                 <div class="form-actions">
@@ -174,15 +182,15 @@
         </div>
 
         <!-- FORM RETRABALHO -->
-        <div id="tab-retrabalho" class="form-card csp-style-6b99de8b69">
+        <div id="tab-retrabalho" class="form-card is-hidden" role="tabpanel" aria-labelledby="tab-btn-ret">
             <form method="post" th:action="@{/dashboard/ordens/{ordemId}/setor/{ordemSetorId}/lancar/retrabalho
             (ordemId=${ordem.id}, ordemSetorId=${ordemSetor.id})}"
                   th:object="${retrabalhoDTO}">
-                <input type="hidden" th:name="${_csrf.parameterName}" th:value="${_csrf.token}"/>
+                <input type="hidden" id="csrfRetrabalho" th:name="${_csrf.parameterName}" th:value="${_csrf.token}"/>
 
                 <div class="form-grid">
                     <div class="field">
-                        <label>Refugo vinculado <span>*</span></label>
+                        <label for="selectRefugoRetrabalho">Refugo vinculado <span>*</span></label>
                         <select th:field="*{refugoId}" id="selectRefugoRetrabalho" data-csp-change="filtrarMaquinasRetrabalho">
                             <option value="">Selecione o refugo</option>
                             <option th:each="r : ${refugosParaRetrabalho}" th:value="${r.id}"
@@ -191,7 +199,7 @@
                         </select>
                     </div>
                     <div class="field">
-                        <label>Máquina</label>
+                        <label for="selectMaquinaRetrabalho">Máquina</label>
                         <select th:field="*{maquinaId}" id="selectMaquinaRetrabalho">
                             <option value="">Selecione o refugo primeiro (opcional)</option>
                             <option th:each="m : ${todasMaquinasParaRetrabalho}" th:value="${m.id}"
@@ -202,21 +210,21 @@
 
                 <div class="form-grid">
                     <div class="field">
-                        <label>Operador <span>*</span></label>
-                        <select th:field="*{operadorId}">
+                        <label for="operadorRetrabalhoId">Operador <span>*</span></label>
+                        <select id="operadorRetrabalhoId" th:field="*{operadorId}">
                             <option value="">Selecione o operador</option>
                             <option th:each="o : ${operadores}" th:value="${o.id}" th:text="${o.nome}"></option>
                         </select>
                     </div>
                     <div class="field">
-                        <label>Quantidade refeita <span>*</span></label>
-                        <input type="number" th:field="*{quantidade}" min="1" placeholder="0"/>
+                        <label for="quantidadeRetrabalho">Quantidade refeita <span>*</span></label>
+                        <input type="number" id="quantidadeRetrabalho" th:field="*{quantidade}" min="1" placeholder="0"/>
                     </div>
                 </div>
 
                 <div class="field csp-style-2b583d7389">
-                    <label>Observação</label>
-                    <textarea th:field="*{observacao}" placeholder="Descreva o que foi corrigido..."></textarea>
+                    <label for="observacaoRetrabalho">Observação</label>
+                    <textarea id="observacaoRetrabalho" th:field="*{observacao}" placeholder="Descreva o que foi corrigido..."></textarea>
                 </div>
 
                 <div class="form-actions">

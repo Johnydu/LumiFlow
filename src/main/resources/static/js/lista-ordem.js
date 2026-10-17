@@ -5,7 +5,18 @@
 document.addEventListener('DOMContentLoaded', () => {
     initFiltros();
     initProgressBarAnimation();
+    initPauseConfirmation();
 });
+
+function initPauseConfirmation() {
+    document.querySelectorAll('form[data-confirm]').forEach(form => {
+        form.addEventListener('submit', event => {
+            if (!window.confirm(form.dataset.confirm)) {
+                event.preventDefault();
+            }
+        });
+    });
+}
 
 /**
  * Inicializa e otimiza o comportamento dos filtros
@@ -14,6 +25,8 @@ function initFiltros() {
     const formFiltros = document.getElementById('formFiltros');
     if (!formFiltros) return;
 
+    const listaOrdens = document.getElementById('listaOrdens');
+    const tabelaOrdens = document.getElementById('tabelaOrdens');
     const inputBusca = formFiltros.querySelector('input[name="busca"]');
 
     if (inputBusca) {
@@ -36,9 +49,9 @@ function initFiltros() {
 
     // Configura o filtro de status para rodar via JS de forma instantânea
     const selectStatus = document.getElementById('filtroStatus');
-    if (selectStatus) {
+    if (selectStatus && listaOrdens && tabelaOrdens) {
         selectStatus.addEventListener('change', () => {
-            filtrarPorStatus(selectStatus.value);
+            filtrarPorStatus(selectStatus.value, tabelaOrdens, listaOrdens);
         });
     }
 }
@@ -46,8 +59,8 @@ function initFiltros() {
 /**
  * Filtra as linhas da tabela instantaneamente pelo status selecionado (Resolve o bug do "Todos os status")
  */
-function filtrarPorStatus(statusSelecionado) {
-    const linhas = document.querySelectorAll('table tbody tr[data-status]');
+function filtrarPorStatus(statusSelecionado, tabela, listaOrdens) {
+    const linhas = tabela.querySelectorAll('tbody tr[data-status]');
     let contadorVisiveis = 0;
 
     linhas.forEach(linha => {
@@ -62,7 +75,7 @@ function filtrarPorStatus(statusSelecionado) {
     });
 
     // Atualiza o contador de ordens no cabeçalho do painel de forma dinâmica
-    const painelCount = document.querySelector('.panel-count');
+    const painelCount = listaOrdens.querySelector('.panel-count');
     if (painelCount) {
         painelCount.textContent = `${contadorVisiveis} ordens encontradas`;
     }

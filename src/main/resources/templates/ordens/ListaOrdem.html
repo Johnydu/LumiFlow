@@ -26,7 +26,9 @@
     <link rel="stylesheet" th:href="@{/css/utils.css}">
     <link rel="stylesheet" th:href="@{/css/responsive.css}">
     <link rel="stylesheet"
-          href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+          href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css"
+          integrity="sha384-iw3OoTErCYJJB9mCa8LNS2hbsQ7M3C0EpIsO/H5+EGAkPGc6rk+V8i04oW/K5xq0"
+          crossorigin="anonymous" referrerpolicy="no-referrer">
 </head>
 
 <body class="page-ordemproducao-listaordem"
@@ -46,47 +48,62 @@
 
     <div class="content">
 
-        <!-- FILTROS -->
-        <form method="get"
-              th:action="@{/dashboard/ordens-setor/{setorId}(setorId=${setorIdAtual})}"
-              class="filtros"
-              id="formFiltros">
+        <!-- PAINEL DE FILTROS UNIFICADO -->
+        <section class="panel order-filter-panel" aria-label="Filtros de ordens">
+            <form method="get"
+                  th:action="@{/dashboard/ordens-setor/{setorId}(setorId=${setorIdAtual})}"
+                  class="filtros order-filters"
+                  id="formFiltros">
 
-            <div class="search-input-wrapper">
-                <input class="filtro-input"
-                       type="text"
-                       name="busca"
-                       th:value="${param.busca}"
-                       placeholder="🔍 Buscar número ou produto..."
-                       autocomplete="off"/>
-            </div>
+                <div class="search-input-wrapper">
+                    <label for="buscaOrdem">Buscar ordem</label>
+                    <input class="filtro-input"
+                           id="buscaOrdem"
+                           type="text"
+                           name="busca"
+                           th:value="${param.busca}"
+                           placeholder="Buscar número ou produto..."
+                           aria-label="Buscar número ou produto"
+                           autocomplete="off"/>
+                </div>
 
-            <select class="filtro-select"
-                    name="status"
-                    id="filtroStatus">
-                <option value="">Todos os status</option>
-                <option value="DISPONIVEL"
-                        th:selected="${param.status != null and param.status[0] == 'DISPONIVEL'}">
-                    Disponível
-                </option>
-                <option value="LIBERADA"
-                        th:selected="${param.status != null and param.status[0] == 'LIBERADA'}">
-                    Liberada
-                </option>
-                <option value="EM_ANDAMENTO"
-                        th:selected="${param.status != null and param.status[0] == 'EM_ANDAMENTO'}">
-                    Em andamento
-                </option>
-                <option value="CONCLUIDA"
-                        th:selected="${param.status != null and param.status[0] == 'CONCLUIDA'}">
-                    Concluída
-                </option>
-            </select>
+                <label for="filtroStatus">Filtrar por status</label>
+                <select class="filtro-select"
+                        name="status"
+                        id="filtroStatus">
+                    <option value="">Todos os status</option>
+                    <option value="DISPONIVEL"
+                            th:selected="${param.status != null and param.status[0] == 'DISPONIVEL'}">
+                        Disponível
+                    </option>
+                    <option value="LIBERADA"
+                            th:selected="${param.status != null and param.status[0] == 'LIBERADA'}">
+                        Liberada
+                    </option>
+                    <option value="EM_ANDAMENTO"
+                            th:selected="${param.status != null and param.status[0] == 'EM_ANDAMENTO'}">
+                        Em andamento
+                    </option>
+                    <option value="CONCLUIDA"
+                            th:selected="${param.status != null and param.status[0] == 'CONCLUIDA'}">
+                        Concluída
+                    </option>
+                </select>
 
-        </form>
+                <!-- Botão de Lançamentos do Setor integrado na mesma barra -->
+                <div class="filter-actions-right">
+                    <a th:href="@{/dashboard/historico(setorId=${setorIdAtual})}"
+                       class="btn-submit history-link">
+                        <i class="fa-solid fa-clock-rotate-left"></i>
+                        <span>Lançamentos do Setor</span>
+                    </a>
+                </div>
+
+            </form>
+        </section>
 
         <!-- TABELA DE ORDENS -->
-        <div class="panel">
+        <section class="panel order-list-panel" id="listaOrdens">
 
             <div class="panel-header">
                 <span class="panel-title">Ordens</span>
@@ -97,185 +114,188 @@
                 </span>
             </div>
 
-            <table>
-                <thead>
-                <tr>
-                    <th>NÚMERO</th>
-                    <th>PRODUTO/CÓDIGO</th>
-                    <th>SETOR/ETAPA</th>
-                    <th>QTD</th>
-                    <th>PROGRESSO</th>
-                    <th>OBSERVAÇÃO</th>
-                    <th>DATA CRIAÇÃO</th>
-                    <th>STATUS</th>
-                    <th class="csp-style-699c3e909c">AÇÃO</th>
-                </tr>
-                </thead>
+            <div class="order-table-scroll">
+                <table id="tabelaOrdens">
+                    <thead>
+                    <tr>
+                        <th>NÚMERO</th>
+                        <th>PRODUTO/CÓDIGO</th>
+                        <th>SETOR/ETAPA</th>
+                        <th>QTD</th>
+                        <th>PROGRESSO</th>
+                        <th>OBSERVAÇÃO</th>
+                        <th>DATA CRIAÇÃO</th>
+                        <th>STATUS</th>
+                        <th class="csp-style-699c3e909c">AÇÃO</th>
+                    </tr>
+                    </thead>
 
-                <tbody>
+                    <tbody>
 
-                <tr th:each="ordem : ${ordens}"
-                    th:data-status="${ordem.status() != null ? ordem.status().name() : ''}">
+                    <tr th:each="ordem : ${ordens}"
+                        th:data-status="${ordem.status() != null ? ordem.status().name() : ''}">
 
-                    <!-- NÚMERO -->
-                    <td class="num" th:text="${ordem.numero()}"></td>
+                        <!-- NÚMERO -->
+                        <td class="num" th:text="${ordem.numero()}"></td>
 
-                    <!-- PRODUTO -->
-                    <td class="produto-nome">
-                        <span th:text="${ordem.produtoNome() + ' - ' +
-                            ordem.produtoCodigo() +
-                            (ordem.variante() != null
-                                ? ' (' + ordem.variante() + ')'
-                                : '')}">
-                        </span>
-
-                        <span th:if="${ordem.origemRefugo()}"
-                              class="badge-refugo"
-                              title="Contém peças de refugo/retrabalho">
-                            🔧 Refugo
-                        </span>
-                    </td>
-
-                    <!-- SETOR/ETAPA -->
-                    <td>
-                        <span class="setor-tag"
-                              th:text="${ordem.etapaNome() ?: '—'}">
-                        </span>
-                    </td>
-
-                    <!-- QUANTIDADE -->
-                    <td th:text="${ordem.quantidade()}"></td>
-
-                    <!-- PROGRESSO -->
-                    <td>
-                        <div class="prog-wrap">
-                            <div class="prog-track">
-                                <div class="prog-fill progress-value"
-                                     th:classappend="${ordem.status() != null
-                                         and ordem.status().name() == 'CONCLUIDA'}
-                                         ? 'p-con' : 'p-and'"
-                                     th:data-progress="${ordem.percentual()}">
-                                </div>
-                            </div>
-
-                            <span class="prog-txt"
-                                  th:text="${ordem.produzido() + '/' + ordem.quantidade()}">
+                        <!-- PRODUTO -->
+                        <td class="produto-nome">
+                            <span th:text="${ordem.produtoNome() + ' - ' +
+                                ordem.produtoCodigo() +
+                                (ordem.variante() != null
+                                    ? ' (' + ordem.variante() + ')'
+                                    : '')}">
                             </span>
-                        </div>
-                    </td>
 
-                    <!-- OBSERVAÇÃO -->
-                    <td>
-                        <span th:text="${ordem.observacao() != null
-                            and !ordem.observacao().isBlank()
-                            ? ordem.observacao()
-                            : '—'}">
-                        </span>
-                    </td>
+                            <span th:if="${ordem.origemRefugo()}"
+                                  class="badge-refugo"
+                                  title="Contém peças de refugo/retrabalho">
+                                🔧 Refugo
+                            </span>
+                        </td>
 
-                    <!-- DATA -->
-                    <td th:text="${#temporals.format(ordem.criadoEm(), 'dd/MM/yyyy')}">
-                    </td>
+                        <!-- SETOR/ETAPA -->
+                        <td>
+                            <span class="setor-tag"
+                                  th:text="${ordem.etapaNome() ?: '—'}">
+                            </span>
+                        </td>
 
-                    <!-- STATUS -->
-                    <td>
-                        <span th:if="${ordem.status() != null
-                                and ordem.status().name() == 'DISPONIVEL'}"
-                              class="status s-pen">
-                            <span class="s-dot"></span>
-                            Disponível
-                        </span>
+                        <!-- QUANTIDADE -->
+                        <td th:text="${ordem.quantidade()}"></td>
 
-                        <span th:if="${ordem.status() != null
-                                and ordem.status().name() == 'LIBERADA'}"
-                              class="status s-lib">
-                            <span class="s-dot"></span>
-                            Liberada
-                        </span>
+                        <!-- PROGRESSO -->
+                        <td>
+                            <div class="prog-wrap">
+                                <div class="prog-track">
+                                    <div class="prog-fill progress-value"
+                                         th:classappend="${ordem.status() != null
+                                             and ordem.status().name() == 'CONCLUIDA'}
+                                             ? 'p-con' : 'p-and'"
+                                         th:data-progress="${ordem.percentual()}">
+                                    </div>
+                                </div>
 
-                        <span th:if="${ordem.status() != null
-                                and ordem.status().name() == 'EM_ANDAMENTO'}"
-                              class="status s-and">
-                            <span class="s-dot"></span>
-                            Em andamento
-                        </span>
+                                <span class="prog-txt"
+                                      th:text="${ordem.produzido() + '/' + ordem.quantidade()}">
+                                </span>
+                            </div>
+                        </td>
 
-                        <span th:if="${ordem.status() != null
-                                and ordem.status().name() == 'CONCLUIDA'}"
-                              class="status s-con">
-                            <span class="s-dot"></span>
-                            Concluída
-                        </span>
-                    </td>
+                        <!-- OBSERVAÇÃO -->
+                        <td>
+                            <span th:text="${ordem.observacao() != null
+                                and !ordem.observacao().isBlank()
+                                ? ordem.observacao()
+                                : '—'}">
+                            </span>
+                        </td>
 
-                    <!-- AÇÕES -->
-                    <td class="csp-style-72a68ac344">
-                        <div class="table-actions">
+                        <!-- DATA -->
+                        <td th:text="${#temporals.format(ordem.criadoEm(), 'dd/MM/yyyy')}">
+                        </td>
 
-                            <!-- LIBERAR -->
-                            <form th:if="${ordem.status() != null
+                        <!-- STATUS -->
+                        <td>
+                            <span th:if="${ordem.status() != null
                                     and ordem.status().name() == 'DISPONIVEL'}"
-                                  sec:authorize="hasAnyRole('ADMIN', 'GESTAO', 'SUPERVISOR', 'PCP')"
-                                  method="post"
-                                  class="csp-style-0cd28ce9ba"
-                                  th:action="@{/dashboard/ordens-setor/{setorId}/ordens/{ordemSetorId}/liberar(
-                                      setorId=${setorIdAtual},
-                                      ordemSetorId=${ordem.ordemSetorId()})}">
+                                  class="status s-pen">
+                                <span class="s-dot"></span>
+                                Disponível
+                            </span>
 
-                                <input type="hidden"
-                                       th:name="${_csrf.parameterName}"
-                                       th:value="${_csrf.token}"/>
+                            <span th:if="${ordem.status() != null
+                                    and ordem.status().name() == 'LIBERADA'}"
+                                  class="status s-lib">
+                                <span class="s-dot"></span>
+                                Liberada
+                            </span>
 
-                                <button type="submit" class="btn-liberar">
-                                    Liberar
+                            <span th:if="${ordem.status() != null
+                                    and ordem.status().name() == 'EM_ANDAMENTO'}"
+                                  class="status s-and">
+                                <span class="s-dot"></span>
+                                Em andamento
+                            </span>
+
+                            <span th:if="${ordem.status() != null
+                                    and ordem.status().name() == 'CONCLUIDA'}"
+                                  class="status s-con">
+                                <span class="s-dot"></span>
+                                Concluída
+                            </span>
+                        </td>
+
+                        <!-- AÇÕES -->
+                        <td class="csp-style-72a68ac344">
+                            <div class="table-actions">
+
+                                <!-- LIBERAR -->
+                                <form th:if="${ordem.status() != null
+                                        and ordem.status().name() == 'DISPONIVEL'}"
+                                      sec:authorize="hasAnyRole('ADMIN', 'GESTAO', 'SUPERVISOR', 'PCP')"
+                                      method="post"
+                                      class="csp-style-0cd28ce9ba"
+                                      th:action="@{/dashboard/ordens-setor/{setorId}/ordens/{ordemSetorId}/liberar(
+                                          setorId=${setorIdAtual},
+                                          ordemSetorId=${ordem.ordemSetorId()})}">
+
+                                    <input type="hidden"
+                                           th:id="|csrfLiberarOrdem-${ordem.ordemSetorId()}|"
+                                           th:name="${_csrf.parameterName}"
+                                           th:value="${_csrf.token}"/>
+
+                                    <button type="submit" class="btn-liberar">
+                                        Liberar
+                                    </button>
+                                </form>
+
+                                <!-- DIVIDIR -->
+                                <button th:if="${ordem.status() != null && ordem.status().name() == 'DISPONIVEL'
+                                        && !ordem.origemRefugo() && ordem.produzido() == 0}"
+                                        sec:authorize="hasAnyRole('ADMIN', 'GESTAO', 'SUPERVISOR','PCP')"
+                                        type="button" class="btn-dividir"
+                                        th:data-id="${ordem.ordemSetorId()}"
+                                        th:data-qtd="${ordem.quantidade()}"
+                                        th:data-nome="${ordem.produtoNome()}"
+                                        th:data-setor="${setorIdAtual}">
+                                    Dividir
                                 </button>
-                            </form>
 
-                            <!-- DIVIDIR -->
-                            <button th:if="${ordem.status() != null && ordem.status().name() == 'DISPONIVEL'
-                                    && !ordem.origemRefugo() && ordem.produzido() == 0}"
-                                    sec:authorize="hasAnyRole('ADMIN', 'GESTAO', 'SUPERVISOR','PCP')"
-                                    type="button" class="btn-dividir"
-                                    th:data-id="${ordem.ordemSetorId()}"
-                                    th:data-qtd="${ordem.quantidade()}"
-                                    th:data-nome="${ordem.produtoNome()}"
-                                    th:data-setor="${setorIdAtual}">
-                                Dividir
-                            </button>
+                                <!-- LANÇAR -->
+                                <a th:if="${ordem.status() != null
+                                        and (ordem.status().name() == 'LIBERADA'
+                                        or ordem.status().name() == 'EM_ANDAMENTO')}"
+                                   th:href="@{/dashboard/ordens/{id}/setor/{setorId}/lancar(
+                                       id=${ordem.id()},
+                                       setorId=${ordem.ordemSetorId()})}"
+                                   class="btn-lancar">
+                                    Lançar
+                                </a>
+                                <form th:if="${ordem.status() != null &&
+                                      (ordem.status().name() == 'LIBERADA' || ordem.status().name() == 'EM_ANDAMENTO')}"
+                                      sec:authorize="hasAnyRole('ADMIN', 'GESTAO', 'SUPERVISOR','PCP')"
+                                      method="post"
+                                      th:action="@{/dashboard/ordens-setor/{setorId}/ordens/{ordemSetorId}/pausar(setorId=${setorIdAtual}, ordemSetorId=${ordem.ordemSetorId()})}"
+                                      data-confirm="Voltar esta etapa para Disponível? A produção será interrompida até uma nova liberação."
+                                      class="pause-form">
+                                    <button type="submit" class="btn-pausar">Pausar</button>
+                                </form>
 
-                            <!-- LANÇAR -->
-                            <a th:if="${ordem.status() != null
-                                    and (ordem.status().name() == 'LIBERADA'
-                                    or ordem.status().name() == 'EM_ANDAMENTO')}"
-                               th:href="@{/dashboard/ordens/{id}/setor/{setorId}/lancar(
-                                   id=${ordem.id()},
-                                   setorId=${ordem.ordemSetorId()})}"
-                               class="btn-lancar">
-                                Lançar
-                            </a>
-                            <form th:if="${ordem.status() != null &&
-                                  (ordem.status().name() == 'LIBERADA' || ordem.status().name() == 'EM_ANDAMENTO')}"
-                                  sec:authorize="hasAnyRole('ADMIN', 'GESTAO', 'SUPERVISOR','PCP')"
-                                  method="post"
-                                  th:action="@{/dashboard/ordens-setor/{setorId}/ordens/{ordemSetorId}/pausar(setorId=${setorIdAtual}, ordemSetorId=${ordem.ordemSetorId()})}"
-                                  onsubmit="return confirm('Voltar esta etapa para Disponível? A produção será interrompida até uma nova liberação.');"
-                                  style="display:inline;">
-                                <button type="submit" class="btn-pausar">Pausar</button>
-                            </form>
+                            </div>
+                        </td>
 
-                        </div>
-                    </td>
+                    </tr>
 
-                </tr>
+                    <tr th:if="${ordens == null or #lists.isEmpty(ordens)}">
+                        <td colspan="9" class="csp-style-2b8dd6a649">
+                            Nenhuma ordem encontrada.
+                        </td>
+                    </tr>
 
-                <tr th:if="${ordens == null or #lists.isEmpty(ordens)}">
-                    <td colspan="9" class="csp-style-2b8dd6a649">
-                        Nenhuma ordem encontrada.
-                    </td>
-                </tr>
-
-                </tbody>
-            </table>
+                    </tbody>
+                </table>
+            </div>
 
             <!-- PAGINAÇÃO ATUAL -->
             <div class="paginacao"
@@ -301,7 +321,7 @@
                 </div>
             </div>
 
-        </div>
+        </section>
     </div>
 </main>
 

@@ -22,7 +22,9 @@
     <link rel="stylesheet" th:href="@{/css/utils.css}">
     <link rel="stylesheet" th:href="@{/css/error.css}">
     <link rel="stylesheet" th:href="@{/css/responsive.css}"/>
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css"
+          integrity="sha384-iw3OoTErCYJJB9mCa8LNS2hbsQ7M3C0EpIsO/H5+EGAkPGc6rk+V8i04oW/K5xq0"
+          crossorigin="anonymous" referrerpolicy="no-referrer">
 </head>
 <body class="page-usuario-cadastrousuario">
 <div th:replace="~{fragments/messages :: alerts}"></div>
@@ -45,7 +47,9 @@
 
                 <div class="panel-header">
                     <form method="get" th:action="@{/dashboard/usuarios}">
+                        <label for="buscaUsuario">Buscar usuário</label>
                         <input type="text"
+                               id="buscaUsuario"
                                name="nome"
                                th:value="${param.nome}"
                                class="search"
@@ -111,6 +115,7 @@
                                       class="form-excluir-usuario csp-style-cccfa4560d">
 
                                     <input type="hidden"
+                                           th:id="|csrfExcluirUsuario-${usuario.id}|"
                                            th:name="${_csrf.parameterName}"
                                            th:value="${_csrf.token}" />
 
@@ -143,28 +148,29 @@
                       method="post">
 
                     <input type="hidden"
+                           id="csrfUsuario"
                            th:name="${_csrf.parameterName}"
                            th:value="${_csrf.token}" />
 
                     <!-- Campo oculto para ID (essencial para edição) -->
-                    <input type="hidden" name="id" th:field="*{id}" />
+                    <input type="hidden" id="usuarioId" name="id" th:field="*{id}" />
 
                     <div class="modal-body">
                         <div class="field csp-style-ef1f3a5dff">
-                            <label class="csp-style-e4c9ee3efa">Nome completo <span class="csp-style-1f62937642">*</span></label>
+                            <label for="nomeUsuario" class="csp-style-e4c9ee3efa">Nome completo <span class="csp-style-1f62937642">*</span></label>
                             <input type="text" class="csp-style-51fd58adb1"
                                    th:field="*{nome}"
-                                   id="nome"
+                                   id="nomeUsuario"
                                    maxlength="50"
                                    placeholder="Ex: Carlos Silva" required
                                    />
                         </div>
 
                         <div class="field csp-style-ef1f3a5dff">
-                            <label class="csp-style-e4c9ee3efa">Login <span class="csp-style-1f62937642">*</span></label>
+                            <label for="loginUsuario" class="csp-style-e4c9ee3efa">Login <span class="csp-style-1f62937642">*</span></label>
                             <input type="text" class="csp-style-51fd58adb1"
                                    th:field="*{login}"
-                                   id="login"
+                                   id="loginUsuario"
                                    maxlength="20"
                                    placeholder="Ex: carlos" required
                                    />
@@ -172,17 +178,18 @@
                         </div>
 
                         <div class="field csp-style-ef1f3a5dff">
-                            <label class="csp-style-e4c9ee3efa">Senha <span class="csp-style-1f62937642">*</span></label>
+                            <label for="senhaUsuario" class="csp-style-e4c9ee3efa">Senha <span class="csp-style-1f62937642">*</span></label>
                             <input type="password" class="csp-style-51fd58adb1"
                                    th:field="*{senha}"
-                                   id="senha"
-                                   placeholder="Min. 12 caracteres..."
-                                   />
+                                   id="senhaUsuario"
+                                   minlength="8"
+                                   placeholder="Min. 8 caracteres (maiúscula, minúscula e número)..."
+                            />
                         </div>
 
                         <div class="field csp-style-ef1f3a5dff">
-                            <label class="csp-style-e4c9ee3efa">Nível de acesso <span class="csp-style-1f62937642">*</span></label>
-                            <select th:field="*{nivelAcessoId}" class="csp-style-51fd58adb1" id="nivelAcessoId"
+                            <label for="nivelAcessoUsuarioId" class="csp-style-e4c9ee3efa">Nível de acesso <span class="csp-style-1f62937642">*</span></label>
+                            <select th:field="*{nivelAcessoId}" class="csp-style-51fd58adb1" id="nivelAcessoUsuarioId"
                                    >
                                 <option value="">Selecione o nível</option>
                                 <option th:each="nivel : ${niveisAcesso}"
@@ -193,8 +200,8 @@
                         </div>
 
                         <div class="field csp-style-ef1f3a5dff">
-                            <label class="csp-style-e4c9ee3efa">Setor</label>
-                            <select th:field="*{setorId}" class="csp-style-51fd58adb1" id="setorId"
+                            <label for="setorUsuarioId" class="csp-style-e4c9ee3efa">Setor</label>
+                            <select th:field="*{setorId}" class="csp-style-51fd58adb1" id="setorUsuarioId"
                                    >
                                 <option value="">Nenhum (gestão/suporte)</option>
                                 <option th:each="setor : ${setores}"

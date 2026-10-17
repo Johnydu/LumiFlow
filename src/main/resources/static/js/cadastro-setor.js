@@ -16,7 +16,7 @@ function limparFormularioSetor() {
   const formTitle = document.getElementById('form-title');
   if (formTitle) formTitle.textContent = 'Novo Setor';
 
-  const setorId = document.getElementById('id');
+  const setorId = document.getElementById('setorId');
   if (setorId) setorId.value = '';
 
   const setorNome = document.getElementById('nome');
@@ -45,23 +45,31 @@ function adicionarEtapaSetor(nomeEtapa = '', idEtapa = '', ordemEtapa = '') {
   // Input de ID da etapa (Mantém o ID real recebido do banco, ou vazio se for nova)
   const inputId = document.createElement('input');
   inputId.type = 'hidden';
+  inputId.id = `etapaSetorId-${index}`;
   inputId.name = `etapas[${index}].id`;
   inputId.value = idEtapa !== undefined && idEtapa !== null ? idEtapa : '';
 
   // Input da Ordem da etapa
   const inputOrdem = document.createElement('input');
   inputOrdem.type = 'hidden';
+  inputOrdem.id = `etapaSetorOrdem-${index}`;
   inputOrdem.name = `etapas[${index}].ordem`;
   inputOrdem.value = ordemEtapa || (index + 1);
 
   // Input do Nome da etapa
   const inputNome = document.createElement('input');
   inputNome.type = 'text';
+  inputNome.id = `etapaSetorNome-${index}`;
   inputNome.name = `etapas[${index}].nome`;
   inputNome.className = 'form-control input-etapa-nome etapa-name-control';
   inputNome.placeholder = 'Nome da etapa (Ex: 1ª Dobra)';
   inputNome.value = nomeEtapa || '';
   inputNome.required = true;
+
+  const labelNome = document.createElement('label');
+  labelNome.htmlFor = inputNome.id;
+  labelNome.className = 'visually-hidden';
+  labelNome.textContent = `Nome da etapa ${index + 1}`;
 
   // Botão de remover
   const btnRemover = document.createElement('button');
@@ -72,6 +80,7 @@ function adicionarEtapaSetor(nomeEtapa = '', idEtapa = '', ordemEtapa = '') {
 
   row.appendChild(inputId);
   row.appendChild(inputOrdem);
+  row.appendChild(labelNome);
   row.appendChild(inputNome);
   row.appendChild(btnRemover);
 
@@ -95,11 +104,21 @@ function reindexarEtapasSetor() {
     const inputNome = item.querySelector('input[name*=".nome"]');
 
     if (inputId) inputId.name = `etapas[${index}].id`;
+    if (inputId) inputId.id = `etapaSetorId-${index}`;
     if (inputOrdem) {
+      inputOrdem.id = `etapaSetorOrdem-${index}`;
       inputOrdem.name = `etapas[${index}].ordem`;
       inputOrdem.value = index + 1;
     }
-    if (inputNome) inputNome.name = `etapas[${index}].nome`;
+    if (inputNome) {
+      inputNome.id = `etapaSetorNome-${index}`;
+      inputNome.name = `etapas[${index}].nome`;
+      const labelNome = item.querySelector('label');
+      if (labelNome) {
+        labelNome.htmlFor = inputNome.id;
+        labelNome.textContent = `Nome da etapa ${index + 1}`;
+      }
+    }
   });
 }
 
@@ -112,7 +131,7 @@ async function editarSetor(id, nome, buttonRef) {
   const formTitle = document.getElementById('form-title');
   if (formTitle) formTitle.textContent = 'Editar Setor';
 
-  const setorId = document.getElementById('id');
+  const setorId = document.getElementById('setorId');
   if (setorId) setorId.value = id;
 
   const setorNome = document.getElementById('nome');
