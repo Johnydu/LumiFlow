@@ -168,6 +168,8 @@
     border-top: 1px solid rgba(255, 255, 255, 0.06);
 }
 
+
+
 /* Animações suaves de abertura */
 @keyframes fadeInModal {
     from { opacity: 0; }

@@ -18,6 +18,7 @@
     <link rel="stylesheet" th:href="@{/css/components/tables.css}">
     <link rel="stylesheet" th:href="@{/css/components/alerts.css}">
     <link rel="stylesheet" th:href="@{/css/components/tabs.css}">
+    <link rel="stylesheet" th:href="@{/css/components/modal.css}">
     <link rel="stylesheet" th:href="@{/css/pages/lancamento.css}">
     <link rel="stylesheet" th:href="@{/css/responsive.css}"/>
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css"
@@ -30,7 +31,6 @@
       th:data-aba-erro="${#fields.hasErrors('producaoDTO.*') ? 'producao' :
                           (#fields.hasErrors('refugoDTO.*') ? 'refugo' :
                           (#fields.hasErrors('retrabalhoDTO.*') ? 'retrabalho' : ''))}">
-
 
 <div th:replace="~{fragments/messages :: alerts}"></div>
 
@@ -80,34 +80,30 @@
                 <input type="hidden" id="csrfProducao" th:name="${_csrf.parameterName}" th:value="${_csrf.token}"/>
 
                 <div class="form-grid">
-                    
                     <div class="field">
                         <label for="quantidadeProducao">Quantidade produzida <span>*</span></label>
                         <input type="number" id="quantidadeProducao" th:field="*{quantidade}" min="1" th:max="${ordemSetor.qtdPendente}"
-                               placeholder="0"/>
-                        <span class="hint warn" th:text="'Máximo: ' + ${ordemSetor.qtdPendente} +
-                         ' unid.'">Máximo: 40 unid.
-                        </span>
+                               placeholder="0" required/>
+                        <span class="hint warn" th:text="'Máximo: ' + ${ordemSetor.qtdPendente} + ' unid.'">Máximo: 40 unid.</span>
                     </div>
                 </div>
+
                 <div class="form-grid">
                     <div class="field">
                         <label for="maquinaProducaoId">Máquina <span>*</span></label>
-                        <select id="maquinaProducaoId" th:field="*{maquinaId}">
+                        <select id="maquinaProducaoId" th:field="*{maquinaId}" required>
                             <option value="">Selecione a máquina</option>
                             <option th:each="m : ${maquinas}" th:value="${m.id}" th:text="${m.nome}"></option>
                         </select>
                     </div>
                     <div class="field">
                         <label for="operadorProducaoId">Operador <span>*</span></label>
-                        <select id="operadorProducaoId" th:field="*{operadorId}">
+                        <select id="operadorProducaoId" th:field="*{operadorId}" required>
                             <option value="">Selecione o operador</option>
                             <option th:each="o : ${operadores}" th:value="${o.id}" th:text="${o.nome}"></option>
                         </select>
                     </div>
                 </div>
-
-
 
                 <div class="field csp-style-2b583d7389">
                     <label for="observacaoProducao">Observação</label>
@@ -132,11 +128,11 @@
                 <div class="form-grid">
                     <div class="field">
                         <label for="quantidadeRefugo">Quantidade refugada <span>*</span></label>
-                        <input type="number" id="quantidadeRefugo" th:field="*{quantidade}" min="1" placeholder="0"/>
+                        <input type="number" id="quantidadeRefugo" th:field="*{quantidade}" min="1" placeholder="0" required/>
                     </div>
                     <div class="field">
                         <label for="selectSetorOrigemRefugo">Setor de origem do erro <span>*</span></label>
-                        <select th:field="*{setorOrigemId}" id="selectSetorOrigemRefugo">
+                        <select th:field="*{setorOrigemId}" id="selectSetorOrigemRefugo" required>
                             <option value="">Selecione o setor</option>
                             <option th:each="s : ${setores}" th:value="${s.id}" th:text="${s.nome}"></option>
                         </select>
@@ -153,14 +149,14 @@
                 <div class="form-grid">
                     <div class="field">
                         <label for="operadorRefugoId">Operador <span>*</span></label>
-                        <select id="operadorRefugoId" th:field="*{operadorId}">
+                        <select id="operadorRefugoId" th:field="*{operadorId}" required>
                             <option value="">Selecione o operador</option>
                             <option th:each="o : ${operadores}" th:value="${o.id}" th:text="${o.nome}"></option>
                         </select>
                     </div>
                     <div class="field">
                         <label for="destinoRefugo">Destino <span>*</span></label>
-                        <select id="destinoRefugo" th:field="*{destino}">
+                        <select id="destinoRefugo" th:field="*{destino}" required>
                             <option value="">Selecione</option>
                             <option value="RETRABALHO">Retrabalho</option>
                             <option value="DESCARTE">Descarte</option>
@@ -191,7 +187,7 @@
                 <div class="form-grid">
                     <div class="field">
                         <label for="selectRefugoRetrabalho">Refugo vinculado <span>*</span></label>
-                        <select th:field="*{refugoId}" id="selectRefugoRetrabalho" data-csp-change="filtrarMaquinasRetrabalho">
+                        <select th:field="*{refugoId}" id="selectRefugoRetrabalho" data-csp-change="filtrarMaquinasRetrabalho" required>
                             <option value="">Selecione o refugo</option>
                             <option th:each="r : ${refugosParaRetrabalho}" th:value="${r.id}"
                                     th:data-setor-origem="${r.setorOrigem.id}"
@@ -211,14 +207,14 @@
                 <div class="form-grid">
                     <div class="field">
                         <label for="operadorRetrabalhoId">Operador <span>*</span></label>
-                        <select id="operadorRetrabalhoId" th:field="*{operadorId}">
+                        <select id="operadorRetrabalhoId" th:field="*{operadorId}" required>
                             <option value="">Selecione o operador</option>
                             <option th:each="o : ${operadores}" th:value="${o.id}" th:text="${o.nome}"></option>
                         </select>
                     </div>
                     <div class="field">
                         <label for="quantidadeRetrabalho">Quantidade refeita <span>*</span></label>
-                        <input type="number" id="quantidadeRetrabalho" th:field="*{quantidade}" min="1" placeholder="0"/>
+                        <input type="number" id="quantidadeRetrabalho" th:field="*{quantidade}" min="1" placeholder="0" required/>
                     </div>
                 </div>
 
@@ -235,6 +231,30 @@
             </form>
         </div>
 
+    </div>
+
+    <!-- MODAL DE CONFIRMAÇÃO COM RESUMO -->
+    <div class="modal-overlay is-hidden" id="modal-confirmacao-lancamento">
+        <div class="modal-box">
+            <div class="modal-header">
+                <span class="modal-title" id="modal-confirmacao-titulo">
+                    <i class="fa-solid fa-clipboard-check"></i> Confirmar Lançamento
+                </span>
+                <button type="button" class="modal-close" id="btn-modal-fechar">&times;</button>
+            </div>
+
+            <div class="modal-body">
+                <p class="modal-info">Confirme os dados do lançamento antes de enviar:</p>
+                <div id="modal-resumo-conteudo" class="resumo-grid"></div>
+            </div>
+
+            <div class="modal-actions">
+                <button type="button" class="btn-cancel" id="btn-modal-cancelar">Voltar e Ajustar</button>
+                <button type="button" class="btn-submit" id="btn-modal-confirmar-envio">
+                    <i class="fa-solid fa-check"></i> Confirmar e Enviar
+                </button>
+            </div>
+        </div>
     </div>
 </main>
 
