@@ -12,7 +12,7 @@ import br.com.lumiflow.entity.OrdemProducao;
 import br.com.lumiflow.entity.OrdemSetor;
 import br.com.lumiflow.entity.Refugo;
 import br.com.lumiflow.entity.Retrabalho;
-import br.com.lumiflow.entity.RoteiroProduto;
+import br.com.lumiflow.entity.RoteiroPasso;
 import br.com.lumiflow.entity.enums.DestinoRefugo;
 import br.com.lumiflow.entity.enums.EstatusOrdemProducao;
 import br.com.lumiflow.exception.BusinessException;
@@ -21,7 +21,7 @@ import br.com.lumiflow.repository.OrdemProducaoRepository;
 import br.com.lumiflow.repository.OrdemSetorRepository;
 import br.com.lumiflow.repository.RefugoRepository;
 import br.com.lumiflow.repository.RetrabalhoRepository;
-import br.com.lumiflow.repository.RoteiroProdutoRepository;
+import br.com.lumiflow.repository.RoteiroPassoRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -44,7 +44,7 @@ public class OrdemDetalheService {
 
     private final OrdemProducaoRepository ordemProducaoRepository;
     private final OrdemSetorRepository ordemSetorRepository;
-    private final RoteiroProdutoRepository roteiroProdutoRepository;
+    private final RoteiroPassoRepository roteiroPassoRepository;
     private final LancamentoRepository lancamentoRepository;
     private final RefugoRepository refugoRepository;
     private final RetrabalhoRepository retrabalhoRepository;
@@ -58,8 +58,8 @@ public class OrdemDetalheService {
         OrdemProducao ordem = ordemProducaoRepository.buscarComProduto(ordemId)
                 .orElseThrow(() -> new BusinessException(AppMessages.ERROR_ORDER_NOTFOUND));
 
-        List<RoteiroProduto> roteiro =
-                roteiroProdutoRepository.buscarPassosComSetorEEtapa(ordem.getProduto().getId());
+        List<RoteiroPasso> roteiro =
+                roteiroPassoRepository.buscarPassosComSetorEEtapa(ordem.getProduto().getId());
         List<OrdemSetor> linhas = ordemSetorRepository.buscarLinhasDaOrdem(ordemId);
         List<Refugo> refugos = refugoRepository.buscarPorOrdem(ordemId);
 
@@ -95,7 +95,7 @@ public class OrdemDetalheService {
     }
 
     /** Unidades que já passaram pela última etapa do roteiro (inclui as retrabalhadas). */
-    private int calcularProduzidoFinal(List<RoteiroProduto> roteiro, List<OrdemSetor> linhas) {
+    private int calcularProduzidoFinal(List<RoteiroPasso> roteiro, List<OrdemSetor> linhas) {
         if (roteiro.isEmpty()) {
             return 0;
         }
@@ -127,14 +127,14 @@ public class OrdemDetalheService {
      * Um passo só aparece como concluído quando todas as suas linhas estão concluídas
      * e todos os passos anteriores também estão. Sem linhas, o passo está aguardando.
      */
-    private List<RoteiroPassoDetalheDTO> montarRoteiro(List<RoteiroProduto> roteiro, List<OrdemSetor> linhas) {
+    private List<RoteiroPassoDetalheDTO> montarRoteiro(List<RoteiroPasso> roteiro, List<OrdemSetor> linhas) {
         Map<Integer, List<OrdemSetor>> porSequencia = linhas.stream()
                 .collect(Collectors.groupingBy(OrdemSetor::getSequencia));
 
         List<RoteiroPassoDetalheDTO> passos = new ArrayList<>();
         boolean anterioresConcluidos = true;
 
-        for (RoteiroProduto passo : roteiro) {
+        for (RoteiroPasso passo : roteiro) {
             List<OrdemSetor> doPasso = porSequencia.getOrDefault(passo.getSequencia(), List.of());
             boolean todasConcluidas = !doPasso.isEmpty()
                     && doPasso.stream().allMatch(l -> l.getStatus() == EstatusOrdemProducao.CONCLUIDA);
@@ -154,7 +154,7 @@ public class OrdemDetalheService {
         return passos;
     }
 
-    private String rotulo(RoteiroProduto passo) {
+    private String rotulo(RoteiroPasso passo) {
         String setor = passo.getSetor().getNome();
         return passo.getEtapaSetor() == null ? setor : setor + " (" + passo.getEtapaSetor().getNome() + ")";
     }

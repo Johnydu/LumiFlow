@@ -66,6 +66,12 @@ public final class AppMessages {
     public static final String ERROR_ROTEIRO_ETAPA_NAO_CRIADA = "error.roteiro.etapa.naocriada";
     public static final String ERROR_REFUGO_ETAPA_REQUIRED = "error.refugo.etapa.required";
     public static final String ERROR_ROUTE_IN_USE = "error.route.in.use";
+    public static final String ERROR_ROUTE_NOTFOUND = "error.route.notfound";
+    public static final String ERROR_ROUTE_CODE_DUPLICATE = "error.route.code.duplicate";
+    public static final String ERROR_ROUTE_HAS_PRODUCTS = "error.route.has.products";
+    public static final String ERROR_ROUTE_PRODUCT_OPEN_ORDERS = "error.route.product.open.orders";
+    public static final String SUCCESS_ROUTE_DUPLICATED = "success.route.duplicated";
+    public static final String SUCCESS_ROUTE_PRODUCTS_LINKED = "success.route.products.linked";
 
     // ==================== ORDEM DE PRODUÇÃO ====================
     public static final String SUCCESS_ORDER_CREATED = "success.order.created";

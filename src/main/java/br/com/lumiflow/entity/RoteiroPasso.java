@@ -5,13 +5,13 @@ import jakarta.validation.constraints.NotNull;
 import lombok.*;
 
 @Entity
-@Table(name = "roteiro_produto")
+@Table(name = "roteiro_passo")
 @Getter
 @Setter
 @AllArgsConstructor
 @NoArgsConstructor
 @EqualsAndHashCode(of = "id")
-public class RoteiroProduto {
+public class RoteiroPasso {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -22,8 +22,8 @@ public class RoteiroProduto {
     private Integer sequencia;
 
     @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "produto_id",nullable = false)
-    private Produto produto;
+    @JoinColumn(name = "roteiro_id", nullable = false)
+    private Roteiro roteiro;
 
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "setor_id",nullable = false)

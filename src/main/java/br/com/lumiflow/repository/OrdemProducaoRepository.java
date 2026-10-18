@@ -49,4 +49,6 @@ public interface OrdemProducaoRepository extends JpaRepository<OrdemProducao, Lo
     Optional<OrdemProducao> buscarComProduto(@Param("id") Long id);
 
     boolean existsByProdutoIdAndStatusNot(Long produtoId, EstatusOrdemProducao status);
+
+    boolean existsByProdutoRoteiroIdAndStatusNot(Long roteiroId, EstatusOrdemProducao status);
 }

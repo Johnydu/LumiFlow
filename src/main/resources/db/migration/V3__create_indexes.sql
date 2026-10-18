@@ -16,9 +16,10 @@ CREATE INDEX IF NOT EXISTS idx_operador_setor_padrao ON operador (setor_padrao_i
 -- MÁQUINA
 CREATE INDEX IF NOT EXISTS idx_maquina_setor ON maquina (setor_id);
 
--- ROTEIRO (produto_id já é coberto por uq_roteiro_sequencia; etapa_setor.setor_id por uq_etapa_setor_ordem)
-CREATE INDEX IF NOT EXISTS idx_roteiro_setor ON roteiro_produto (setor_id);
-CREATE INDEX IF NOT EXISTS idx_roteiro_etapa ON roteiro_produto (etapa_setor_id);
+-- ROTEIRO (roteiro_id é coberto por uq_passo_sequencia; etapa_setor.setor_id por uq_etapa_setor_ordem)
+CREATE INDEX IF NOT EXISTS idx_produto_roteiro ON produto (roteiro_id);
+CREATE INDEX IF NOT EXISTS idx_roteiro_passo_setor ON roteiro_passo (setor_id);
+CREATE INDEX IF NOT EXISTS idx_roteiro_passo_etapa ON roteiro_passo (etapa_setor_id);
 
 -- ORDEM DE PRODUÇÃO
 -- (produto_id, status) atende a FK e a consulta "existe ordem aberta deste produto".

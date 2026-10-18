@@ -62,6 +62,10 @@ CREATE TRIGGER trg_produto_atualizado_em
     FOR EACH ROW WHEN (OLD.* IS DISTINCT FROM NEW.*)
 EXECUTE FUNCTION update_atualizado_em_column();
 
+CREATE TRIGGER trg_roteiro_atualizado_em
+    BEFORE UPDATE ON roteiro FOR EACH ROW
+EXECUTE FUNCTION update_atualizado_em_column();
+
 CREATE TRIGGER trg_ordem_producao_atualizado_em
     BEFORE UPDATE ON ordem_producao
     FOR EACH ROW WHEN (OLD.* IS DISTINCT FROM NEW.*)

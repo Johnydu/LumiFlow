@@ -9,7 +9,9 @@
 .btn-liberar,
 .btn-lancar,
 .btn-dividir,
-.btn-pausar {
+.btn-pausar,
+.btn-produtos,
+.btn-duplicar {
   min-width: unset;
   height: var(--btn-height);
   padding: 0 12px;
@@ -27,6 +29,19 @@
   box-shadow: none;
   text-shadow: none;
   text-decoration: none;
+  box-sizing: border-box;
+}
+
+/* Garante que formulários alinhados em .table-actions mantenham a mesma geometria de botão */
+.table-actions > form {
+  display: inline-flex;
+  align-items: center;
+  margin: 0;
+  padding: 0;
+}
+
+.table-actions > form > button {
+  width: 100%;
 }
 
 /* EDITAR (Azul-acinzentado) */
@@ -46,6 +61,30 @@
 /* LANÇAR (Neutro) */
 .btn-lancar { background: var(--btn-neutral-bg); border-color: var(--btn-neutral-border); color: var(--btn-neutral-color); }
 .btn-lancar:hover { background: var(--btn-neutral-border); border-color: var(--btn-neutral-bg); }
+
+/* PRODUTOS (Cian / Azul Vínculo) */
+.btn-produtos {
+  background: rgba(56, 189, 248, 0.12);
+  border-color: rgba(56, 189, 248, 0.3);
+  color: #38bdf8;
+}
+.btn-produtos:hover {
+  background: rgba(56, 189, 248, 0.25);
+  border-color: #38bdf8;
+  color: #ffffff;
+}
+
+/* DUPLICAR (Roxo / Clonagem) */
+.btn-duplicar {
+  background: rgba(168, 85, 247, 0.12);
+  border-color: rgba(168, 85, 247, 0.3);
+  color: #c084fc;
+}
+.btn-duplicar:hover {
+  background: rgba(168, 85, 247, 0.25);
+  border-color: #c084fc;
+  color: #ffffff;
+}
 
 /* DIVIDIR / AVISO (Ajustado para não sumir no Tema Claro) */
 .btn-dividir {

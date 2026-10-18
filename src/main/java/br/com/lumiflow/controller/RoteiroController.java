@@ -2,9 +2,10 @@ package br.com.lumiflow.controller;
 
 import br.com.lumiflow.config.AppMessages;
 import br.com.lumiflow.dto.etapaSetor.EtapaSetorDTO;
+import br.com.lumiflow.dto.roteiro.DuplicarRoteiroDTO;
 import br.com.lumiflow.dto.roteiro.RoteiroDTO;
+import br.com.lumiflow.dto.roteiro.VincularProdutosDTO;
 import br.com.lumiflow.exception.BusinessException;
-import br.com.lumiflow.service.ProdutoService;
 import br.com.lumiflow.service.RoteiroService;
 import br.com.lumiflow.service.SetorService;
 import jakarta.servlet.http.HttpServletRequest;
@@ -20,6 +21,7 @@ import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
+import java.security.Principal;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Locale;
@@ -30,169 +32,125 @@ import java.util.Locale;
 @RequestMapping("/dashboard/roteiros")
 public class RoteiroController {
 
+    private static final String PODE_GERENCIAR = "hasAnyRole('ADMIN', 'SUPERVISOR','PCP','GESTAO')";
+    private static final String REDIRECT_LISTA = "redirect:/dashboard/roteiros";
+
     private final RoteiroService roteiroService;
-    private final ProdutoService produtoService;
     private final SetorService setorService;
     private final MessageSource messageSource;
 
     @GetMapping
-    public String listar(
-            @RequestParam(value = "nomeProduto", required = false) String nomeProduto,
-            Model model,
-            HttpServletRequest request,
-            Locale locale) {
-
-        try {
-            carregarPagina(model, nomeProduto);
-        } catch (Exception e) {
-            log.error("Erro inesperado ao carregar a página de roteiros: {}", e.getMessage(), e);
-            model.addAttribute("error", messageSource.getMessage(AppMessages.ERROR_VALIDATION_FAILED, null, locale));
-            model.addAttribute("roteiros", List.of());
-            model.addAttribute("produtos", List.of());
-            model.addAttribute("setores", List.of());
-            if (!model.containsAttribute("roteiroDTO")) {
-                model.addAttribute("roteiroDTO", new RoteiroDTO(null, new ArrayList<>()));
-            }
-        }
+    public String listar(@RequestParam(value = "busca", required = false) String busca,
+                         Model model, HttpServletRequest request) {
+        log.debug("Acessando listagem de roteiros. Termo de busca: [{}]", busca);
+        model.addAttribute("roteiros", roteiroService.listarRoteiros(busca));
 
         if ("XMLHttpRequest".equals(request.getHeader("X-Requested-With"))) {
             return "roteiro/Roteiros :: listaRoteiros";
         }
 
+        model.addAttribute("setores", setorService.listarSetores());
+        model.addAttribute("produtos", roteiroService.listarProdutosParaVinculo());
+        if (!model.containsAttribute("roteiroDTO")) {
+            model.addAttribute("roteiroDTO", new RoteiroDTO(null, null, null, new ArrayList<>()));
+        }
         return "roteiro/Roteiros";
     }
 
-    @GetMapping("/{produtoId}")
+    @GetMapping("/{id}")
     @ResponseBody
-    public ResponseEntity<RoteiroDTO> buscar(@PathVariable Long produtoId) {
+    public ResponseEntity<RoteiroDTO> buscar(@PathVariable Long id) {
+        log.debug("Buscando detalhes do roteiro ID: [{}]", id);
         try {
-            if (produtoId == null) {
-                log.warn("Tentativa de buscar roteiro com ID de produto nulo.");
-                return ResponseEntity.badRequest().build();
-            }
-            RoteiroDTO dto = roteiroService.buscarRoteiroPorProdutoId(produtoId);
-            return ResponseEntity.ok(dto);
+            return ResponseEntity.ok(roteiroService.buscarPorId(id));
         } catch (BusinessException e) {
-            log.warn("Erro de negócio ao buscar roteiro para o produto id {}: {}", produtoId, e.getMessage());
+            log.warn("Roteiro ID: [{}] não encontrado: {}", id, e.getMessage());
             return ResponseEntity.notFound().build();
-        } catch (Exception e) {
-            log.error("Erro inesperado ao buscar roteiro para o produto id {}: {}", produtoId, e.getMessage(), e);
-            return ResponseEntity.internalServerError().build();
         }
     }
 
     @PostMapping
-    @PreAuthorize("hasAnyRole('PCP','SUPERVISOR')")
+    @PreAuthorize(PODE_GERENCIAR)
     public String salvar(@Valid @ModelAttribute("roteiroDTO") RoteiroDTO dto, BindingResult result,
-                         Model model, RedirectAttributes attributes, Locale locale) {
+                         RedirectAttributes attributes, Locale locale, Principal principal) {
+        String usuario = principal != null ? principal.getName() : "Desconhecido";
         if (result.hasErrors()) {
-            return erroValidacao(model, result, locale);
+            log.warn("Erro de validação ao criar roteiro pelo usuário [{}]. Erros: {}", usuario, result.getAllErrors());
+            return erroValidacao(attributes, locale);
         }
 
-        try {
-            roteiroService.criar(dto);
-            attributes.addFlashAttribute("success",
-                    messageSource.getMessage(AppMessages.SUCCESS_ROUTE_CREATED, null, locale));
-        } catch (BusinessException e) {
-            log.warn("Erro de negócio ao criar roteiro: {}", e.getMessage());
-            String errorMessage = messageSource.getMessage(e.getMessage(), null, e.getMessage(), locale);
-            attributes.addFlashAttribute("error", errorMessage);
-            attributes.addFlashAttribute("roteiroDTO", dto);
-        } catch (Exception e) {
-            log.error("Erro inesperado ao criar roteiro: {}", e.getMessage(), e);
-            attributes.addFlashAttribute("error", messageSource.getMessage(AppMessages.ERROR_VALIDATION_FAILED, null, locale));
-            attributes.addFlashAttribute("roteiroDTO", dto);
-        }
-
-        return "redirect:/dashboard/roteiros";
+        log.info("Usuário [{}] criando novo roteiro com código [{}]", usuario, dto.codigo());
+        roteiroService.criar(dto);
+        return sucesso(attributes, AppMessages.SUCCESS_ROUTE_CREATED, locale);
     }
 
-    @PostMapping("/{produtoId}/editar")
-    @PreAuthorize("hasAnyRole('PCP','SUPERVISOR')")
-    public String editar(@PathVariable Long produtoId, @Valid @ModelAttribute("roteiroDTO") RoteiroDTO dto,
-                         BindingResult result, Model model, RedirectAttributes attributes, Locale locale) {
+    @PostMapping("/{id}/editar")
+    @PreAuthorize(PODE_GERENCIAR)
+    public String editar(@PathVariable Long id, @Valid @ModelAttribute("roteiroDTO") RoteiroDTO dto,
+                         BindingResult result, RedirectAttributes attributes, Locale locale, Principal principal) {
+        String usuario = principal != null ? principal.getName() : "Desconhecido";
         if (result.hasErrors()) {
-            return erroValidacao(model, result, locale);
+            log.warn("Erro de validação ao atualizar roteiro ID: [{}] pelo usuário [{}]", id, usuario);
+            return erroValidacao(attributes, locale);
         }
 
-        try {
-            roteiroService.atualizar(produtoId, dto);
-            attributes.addFlashAttribute("success",
-                    messageSource.getMessage(AppMessages.SUCCESS_ROUTE_UPDATED, null, locale));
-        } catch (BusinessException e) {
-            log.warn("Erro de negócio ao atualizar roteiro para o produto id {}: {}", produtoId, e.getMessage());
-            String errorMessage = messageSource.getMessage(e.getMessage(), null, e.getMessage(), locale);
-            attributes.addFlashAttribute("error", errorMessage);
-            attributes.addFlashAttribute("roteiroDTO", dto);
-        } catch (Exception e) {
-            log.error("Erro inesperado ao atualizar roteiro para o produto id {}: {}", produtoId, e.getMessage(), e);
-            attributes.addFlashAttribute("error", messageSource.getMessage(AppMessages.ERROR_VALIDATION_FAILED, null, locale));
-            attributes.addFlashAttribute("roteiroDTO", dto);
-        }
-
-        return "redirect:/dashboard/roteiros";
+        log.info("Usuário [{}] atualizando roteiro ID: [{}]", usuario, id);
+        roteiroService.atualizar(id, dto);
+        return sucesso(attributes, AppMessages.SUCCESS_ROUTE_UPDATED, locale);
     }
 
-    @PostMapping("/{produtoId}/excluir")
-    public String excluir(@PathVariable Long produtoId, RedirectAttributes attributes, Locale locale) {
-        try {
-            roteiroService.excluirPorProdutoId(produtoId);
-            attributes.addFlashAttribute("success",
-                    messageSource.getMessage(AppMessages.SUCCESS_ROUTE_DELETED, null, locale));
-        } catch (BusinessException e) {
-            log.warn("Erro de negócio ao excluir roteiro do produto id {}: {}", produtoId, e.getMessage());
-            String errorMessage = messageSource.getMessage(e.getMessage(), null, e.getMessage(), locale);
-            attributes.addFlashAttribute("error", errorMessage);
-        } catch (Exception e) {
-            log.error("Erro inesperado ao excluir roteiro do produto id {}: {}", produtoId, e.getMessage(), e);
-            attributes.addFlashAttribute("error", messageSource.getMessage(AppMessages.ERROR_VALIDATION_FAILED, null, locale));
+    @PostMapping("/{id}/duplicar")
+    @PreAuthorize(PODE_GERENCIAR)
+    public String duplicar(@PathVariable Long id, @Valid @ModelAttribute("duplicarDTO") DuplicarRoteiroDTO dto,
+                           BindingResult result, RedirectAttributes attributes, Locale locale, Principal principal) {
+        String usuario = principal != null ? principal.getName() : "Desconhecido";
+        if (result.hasErrors()) {
+            log.warn("Erro de validação ao duplicar roteiro ID: [{}] pelo usuário [{}]", id, usuario);
+            return erroValidacao(attributes, locale);
         }
 
-        return "redirect:/dashboard/roteiros";
+        log.info("Usuário [{}] duplicando roteiro ID: [{}] para novo código [{}]", usuario, id, dto.codigo());
+        roteiroService.duplicar(id, dto.codigo());
+        return sucesso(attributes, AppMessages.SUCCESS_ROUTE_DUPLICATED, locale);
     }
 
-    private String erroValidacao(Model model, BindingResult result, Locale locale) {
-        carregarPagina(model, null);
-        String mensagem = result.getAllErrors().stream()
-                .findFirst()
-                .map(error -> {
-                    String defaultMessage = error.getDefaultMessage();
-                    return defaultMessage == null ? "" :
-                            messageSource.getMessage(defaultMessage, null, defaultMessage, locale);
-                })
-                .orElseGet(() -> messageSource.getMessage(
-                        AppMessages.ERROR_VALIDATION_FAILED, null, locale));
-        model.addAttribute("error", mensagem);
-        return "roteiro/Roteiros";
+    @PostMapping("/{id}/produtos")
+    @PreAuthorize(PODE_GERENCIAR)
+    public String vincularProdutos(@PathVariable Long id, @ModelAttribute("vincularDTO") VincularProdutosDTO dto,
+                                   RedirectAttributes attributes, Locale locale, Principal principal) {
+        String usuario = principal != null ? principal.getName() : "Desconhecido";
+        log.info("Usuário [{}] atualizando vínculo de produtos para o roteiro ID: [{}]", usuario, id);
+
+        roteiroService.vincularProdutos(id, dto.produtoIds());
+        return sucesso(attributes, AppMessages.SUCCESS_ROUTE_PRODUCTS_LINKED, locale);
     }
 
-    private void carregarPagina(Model model, String nomeProduto) {
-        try {
-            if (nomeProduto != null && !nomeProduto.isBlank()) {
-                model.addAttribute("roteiros", roteiroService.buscarPorNomeOuCodigoProduto(nomeProduto.trim()));
-            } else {
-                model.addAttribute("roteiros", roteiroService.listarRoteiros());
-            }
+    @PostMapping("/{id}/excluir")
+    @PreAuthorize(PODE_GERENCIAR)
+    public String excluir(@PathVariable Long id, RedirectAttributes attributes, Locale locale, Principal principal) {
+        String usuario = principal != null ? principal.getName() : "Desconhecido";
+        log.info("Usuário [{}] solicitando exclusão do roteiro ID: [{}]", usuario, id);
 
-            model.addAttribute("produtos", produtoService.listarProdutos());
-            model.addAttribute("setores", setorService.listarSetores());
-        } catch (Exception e) {
-            log.error("Erro ao carregar dados auxiliares da página de roteiros: {}", e.getMessage(), e);
-            model.addAttribute("roteiros", List.of());
-            model.addAttribute("produtos", List.of());
-            model.addAttribute("setores", List.of());
-        }
-
-        if (!model.containsAttribute("roteiroDTO")) {
-            model.addAttribute("roteiroDTO", new RoteiroDTO(null, new ArrayList<>()));
-        }
+        roteiroService.excluir(id);
+        return sucesso(attributes, AppMessages.SUCCESS_ROUTE_DELETED, locale);
     }
 
     @GetMapping("/{produtoId}/setor/{setorId}/etapas")
     @ResponseBody
     public List<EtapaSetorDTO> buscarEtapasDoSetorNoRoteiro(@PathVariable Long produtoId,
                                                             @PathVariable Long setorId) {
+        log.debug("Buscando etapas do setor ID: [{}] para o produto ID: [{}]", setorId, produtoId);
         return roteiroService.buscarEtapasDoSetorNoRoteiro(produtoId, setorId);
     }
 
+    private String sucesso(RedirectAttributes attributes, String chave, Locale locale) {
+        attributes.addFlashAttribute("success", messageSource.getMessage(chave, null, locale));
+        return REDIRECT_LISTA;
+    }
+
+    private String erroValidacao(RedirectAttributes attributes, Locale locale) {
+        attributes.addFlashAttribute("error",
+                messageSource.getMessage(AppMessages.ERROR_VALIDATION_FAILED, null, locale));
+        return REDIRECT_LISTA;
+    }
 }

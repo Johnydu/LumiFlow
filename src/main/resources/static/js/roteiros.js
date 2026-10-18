@@ -37,6 +37,53 @@ function limparEtapas() {
     etapaIndex = 0;
 }
 
+// Funções auxiliares para manipulação de campos (Evita falhas de preenchimento)
+function definirTexto(id, texto) {
+    const el = document.getElementById(id);
+    if (el) el.textContent = texto;
+}
+
+function definirValor(id, valor) {
+    const el = document.getElementById(id);
+    if (el) el.value = valor;
+}
+
+// ============================================================
+// AÇÕES DA LISTA E MODAIS: EDITAR / DUPLICAR / PRODUTOS / ETC
+// ============================================================
+document.addEventListener('click', (event) => {
+    // Trata tanto data-acao quanto data-csp-action para evitar falhas em qualquer botão
+    const alvo = event.target.closest('[data-acao], [data-csp-action]');
+    if (!alvo) return;
+
+    const acao = alvo.dataset.acao || alvo.dataset.cspAction;
+
+    switch (acao) {
+        case 'editar':
+            editarRoteiro(alvo.dataset.roteiroId);
+            break;
+        case 'duplicar':
+            abrirModalDuplicar(alvo);
+            break;
+        case 'produtos':
+            abrirModalVincular(alvo);
+            break;
+        case 'fechar-modal':
+            // Fecha dinamicamente o modal informado no atributo data-modal
+            fecharModal(alvo.dataset.modal);
+            break;
+        case 'hideForm':
+            hideForm();
+            break;
+        case 'adicionarEtapa':
+            adicionarEtapa();
+            break;
+        case 'novoRoteiroForm':
+            novoRoteiroForm();
+            break;
+    }
+});
+
 // ============================================================
 // NOVO ROTEIRO
 // ============================================================
@@ -46,10 +93,9 @@ function novoRoteiroForm() {
         form.action = '/dashboard/roteiros';
     }
 
-    const titleEl = document.getElementById('form-title');
-    if (titleEl) {
-        titleEl.textContent = 'Novo Roteiro';
-    }
+    definirTexto('form-title', 'Novo Roteiro');
+    definirValor('codigo', '');
+    definirValor('descricao', '');
 
     const produtoInput = document.getElementById('produtoId');
     if (produtoInput) {
@@ -123,8 +169,6 @@ function criarLinhaEtapa(setorId = '', etapaSetorId = '') {
     const moveUp = createActionButton('↑', 'etapa-move', button => moverEtapa(button, -1));
     const moveDown = createActionButton('↓', 'etapa-move', button => moverEtapa(button, 1));
     const remove = createActionButton('✕', 'btn-del', removerEtapa);
-    [moveUp, moveDown].forEach(button => {
-    });
 
     actions.append(moveUp, moveDown, remove);
     row.append(numeroEtapa, labelSetor, selectSetor, labelEtapa, selectEtapa, actions);
@@ -259,18 +303,9 @@ async function carregarEtapasDoSetor(selectSetor, etapaSetorIdSelecionada) {
 // HANDLER E EDIÇÃO DE ROTEIRO
 // ============================================================
 
-function handleEditarRoteiro(button) {
-    const produtoId = button.getAttribute('data-produto-id');
-    if (produtoId) {
-        editarRoteiro(produtoId);
-    } else {
-        console.warn('ID do produto não encontrado no botão de edição.');
-    }
-}
-
-async function editarRoteiro(produtoId) {
+async function editarRoteiro(roteiroId) {
     try {
-        const response = await fetch(`/dashboard/roteiros/${produtoId}`);
+        const response = await fetch(`/dashboard/roteiros/${roteiroId}`);
 
         if (!response.ok) {
             alert('Não foi possível carregar as informações do roteiro.');
@@ -281,17 +316,16 @@ async function editarRoteiro(produtoId) {
 
         const form = document.getElementById('roteiro-form');
         if (form) {
-            form.action = `/dashboard/roteiros/${produtoId}/editar`;
+            form.action = `/dashboard/roteiros/${roteiroId}/editar`;
         }
 
-        const titleEl = document.getElementById('form-title');
-        if (titleEl) {
-            titleEl.textContent = 'Editar Roteiro';
-        }
+        definirTexto('form-title', 'Editar Roteiro');
+        definirValor('codigo', roteiro.codigo || '');
+        definirValor('descricao', roteiro.descricao || '');
 
         const produtoInput = document.getElementById('produtoId');
         if (produtoInput) {
-            produtoInput.value = roteiro.produtoId;
+            produtoInput.value = roteiro.produtoId || '';
         }
 
         limparEtapas();
@@ -310,6 +344,66 @@ async function editarRoteiro(produtoId) {
         alert('Ocorreu um erro ao carregar o formulário de edição.');
     }
 }
+
+// Funções auxiliares para modais específicos (Duplicar e Vincular Produtos)
+function abrirModal(id) {
+    const modal = document.getElementById(id);
+    if (modal) modal.classList.add('is-open');
+}
+
+function fecharModal(id) {
+    const modal = document.getElementById(id);
+    if (modal) modal.classList.remove('is-open');
+}
+
+function abrirModalDuplicar(botao) {
+    const form = document.getElementById('duplicar-form');
+    if (!form) return;
+
+    form.action = `/dashboard/roteiros/${botao.dataset.roteiroId}/duplicar`;
+    const origemEl = document.getElementById('duplicar-origem');
+    if (origemEl) origemEl.textContent = botao.dataset.roteiroCodigo;
+
+    const campo = document.getElementById('duplicar-codigo');
+    if (campo) {
+        campo.value = '';
+        abrirModal('modal-duplicar');
+        campo.focus();
+    }
+}
+
+function abrirModalVincular(botao) {
+    const form = document.getElementById('vincular-form');
+    if (!form) return;
+
+    form.action = `/dashboard/roteiros/${botao.dataset.roteiroId}/produtos`;
+    const origemEl = document.getElementById('vincular-origem');
+    if (origemEl) origemEl.textContent = botao.dataset.roteiroCodigo;
+
+    const vinculados = new Set((botao.dataset.produtoIds || '').split(',').filter(Boolean));
+    document.querySelectorAll('#vincular-lista input[name="produtoIds"]').forEach(checkbox => {
+        checkbox.checked = vinculados.has(checkbox.value);
+    });
+
+    const buscaInput = document.getElementById('vincular-busca');
+    if (buscaInput) buscaInput.value = '';
+    filtrarProdutosVinculo('');
+    abrirModal('modal-vincular');
+}
+
+function filtrarProdutosVinculo(termo) {
+    const busca = termo.trim().toLowerCase();
+    document.querySelectorAll('#vincular-lista .produto-check').forEach(item => {
+        const visivel = busca === '' || item.dataset.busca.includes(busca);
+        item.style.display = visivel ? '' : 'none';
+    });
+}
+
+document.addEventListener('input', (event) => {
+    if (event.target.id === 'vincular-busca') {
+        filtrarProdutosVinculo(event.target.value);
+    }
+});
 
 // ============================================================
 // FILTRO DINÂMICO DE BUSCA DE ROTEIROS VIA AJAX (DEBOUNCE)

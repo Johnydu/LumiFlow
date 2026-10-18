@@ -18,7 +18,6 @@
     <link rel="stylesheet" th:href="@{/css/components/badges.css}">
     <link rel="stylesheet" th:href="@{/css/components/status.css}">
     <link rel="stylesheet" th:href="@{/css/components/alerts.css}">
-    <!-- Componente Modal Centralizado -->
     <link rel="stylesheet" th:href="@{/css/components/modal.css}">
     <link rel="stylesheet" th:href="@{/css/pages/roteiros.css}">
     <link rel="stylesheet" th:href="@{/css/utils.css}">
@@ -41,24 +40,20 @@
         )}">
     </div>
 
-    <div th:if="${#lists.isEmpty(produtos)}" class="alert-error">
-        Cadastre o módulo de produtos antes de criar roteiros.
-    </div>
-
     <div class="content">
 
-        <!-- FORMULÁRIO DE BUSCA DINÂMICA (AJAX) -->
+        <!-- BUSCA DINÂMICA (AJAX) -->
         <form method="get" th:action="@{/dashboard/roteiros}" class="filter-form">
-            <label for="buscaRoteiro">Buscar produto por nome ou código</label>
+            <label for="buscaRoteiro">Buscar por código, descrição ou produto</label>
             <input type="text"
                    id="buscaRoteiro"
-                   name="nomeProduto"
-                   th:value="${param.nomeProduto}"
+                   name="busca"
+                   th:value="${param.busca}"
                    class="search"
-                   placeholder="Buscar por nome ou código do produto...">
+                   placeholder="Buscar roteiro ou produto...">
         </form>
 
-        <!-- LISTA COM FRAGMENTO AJAX -->
+        <!-- LISTA (fragmento recarregado via AJAX) -->
         <div class="lista" th:fragment="listaRoteiros">
             <div class="panel">
                 <div class="panel-header">
@@ -70,16 +65,21 @@
                 <table>
                     <thead>
                     <tr>
-                        <th>Produto</th>
+                        <th>Roteiro</th>
                         <th>Fluxo</th>
                         <th>Etapas</th>
+                        <th>Produtos</th>
                         <th class="csp-style-465bfea3ed">Ações</th>
                     </tr>
                     </thead>
 
                     <tbody>
                     <tr th:each="roteiro : ${roteiros}">
-                        <td th:text="${roteiro.nomeProduto()} + ' - ' + ${roteiro.codigoProduto()}"></td>
+                        <td>
+                            <strong th:text="${roteiro.codigo()}"></strong>
+                            <div class="hint" th:if="${roteiro.descricao() != null}"
+                                 th:text="${roteiro.descricao()}"></div>
+                        </td>
 
                         <td>
                             <span th:text="${#strings.listJoin(roteiro.etapas(), ' → ')}"></span>
@@ -91,35 +91,64 @@
                         </td>
 
                         <td>
-                            <div class="table-actions" sec:authorize="hasAnyRole('ADMIN', 'PCP', 'SUPERVISOR')">
-                                <button type="button"
-                                        class="btn-edit"
-                                        th:data-produto-id="${roteiro.produtoId()}"
-                                       data-csp-action="handleEditarRoteiro" data-csp-argument="element">
-                                    Editar
-                                </button>
+                            <span class="hint" th:if="${#lists.isEmpty(roteiro.produtos())}">Nenhum produto</span>
+                            <span th:each="produto, st : ${roteiro.produtos()}"
+                                  th:if="${st.index < 3}"
+                                  class="tag-maq"
+                                  th:text="${produto}"></span>
+                            <span th:if="${#lists.size(roteiro.produtos()) > 3}"
+                                  class="tag-maq"
+                                  th:text="${'+' + (#lists.size(roteiro.produtos()) - 3)}"></span>
+                        </td>
 
-                                <form class="csp-style-cccfa4560d"
-                                      th:action="@{/dashboard/roteiros/{produtoId}/excluir(produtoId=${roteiro.produtoId()})}"
-                                      method="post"
-                                     >
-                                    <input type="hidden"
-                                           th:id="|csrfExcluirRoteiro-${roteiro.produtoId()}|"
-                                           th:name="${_csrf.parameterName}"
-                                           th:value="${_csrf.token}"/>
-
-                                    <button type="submit"
-                                            class="btn-del"
-                                           data-csp-confirm="Tem certeza que deseja excluir este roteiro?">
-                                        Excluir
+                        <td>
+                            <div class="table-actions" sec:authorize="hasAnyRole('ADMIN', 'GESTAO', 'SUPERVISOR', 'PCP')">
+                                <!-- Linha 1: Editar e Excluir -->
+                                <div class="actions-row">
+                                    <button type="button" class="btn-edit"
+                                            data-acao="editar"
+                                            th:data-roteiro-id="${roteiro.id()}">
+                                        ✏ Editar
                                     </button>
-                                </form>
+
+                                    <form th:action="@{/dashboard/roteiros/{id}/excluir(id=${roteiro.id()})}"
+                                          method="post">
+                                        <input type="hidden"
+                                               th:id="|csrfExcluirRoteiro-${roteiro.id()}|"
+                                               th:name="${_csrf.parameterName}"
+                                               th:value="${_csrf.token}"/>
+
+                                        <button type="submit"
+                                                class="btn-del"
+                                                data-csp-confirm="Tem certeza que deseja excluir este roteiro?">
+                                            🗑 Excluir
+                                        </button>
+                                    </form>
+                                </div>
+
+                                <!-- Linha 2: Duplicar e Produtos -->
+                                <div class="actions-row">
+                                    <button type="button" class="btn-duplicar"
+                                            data-acao="duplicar"
+                                            th:data-roteiro-id="${roteiro.id()}"
+                                            th:data-roteiro-codigo="${roteiro.codigo()}">
+                                        Duplicar
+                                    </button>
+
+                                    <button type="button" class="btn-produtos"
+                                            data-acao="produtos"
+                                            th:data-roteiro-id="${roteiro.id()}"
+                                            th:data-roteiro-codigo="${roteiro.codigo()}"
+                                            th:data-produto-ids="${#strings.listJoin(roteiro.produtoIds(), ',')}">
+                                        Produtos
+                                    </button>
+                                </div>
                             </div>
                         </td>
                     </tr>
 
                     <tr th:if="${#lists.isEmpty(roteiros)}">
-                        <td colspan="4" class="csp-style-23258bbf2b">
+                        <td colspan="5" class="csp-style-23258bbf2b">
                             Nenhum roteiro cadastrado.
                         </td>
                     </tr>
@@ -128,9 +157,9 @@
             </div>
         </div>
 
-        <!-- MODAL DE CADASTRO / EDIÇÃO DE ROTEIROS -->
+        <!-- MODAL: NOVO / EDITAR ROTEIRO -->
         <div class="modal-overlay" id="form-panel"
-             sec:authorize="hasAnyRole('ADMIN', 'PCP', 'SUPERVISOR')">
+             sec:authorize="hasAnyRole('ADMIN', 'GESTAO', 'SUPERVISOR', 'PCP')">
             <div class="modal-box csp-style-196a6edae9">
                 <div class="modal-header">
                     <span class="modal-title" id="form-title">Novo Roteiro</span>
@@ -145,63 +174,31 @@
                     <input type="hidden"
                            id="csrfRoteiro"
                            th:name="${_csrf.parameterName}"
-                           th:value="${_csrf.token}" />
+                           th:value="${_csrf.token}"/>
 
                     <div class="modal-body csp-style-dbc770e380">
-                        <div class="field csp-style-ef1f3a5dff">
-                            <label for="produtoId" class="csp-style-e4c9ee3efa">Produto <span class="csp-style-1f62937642">*</span></label>
-                            <select id="produtoId" class="csp-style-51fd58adb1" th:field="*{produtoId}"
-                                   >
-                                <option value="">Selecione o produto</option>
-                                <option th:each="produto : ${produtos}"
-                                        th:value="${produto.id()}"
-                                        th:text="${produto.nome()} + ' - ' + ${produto.codigo()}"></option>
-                            </select>
+
+                        <div class="form-grid">
+                            <div class="field">
+                                <label for="codigo">Código <span>*</span></label>
+                                <input type="text" id="codigo" th:field="*{codigo}"
+                                       maxlength="30" required autocomplete="off" placeholder="Ex: 1A">
+                            </div>
+                            <div class="field">
+                                <label for="descricao">Descrição</label>
+                                <input type="text" id="descricao" th:field="*{descricao}"
+                                       maxlength="255" autocomplete="off" placeholder="Ex: Corte, dobra e pintura">
+                            </div>
                         </div>
 
                         <div class="field csp-style-ef1f3a5dff">
-                            <label for="novaEtapaSetor" class="csp-style-e4c9ee3efa">Fluxo de produção (Etapas) <span class="csp-style-1f62937642">*</span></label>
+                            <label class="csp-style-e4c9ee3efa">Fluxo de produção (Etapas) <span class="csp-style-1f62937642">*</span></label>
 
-                            <!-- Renderiza caso já venha preenchido no binding -->
-                            <div class="etapas-list csp-style-3dea91b04e" id="etapas-list">
-                                <div th:each="passo, iterStat : *{passos}" class="etapa-item csp-style-85aafcf831">
-                                    <span class="etapa-num csp-style-195707c17f" th:text="${iterStat.index + 1} + 'º'"></span>
-
-                                    <!-- Select de Setor -->
-                                    <label th:for="|setorEtapa-${iterStat.index}|"
-                                           class="visually-hidden"
-                                           th:text="|Setor da etapa ${iterStat.count}|">Setor da etapa</label>
-                                    <select th:id="|setorEtapa-${iterStat.index}|"
-                                            th:field="*{passos[__${iterStat.index}__].setorId}" class="form-control setor-select csp-style-77b82e9aee" data-csp-change="aoMudarSetor" data-csp-argument="element"
-                                           >
-                                        <option value="">Selecione o setor</option>
-                                        <option th:each="setor : ${setores}"
-                                                th:value="${setor.id()}"
-                                                th:text="${setor.nome()}"></option>
-                                    </select>
-
-                                    <!-- Select de Etapa do Setor -->
-                                    <label th:for="|processoEtapa-${iterStat.index}|"
-                                           class="visually-hidden"
-                                           th:text="|Processo da etapa ${iterStat.count}|">Processo da etapa</label>
-                                    <select th:id="|processoEtapa-${iterStat.index}|"
-                                            th:field="*{passos[__${iterStat.index}__].etapaSetorId}" class="form-control etapa-setor-select csp-style-77b82e9aee"
-                                           >
-                                        <option value="">Selecione o processo...</option>
-                                    </select>
-
-                                    <div class="etapa-actions csp-style-d2f87c7fad">
-                                        <button type="button" class="etapa-move csp-style-7ab0af9056" data-csp-action="moverEtapa" data-csp-direction="-1">↑</button>
-                                        <button type="button" class="etapa-move csp-style-7ab0af9056" data-csp-action="moverEtapa" data-csp-direction="1">↓</button>
-                                        <button type="button" class="btn-del csp-style-5d9a1bcc23" data-csp-action="removerEtapa" data-csp-argument="element">✕</button>
-                                    </div>
-                                </div>
-                            </div>
+                            <div class="etapas-list csp-style-3dea91b04e" id="etapas-list"></div>
 
                             <button type="button"
                                     class="btn-add-etapa csp-style-de911b4bb1"
-                                   data-csp-action="adicionarEtapa"
-                                   >
+                                    data-csp-action="adicionarEtapa">
                                 + Adicionar etapa
                             </button>
                         </div>
@@ -213,7 +210,7 @@
                     </div>
                 </form>
 
-                <!-- Templates ocultos que o roteiros.js usa para clonar os selects dinamicamente -->
+                <!-- Template oculto de setores, clonado pelo roteiros.js -->
                 <label for="setor-options-template" class="visually-hidden">Opções de setor para novas etapas</label>
                 <select id="setor-options-template" class="csp-style-6b99de8b69">
                     <option value="">Selecione o setor</option>
@@ -223,6 +220,88 @@
                 </select>
             </div>
         </div>
+
+        <!-- MODAL: DUPLICAR ROTEIRO -->
+        <div class="modal-overlay" id="modal-duplicar"
+             sec:authorize="hasAnyRole('ADMIN', 'GESTAO', 'SUPERVISOR', 'PCP')">
+            <div class="modal-box">
+                <div class="modal-header">
+                    <span class="modal-title">Duplicar roteiro</span>
+                    <button type="button" class="modal-close" data-acao="fechar-modal" data-modal="modal-duplicar">&times;</button>
+                </div>
+
+                <form id="duplicar-form" method="post" action="">
+                    <input type="hidden" th:name="${_csrf.parameterName}" th:value="${_csrf.token}"/>
+
+                    <div class="modal-body">
+                        <p class="modal-info">
+                            Será criada uma cópia do roteiro <strong id="duplicar-origem"></strong>,
+                            com os mesmos passos e sem produtos vinculados.
+                        </p>
+                        <div class="field">
+                            <label for="duplicar-codigo">Código do novo roteiro <span>*</span></label>
+                            <input type="text" id="duplicar-codigo" name="codigo"
+                                   maxlength="30" required autocomplete="off" placeholder="Ex: 1B">
+                        </div>
+                    </div>
+
+                    <div class="modal-actions">
+                        <button type="button" class="btn-cancel" data-acao="fechar-modal" data-modal="modal-duplicar">Cancelar</button>
+                        <button type="submit" class="btn-submit">Duplicar</button>
+                    </div>
+                </form>
+            </div>
+        </div>
+
+        <!-- MODAL: VINCULAR PRODUTOS -->
+        <div class="modal-overlay" id="modal-vincular"
+             sec:authorize="hasAnyRole('ADMIN', 'GESTAO', 'SUPERVISOR', 'PCP')">
+            <div class="modal-box">
+                <div class="modal-header">
+                    <span class="modal-title">Produtos do roteiro</span>
+                    <button type="button" class="modal-close" data-acao="fechar-modal" data-modal="modal-vincular">&times;</button>
+                </div>
+
+                <form id="vincular-form" method="post" action="">
+                    <input type="hidden" th:name="${_csrf.parameterName}" th:value="${_csrf.token}"/>
+
+                    <div class="modal-body">
+                        <p class="modal-info">
+                            Marque os produtos que seguem o roteiro <strong id="vincular-origem"></strong>.
+                        </p>
+
+                        <div class="field">
+                            <label for="vincular-busca" class="visually-hidden">Filtrar produtos</label>
+                            <input type="text" id="vincular-busca" placeholder="Filtrar produtos..." autocomplete="off">
+                        </div>
+
+                        <div class="produto-check-list" id="vincular-lista">
+                            <label class="produto-check"
+                                   th:each="produto : ${produtos}"
+                                   th:data-busca="${#strings.toLowerCase(produto.nome() + ' ' + produto.codigo())}">
+                                <input type="checkbox" name="produtoIds" th:value="${produto.id()}">
+                                <span class="produto-check-nome"
+                                      th:text="${produto.nome() + ' - ' + produto.codigo()}"></span>
+                                <span class="tag-maq" th:if="${produto.roteiroCodigo() != null}"
+                                      th:text="${produto.roteiroCodigo()}"></span>
+                            </label>
+                            <p class="hint" th:if="${#lists.isEmpty(produtos)}">Nenhum produto cadastrado.</p>
+                        </div>
+
+                        <p class="hint">
+                            Produto que já está em outro roteiro será movido para este. A troca é bloqueada
+                            se o produto tiver ordem em aberto.
+                        </p>
+                    </div>
+
+                    <div class="modal-actions">
+                        <button type="button" class="btn-cancel" data-acao="fechar-modal" data-modal="modal-vincular">Cancelar</button>
+                        <button type="submit" class="btn-submit">Salvar</button>
+                    </div>
+                </form>
+            </div>
+        </div>
+
     </div>
 </main>
 

@@ -30,7 +30,7 @@ public class LancamentoService {
     private final RefugoRepository refugoRepository;
     private final RetrabalhoRepository retrabalhoRepository;
     private final MaquinaRepository maquinaRepository;
-    private final RoteiroProdutoRepository roteiroProdutoRepository;
+    private final RoteiroPassoRepository roteiroPassoRepository;
     private final SetorService setorService;
     private final OperadorRepository operadorRepository;
     private final OperadorService operadorService;
@@ -89,10 +89,10 @@ public class LancamentoService {
                             || o.getSetorPadrao().getId().equals(ordemSetor.getSetor().getId()))
                     .orElseThrow(() -> new BusinessException(AppMessages.ERROR_OPERATOR_NOTFOUND));
 
-            EtapaSetor etapaSetor = roteiroProdutoRepository
+            EtapaSetor etapaSetor = roteiroPassoRepository
                     .findFirstByProdutoIdAndSequencia(ordemSetor.getOrdemProducao().getProduto().getId(),
                             ordemSetor.getSequencia())
-                    .map(RoteiroProduto::getEtapaSetor)
+                    .map(RoteiroPasso::getEtapaSetor)
                     .orElse(null);
 
             Lancamento lancamento = new Lancamento();
@@ -154,7 +154,7 @@ public class LancamentoService {
 
     private void avancarParaProximaEtapaAPartirDe(OrdemProducao ordem, Integer sequenciaReferencia,
                                                   String variante, Integer quantidadeLancada) {
-        RoteiroProduto proximoPasso = roteiroProdutoRepository
+        RoteiroPasso proximoPasso = roteiroPassoRepository
                 .findProximoPasso(ordem.getProduto().getId(), sequenciaReferencia)
                 .orElse(null);
 
@@ -294,8 +294,8 @@ public class LancamentoService {
     }
 
 
-    private RoteiroProduto buscarPassoNoRoteiro(Long produtoId, Long setorId, Long etapaSetorId) {
-        List<RoteiroProduto> passosDoSetor = roteiroProdutoRepository.buscarPorProdutoId(produtoId).stream()
+    private RoteiroPasso buscarPassoNoRoteiro(Long produtoId, Long setorId, Long etapaSetorId) {
+        List<RoteiroPasso> passosDoSetor = roteiroPassoRepository.buscarPorProdutoId(produtoId).stream()
                 .filter(rp -> rp.getSetor().getId().equals(setorId))
                 .toList();
 
@@ -397,10 +397,10 @@ public class LancamentoService {
 
     @Transactional(readOnly = true)
     public String buscarNomeEtapa(OrdemSetor ordemSetor) {
-        return roteiroProdutoRepository
+        return roteiroPassoRepository
                 .findFirstByProdutoIdAndSequencia(ordemSetor.getOrdemProducao().getProduto().getId(),
                         ordemSetor.getSequencia())
-                .map(RoteiroProduto::getEtapaSetor)
+                .map(RoteiroPasso::getEtapaSetor)
                 .map(EtapaSetor::getNome)
                 .orElse(null);
     }

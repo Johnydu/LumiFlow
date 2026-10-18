@@ -27,7 +27,7 @@ public class MessageSourceConfig implements WebMvcConfigurer {
     @Bean
     public LocaleResolver localeResolver() {
         SessionLocaleResolver resolver = new SessionLocaleResolver();
-        resolver.setDefaultLocale(new Locale("pt", "BR")); // Mantém o padrão atual[cite: 3]
+        resolver.setDefaultLocale(new Locale("pt", "BR"));
         return resolver;
     }
 

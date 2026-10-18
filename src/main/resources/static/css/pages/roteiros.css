@@ -101,12 +101,91 @@ body.page-roteiro-cadastroroteiros .etapa-del:hover {
   background: var(--surface-hover);
 }
 
-
-
 body.page-roteiro-cadastroroteiros .form-actions {
   margin-top: var(--space-5);
 }
 
-body.page-roteiro-cadastroroteiros .form-actions > * {
+/* ========================================
+   ORGANIZAÇÃO DAS AÇÕES EM DUAS PILHAS
+   ======================================== */
+
+body.page-roteiro-cadastroroteiros .table-actions {
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+  width: 170px;
+}
+
+body.page-roteiro-cadastroroteiros .table-actions .actions-row {
+  display: flex;
+  gap: 4px;
+  width: 100%;
+}
+
+body.page-roteiro-cadastroroteiros .table-actions .actions-row > button,
+body.page-roteiro-cadastroroteiros .table-actions .actions-row > form,
+body.page-roteiro-cadastroroteiros .table-actions .actions-row .btn-edit,
+body.page-roteiro-cadastroroteiros .table-actions .actions-row .btn-del,
+body.page-roteiro-cadastroroteiros .table-actions .actions-row .btn-duplicar,
+body.page-roteiro-cadastroroteiros .table-actions .actions-row .btn-produtos {
+  flex: 1;
+  width: 100%;
+  height: var(--btn-height, 32px);
+  padding: 0 4px;
+  font-size: 11px;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  white-space: nowrap;
+  box-sizing: border-box;
+}
+
+body.page-roteiro-cadastroroteiros .table-actions .actions-row > form {
+  display: flex;
+  margin: 0;
+  padding: 0;
+  border: none;
+  background: transparent;
+}
+
+body.page-roteiro-cadastroroteiros .modal-info {
+  font-size: 13px;
+  color: var(--color-muted);
+  margin-bottom: 14px;
+}
+
+body.page-roteiro-cadastroroteiros .produto-check-list {
+  max-height: 280px;
+  overflow-y: auto;
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+  margin: 10px 0;
+}
+
+body.page-roteiro-cadastroroteiros .produto-check {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  padding: 8px 12px;
+  background: var(--color-field);
+  border: 1px solid rgba(255, 255, 255, 0.08);
+  border-radius: 10px;
+  cursor: pointer;
+  font-size: 13px;
+}
+
+body.page-roteiro-cadastroroteiros .produto-check:hover {
+  border-color: rgba(97, 87, 255, 0.4);
+}
+
+body.page-roteiro-cadastroroteiros .produto-check input[type="checkbox"] {
+  width: 16px;
+  height: 16px;
+  accent-color: var(--color-primary);
+  flex-shrink: 0;
+}
+
+body.page-roteiro-cadastroroteiros .produto-check-nome {
   flex: 1;
 }

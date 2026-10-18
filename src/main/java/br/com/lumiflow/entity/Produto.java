@@ -5,8 +5,6 @@ import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.NotNull;
 import lombok.*;
 
-import java.util.ArrayList;
-import java.util.List;
 import java.util.Locale;
 
 @Entity
@@ -33,9 +31,9 @@ public class Produto extends Auditoria {
     @Column(name = "descricao")
     private  String descricao;
 
-    @OneToMany(mappedBy = "produto", cascade = CascadeType.ALL , orphanRemoval = true)
-    @OrderBy("sequencia ASC ")
-    private List<RoteiroProduto> roteiro = new ArrayList<>();
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "roteiro_id")
+    private Roteiro roteiro;
 
     @PrePersist
     @PreUpdate

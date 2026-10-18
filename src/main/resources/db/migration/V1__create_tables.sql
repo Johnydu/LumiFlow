@@ -117,42 +117,47 @@ CREATE TABLE etapa_setor
 );
 COMMENT ON TABLE etapa_setor IS 'Etapas sequenciais dentro de cada setor';
 
+CREATE TABLE roteiro
+(
+    id            BIGINT GENERATED ALWAYS AS IDENTITY PRIMARY KEY,
+    codigo        VARCHAR(30)  NOT NULL UNIQUE,
+    descricao     VARCHAR(255) NULL,
+    criado_em     TIMESTAMPTZ  NOT NULL DEFAULT CURRENT_TIMESTAMP,
+    atualizado_em TIMESTAMPTZ  NULL
+);
+COMMENT ON TABLE roteiro IS 'Roteiro padrão de produção, reutilizável por vários produtos';
+
 CREATE TABLE produto
 (
     id            BIGINT GENERATED ALWAYS AS IDENTITY PRIMARY KEY,
     nome          VARCHAR(100) NOT NULL,
-    codigo        VARCHAR(30)  NOT NULL,
-    descricao     VARCHAR(500) NULL,
+    codigo        VARCHAR(30)  NOT NULL UNIQUE,
+    descricao     VARCHAR(255) NULL,
+    roteiro_id    BIGINT       NULL,
     criado_em     TIMESTAMPTZ  NOT NULL DEFAULT CURRENT_TIMESTAMP,
     atualizado_em TIMESTAMPTZ  NULL,
-    CONSTRAINT uq_produto_codigo
-        UNIQUE (codigo),
-    CONSTRAINT uq_produto_nome
-        UNIQUE (nome)
+    CONSTRAINT fk_produto_roteiro
+        FOREIGN KEY (roteiro_id) REFERENCES roteiro (id) ON DELETE RESTRICT
 );
 COMMENT ON TABLE produto IS 'Catálogo de produtos fabricados';
 
--- O roteiro é substituído por inteiro a cada edição (apaga e recria os passos),
--- por isso a tabela não tem colunas de auditoria nem trigger.
-CREATE TABLE roteiro_produto
+CREATE TABLE roteiro_passo
 (
     id             BIGINT GENERATED ALWAYS AS IDENTITY PRIMARY KEY,
     sequencia      INT    NOT NULL,
-    produto_id     BIGINT NOT NULL,
+    roteiro_id     BIGINT NOT NULL,
     setor_id       BIGINT NOT NULL,
     etapa_setor_id BIGINT NULL,
-    CONSTRAINT uq_roteiro_sequencia
-        UNIQUE (produto_id, sequencia),
-    CONSTRAINT chk_roteiro_sequencia
-        CHECK (sequencia > 0),
-    CONSTRAINT fk_roteiro_produto
-        FOREIGN KEY (produto_id) REFERENCES produto (id) ON DELETE CASCADE,
-    CONSTRAINT fk_roteiro_setor
+    CONSTRAINT fk_passo_roteiro
+        FOREIGN KEY (roteiro_id) REFERENCES roteiro (id) ON DELETE CASCADE,
+    CONSTRAINT fk_passo_setor
         FOREIGN KEY (setor_id) REFERENCES setor (id) ON DELETE RESTRICT,
-    CONSTRAINT fk_roteiro_etapa
-        FOREIGN KEY (etapa_setor_id) REFERENCES etapa_setor (id) ON DELETE SET NULL
+    CONSTRAINT fk_passo_etapa
+        FOREIGN KEY (etapa_setor_id) REFERENCES etapa_setor (id) ON DELETE SET NULL,
+    CONSTRAINT uq_passo_sequencia
+        UNIQUE (roteiro_id, sequencia)
 );
-COMMENT ON TABLE roteiro_produto IS 'Define o percurso de cada produto pela produção';
+COMMENT ON TABLE roteiro_passo IS 'Passos (setor/etapa) de um roteiro, em ordem de sequência';
 
 -- ============================================================================
 -- 3. ORDENS DE PRODUÇÃO

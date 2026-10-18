@@ -3,13 +3,14 @@ package br.com.lumiflow.service;
 import br.com.lumiflow.config.AppMessages;
 import br.com.lumiflow.dto.etapaSetor.DividirEtapaDTO;
 import br.com.lumiflow.dto.ordens.*;
+import br.com.lumiflow.dto.roteiro.PassoDoProdutoDTO;
 import br.com.lumiflow.entity.*;
 import br.com.lumiflow.entity.enums.EstatusOrdemProducao;
 import br.com.lumiflow.exception.BusinessException;
 import br.com.lumiflow.mapper.OrdemProducaoMapper;
 import br.com.lumiflow.repository.OrdemProducaoRepository;
 import br.com.lumiflow.repository.OrdemSetorRepository;
-import br.com.lumiflow.repository.RoteiroProdutoRepository;
+import br.com.lumiflow.repository.RoteiroPassoRepository;
 import br.com.lumiflow.repository.UsuarioRepository;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -30,7 +31,7 @@ public class OrdemProducaoService {
 
     private final OrdemProducaoRepository ordemProducaoRepository;
     private final ProdutoService produtoService;
-    private final RoteiroProdutoRepository roteiroProdutoRepository;
+    private final RoteiroPassoRepository roteiroPassoRepository;
     private final OrdemSetorRepository ordemSetorRepository;
     private final OrdemProducaoMapper ordemProducaoMapper;
     private final UsuarioRepository usuarioRepository;
@@ -55,15 +56,13 @@ public class OrdemProducaoService {
                     .map(os -> os.getOrdemProducao().getProduto().getId())
                     .collect(Collectors.toSet());
 
-            Map<String, String> etapaNomePorProdutoESequencia = roteiroProdutoRepository
-                    .findByProdutoIdIn(produtoIds)
-                    .stream()
-                    .filter(rp -> rp.getEtapaSetor() != null)
+            Map<String, String> etapaNomePorProdutoESequencia = roteiroPassoRepository
+                    .buscarPassosPorProdutoIds(produtoIds).stream()
+                    .filter(pp -> pp.etapaNome() != null)
                     .collect(Collectors.toMap(
-                            rp -> rp.getProduto().getId() + "-" + rp.getSequencia(),
-                            rp -> rp.getEtapaSetor().getNome(),
-                            (a, b) -> a // em caso de chave duplicada, mantém a primeira
-                    ));
+                            pp -> pp.produtoId() + "-" + pp.sequencia(),
+                            PassoDoProdutoDTO::etapaNome,
+                            (a, b) -> a));
 
             return etapas.stream()
                     .map(os -> montarOrdemListagemDTO(os, etapaNomePorProdutoESequencia))
@@ -153,13 +152,13 @@ public class OrdemProducaoService {
     }
 
     private void criarPrimeiraEtapaOrdemSetor(OrdemProducao ordem) {
-        List<RoteiroProduto> roteiro = roteiroProdutoRepository.buscarPorProdutoId(ordem.getProduto().getId());
+        List<RoteiroPasso> roteiro = roteiroPassoRepository.buscarPorProdutoId(ordem.getProduto().getId());
 
         if (roteiro.isEmpty()) {
             throw new BusinessException(AppMessages.ERROR_PRODUCT_WITHOUT_ROUTE);
         }
 
-        RoteiroProduto primeiroPasso = roteiro.getFirst(); // já vem ordenado por sequência
+        RoteiroPasso primeiroPasso = roteiro.getFirst(); // já vem ordenado por sequência
 
         OrdemSetor ordemSetor = new OrdemSetor();
         ordemSetor.setSequencia(primeiroPasso.getSequencia());

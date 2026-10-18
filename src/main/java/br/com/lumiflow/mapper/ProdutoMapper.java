@@ -14,6 +14,7 @@ public interface ProdutoMapper {
     ProdutoDTO toDTO(Produto produto);
 
     @Mapping(target = "nome", source = "nome")
+    @Mapping(target = "roteiro", ignore = true)
     Produto toEntity(ProdutoDTO dto);
 
 

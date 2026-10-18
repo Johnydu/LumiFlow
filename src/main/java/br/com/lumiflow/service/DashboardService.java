@@ -4,9 +4,9 @@ import br.com.lumiflow.config.AppMessages;
 import br.com.lumiflow.dto.dashboard.DashboardOrdemDTO;
 import br.com.lumiflow.dto.dashboard.DashboardResumoDTO;
 import br.com.lumiflow.dto.dashboard.SetorResumoDTO;
+import br.com.lumiflow.dto.roteiro.PassoDoProdutoDTO; // Import do DTO correspondente (ajuste o pacote se necessário)
 import br.com.lumiflow.entity.OrdemProducao;
 import br.com.lumiflow.entity.OrdemSetor;
-import br.com.lumiflow.entity.RoteiroProduto;
 import br.com.lumiflow.entity.enums.EstatusOrdemProducao;
 import br.com.lumiflow.exception.BusinessException;
 import br.com.lumiflow.repository.*;
@@ -30,7 +30,7 @@ import java.util.stream.Collectors;
 public class DashboardService {
 
     private final OrdemProducaoRepository ordemProducaoRepository;
-    private final RoteiroProdutoRepository roteiroProdutoRepository;
+    private final RoteiroPassoRepository roteiroPassoRepository; // (ou o repositório que agora retorna PassoDoProdutoDTO se aplicável)
     private final OrdemSetorRepository ordemSetorRepository;
     private final RefugoRepository refugoRepository;
 
@@ -94,10 +94,9 @@ public class DashboardService {
                     .findByOrdemProducaoIdInOrderBySequenciaAsc(ordemIds).stream()
                     .collect(Collectors.groupingBy(os -> os.getOrdemProducao().getId()));
 
-            Map<Long, List<RoteiroProduto>> roteiroPorProduto = produtoIds.isEmpty() ? Map.of() : roteiroProdutoRepository
-                    .findByProdutoIdIn(produtoIds).stream()
-                    .filter(rp -> rp.getProduto() != null && rp.getProduto().getId() != null)
-                    .collect(Collectors.groupingBy(rp -> rp.getProduto().getId()));
+            Map<Long, List<PassoDoProdutoDTO>> roteiroPorProduto = produtoIds.isEmpty() ? Map.of() : roteiroPassoRepository
+                    .buscarPassosPorProdutoIds(produtoIds).stream()
+                    .collect(Collectors.groupingBy(PassoDoProdutoDTO::produtoId));
 
             return ordens.stream()
                     .map(ordem -> montarDashboardOrdemDTO(
@@ -106,6 +105,7 @@ public class DashboardService {
                             ordem.getProduto() != null ? roteiroPorProduto.getOrDefault(ordem.getProduto().getId(), List.of()) : List.of()
                     ))
                     .toList();
+
         } catch (DataAccessException e) {
             log.error("Erro de base de dados ao listar ordens ativas para o dashboard (limite {}): {}", limite, e.getMessage(), e);
             throw new BusinessException(AppMessages.ERROR_VALIDATION_FAILED);
@@ -115,8 +115,9 @@ public class DashboardService {
         }
     }
 
-    private DashboardOrdemDTO montarDashboardOrdemDTO(OrdemProducao ordem, List<OrdemSetor> etapas, List<RoteiroProduto> roteiro) {
-        long totalEtapas = roteiro.stream().map(RoteiroProduto::getSequencia).distinct().count();
+    private DashboardOrdemDTO montarDashboardOrdemDTO(OrdemProducao ordem, List<OrdemSetor> etapas, List<PassoDoProdutoDTO> roteiro) {
+
+        long totalEtapas = roteiro.stream().map(PassoDoProdutoDTO::sequencia).distinct().count();
 
         Set<Integer> sequenciasComPendencia = etapas.stream()
                 .filter(os -> os.getStatus() != EstatusOrdemProducao.CONCLUIDA)
@@ -140,9 +141,10 @@ public class DashboardService {
             if (etapaAtual.getSetor() != null) {
                 setorNome = etapaAtual.getSetor().getNome();
             }
+            // Filtra e pega etapaNome() direto do PassoDoProdutoDTO
             etapaNome = roteiro.stream()
-                    .filter(rp -> rp.getSequencia().equals(etapaAtual.getSequencia()) && rp.getEtapaSetor() != null)
-                    .map(rp -> rp.getEtapaSetor().getNome())
+                    .filter(pp -> pp.sequencia().equals(etapaAtual.getSequencia()) && pp.etapaNome() != null)
+                    .map(PassoDoProdutoDTO::etapaNome)
                     .findFirst()
                     .orElse(null);
         }
