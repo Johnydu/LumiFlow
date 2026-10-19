@@ -102,7 +102,7 @@
                         </td>
 
                         <td>
-                            <div class="table-actions" sec:authorize="hasAnyRole('ADMIN', 'GESTAO', 'SUPERVISOR', 'PCP')">
+                            <div class="table-actions" sec:authorize="hasAnyRole('ADMIN', 'SUPERVISOR', 'PCP')">
                                 <!-- Linha 1: Editar e Excluir -->
                                 <div class="actions-row">
                                     <button type="button" class="btn-edit"
@@ -159,7 +159,7 @@
 
         <!-- MODAL: NOVO / EDITAR ROTEIRO -->
         <div class="modal-overlay" id="form-panel"
-             sec:authorize="hasAnyRole('ADMIN', 'GESTAO', 'SUPERVISOR', 'PCP')">
+             sec:authorize="hasAnyRole('ADMIN', 'SUPERVISOR', 'PCP')">
             <div class="modal-box csp-style-196a6edae9">
                 <div class="modal-header">
                     <span class="modal-title" id="form-title">Novo Roteiro</span>
@@ -223,7 +223,7 @@
 
         <!-- MODAL: DUPLICAR ROTEIRO -->
         <div class="modal-overlay" id="modal-duplicar"
-             sec:authorize="hasAnyRole('ADMIN', 'GESTAO', 'SUPERVISOR', 'PCP')">
+             sec:authorize="hasAnyRole('ADMIN', 'SUPERVISOR', 'PCP')">
             <div class="modal-box">
                 <div class="modal-header">
                     <span class="modal-title">Duplicar roteiro</span>
@@ -255,7 +255,7 @@
 
         <!-- MODAL: VINCULAR PRODUTOS -->
         <div class="modal-overlay" id="modal-vincular"
-             sec:authorize="hasAnyRole('ADMIN', 'GESTAO', 'SUPERVISOR', 'PCP')">
+             sec:authorize="hasAnyRole('ADMIN', 'SUPERVISOR', 'PCP')">
             <div class="modal-box">
                 <div class="modal-header">
                     <span class="modal-title">Produtos do roteiro</span>

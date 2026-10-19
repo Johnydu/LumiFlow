@@ -197,3 +197,11 @@ body.page-ordemproducao-lancamento .topbar > .btn-novo:hover {
   color: var(--color-primary, #6157ff);
   font-size: 15px;
 }
+
+.resumo-val.destaque.refugo {
+  color: var(--color-danger);
+}
+
+.resumo-val.destaque.retrab {
+  color: var(--color-warning);
+}

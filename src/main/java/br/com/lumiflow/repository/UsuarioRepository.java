@@ -47,6 +47,9 @@ public interface UsuarioRepository extends JpaRepository<Usuario, Long> {
                                 @Param("ate") LocalDateTime ate,
                                 @Param("max") int max);
 
+    @Query("SELECT u FROM Usuario u WHERE LOWER(u.nome) LIKE LOWER(CONCAT('%', :nome, '%'))")
+    List<Usuario> findByNome(@Param("nome") String nome);
+
     /**
      * Só atualiza se houver algo a limpar, evitando disparar o trigger de
      * atualizado_em a cada login bem-sucedido.

@@ -119,76 +119,72 @@ document.addEventListener('DOMContentLoaded', () => {
     });
   });
 
+  // Monta uma linha do resumo sem innerHTML: textContent trata o valor como texto puro.
+  function criarLinhaResumo(rotulo, valor, classeExtra = '') {
+    const item = document.createElement('div');
+    item.className = 'resumo-item';
+
+    const label = document.createElement('span');
+    label.className = 'resumo-label';
+    label.textContent = rotulo;
+
+    const val = document.createElement('span');
+    val.className = `resumo-val ${classeExtra}`.trim();
+    val.textContent = valor;
+
+    item.append(label, val);
+    return item;
+  }
+
+  function valorDoCampo(form, seletor, padrao = '-') {
+    const valor = form.querySelector(seletor)?.value.trim();
+    return valor || padrao;
+  }
+
+  function textoDoSelect(form, seletor, padrao = '-') {
+    const select = form.querySelector(seletor);
+    if (!select || !select.value) return padrao;
+    return select.options[select.selectedIndex].text;
+  }
+
   function gerarResumo(form) {
     if (!resumoConteudo) return;
-    resumoConteudo.innerHTML = '';
     const abaId = form.closest('.form-card').id;
-    let htmlResumo = '';
 
     const produtoNome = document.querySelector('.produto-nome')?.textContent.trim() || '';
     const produtoOP = document.querySelector('.produto-op')?.textContent.trim() || '';
 
-    htmlResumo += `
-        <div class="resumo-item">
-            <span class="resumo-label">Ordem de Produção:</span>
-            <span class="resumo-val">${produtoOP} (${produtoNome})</span>
-        </div>
-    `;
+    const linhas = [criarLinhaResumo('Ordem de Produção:', `${produtoOP} (${produtoNome})`)];
 
     if (abaId === 'tab-producao') {
-      const qtd = form.querySelector('#quantidadeProducao')?.value || '0';
-      const maquinaSelect = form.querySelector('#maquinaProducaoId');
-      const maquina = maquinaSelect?.options[maquinaSelect.selectedIndex]?.text || '-';
-      const operadorSelect = form.querySelector('#operadorProducaoId');
-      const operador = operadorSelect?.options[operadorSelect.selectedIndex]?.text || '-';
-      const obs = form.querySelector('#observacaoProducao')?.value || '-';
-
-      htmlResumo += `
-            <div class="resumo-item"><span class="resumo-label">Tipo:</span><span class="resumo-val destaque">Lançamento de Produção</span></div>
-            <div class="resumo-item"><span class="resumo-label">Qtd. Produzida:</span><span class="resumo-val destaque">${qtd} unid.</span></div>
-            <div class="resumo-item"><span class="resumo-label">Máquina:</span><span class="resumo-val">${maquina}</span></div>
-            <div class="resumo-item"><span class="resumo-label">Operador:</span><span class="resumo-val">${operador}</span></div>
-            <div class="resumo-item"><span class="resumo-label">Observação:</span><span class="resumo-val">${obs}</span></div>
-        `;
+      linhas.push(
+          criarLinhaResumo('Tipo:', 'Lançamento de Produção', 'destaque'),
+          criarLinhaResumo('Qtd. Produzida:', `${valorDoCampo(form, '#quantidadeProducao', '0')} unid.`, 'destaque'),
+          criarLinhaResumo('Máquina:', textoDoSelect(form, '#maquinaProducaoId')),
+          criarLinhaResumo('Operador:', textoDoSelect(form, '#operadorProducaoId')),
+          criarLinhaResumo('Observação:', valorDoCampo(form, '#observacaoProducao'))
+      );
     } else if (abaId === 'tab-refugo') {
-      const qtd = form.querySelector('#quantidadeRefugo')?.value || '0';
-      const setorSelect = form.querySelector('#selectSetorOrigemRefugo');
-      const setor = setorSelect?.options[setorSelect.selectedIndex]?.text || '-';
-      const operadorSelect = form.querySelector('#operadorRefugoId');
-      const operador = operadorSelect?.options[operadorSelect.selectedIndex]?.text || '-';
-      const destinoSelect = form.querySelector('#destinoRefugo');
-      const destino = destinoSelect?.options[destinoSelect.selectedIndex]?.text || '-';
-      const motivo = form.querySelector('#motivoRefugo')?.value || '-';
-
-      htmlResumo += `
-            <div class="resumo-item"><span class="resumo-label">Tipo:</span><span class="resumo-val destaque" style="color: #ef4444;">Lançamento de Refugo</span></div>
-            <div class="resumo-item"><span class="resumo-label">Qtd. Refugada:</span><span class="resumo-val destaque">${qtd} unid.</span></div>
-            <div class="resumo-item"><span class="resumo-label">Setor de Origem:</span><span class="resumo-val">${setor}</span></div>
-            <div class="resumo-item"><span class="resumo-label">Operador:</span><span class="resumo-val">${operador}</span></div>
-            <div class="resumo-item"><span class="resumo-label">Destino:</span><span class="resumo-val">${destino}</span></div>
-            <div class="resumo-item"><span class="resumo-label">Motivo:</span><span class="resumo-val">${motivo}</span></div>
-        `;
+      linhas.push(
+          criarLinhaResumo('Tipo:', 'Lançamento de Refugo', 'destaque refugo'),
+          criarLinhaResumo('Qtd. Refugada:', `${valorDoCampo(form, '#quantidadeRefugo', '0')} unid.`, 'destaque'),
+          criarLinhaResumo('Setor de Origem:', textoDoSelect(form, '#selectSetorOrigemRefugo')),
+          criarLinhaResumo('Operador:', textoDoSelect(form, '#operadorRefugoId')),
+          criarLinhaResumo('Destino:', textoDoSelect(form, '#destinoRefugo')),
+          criarLinhaResumo('Motivo:', valorDoCampo(form, '#motivoRefugo'))
+      );
     } else if (abaId === 'tab-retrabalho') {
-      const refugoSelect = form.querySelector('#selectRefugoRetrabalho');
-      const refugo = refugoSelect?.options[refugoSelect.selectedIndex]?.text || '-';
-      const maquinaSelect = form.querySelector('#selectMaquinaRetrabalho');
-      const maquina = maquinaSelect?.value ? maquinaSelect.options[maquinaSelect.selectedIndex].text : 'Nenhuma';
-      const operadorSelect = form.querySelector('#operadorRetrabalhoId');
-      const operador = operadorSelect?.options[operadorSelect.selectedIndex]?.text || '-';
-      const qtd = form.querySelector('#quantidadeRetrabalho')?.value || '0';
-      const obs = form.querySelector('#observacaoRetrabalho')?.value || '-';
-
-      htmlResumo += `
-            <div class="resumo-item"><span class="resumo-label">Tipo:</span><span class="resumo-val destaque" style="color: #f59e0b;">Lançamento de Retrabalho</span></div>
-            <div class="resumo-item"><span class="resumo-label">Refugo Vinculado:</span><span class="resumo-val">${refugo}</span></div>
-            <div class="resumo-item"><span class="resumo-label">Qtd. Refeita:</span><span class="resumo-val destaque">${qtd} unid.</span></div>
-            <div class="resumo-item"><span class="resumo-label">Máquina:</span><span class="resumo-val">${maquina}</span></div>
-            <div class="resumo-item"><span class="resumo-label">Operador:</span><span class="resumo-val">${operador}</span></div>
-            <div class="resumo-item"><span class="resumo-label">Observação:</span><span class="resumo-val">${obs}</span></div>
-        `;
+      linhas.push(
+          criarLinhaResumo('Tipo:', 'Lançamento de Retrabalho', 'destaque retrab'),
+          criarLinhaResumo('Refugo Vinculado:', textoDoSelect(form, '#selectRefugoRetrabalho')),
+          criarLinhaResumo('Qtd. Refeita:', `${valorDoCampo(form, '#quantidadeRetrabalho', '0')} unid.`, 'destaque'),
+          criarLinhaResumo('Máquina:', textoDoSelect(form, '#selectMaquinaRetrabalho', 'Nenhuma')),
+          criarLinhaResumo('Operador:', textoDoSelect(form, '#operadorRetrabalhoId')),
+          criarLinhaResumo('Observação:', valorDoCampo(form, '#observacaoRetrabalho'))
+      );
     }
 
-    resumoConteudo.innerHTML = htmlResumo;
+    resumoConteudo.replaceChildren(...linhas);
   }
 
   function abrirModal() {

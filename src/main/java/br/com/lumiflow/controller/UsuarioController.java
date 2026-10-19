@@ -4,10 +4,10 @@ import br.com.lumiflow.config.AppMessages;
 import br.com.lumiflow.dto.usuario.UsuarioDTO;
 import br.com.lumiflow.dto.usuario.UsuarioEdicaoDTO;
 import br.com.lumiflow.exception.BusinessException;
+import br.com.lumiflow.security.UsuarioDetails;
 import br.com.lumiflow.service.NivelAcessoService;
 import br.com.lumiflow.service.SetorService;
 import br.com.lumiflow.service.UsuarioService;
-import br.com.lumiflow.security.UsuarioDetails;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -35,10 +35,9 @@ public class UsuarioController {
 
     @GetMapping
     @PreAuthorize("hasRole('ADMIN')")
-    public String listarUsuarios(Model model, Locale locale) {
+    public String listarUsuarios(@RequestParam(value = "nome", required = false) String nome, Model model, Locale locale) {
         try {
-            carregarPagina(model);
-
+            carregarPagina(model, nome);
             return "usuario/ListaUsuario";
         } catch (Exception e) {
             log.error("Erro inesperado ao carregar a página de listagem de usuários: {}", e.getMessage(), e);
@@ -139,13 +138,17 @@ public class UsuarioController {
         return "usuario/ListaUsuario";
     }
 
-    private void carregarPagina(Model model) {
-        model.addAttribute("usuarios", usuarioService.listarTodos());
+    private void carregarPagina(Model model, String nome) {
+        model.addAttribute("usuarios", usuarioService.listarOuFiltrarPorNome(nome));
         model.addAttribute("niveisAcesso", nivelAcessoService.listarTodos());
         model.addAttribute("setores", setorService.listarSetores());
         if (!model.containsAttribute("usuarioDTO")) {
             model.addAttribute("usuarioDTO",
                     new UsuarioDTO(null, null, null, null, null, null));
         }
+    }
+
+    private void carregarPagina(Model model) {
+        carregarPagina(model, null);
     }
 }

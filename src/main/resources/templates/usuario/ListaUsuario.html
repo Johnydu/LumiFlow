@@ -43,7 +43,8 @@
         <!-- LISTA -->
         <div class="lista csp-style-69d66e5b2e">
 
-            <form method="get" th:action="@{/dashboard/usuarios}">
+            <!-- FORMULÁRIO DE BUSCA CORRIGIDO -->
+            <form method="get" th:action="@{/dashboard/usuario}">
                 <label for="buscaUsuario"></label>
                 <input type="text"
                        id="buscaUsuario"
@@ -52,6 +53,7 @@
                        class="search"
                        placeholder="Buscar usuário...">
             </form>
+
             <div class="panel">
 
                 <div class="panel-header">

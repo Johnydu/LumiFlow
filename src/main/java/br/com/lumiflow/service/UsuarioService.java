@@ -18,6 +18,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
+import java.util.Locale;
 
 @Slf4j
 @Service
@@ -105,6 +106,23 @@ public class UsuarioService {
             throw new BusinessException(AppMessages.ERROR_VALIDATION_FAILED);
         } catch (Exception e) {
             log.error("Erro inesperado ao listar utilizadores: {}", e.getMessage(), e);
+            throw new BusinessException(AppMessages.ERROR_VALIDATION_FAILED);
+        }
+    }
+
+    @Transactional(readOnly = true)
+    public List<UsuarioListaDTO> listarOuFiltrarPorNome(String nome) {
+        try {
+            if (nome == null || nome.isBlank()) {
+                return listarTodos();
+            }
+            List<Usuario> usuarios = usuarioRepository.findByNome(nome.trim().toUpperCase(Locale.ROOT));
+            return usuarioMapper.toListDTO(usuarios);
+        } catch (DataAccessException e) {
+            log.error("Erro de base de dados ao filtrar utilizadores por nome: {}", e.getMessage(), e);
+            throw new BusinessException(AppMessages.ERROR_VALIDATION_FAILED);
+        } catch (Exception e) {
+            log.error("Erro inesperado ao filtrar utilizadores por nome: {}", e.getMessage(), e);
             throw new BusinessException(AppMessages.ERROR_VALIDATION_FAILED);
         }
     }
