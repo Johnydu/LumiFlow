@@ -40,7 +40,7 @@ public class OrdemDetalheController {
     }
 
     @PostMapping("/{ordemId}/etapas/{ordemSetorId}/liberar")
-    @PreAuthorize("hasAnyRole('ADMIN', 'GESTAO', 'SUPERVISOR', 'PCP')")
+    @PreAuthorize("hasAnyRole('ADMIN', 'SUPERVISOR', 'PCP')")
     public String liberar(@PathVariable Long ordemId,
                           @PathVariable Long ordemSetorId,
                           RedirectAttributes redirectAttributes,
@@ -49,21 +49,21 @@ public class OrdemDetalheController {
         try {
             ordemProducaoService.liberarOrdem(ordemSetorId);
             String mensagemSucesso = messageSource.getMessage(AppMessages.SUCCESS_ORDER_LIBERADA, null, locale);
-            redirectAttributes.addFlashAttribute("sucesso", mensagemSucesso);
+            redirectAttributes.addFlashAttribute("success", mensagemSucesso);
             log.info("Etapa liberada com sucesso para ID: {}", ordemSetorId);
         } catch (BusinessException e) {
             log.warn("Bloqueio de regra de negócio ao liberar etapa {}: {}", ordemSetorId, e.getMessage());
-            redirectAttributes.addFlashAttribute("erro", e.getMessage());
+            redirectAttributes.addFlashAttribute("error", e.getMessage());
         } catch (Exception e) {
             log.error("Erro inesperado ao processar liberação da etapa {}: {}", ordemSetorId, e.getMessage(), e);
             String mensagemErro = messageSource.getMessage(AppMessages.ERROR_SYSTEM_INTERNAL, null, locale);
-            redirectAttributes.addFlashAttribute("erro", mensagemErro);
+            redirectAttributes.addFlashAttribute("error", mensagemErro);
         }
         return "redirect:/dashboard/ordens/" + ordemId + "/detalhes";
     }
 
     @PostMapping("/{ordemId}/etapas/{ordemSetorId}/dividir")
-    @PreAuthorize("hasAnyRole('ADMIN', 'GESTAO', 'SUPERVISOR', 'PCP')")
+    @PreAuthorize("hasAnyRole('ADMIN', 'SUPERVISOR', 'PCP')")
     public String dividir(@PathVariable Long ordemId,
                           @PathVariable Long ordemSetorId,
     @Valid @ModelAttribute("dividirDTO") DividirEtapaDTO dto,
@@ -90,15 +90,15 @@ public class OrdemDetalheController {
         try {
             ordemProducaoService.dividirEtapa(ordemSetorId, dto);
             String mensagemSucesso = messageSource.getMessage(AppMessages.SUCCESS_ORDER_DIVIDED, null, locale);
-            redirectAttributes.addFlashAttribute("sucesso", mensagemSucesso);
+            redirectAttributes.addFlashAttribute("success", mensagemSucesso);
             log.info("Etapa dividida com sucesso para ID: {}", ordemSetorId);
         } catch (BusinessException e) {
             log.warn("Bloqueio de regra de negócio ao dividir etapa {}: {}", ordemSetorId, e.getMessage());
-            redirectAttributes.addFlashAttribute("erro", e.getMessage());
+            redirectAttributes.addFlashAttribute("error", e.getMessage());
         } catch (Exception e) {
             log.error("Erro inesperado ao processar divisão da etapa {}: {}", ordemSetorId, e.getMessage(), e);
             String mensagemErro = messageSource.getMessage(AppMessages.ERROR_SYSTEM_INTERNAL, null, locale);
-            redirectAttributes.addFlashAttribute("erro", mensagemErro);
+            redirectAttributes.addFlashAttribute("error", mensagemErro);
         }
         return "redirect:/dashboard/ordens/" + ordemId + "/detalhes";
     }

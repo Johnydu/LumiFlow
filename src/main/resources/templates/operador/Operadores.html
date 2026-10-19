@@ -55,7 +55,7 @@
 
         <form method="get" th:action="@{/dashboard/operadores}" class="filtros">
             <div class="field">
-                <label for="buscaOperador">Buscar operador</label>
+                <label for="buscaOperador"></label>
             <input type="text"
                    id="buscaOperador"
                    name="nome"
@@ -65,7 +65,7 @@
             </div>
 
             <div class="field">
-            <label for="filtroSetorOperador">Filtrar por setor</label>
+            <label for="filtroSetorOperador"></label>
             <select id="filtroSetorOperador" name="setorId" class="filtro-select">
                 <option value="">Todos os setores</option>
                 <option th:each="setor : ${listaSetores}"

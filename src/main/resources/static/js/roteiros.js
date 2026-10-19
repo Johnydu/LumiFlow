@@ -52,35 +52,14 @@ function definirValor(id, valor) {
 // AÇÕES DA LISTA E MODAIS: EDITAR / DUPLICAR / PRODUTOS / ETC
 // ============================================================
 document.addEventListener('click', (event) => {
-    // Trata tanto data-acao quanto data-csp-action para evitar falhas em qualquer botão
-    const alvo = event.target.closest('[data-acao], [data-csp-action]');
+    const alvo = event.target.closest('[data-acao]');
     if (!alvo) return;
 
-    const acao = alvo.dataset.acao || alvo.dataset.cspAction;
-
-    switch (acao) {
-        case 'editar':
-            editarRoteiro(alvo.dataset.roteiroId);
-            break;
-        case 'duplicar':
-            abrirModalDuplicar(alvo);
-            break;
-        case 'produtos':
-            abrirModalVincular(alvo);
-            break;
-        case 'fechar-modal':
-            // Fecha dinamicamente o modal informado no atributo data-modal
-            fecharModal(alvo.dataset.modal);
-            break;
-        case 'hideForm':
-            hideForm();
-            break;
-        case 'adicionarEtapa':
-            adicionarEtapa();
-            break;
-        case 'novoRoteiroForm':
-            novoRoteiroForm();
-            break;
+    switch (alvo.dataset.acao) {
+        case 'editar':       editarRoteiro(alvo.dataset.roteiroId); break;
+        case 'duplicar':     abrirModalDuplicar(alvo); break;
+        case 'produtos':     abrirModalVincular(alvo); break;
+        case 'fechar-modal': fecharModal(alvo.dataset.modal); break;
     }
 });
 

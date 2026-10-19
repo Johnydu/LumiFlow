@@ -32,7 +32,7 @@ import java.util.Locale;
 @RequestMapping("/dashboard/roteiros")
 public class RoteiroController {
 
-    private static final String PODE_GERENCIAR = "hasAnyRole('ADMIN', 'SUPERVISOR','PCP','GESTAO')";
+    private static final String PODE_GERENCIAR = "hasAnyRole('ADMIN', 'SUPERVISOR','PCP')";
     private static final String REDIRECT_LISTA = "redirect:/dashboard/roteiros";
 
     private final RoteiroService roteiroService;

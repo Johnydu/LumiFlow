@@ -22,10 +22,10 @@ import org.springframework.security.web.header.writers.ReferrerPolicyHeaderWrite
  * CONFIGURAÇÃO DE SEGURANÇA — LumiFlow
  * <p>
  * HIERARQUIA DE PERFIS:
- * - ADMIN: acesso total
- * - SUPERVISOR: engloba PCP e Gestão
- * - PCP / GESTÃO: planejamento e liberação/relatórios
- * - OPERADOR: lançamentos no chão de fábrica
+ * ADMIN: acesso total
+ * SUPERVISOR: engloba PCP e Gestão
+ * PCP / GESTÃO: planejamento e liberação/relatórios
+ * OPERADOR: lançamentos no chão de fábrica
  */
 @Configuration
 @EnableWebSecurity
@@ -46,7 +46,7 @@ public class SecurityConfig {
 
     /**
      * CSP em modo de imposição (enforcement) ativa.
-     * Os blocos inline foram eliminados dos templates, permitindo bloquear estritamente
+     * Os blocos inline foram eliminados dos modelos, permitindo bloquear estritamente
      * scripts e estilos não autorizados para blindagem contra XSS.
      */
     private static final String CSP_POLICY = "default-src 'self'; "
@@ -58,13 +58,13 @@ public class SecurityConfig {
 
     @Bean
     public RoleHierarchy roleHierarchy() {
-        return RoleHierarchyImpl.fromHierarchy(
-                "ROLE_ADMIN > ROLE_SUPERVISOR\n" +
-                        "ROLE_SUPERVISOR > ROLE_PCP\n" +
-                        "ROLE_SUPERVISOR > ROLE_GESTAO\n" +
-                        "ROLE_PCP > ROLE_OPERADOR\n" +
-                        "ROLE_GESTAO > ROLE_OPERADOR"
-        );
+        return RoleHierarchyImpl.fromHierarchy("""
+                ROLE_ADMIN > ROLE_SUPERVISOR
+                ROLE_SUPERVISOR > ROLE_PCP
+                ROLE_SUPERVISOR > ROLE_GESTAO
+                ROLE_PCP > ROLE_OPERADOR
+                ROLE_GESTAO > ROLE_OPERADOR
+                """);
     }
 
     @Bean
@@ -73,17 +73,17 @@ public class SecurityConfig {
         http
                 .authorizeHttpRequests(auth -> auth
 
-                        // Health check público para o container e a plataforma de deploy
+                        // Health check público para o contentor e a plataforma de deploy
                         .requestMatchers("/actuator/health", "/actuator/health/**").permitAll()
 
                         // Recursos estáticos
                         .requestMatchers("/css/**", "/js/**", "/image/**", "/images/**",
                                 "/style.css", "/webjars/**").permitAll()
 
-                        // Tela de login
+                        // Ecrã de login
                         .requestMatchers(LOGIN_PAGE).permitAll()
 
-                        // ADMIN: usuários e configurações
+                        // ADMIN: utilizadores e configurações
                         .requestMatchers("/dashboard/usuario/**").hasRole(ROLE_ADMIN)
                         .requestMatchers("/dashboard/configuracao/**",
                                 "/dashboard/configuracoes/**").authenticated()
