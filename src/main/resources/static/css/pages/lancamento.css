@@ -26,6 +26,7 @@ body.page-ordemproducao-lancamento .produto-destaque {
   border: 1px solid var(--color-primary);
   border-radius: var(--radius-xl);
   background: linear-gradient(135deg, var(--color-primary-gradient-start), var(--color-primary-gradient-end));
+  transition: background 0.3s ease, border-color 0.3s ease;
 }
 
 body.page-ordemproducao-lancamento .produto-nome {
@@ -40,6 +41,28 @@ body.page-ordemproducao-lancamento .produto-op {
   font-family: monospace;
   font-size: var(--font-size-md);
 }
+
+/* ========================================
+   CORREÇÃO DE TEMA PARA O PRODUTO DESTAQUE
+   ======================================== */
+
+html.theme-light body.page-ordemproducao-lancamento .produto-destaque {
+  background: var(--color-surface, #ffffff);
+  border: 1px solid var(--border-strong, #e2e8f0);
+  box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.05);
+}
+
+html.theme-light body.page-ordemproducao-lancamento .produto-nome {
+  color: var(--color-text, #0f172a);
+}
+
+html.theme-light body.page-ordemproducao-lancamento .produto-op {
+  color: var(--color-muted, #64748b);
+}
+
+/* ========================================
+   ABAS E FORMULÁRIOS
+   ======================================== */
 
 body.page-ordemproducao-lancamento .tab {
   padding: var(--space-2) var(--space-5);

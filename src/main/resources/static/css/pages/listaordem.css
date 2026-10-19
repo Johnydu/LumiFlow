@@ -142,7 +142,7 @@ body.page-ordemproducao-listaordem .pag-btns {
   }
 }
 
-/* Alinha os itens da topbar à esquerda na página de lançamento */
+/* Alinha os itens da topbar à esquerda na página */
 body.page-ordemproducao-listaordem .topbar {
   justify-content: flex-start;
   gap: var(--space-4);
@@ -164,4 +164,56 @@ body.page-ordemproducao-listaordem .topbar > .btn-novo:hover {
   border-color: var(--border-subtle);
   transform: none;
   box-shadow: none;
+}
+
+/* ========================================
+   BADGE DE SETOR NA TOPBAR / LISTA (CSP COMPLIANT)
+   ======================================== */
+
+.setor-info-wrapper {
+  display: flex;
+  align-items: center;
+  gap: var(--space-2, 8px);
+  margin-bottom: var(--space-3, 12px);
+}
+
+.setor-info-label {
+  color: var(--color-muted, #94a3b8);
+  font-size: var(--font-size-xs, 0.75rem);
+  font-weight: 600;
+  letter-spacing: 0.5px;
+  text-transform: uppercase;
+}
+
+.setor-header-badge {
+  display: inline-flex;
+  align-items: center;
+  gap: var(--space-2, 8px);
+  padding: 6px 14px;
+  background: var(--surface-subtle, rgba(255, 255, 255, 0.06));
+  border: 1px solid var(--border-subtle, rgba(255, 255, 255, 0.12));
+  border-radius: var(--radius-full, 9999px);
+  color: var(--color-text, #ffffff);
+  font-size: var(--font-size-sm, 0.875rem);
+  font-weight: 600;
+  letter-spacing: 0.3px;
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+  transition: all 0.2s ease;
+}
+
+.setor-header-badge i {
+  color: var(--color-primary, #6157ff);
+  font-size: 0.95rem;
+}
+
+/* Ajuste automático para o Tema Claro */
+html.theme-light .setor-header-badge {
+  background: var(--color-surface, #ffffff);
+  border-color: var(--border-strong, #cbd5e1);
+  color: var(--color-text, #0f172a);
+  box-shadow: 0 1px 3px rgba(0, 0, 0, 0.08);
+}
+
+html.theme-light .setor-info-label {
+  color: var(--color-muted, #64748b);
 }

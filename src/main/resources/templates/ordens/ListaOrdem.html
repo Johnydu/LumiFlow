@@ -50,6 +50,14 @@
 
         <!-- PAINEL DE FILTROS UNIFICADO -->
         <section class="panel order-filter-panel" aria-label="Filtros de ordens">
+
+            <div class="setor-info-wrapper">
+                <span class="setor-info-label">SETOR ATUAL:</span>
+                <span class="setor-header-badge">
+                    <span th:text="${setorAtual}">Serralheria</span>
+                </span>
+            </div>
+
             <form method="get"
                   th:action="@{/dashboard/ordens-setor/{setorId}(setorId=${setorIdAtual})}"
                   class="filtros order-filters"

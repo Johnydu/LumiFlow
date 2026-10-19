@@ -35,6 +35,7 @@ public class HistoricoLancamentosController {
     public String listarHistorico(@ModelAttribute("filtro") HistoricoLancamentoFiltroDTO filtro,
                                   Authentication authentication,
                                   @AuthenticationPrincipal UsuarioDetails usuarioLogado,
+                                  @RequestParam(value = "setorId", required = false) Long setorIdParam,
                                   @RequestParam(value = "page", defaultValue = "0") int page,
                                   Model model) {
 
@@ -49,14 +50,10 @@ public class HistoricoLancamentosController {
             filtro = new HistoricoLancamentoFiltroDTO(null, null, null);
         }
 
-        if (!isSuperior && (usuarioLogado == null
-                || usuarioLogado.getSetorId() == null
-                || usuarioLogado.getSetorId() <= 0)) {
-            return "redirect:/dashboard/ordens-setor";
-        }
-
-        Long setorId = isSuperior ? filtro.setorId() : usuarioLogado.getSetorId();
+        // Se for superior, usa o filtro da tela; se for operador, prioriza o setor que veio via parâmetro da URL (ou mantém se já estiver no filtro)
+        Long setorId = isSuperior ? filtro.setorId() : (setorIdParam != null ? setorIdParam : filtro.setorId());
         Long operadorId = isSuperior ? filtro.operadorId() : null;
+
         HistoricoLancamentoFiltroDTO filtroAplicado =
                 new HistoricoLancamentoFiltroDTO(setorId, filtro.etapaSetorId(), operadorId);
 
