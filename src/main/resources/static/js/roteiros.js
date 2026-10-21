@@ -352,37 +352,13 @@ function abrirModalDuplicar(botao) {
 }
 
 function abrirModalVincular(botao) {
-    const form = document.getElementById('vincular-form');
-    if (!form) return;
-
-    form.action = `/dashboard/roteiros/${botao.dataset.roteiroId}/produtos`;
-    const origemEl = document.getElementById('vincular-origem');
-    if (origemEl) origemEl.textContent = botao.dataset.roteiroCodigo;
-
-    const vinculados = new Set((botao.dataset.produtoIds || '').split(',').filter(Boolean));
-    document.querySelectorAll('#vincular-lista input[name="produtoIds"]').forEach(checkbox => {
-        checkbox.checked = vinculados.has(checkbox.value);
+    VincularProdutos.abrir({
+        roteiroId: botao.dataset.roteiroId,
+        roteiroCodigo: botao.dataset.roteiroCodigo,
+        quantidadeProdutos: Number(botao.dataset.quantidadeProdutos || 0)
     });
-
-    const buscaInput = document.getElementById('vincular-busca');
-    if (buscaInput) buscaInput.value = '';
-    filtrarProdutosVinculo('');
     abrirModal('modal-vincular');
 }
-
-function filtrarProdutosVinculo(termo) {
-    const busca = termo.trim().toLowerCase();
-    document.querySelectorAll('#vincular-lista .produto-check').forEach(item => {
-        const visivel = busca === '' || item.dataset.busca.includes(busca);
-        item.style.display = visivel ? '' : 'none';
-    });
-}
-
-document.addEventListener('input', (event) => {
-    if (event.target.id === 'vincular-busca') {
-        filtrarProdutosVinculo(event.target.value);
-    }
-});
 
 // ============================================================
 // FILTRO DINÂMICO DE BUSCA DE ROTEIROS VIA AJAX (DEBOUNCE)

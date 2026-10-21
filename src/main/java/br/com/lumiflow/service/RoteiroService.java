@@ -1,6 +1,7 @@
 package br.com.lumiflow.service;
 
 import br.com.lumiflow.config.AppMessages;
+import br.com.lumiflow.dto.comum.PaginaDTO;
 import br.com.lumiflow.dto.etapaSetor.EtapaSetorDTO;
 import br.com.lumiflow.dto.roteiro.PassoRoteiroDTO;
 import br.com.lumiflow.dto.roteiro.ProdutoVinculoDTO;
@@ -17,6 +18,8 @@ import br.com.lumiflow.repository.RoteiroPassoRepository;
 import br.com.lumiflow.repository.RoteiroRepository;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -34,6 +37,7 @@ public class RoteiroService {
     private final SetorService setorService;
     private final EtapaSetorService etapaSetorService;
     private final OrdemProducaoRepository ordemProducaoRepository;
+    private static final int TAMANHO_PAGINA_VINCULO = 20;
 
     // ==================== CONSULTAS ====================
 
@@ -51,19 +55,17 @@ public class RoteiroService {
 
         Map<Long, List<RoteiroPasso>> passosPorRoteiro = roteiroPassoRepository.buscarPassosDosRoteiros(ids).stream()
                 .collect(Collectors.groupingBy(p -> p.getRoteiro().getId()));
-        Map<Long, List<Produto>> produtosPorRoteiro = produtoRepository.findByRoteiroIdInOrderByNomeAsc(ids).stream()
-                .collect(Collectors.groupingBy(p -> p.getRoteiro().getId()));
+        Map<Long, Long> produtosPorRoteiro = new HashMap<>();
+        produtoRepository.contarPorRoteiros(ids)
+                .forEach(l -> produtosPorRoteiro.put(((Number) l[0]).longValue(), ((Number) l[1]).longValue()));
+
 
         log.debug("Total de roteiros encontrados: [{}]", roteiros.size());
-        return roteiros.stream().map(r -> {
-            List<RoteiroPasso> passos = passosPorRoteiro.getOrDefault(r.getId(), List.of());
-            List<Produto> produtos = produtosPorRoteiro.getOrDefault(r.getId(), List.of());
-            return new RoteiroListagemDTO(
-                    r.getId(), r.getCodigo(), r.getDescricao(), passos.size(),
-                    passos.stream().map(this::descreverPasso).toList(),
-                    produtos.stream().map(p -> p.getNome() + " - " + p.getCodigo()).toList(),
-                    produtos.stream().map(Produto::getId).toList());
-        }).toList();
+        return roteiros.stream().map(r -> new RoteiroListagemDTO(
+                r.getId(), r.getCodigo(), r.getDescricao(),
+                passosPorRoteiro.getOrDefault(r.getId(), List.of()).size(),
+                passosPorRoteiro.getOrDefault(r.getId(), List.of()).stream().map(this::descreverPasso).toList(),
+                produtosPorRoteiro.getOrDefault(r.getId(), 0L))).toList();
     }
 
     @Transactional(readOnly = true)
@@ -77,14 +79,7 @@ public class RoteiroService {
         return new RoteiroDTO(roteiro.getId(), roteiro.getCodigo(), roteiro.getDescricao(), passos);
     }
 
-    @Transactional(readOnly = true)
-    public List<ProdutoVinculoDTO> listarProdutosParaVinculo() {
-        log.debug("Listando produtos disponíveis para vínculo de roteiro");
-        return produtoRepository.listarComRoteiro().stream()
-                .map(p -> new ProdutoVinculoDTO(p.getId(), p.getNome(), p.getCodigo(),
-                        p.getRoteiro() == null ? null : p.getRoteiro().getCodigo()))
-                .toList();
-    }
+
 
     @Transactional(readOnly = true)
     public List<String> buscarFluxoPorProdutoId(Long produtoId) {
@@ -105,6 +100,27 @@ public class RoteiroService {
                         rp.getEtapaSetor().getNome(),
                         rp.getEtapaSetor().getOrdem()))
                 .toList();
+    }
+
+    @Transactional(readOnly = true)
+    public PaginaDTO<ProdutoVinculoDTO> buscarProdutosParaVinculo(Long roteiroId, String termo,
+                                                                  boolean somenteVinculados, int pagina) {
+        buscarEntidade(roteiroId);
+        String busca = termo == null ? "" : termo.trim();
+        PageRequest pageable = PageRequest.of(Math.max(pagina, 0), TAMANHO_PAGINA_VINCULO);
+
+        Page<Produto> resultado = somenteVinculados
+                ? produtoRepository.buscarVinculados(roteiroId, busca, pageable)
+                : produtoRepository.buscarParaVinculo(busca, pageable);
+
+        List<ProdutoVinculoDTO> itens = resultado.getContent().stream()
+                .map(p -> new ProdutoVinculoDTO(
+                        p.getId(), p.getNome(), p.getCodigo(),
+                        p.getRoteiro() == null ? null : p.getRoteiro().getCodigo(),
+                        p.getRoteiro() != null && p.getRoteiro().getId().equals(roteiroId)))
+                .toList();
+
+        return new PaginaDTO<>(itens, resultado.getNumber(), resultado.hasNext(), resultado.getTotalElements());
     }
 
     // ==================== ESCRITA ====================
@@ -194,36 +210,32 @@ public class RoteiroService {
     }
 
     @Transactional
-    public void vincularProdutos(Long roteiroId, Collection<Long> produtoIds) {
-        log.info("Atualizando vínculo de produtos para o roteiro ID: [{}]", roteiroId);
+    public void vincularProdutos(Long roteiroId, Collection<Long> adicionar, Collection<Long> remover) {
+        log.info("Atualizando vínculo de produtos do roteiro ID: [{}]", roteiroId);
         Roteiro roteiro = buscarEntidade(roteiroId);
-        Set<Long> desejados = produtoIds == null ? Set.of() : new HashSet<>(produtoIds);
+        Set<Long> idsAdicionar = adicionar == null ? new HashSet<>() : new HashSet<>(adicionar);
+        Set<Long> idsRemover = remover == null ? new HashSet<>() : new HashSet<>(remover);
 
-        List<Produto> vinculadosHoje = produtoRepository.findByRoteiroIdOrderByNomeAsc(roteiroId);
-        Set<Long> idsHoje = vinculadosHoje.stream().map(Produto::getId).collect(Collectors.toSet());
+        // Id nos dois lados é contraditório: ignora (nenhuma mudança para ele).
+        Set<Long> contraditorios = new HashSet<>(idsAdicionar);
+        contraditorios.retainAll(idsRemover);
+        idsAdicionar.removeAll(contraditorios);
+        idsRemover.removeAll(contraditorios);
 
-        for (Produto produto : vinculadosHoje) {
-            if (!desejados.contains(produto.getId())) {
-                log.debug("Removendo vínculo do produto ID: [{}] do roteiro ID: [{}]", produto.getId(), roteiroId);
-                validarTrocaPermitida(produto);
-                produto.setRoteiro(null);
-            }
+        if (!idsRemover.isEmpty()) {
+            // Só desvincula o que realmente pertence a ESTE roteiro (ids alheios são ignorados).
+            produtoRepository.findAllById(idsRemover).stream()
+                    .filter(p -> p.getRoteiro() != null && p.getRoteiro().getId().equals(roteiroId))
+                    .forEach(p -> p.setRoteiro(null));
         }
 
-        List<Long> novosIds = desejados.stream().filter(id -> !idsHoje.contains(id)).toList();
-        if (!novosIds.isEmpty()) {
-            List<Produto> novos = produtoRepository.findAllById(novosIds);
-            if (novos.size() != novosIds.size()) {
-                log.warn("Um ou mais produtos informados para vínculo não foram encontrados no banco de dados");
+        if (!idsAdicionar.isEmpty()) {
+            List<Produto> produtos = produtoRepository.findAllById(idsAdicionar);
+            if (produtos.size() != idsAdicionar.size()) {
                 throw new BusinessException(AppMessages.ERROR_PRODUCT_NOTFOUND);
             }
-            for (Produto produto : novos) {
-                log.debug("Adicionando vínculo do produto ID: [{}] ao roteiro ID: [{}]", produto.getId(), roteiroId);
-                validarTrocaPermitida(produto);
-                produto.setRoteiro(roteiro);
-            }
+            produtos.forEach(p -> p.setRoteiro(roteiro));
         }
-        log.info("Vínculo de produtos atualizado com sucesso para o roteiro ID: [{}]", roteiroId);
     }
 
     // ==================== APOIO ====================

@@ -153,6 +153,7 @@ public class DashboardService {
                 ordem.getId(),
                 ordem.getNumero(),
                 ordem.getProduto() != null ? ordem.getProduto().getNome() : null,
+                ordem.getProduto() != null ? ordem.getProduto().getCodigo() : null,
                 ordem.getQuantidade(),
                 progresso,
                 etapaNome,

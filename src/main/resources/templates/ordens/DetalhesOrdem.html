@@ -48,10 +48,11 @@
         <div class="info-cards">
             <div class="info-card">
                 <div class="info-label">Produto</div>
-                <div class="info-val"
-                     th:text="${ordem.numero() + ' · ' + ordem.produtoNome() + ' - ' + ordem.produtoCodigo()}">
-                    OP-0001 · Arandela 12W - 123
+                <div class="info-val produto-celula">
+                    <span class="produto-codigo" th:text="${ordem.produtoCodigo()}"></span>
+                    <span th:text="${ordem.produtoNome()}"></span>
                 </div>
+                <div class="info-op" th:text="${ordem.numero()}">OP-0001</div>
             </div>
 
             <div class="info-card">

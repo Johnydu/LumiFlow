@@ -125,7 +125,7 @@
                     <tr>
                         <th class="col-data">Data/Hora</th>
                         <th>Ordem</th>
-                        <th>Produto</th>
+                        <th>Codigo/Produto</th>
                         <th>Setor</th>
                         <th class="col-center">Etapa</th>
                         <th>Operador</th>
@@ -147,11 +147,11 @@
                                   class="num"
                                   th:text="${item.numeroOrdem()}">OP-0001</span>
                         </td>
-                        <td th:text="${(item.codigoProduto() != null ? item.codigoProduto() + ' · ' : '')
-                                      + item.produto()
-                                      + (item.variante() != null and !item.variante().isBlank()
-                                          ? ' (' + item.variante() + ')' : '')}">
-                            Arandela
+                        <td>
+                            <div class="produto-celula">
+                                <span class="produto-codigo" th:if="${item.codigoProduto() != null}" th:text="${item.codigoProduto()}"></span>
+                                <span th:text="${item.produto() + (item.variante() != null and !item.variante().isBlank() ? ' (' + item.variante() + ')' : '')}"></span>
+                            </div>
                         </td>
                         <td th:text="${item.setor()}">Pintura</td>
                         <td class="col-center" th:text="${item.etapa()}">1</td>
@@ -174,7 +174,7 @@
 
             <div class="paginacao" th:if="${pagina.totalPages > 1}">
                 <span class="pag-info"
-                      th:text="|Mostrando ${(pagina.number * pagina.size) + 1}–${(pagina.number * pagina.size) + pagina.numberOfElements} de ${pagina.totalElements} lançamentos|">
+                      th:text="|Mostrando ${(pagina.number * pagina.size) + 1} - ${(pagina.number * pagina.size) + pagina.numberOfElements} de ${pagina.totalElements} lançamentos|">
                     Mostrando 1–50 de 100 lançamentos
                 </span>
                 <div class="pag-buttons">

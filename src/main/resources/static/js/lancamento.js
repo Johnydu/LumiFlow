@@ -151,11 +151,11 @@ document.addEventListener('DOMContentLoaded', () => {
     if (!resumoConteudo) return;
     const abaId = form.closest('.form-card').id;
 
+    const produtoCodigo = document.querySelector('.produto-codigo')?.textContent.trim() || '';
     const produtoNome = document.querySelector('.produto-nome')?.textContent.trim() || '';
     const produtoOP = document.querySelector('.produto-op')?.textContent.trim() || '';
 
-    const linhas = [criarLinhaResumo('Ordem de Produção:', `${produtoOP} (${produtoNome})`)];
-
+    const linhas = [criarLinhaResumo('Ordem de Produção:', `${produtoOP} (${produtoCodigo} · ${produtoNome})`)];
     if (abaId === 'tab-producao') {
       linhas.push(
           criarLinhaResumo('Tipo:', 'Lançamento de Produção', 'destaque'),

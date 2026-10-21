@@ -1,7 +1,9 @@
 package br.com.lumiflow.controller;
 
 import br.com.lumiflow.config.AppMessages;
+import br.com.lumiflow.dto.comum.PaginaDTO;
 import br.com.lumiflow.dto.roteiro.DuplicarRoteiroDTO;
+import br.com.lumiflow.dto.roteiro.ProdutoVinculoDTO;
 import br.com.lumiflow.dto.roteiro.RoteiroDTO;
 import br.com.lumiflow.dto.roteiro.VincularProdutosDTO;
 import br.com.lumiflow.exception.BusinessException;
@@ -48,11 +50,20 @@ public class RoteiroController {
         }
 
         model.addAttribute("setores", setorService.listarSetores());
-        model.addAttribute("produtos", roteiroService.listarProdutosParaVinculo());
         if (!model.containsAttribute("roteiroDTO")) {
             model.addAttribute("roteiroDTO", new RoteiroDTO(null, null, null, new ArrayList<>()));
         }
         return "roteiro/Roteiros";
+    }
+
+    @GetMapping("/{id}/produtos/busca")
+    @ResponseBody
+    @PreAuthorize(PODE_GERENCIAR)
+    public PaginaDTO<ProdutoVinculoDTO> buscarProdutos(@PathVariable Long id,
+                                                       @RequestParam(defaultValue = "") String busca,
+                                                       @RequestParam(defaultValue = "false") boolean vinculados,
+                                                       @RequestParam(defaultValue = "0") int pagina) {
+        return roteiroService.buscarProdutosParaVinculo(id, busca, vinculados, pagina);
     }
 
     @GetMapping("/{id}")
@@ -119,7 +130,7 @@ public class RoteiroController {
         String usuario = principal != null ? principal.getName() : "Desconhecido";
         log.info("Usuário [{}] atualizando vínculo de produtos para o roteiro ID: [{}]", usuario, id);
 
-        roteiroService.vincularProdutos(id, dto.produtoIds());
+        roteiroService.vincularProdutos(id, dto.adicionar(), dto.remover());
         return sucesso(attributes, AppMessages.SUCCESS_ROUTE_PRODUCTS_LINKED, locale);
     }
 

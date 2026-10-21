@@ -8,7 +8,6 @@ public record RoteiroListagemDTO(
         String descricao,
         Integer quantidadeEtapas,
         List<String> etapas,
-        List<String> produtos,
-        List<Long> produtoIds
+        long quantidadeProdutos
 ) {
 }

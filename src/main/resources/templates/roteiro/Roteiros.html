@@ -91,14 +91,8 @@
                         </td>
 
                         <td>
-                            <span class="hint" th:if="${#lists.isEmpty(roteiro.produtos())}">Nenhum produto</span>
-                            <span th:each="produto, st : ${roteiro.produtos()}"
-                                  th:if="${st.index < 3}"
-                                  class="tag-maq"
-                                  th:text="${produto}"></span>
-                            <span th:if="${#lists.size(roteiro.produtos()) > 3}"
-                                  class="tag-maq"
-                                  th:text="${'+' + (#lists.size(roteiro.produtos()) - 3)}"></span>
+                            <span class="tag-maq"
+                                  th:text="${roteiro.quantidadeProdutos() + ' produto(s)'}">0 produto(s)</span>
                         </td>
 
                         <td>
@@ -139,7 +133,7 @@
                                             data-acao="produtos"
                                             th:data-roteiro-id="${roteiro.id()}"
                                             th:data-roteiro-codigo="${roteiro.codigo()}"
-                                            th:data-produto-ids="${#strings.listJoin(roteiro.produtoIds(), ',')}">
+                                            th:data-quantidade-produtos="${roteiro.quantidadeProdutos()}">
                                         Produtos
                                     </button>
                                 </div>
@@ -192,7 +186,8 @@
                         </div>
 
                         <div class="field csp-style-ef1f3a5dff">
-                            <label class="csp-style-e4c9ee3efa">Fluxo de produção (Etapas) <span class="csp-style-1f62937642">*</span></label>
+                            <label class="csp-style-e4c9ee3efa">Fluxo de produção (Etapas) <span
+                                    class="csp-style-1f62937642">*</span></label>
 
                             <div class="etapas-list csp-style-3dea91b04e" id="etapas-list"></div>
 
@@ -227,7 +222,9 @@
             <div class="modal-box">
                 <div class="modal-header">
                     <span class="modal-title">Duplicar roteiro</span>
-                    <button type="button" class="modal-close" data-acao="fechar-modal" data-modal="modal-duplicar">&times;</button>
+                    <button type="button" class="modal-close" data-acao="fechar-modal" data-modal="modal-duplicar">
+                        &times;
+                    </button>
                 </div>
 
                 <form id="duplicar-form" method="post" action="">
@@ -246,7 +243,9 @@
                     </div>
 
                     <div class="modal-actions">
-                        <button type="button" class="btn-cancel" data-acao="fechar-modal" data-modal="modal-duplicar">Cancelar</button>
+                        <button type="button" class="btn-cancel" data-acao="fechar-modal" data-modal="modal-duplicar">
+                            Cancelar
+                        </button>
                         <button type="submit" class="btn-submit">Duplicar</button>
                     </div>
                 </form>
@@ -259,7 +258,9 @@
             <div class="modal-box">
                 <div class="modal-header">
                     <span class="modal-title">Produtos do roteiro</span>
-                    <button type="button" class="modal-close" data-acao="fechar-modal" data-modal="modal-vincular">&times;</button>
+                    <button type="button" class="modal-close" data-acao="fechar-modal" data-modal="modal-vincular">
+                        &times;
+                    </button>
                 </div>
 
                 <form id="vincular-form" method="post" action="">
@@ -267,36 +268,38 @@
 
                     <div class="modal-body">
                         <p class="modal-info">
-                            Marque os produtos que seguem o roteiro <strong id="vincular-origem"></strong>.
+                            Gerencie os produtos que seguem o roteiro <strong id="vincular-origem"></strong>.
                         </p>
 
                         <div class="field">
-                            <label for="vincular-busca" class="visually-hidden">Filtrar produtos</label>
-                            <input type="text" id="vincular-busca" placeholder="Filtrar produtos..." autocomplete="off">
+                            <label for="vincular-busca" class="visually-hidden">Buscar produto</label>
+                            <input type="text" id="vincular-busca" placeholder="Buscar por código ou nome..."
+                                   autocomplete="off">
                         </div>
 
-                        <div class="produto-check-list" id="vincular-lista">
-                            <label class="produto-check"
-                                   th:each="produto : ${produtos}"
-                                   th:data-busca="${#strings.toLowerCase(produto.nome() + ' ' + produto.codigo())}">
-                                <input type="checkbox" name="produtoIds" th:value="${produto.id()}">
-                                <span class="produto-check-nome"
-                                      th:text="${produto.nome() + ' - ' + produto.codigo()}"></span>
-                                <span class="tag-maq" th:if="${produto.roteiroCodigo() != null}"
-                                      th:text="${produto.roteiroCodigo()}"></span>
-                            </label>
-                            <p class="hint" th:if="${#lists.isEmpty(produtos)}">Nenhum produto cadastrado.</p>
-                        </div>
+                        <label class="produto-check">
+                            <input type="checkbox" id="vincular-so-vinculados" checked>
+                            <span class="produto-check-nome">Mostrar somente os vinculados a este roteiro</span>
+                        </label>
 
+                        <div class="produto-check-list" id="vincular-lista"></div>
+                        <button type="button" class="btn-add-etapa" id="vincular-mais" hidden>Carregar mais produtos
+                        </button>
+
+                        <p class="hint" id="vincular-resumo"></p>
                         <p class="hint">
-                            Produto que já está em outro roteiro será movido para este. A troca é bloqueada
-                            se o produto tiver ordem em aberto.
+                            Produto que já está em outro roteiro será movido para este. A troca vale só para
+                            novas ordens: as ordens já criadas mantêm o roteiro com que nasceram.
                         </p>
+
+                        <div id="vincular-hidden"></div>
                     </div>
 
                     <div class="modal-actions">
-                        <button type="button" class="btn-cancel" data-acao="fechar-modal" data-modal="modal-vincular">Cancelar</button>
-                        <button type="submit" class="btn-submit">Salvar</button>
+                        <button type="button" class="btn-cancel" data-acao="fechar-modal" data-modal="modal-vincular">
+                            Cancelar
+                        </button>
+                        <button type="submit" class="btn-submit" id="vincular-salvar" disabled>Salvar</button>
                     </div>
                 </form>
             </div>
@@ -304,7 +307,7 @@
 
     </div>
 </main>
-
+<script th:src="@{/js/vincular-produtos.js}"></script>
 <script th:src="@{/js/roteiros.js}"></script>
 <script th:src="@{/js/sidebar.js}"></script>
 <script th:src="@{/js/alerts.js}"></script>

@@ -31,6 +31,13 @@ body.page-ordemproducao-detalhesordem .info-val {
   font-weight: var(--font-weight-semibold);
 }
 
+body.page-ordemproducao-detalhesordem .info-op {
+  margin-top: var(--space-2);
+  color: var(--color-muted);
+  font-family: monospace;
+  font-size: var(--font-size-md);
+}
+
 body.page-ordemproducao-detalhesordem .prog-label {
   display: flex;
   justify-content: space-between;
