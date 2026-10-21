@@ -432,7 +432,6 @@ function initFiltroBuscaRoteiros() {
 
                     if (novaLista && listaAtual) {
                         listaAtual.replaceWith(novaLista);
-                        initFiltroBuscaRoteiros();
                     }
                 }
             } catch (error) {

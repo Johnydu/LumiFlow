@@ -144,7 +144,6 @@ function initFiltroBuscaProdutos() {
 
           if (novaLista && listaAtual) {
             listaAtual.replaceWith(novaLista);
-            initFiltroBuscaProdutos();
           }
         }
       } catch (error) {

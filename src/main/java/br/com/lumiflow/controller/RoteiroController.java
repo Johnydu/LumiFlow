@@ -1,7 +1,6 @@
 package br.com.lumiflow.controller;
 
 import br.com.lumiflow.config.AppMessages;
-import br.com.lumiflow.dto.etapaSetor.EtapaSetorDTO;
 import br.com.lumiflow.dto.roteiro.DuplicarRoteiroDTO;
 import br.com.lumiflow.dto.roteiro.RoteiroDTO;
 import br.com.lumiflow.dto.roteiro.VincularProdutosDTO;
@@ -23,7 +22,6 @@ import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
 import java.security.Principal;
 import java.util.ArrayList;
-import java.util.List;
 import java.util.Locale;
 
 @Slf4j
@@ -133,14 +131,6 @@ public class RoteiroController {
 
         roteiroService.excluir(id);
         return sucesso(attributes, AppMessages.SUCCESS_ROUTE_DELETED, locale);
-    }
-
-    @GetMapping("/{produtoId}/setor/{setorId}/etapas")
-    @ResponseBody
-    public List<EtapaSetorDTO> buscarEtapasDoSetorNoRoteiro(@PathVariable Long produtoId,
-                                                            @PathVariable Long setorId) {
-        log.debug("Buscando etapas do setor ID: [{}] para o produto ID: [{}]", setorId, produtoId);
-        return roteiroService.buscarEtapasDoSetorNoRoteiro(produtoId, setorId);
     }
 
     private String sucesso(RedirectAttributes attributes, String chave, Locale locale) {

@@ -124,8 +124,16 @@ textarea {
 /* Aumenta o espaçamento interno das células para dar mais "respiro" e preencher melhor o espaço */
 table th,
 table td {
-  padding: 16px 20px !important; /* Aumenta o padding vertical e horizontal (ajuste conforme preferência) */
   font-size: 0.95rem; /* Garante que o texto tenha um tamanho excelente para leitura */
+}
+
+/* Respiro das células apenas no desktop: abaixo de 1024px as tabelas viram cards
+   (responsive.css) e definem o próprio padding. */
+@media (min-width: 1025px) {
+  table th,
+  table td {
+    padding: 16px 20px !important;
+  }
 }
 
 /* Deixa os cabeçalhos das tabelas um pouco mais destacados e limpos */

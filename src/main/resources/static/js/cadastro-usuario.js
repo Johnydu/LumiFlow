@@ -92,18 +92,3 @@ function editarUsuario(id, nome, login, nivelAcessoId, setorId) {
 
   showForm();
 }
-
-// Tratamento de fade-out para alertas do sistema
-document.addEventListener('DOMContentLoaded', () => {
-  const alert = document.querySelector('.alert-success, .alert-error');
-
-  if (alert) {
-    setTimeout(() => {
-      alert.classList.add('is-dismissing');
-
-      setTimeout(() => {
-        alert.remove();
-      }, 300);
-    }, 3000);
-  }
-});

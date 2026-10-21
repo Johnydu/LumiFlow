@@ -111,7 +111,7 @@ public class ProdutoService {
             throw e;
         } catch (DataIntegrityViolationException ex) {
             log.error("Violação de integridade ao excluir produto id {}: {}", id, ex.getMessage(), ex);
-            throw new BusinessException(AppMessages.ERROR_VALIDATION_FAILED);
+            throw new BusinessException(AppMessages.ERROR_RECORD_IN_USE);
         } catch (DataAccessException e) {
             log.error("Erro de base de dados ao excluir produto id {}: {}", id, e.getMessage(), e);
             throw new BusinessException(AppMessages.ERROR_VALIDATION_FAILED);

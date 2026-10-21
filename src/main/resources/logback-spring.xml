@@ -3,9 +3,9 @@
 
     <!-- Padrões de log: DEV com cores (somente console local); PROD/arquivos sem cores -->
     <property name="LOG_PATTERN_DEV"
-              value="%d{yyyy-MM-dd HH:mm:ss.SSS} [%thread] %highlight(%-5level) %cyan(%logger{36}) - %msg%n"/>
+              value="%d{yyyy-MM-dd HH:mm:ss.SSS} [%thread] %highlight(%-5level) %cyan(%logger{36}) - %replace(%msg){'[\r\n]+',' '}%n"/>
     <property name="LOG_PATTERN_PLAIN"
-              value="%d{yyyy-MM-dd HH:mm:ss.SSS} [%thread] %-5level [%logger{36}] - %msg%n"/>
+              value="%d{yyyy-MM-dd HH:mm:ss.SSS} [%thread] %-5level [%logger{36}] - %replace(%msg){'[\r\n]+',' '}%n"/>
 
     <!-- ========================================================= -->
     <!-- DESENVOLVIMENTO: console colorido + arquivos locais ./logs -->

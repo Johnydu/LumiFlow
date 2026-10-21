@@ -30,3 +30,21 @@
     max-width: 500px;
     color: var(--color-muted);
 }
+
+.error-container .btn-voltar {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    min-height: 42px;
+    padding: 0 var(--space-5);
+    border-radius: var(--radius-md);
+    background: var(--color-primary);
+    color: #ffffff;
+    font-weight: var(--font-weight-medium);
+    text-decoration: none;
+    transition: background 0.2s ease;
+}
+
+.error-container .btn-voltar:hover {
+    background: var(--color-primary-hover);
+}

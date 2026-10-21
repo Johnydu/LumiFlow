@@ -235,11 +235,11 @@
                             <form th:if="${etapa.status().name() == 'LIBERADA' or etapa.status().name() == 'EM_ANDAMENTO'}"
                                   method="post"
                                   th:action="@{/dashboard/ordens-setor/{setorId}/ordens/{ordemSetorId}/pausar(setorId=${etapa.setorId()}, ordemSetorId=${etapa.ordemSetorId()})}"
-                                  data-confirm="Voltar esta etapa para Disponível? A produção será interrompida até uma nova liberação."
                                   class="detail-action-form">
                                 <input type="hidden" th:id="|retornoPausar-${etapa.ordemSetorId()}|" name="retorno" value="detalhes"/>
                                 <input type="hidden" th:id="|ordemPausar-${etapa.ordemSetorId()}|" name="ordemId" th:value="${ordem.id()}"/>
-                                <button type="submit" class="btn-pausar">Pausar</button>
+                                <button type="submit" class="btn-pausar"
+                                        data-csp-confirm="Voltar esta etapa para Disponível? A produção será interrompida até uma nova liberação.">Pausar</button>
                             </form>
 
                             <button th:if="${etapa.status().name() == 'CONCLUIDA'}"
