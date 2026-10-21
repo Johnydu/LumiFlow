@@ -4,6 +4,7 @@ public record ProdutoVinculoDTO(
         Long id,
         String nome,
         String codigo,
-        String roteiroCodigo
+        String roteiroCodigo,
+        boolean vinculadoAqui
 ) {
 }

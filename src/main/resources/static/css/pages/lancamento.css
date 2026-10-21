@@ -152,6 +152,9 @@ body.page-ordemproducao-lancamento .topbar > .btn-novo:hover {
   transform: none;
   box-shadow: none;
 }
+body.page-ordemproducao-lancamento .produto-destaque .produto-codigo {
+  margin-bottom: var(--space-2);
+}
 
 /* ========================================
    RESUMO DE CONFIRMAÇÃO DE LANÇAMENTO

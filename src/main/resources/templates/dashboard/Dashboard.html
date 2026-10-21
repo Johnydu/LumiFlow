@@ -87,7 +87,7 @@
                         <thead>
                         <tr>
                             <th>Ordem</th>
-                            <th>Item</th>
+                            <th>Codigo/Produto</th>
                             <th>Qtd</th>
                             <th>Progresso</th>
                             <th>Etapa atual</th>
@@ -97,7 +97,12 @@
                         <tbody>
                         <tr th:each="ordem : ${ordensAtivas}">
                             <td class="num" th:text="${ordem.numero()}">-</td>
-                            <td th:text="${ordem.produtoNome()}">-</td>
+                            <td>
+                                <div class="produto-celula">
+                                    <span class="produto-codigo" th:if="${ordem.produtoCodigo() != null}" th:text="${ordem.produtoCodigo()}"></span>
+                                    <span th:text="${ordem.produtoNome()}">-</span>
+                                </div>
+                            </td>
                             <td class="num" th:text="${ordem.quantidade()}">0</td>
                             <td>
                                 <div class="table-progress">

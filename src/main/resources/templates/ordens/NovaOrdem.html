@@ -54,11 +54,7 @@
                         <label for="produtoId">Produto <span>*</span></label>
                         <select id="produtoId" name="produtoId" required data-csp-change="updateRoteiro" data-csp-argument="value">
                             <option value="">Selecione o produto</option>
-                            <option th:each="p : ${produtos}"
-                                    th:value="${p.id}"
-                                    th:text="${p.nome}">
-                                Arandela 12W
-                            </option>
+                            <option th:each="p : ${produtos}" th:value="${p.id}" th:text="${p.codigo + ' - ' + p.nome}"></option>
                         </select>
                     </div>
 

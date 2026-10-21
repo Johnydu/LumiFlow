@@ -7,6 +7,9 @@ body.page-roteiro-cadastroroteiros .form-panel {
   top: var(--space-5);
   width: 380px;
 }
+body.page-roteiro-cadastroroteiros .produto-check .produto-codigo {
+  font-size: var(--font-size-md);
+}
 
 body.page-roteiro-cadastroroteiros .panel,
 body.page-roteiro-cadastroroteiros .form-card {
