@@ -1,5 +1,6 @@
 package br.com.lumiflow.dto.ordens;
 
+import jakarta.validation.constraints.Size;
 import jakarta.validation.constraints.Min;
 import jakarta.validation.constraints.NotNull;
 
@@ -17,6 +18,7 @@ public record OrdemProducaoDTO(
         @NotNull(message = "A data é obrigatória")
         LocalDate dataCriacao,
 
+        @Size(max = 500, message = "A observação deve ter no máximo 500 caracteres")
         String observacao
 ) {
 }

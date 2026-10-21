@@ -14,8 +14,6 @@ import java.util.Optional;
 @Repository
 public interface ChapaVidroRepository extends JpaRepository<ChapaVidro, Long> {
 
-    Optional<ChapaVidro> findByTipoVidro(TipoVidro tipoVidro);
-
     boolean existsByTipoVidro(TipoVidro tipoVidro);
 
     @Lock(LockModeType.PESSIMISTIC_WRITE)

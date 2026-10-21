@@ -4,7 +4,6 @@ import br.com.lumiflow.entity.enums.TipoMovimentacao;
 import jakarta.persistence.*;
 import jakarta.validation.constraints.NotNull;
 import lombok.*;
-import org.springframework.format.annotation.DateTimeFormat;
 
 
 import java.time.LocalDateTime;
@@ -34,10 +33,9 @@ public class MovimentacaoVidro extends Auditoria {
     @Column(name = "quantidade",nullable = false)
     private Integer quantidade;
 
-    @Column(name = "observacao",length = 100)
+    @Column(name = "observacao", length = 255)
     private String observacao;
 
-    @DateTimeFormat
     @Column(name = "data_hora")
     private LocalDateTime dataHora;
 

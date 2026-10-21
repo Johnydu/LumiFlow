@@ -21,6 +21,8 @@ public interface UsuarioRepository extends JpaRepository<Usuario, Long> {
 
     List<Usuario> findAllByOrderByNomeAsc();
 
+    List<Usuario> findByNomeContainingIgnoreCaseOrLoginContainingIgnoreCaseOrderByNomeAsc(String nome, String login);
+
     @Lock(LockModeType.PESSIMISTIC_WRITE)
     @Query("SELECT u FROM Usuario u JOIN u.nivelAcesso n WHERE n.descricao = :descricao")
     List<Usuario> findAllByNivelAcessoForUpdate(@Param("descricao") Descricao descricao);
@@ -46,9 +48,6 @@ public interface UsuarioRepository extends JpaRepository<Usuario, Long> {
     int bloquearSeExcedeuLimite(@Param("login") String login,
                                 @Param("ate") LocalDateTime ate,
                                 @Param("max") int max);
-
-    @Query("SELECT u FROM Usuario u WHERE LOWER(u.nome) LIKE LOWER(CONCAT('%', :nome, '%'))")
-    List<Usuario> findByNome(@Param("nome") String nome);
 
     /**
      * Só atualiza se houver algo a limpar, evitando disparar o trigger de

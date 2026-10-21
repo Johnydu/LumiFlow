@@ -7,7 +7,6 @@ import br.com.lumiflow.dto.roteiro.PassoDoProdutoDTO;
 import br.com.lumiflow.entity.*;
 import br.com.lumiflow.entity.enums.EstatusOrdemProducao;
 import br.com.lumiflow.exception.BusinessException;
-import br.com.lumiflow.mapper.OrdemProducaoMapper;
 import br.com.lumiflow.repository.OrdemProducaoRepository;
 import br.com.lumiflow.repository.OrdemSetorRepository;
 import br.com.lumiflow.repository.RoteiroPassoRepository;
@@ -15,9 +14,7 @@ import br.com.lumiflow.repository.UsuarioRepository;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.dao.DataAccessException;
-import org.springframework.data.domain.Page;
-import org.springframework.data.domain.PageRequest;
-import org.springframework.data.domain.Pageable;
+import org.springframework.orm.ObjectOptimisticLockingFailureException;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -33,7 +30,6 @@ public class OrdemProducaoService {
     private final ProdutoService produtoService;
     private final RoteiroPassoRepository roteiroPassoRepository;
     private final OrdemSetorRepository ordemSetorRepository;
-    private final OrdemProducaoMapper ordemProducaoMapper;
     private final UsuarioRepository usuarioRepository;
 
     @Transactional(readOnly = true)
@@ -103,21 +99,6 @@ public class OrdemProducaoService {
                 ordem.getCriadoEm(),
                 ordemSetor.getStatus()
         );
-    }
-
-    @Transactional(readOnly = true)
-    public Page<OrdemProducaoDTO> listarOrdens(int pagina, int tamanho) {
-        try {
-            Pageable pageable = PageRequest.of(pagina, tamanho);
-            return ordemProducaoRepository.findAllOrdenadasPorEmAndamento(pageable)
-                    .map(ordemProducaoMapper::toDTO);
-        } catch (DataAccessException e) {
-            log.error("Erro de base de dados ao listar ordens paginadas: {}", e.getMessage(), e);
-            throw new BusinessException(AppMessages.ERROR_VALIDATION_FAILED);
-        } catch (Exception e) {
-            log.error("Erro inesperado ao listar ordens paginadas: {}", e.getMessage(), e);
-            throw new BusinessException(AppMessages.ERROR_VALIDATION_FAILED);
-        }
     }
 
     @Transactional
@@ -194,6 +175,8 @@ public class OrdemProducaoService {
             ordemSetorRepository.save(ordemSetor);
         } catch (BusinessException e) {
             throw e;
+        } catch (ObjectOptimisticLockingFailureException e) {
+            throw e;
         } catch (DataAccessException e) {
             log.error("Erro de base de dados ao liberar ordem setor id {}: {}", ordemSetorId, e.getMessage(), e);
             throw new BusinessException(AppMessages.ERROR_VALIDATION_FAILED);
@@ -223,6 +206,8 @@ public class OrdemProducaoService {
             ordemSetorRepository.save(ordemSetor);
 
         } catch (BusinessException e) {
+            throw e;
+        } catch (ObjectOptimisticLockingFailureException e) {
             throw e;
         } catch (DataAccessException e) {
             log.error("Erro de base de dados ao pausar etapa {}: {}",
@@ -306,6 +291,8 @@ public class OrdemProducaoService {
                 ordemSetorRepository.delete(ordemOriginal);
             }
         } catch (BusinessException e) {
+            throw e;
+        } catch (ObjectOptimisticLockingFailureException e) {
             throw e;
         } catch (DataAccessException e) {
             log.error("Erro de base de dados ao dividir etapa da ordem setor id {}: {}", ordemSetorId, e.getMessage(), e);

@@ -20,14 +20,14 @@ public class ChapaVidro extends Auditoria {
     private Long id;
 
     @Enumerated(EnumType.STRING)
-    @Column(name = "tipo_vidro",length = 10,nullable = false)
+    @Column(name = "tipo_vidro", length = 20, nullable = false)
     private TipoVidro tipoVidro;
 
 
-    @Column(name = "descricao",length = 10)
+    @Column(name = "descricao", length = 100, nullable = false)
     private String descricao;
 
-    @Column(name = "estoque_minimo",nullable = false,length = 10)
+    @Column(name = "estoque_minimo", nullable = false)
     private Integer estoqueMinimo;
 
     @PrePersist

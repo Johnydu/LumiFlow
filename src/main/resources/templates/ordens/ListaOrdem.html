@@ -285,9 +285,9 @@
                                       sec:authorize="hasAnyRole('ADMIN', 'GESTAO', 'SUPERVISOR','PCP')"
                                       method="post"
                                       th:action="@{/dashboard/ordens-setor/{setorId}/ordens/{ordemSetorId}/pausar(setorId=${setorIdAtual}, ordemSetorId=${ordem.ordemSetorId()})}"
-                                      data-confirm="Voltar esta etapa para Disponível? A produção será interrompida até uma nova liberação."
                                       class="pause-form">
-                                    <button type="submit" class="btn-pausar">Pausar</button>
+                                    <button type="submit" class="btn-pausar"
+                                            data-csp-confirm="Voltar esta etapa para Disponível? A produção será interrompida até uma nova liberação.">Pausar</button>
                                 </form>
 
                             </div>

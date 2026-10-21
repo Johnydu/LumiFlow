@@ -16,6 +16,7 @@ import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.context.MessageSource;
 import org.springframework.format.annotation.DateTimeFormat;
+import org.springframework.orm.ObjectOptimisticLockingFailureException;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
@@ -107,6 +108,9 @@ public class OrdemSetorController {
             log.warn("Erro de negócio ao liberar ordem setor id {}: {}", ordemSetorId, e.getMessage());
             String errorMessage = messageSource.getMessage(e.getMessage(), null, e.getMessage(), locale);
             attributes.addFlashAttribute("error", errorMessage);
+        } catch (ObjectOptimisticLockingFailureException e) {
+            // tratado pelo GlobalExceptionHandler com a mensagem de edição concorrente
+            throw e;
         } catch (Exception e) {
             log.error("Erro inesperado ao liberar ordem setor id {}: {}", ordemSetorId, e.getMessage(), e);
             attributes.addFlashAttribute("error", messageSource
@@ -133,6 +137,9 @@ public class OrdemSetorController {
             log.warn("Erro de negócio ao pausar ordem setor id {}: {}", ordemSetorId, e.getMessage());
             String errorMessage = messageSource.getMessage(e.getMessage(), null, e.getMessage(), locale);
             attributes.addFlashAttribute("error", errorMessage);
+        } catch (ObjectOptimisticLockingFailureException e) {
+            // tratado pelo GlobalExceptionHandler com a mensagem de edição concorrente
+            throw e;
         } catch (Exception e) {
             log.error("Erro inesperado ao pausar ordem setor id {}: {}", ordemSetorId, e.getMessage(), e);
             attributes.addFlashAttribute("error", messageSource
@@ -166,6 +173,9 @@ public class OrdemSetorController {
             log.warn("Erro de negócio ao dividir etapa da ordem setor id {}: {}", ordemSetorId, e.getMessage());
             String errorMessage = messageSource.getMessage(e.getMessage(), null, e.getMessage(), locale);
             attributes.addFlashAttribute("error", errorMessage);
+        } catch (ObjectOptimisticLockingFailureException e) {
+            // tratado pelo GlobalExceptionHandler com a mensagem de edição concorrente
+            throw e;
         } catch (Exception e) {
             log.error("Erro inesperado ao dividir etapa da ordem setor id {}: {}", ordemSetorId, e.getMessage(), e);
             attributes.addFlashAttribute("error", messageSource

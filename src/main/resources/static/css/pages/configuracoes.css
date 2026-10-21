@@ -18,7 +18,7 @@
 }
 
 /* Força o efeito translúcido (vidro) especificamente no Tema Identidade original */
-html:not(.theme-light):not(.theme-dark) .page-configuracao .panel {
+html:not(.theme-light):not(.dark) .page-configuracao .panel {
     background: rgba(15, 23, 42, 0.65) !important;
     backdrop-filter: blur(12px);
     -webkit-backdrop-filter: blur(12px);
@@ -97,4 +97,10 @@ html:not(.theme-light):not(.theme-dark) .page-configuracao .panel {
     .theme-buttons-group {
         flex-direction: column;
     }
+}
+
+/* Botão do tema atualmente ativo */
+.theme-btn[aria-pressed="true"] {
+    outline: 2px solid var(--color-primary-soft);
+    outline-offset: 2px;
 }

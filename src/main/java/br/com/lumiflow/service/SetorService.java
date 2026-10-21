@@ -21,6 +21,7 @@ import org.springframework.transaction.annotation.Transactional;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.List;
+import java.util.Locale;
 import java.util.Map;
 import java.util.Set;
 
@@ -215,6 +216,6 @@ public class SetorService {
     }
 
     private String normalizeName(String name) {
-        return name == null ? null : name.trim().toLowerCase();
+        return name == null ? null : name.trim().toUpperCase(Locale.ROOT);
     }
 }

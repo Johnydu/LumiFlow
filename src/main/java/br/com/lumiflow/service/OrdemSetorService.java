@@ -15,6 +15,7 @@ import org.springframework.transaction.annotation.Transactional;
 import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Map;
 import java.util.stream.Collectors;
 
 @Slf4j
@@ -34,6 +35,12 @@ public class OrdemSetorService {
             List<Object[]> resultados = ordemSetorRepository.buscarResumoSetores(termoBusca);
             List<ResumoSetorDTO> lista = new ArrayList<>();
 
+            // Uma única consulta para todos os setores (evita 1 query por setor).
+            Map<Long, String> operadoresPorSetor = operadorRepository.findAllByOrderByNomeAsc().stream()
+                    .filter(o -> o.getSetorPadrao() != null)
+                    .collect(Collectors.groupingBy(o -> o.getSetorPadrao().getId(),
+                            Collectors.mapping(Operador::getNome, Collectors.joining(", "))));
+
             if (resultados != null) {
                 for (Object[] row : resultados) {
                     Long setorId = row[0] != null ? ((Number) row[0]).longValue() : null;
@@ -45,21 +52,11 @@ public class OrdemSetorService {
                         continue;
                     }
 
-                    String operadoresDoDia = "";
-                    try {
-                        operadoresDoDia = operadorRepository.findBySetorPadraoId(setorId)
-                                .stream()
-                                .map(Operador::getNome)
-                                .collect(Collectors.joining(", "));
-                    } catch (Exception ex) {
-                        log.warn("Não foi possível carregar os operadores do setor id {}: {}", setorId, ex.getMessage());
-                    }
-
                     lista.add(new ResumoSetorDTO(
                             setorId,
                             setorNome,
                             dataFiltro,
-                            operadoresDoDia,
+                            operadoresPorSetor.getOrDefault(setorId, ""),
                             qtdOrdens,
                             ordensConcluidas
                     ));

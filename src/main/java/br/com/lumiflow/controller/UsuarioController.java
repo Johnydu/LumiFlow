@@ -4,10 +4,10 @@ import br.com.lumiflow.config.AppMessages;
 import br.com.lumiflow.dto.usuario.UsuarioDTO;
 import br.com.lumiflow.dto.usuario.UsuarioEdicaoDTO;
 import br.com.lumiflow.exception.BusinessException;
-import br.com.lumiflow.security.UsuarioDetails;
 import br.com.lumiflow.service.NivelAcessoService;
 import br.com.lumiflow.service.SetorService;
 import br.com.lumiflow.service.UsuarioService;
+import br.com.lumiflow.security.UsuarioDetails;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -35,9 +35,11 @@ public class UsuarioController {
 
     @GetMapping
     @PreAuthorize("hasRole('ADMIN')")
-    public String listarUsuarios(@RequestParam(value = "nome", required = false) String nome, Model model, Locale locale) {
+    public String listarUsuarios(@RequestParam(value = "nome", required = false) String nome,
+                                 Model model, Locale locale) {
         try {
             carregarPagina(model, nome);
+
             return "usuario/ListaUsuario";
         } catch (Exception e) {
             log.error("Erro inesperado ao carregar a página de listagem de usuários: {}", e.getMessage(), e);
@@ -63,12 +65,12 @@ public class UsuarioController {
             log.warn("Erro de negócio ao criar usuário '{}': {}", dto.login(), e.getMessage());
             String errorMessage = messageSource.getMessage(e.getMessage(), null, e.getMessage(), locale);
             attributes.addFlashAttribute("error", errorMessage);
-            attributes.addFlashAttribute("usuarioDTO", dto);
+            attributes.addFlashAttribute("usuarioDTO", dto.semSenha());
         } catch (Exception e) {
             log.error("Erro inesperado ao criar usuário '{}': {}", dto.login(), e.getMessage(), e);
             attributes.addFlashAttribute("error", messageSource
                     .getMessage(AppMessages.ERROR_VALIDATION_FAILED, null, locale));
-            attributes.addFlashAttribute("usuarioDTO", dto);
+            attributes.addFlashAttribute("usuarioDTO", dto.semSenha());
         }
 
         return "redirect:/dashboard/usuario";
@@ -112,19 +114,19 @@ public class UsuarioController {
             log.warn("Erro de negócio ao editar usuário id {}: {}", id, e.getMessage());
             String errorMessage = messageSource.getMessage(e.getMessage(), null, e.getMessage(), locale);
             attributes.addFlashAttribute("error", errorMessage);
-            attributes.addFlashAttribute("usuarioDTO", dto);
+            attributes.addFlashAttribute("usuarioDTO", dto.semSenha());
         } catch (Exception e) {
             log.error("Erro inesperado ao editar usuário id {}: {}", id, e.getMessage(), e);
             attributes.addFlashAttribute("error", messageSource
                     .getMessage(AppMessages.ERROR_VALIDATION_FAILED, null, locale));
-            attributes.addFlashAttribute("usuarioDTO", dto);
+            attributes.addFlashAttribute("usuarioDTO", dto.semSenha());
         }
 
         return "redirect:/dashboard/usuario";
     }
 
     private String erroValidacao(Model model, BindingResult result, Locale locale) {
-        carregarPagina(model);
+        carregarPagina(model, null);
         String mensagem = result.getAllErrors().stream()
                 .findFirst()
                 .map(error -> {
@@ -139,16 +141,12 @@ public class UsuarioController {
     }
 
     private void carregarPagina(Model model, String nome) {
-        model.addAttribute("usuarios", usuarioService.listarOuFiltrarPorNome(nome));
+        model.addAttribute("usuarios", usuarioService.buscar(nome));
         model.addAttribute("niveisAcesso", nivelAcessoService.listarTodos());
         model.addAttribute("setores", setorService.listarSetores());
         if (!model.containsAttribute("usuarioDTO")) {
             model.addAttribute("usuarioDTO",
                     new UsuarioDTO(null, null, null, null, null, null));
         }
-    }
-
-    private void carregarPagina(Model model) {
-        carregarPagina(model, null);
     }
 }

@@ -95,7 +95,7 @@ public final class AppMessages {
     public static final String SUCCESS_RETRABALHO_REGISTERED = "success.retrabalho.registered";
     public static final String ERROR_REFUGO_NOTFOUND = "error.refugo.notfound";
     public static final String ERROR_REFUGO_ORIGEM_INVALIDA = "error.refugo.origem.invalida";
-    
+
 
     // ==================== VIDRAÇARIA ====================
     public static final String SUCCESS_GLASS_MOVEMENT_CREATED = "success.glass.movement.created";
@@ -109,4 +109,6 @@ public final class AppMessages {
     public static final String ERROR_VALIDATION_FAILED = "error.validation.failed";
     public static final String ERROR_RECORD_IN_USE = "error.record.in.use";
     public static final String ERROR_SYSTEM_INTERNAL = "error.system.internal";
+    public static final String ERROR_QUANTITY_INVALID = "error.quantity.invalid";
+    public static final String ERROR_PERSISTENCE_RETRY = "error.persistence.retry";
 }

@@ -36,12 +36,7 @@
 <main class="main">
 
     <!-- TOPBAR -->
-    <div class="topbar">
-        <div class="topbar-left">
-            <button class="menu-toggle" data-csp-action="toggleSidebar">☰</button>
-            <span class="topbar-title">Vidraçaria</span>
-        </div>
-    </div>
+    <div th:replace="~{fragments/topbar :: topbar('Vidraçaria', null, null)}"></div>
 
     <div class="content">
 

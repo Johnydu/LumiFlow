@@ -231,7 +231,6 @@ function initFiltroBuscaSetores() {
 
           if (novaLista && listaAtual) {
             listaAtual.replaceWith(novaLista);
-            initFiltroBuscaSetores();
           }
         }
       } catch (error) {

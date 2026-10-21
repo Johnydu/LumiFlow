@@ -131,7 +131,6 @@ function initFiltroOperadores() {
 
                     if (novaLista && listaAtual) {
                         listaAtual.replaceWith(novaLista);
-                        initFiltroOperadores(); // Reatacha os ouvintes de eventos após atualizar o DOM
                     }
                 }
             } catch (error) {

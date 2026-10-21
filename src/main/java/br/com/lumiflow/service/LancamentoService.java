@@ -71,7 +71,7 @@ public class LancamentoService {
         try {
             // Validação imediata do DTO e da quantidade antes de consultar a base de dados
             if (dto == null || dto.quantidade() == null || dto.quantidade() <= 0) {
-                throw new BusinessException("A quantidade lançada deve ser maior que zero.");
+                throw new BusinessException(AppMessages.ERROR_QUANTITY_INVALID);
             }
 
             OrdemSetor ordemSetor = buscarEtapaAtiva(ordemId, ordemSetorId);
@@ -129,10 +129,10 @@ public class LancamentoService {
             throw e;
         } catch (DataAccessException e) {
             log.error("Erro de base de dados ao lançar produção para a ordem {}: {}", ordemId, e.getMessage(), e);
-            throw new BusinessException("Erro de persistência ao registar o lançamento. Tente novamente.");
+            throw new BusinessException(AppMessages.ERROR_PERSISTENCE_RETRY);
         } catch (Exception e) {
             log.error("Erro inesperado ao lançar produção para a ordem {}: {}", ordemId, e.getMessage(), e);
-            throw new BusinessException("Ocorreu um erro interno ao processar o lançamento da produção.");
+            throw new BusinessException(AppMessages.ERROR_SYSTEM_INTERNAL);
         }
     }
 
@@ -201,7 +201,7 @@ public class LancamentoService {
     public OrdemSetor registrarRefugo(Long ordemId, Long ordemSetorId, RefugoDTO dto) {
         try {
             if (dto == null || dto.quantidade() == null || dto.quantidade() <= 0) {
-                throw new BusinessException("A quantidade de refugo deve ser maior que zero.");
+                throw new BusinessException(AppMessages.ERROR_QUANTITY_INVALID);
             }
 
             OrdemSetor ordemSetorAtual = buscarEtapaAtiva(ordemId, ordemSetorId);
@@ -271,10 +271,10 @@ public class LancamentoService {
             throw e;
         } catch (DataAccessException e) {
             log.error("Erro de base de dados ao registar refugo para a ordem {}: {}", ordemId, e.getMessage(), e);
-            throw new BusinessException("Erro de persistência ao registar o refugo. Tente novamente.");
+            throw new BusinessException(AppMessages.ERROR_PERSISTENCE_RETRY);
         } catch (Exception e) {
             log.error("Erro inesperado ao registar refugo para a ordem {}: {}", ordemId, e.getMessage(), e);
-            throw new BusinessException("Ocorreu um erro interno ao processar o registo de refugo.");
+            throw new BusinessException(AppMessages.ERROR_SYSTEM_INTERNAL);
         }
     }
 
@@ -327,7 +327,7 @@ public class LancamentoService {
     public OrdemSetor registrarRetrabalho(Long ordemId, RetrabalhoDTO dto) {
         try {
             if (dto == null || dto.quantidade() == null || dto.quantidade() <= 0) {
-                throw new BusinessException("A quantidade de retrabalho deve ser maior que zero.");
+                throw new BusinessException(AppMessages.ERROR_QUANTITY_INVALID);
             }
 
             Refugo refugo = refugoRepository.findById(dto.refugoId())
@@ -388,10 +388,10 @@ public class LancamentoService {
             throw e;
         } catch (DataAccessException e) {
             log.error("Erro de base de dados ao registar retrabalho para a ordem {}: {}", ordemId, e.getMessage(), e);
-            throw new BusinessException("Erro de persistência ao registar o retrabalho. Tente novamente.");
+            throw new BusinessException(AppMessages.ERROR_PERSISTENCE_RETRY);
         } catch (Exception e) {
             log.error("Erro inesperado ao registar retrabalho para a ordem {}: {}", ordemId, e.getMessage(), e);
-            throw new BusinessException("Ocorreu um erro interno ao processar o registo de retrabalho.");
+            throw new BusinessException(AppMessages.ERROR_SYSTEM_INTERNAL);
         }
     }
 
