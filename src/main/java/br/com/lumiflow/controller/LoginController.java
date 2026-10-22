@@ -21,6 +21,7 @@ public class LoginController {
     @GetMapping("/login")
     public String login(@RequestParam(required = false) String error,
                         @RequestParam(required = false) String logout,
+                        @RequestParam(required = false) String expired,
                         Model model,
                         Locale locale) {
 
@@ -29,6 +30,10 @@ public class LoginController {
                 String msgErro = messageSource.getMessage(AppMessages.ERROR_USER_INVALID_CREDENTIALS, null, locale);
                 model.addAttribute("error", msgErro);
                 log.debug("Parâmetro 'error' detectado na tela de login.");
+            }
+
+            if (expired != null) {
+                model.addAttribute("error", messageSource.getMessage(AppMessages.ERROR_SESSION_EXPIRED, null, locale));
             }
 
             if (logout != null) {

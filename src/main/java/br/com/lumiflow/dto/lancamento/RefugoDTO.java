@@ -7,23 +7,23 @@ import jakarta.validation.constraints.NotNull;
 import jakarta.validation.constraints.Size;
 
 public record RefugoDTO(
-        @NotNull(message = "A quantidade é obrigatória")
-        @Min(value = 1, message = "A quantidade deve ser maior que zero")
+        @NotNull(message = "validation.quantity.required")
+        @Min(value = 1, message = "validation.quantity.positive")
         Integer quantidade,
 
-        @NotNull(message = "O setor de origem é obrigatório")
+        @NotNull(message = "validation.sector.origin.required")
         Long setorOrigemId,
 
         Long etapaSetorId,
 
-        @NotNull(message = "Operador é obrigatório")
+        @NotNull(message = "validation.operator.required")
         Long operadorId,
 
-        @NotNull(message = "O destino é obrigatório")
+        @NotNull(message = "validation.destination.required")
         DestinoRefugo destino,
 
-        @NotBlank(message = "O motivo é obrigatório")
-        @Size(max = 255, message = "O motivo deve ter no máximo 255 caracteres")
+        @NotBlank(message = "validation.reason.required")
+        @Size(max = 255, message = "validation.reason.size255")
         String motivo
 ) {
 }

@@ -12,7 +12,6 @@ import org.springframework.dao.DataAccessException;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
-import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
@@ -27,9 +26,8 @@ public class OrdemSetorService {
     private final OperadorRepository operadorRepository;
 
     @Transactional(readOnly = true)
-    public List<ResumoSetorDTO> obterResumoSetores(String busca, LocalDate data) {
+    public List<ResumoSetorDTO> obterResumoSetores(String busca) {
         try {
-            LocalDate dataFiltro = (data != null) ? data : LocalDate.now();
             String termoBusca = (busca != null && !busca.isBlank()) ? busca.trim() : null;
 
             List<Object[]> resultados = ordemSetorRepository.buscarResumoSetores(termoBusca);
@@ -55,7 +53,6 @@ public class OrdemSetorService {
                     lista.add(new ResumoSetorDTO(
                             setorId,
                             setorNome,
-                            dataFiltro,
                             operadoresPorSetor.getOrDefault(setorId, ""),
                             qtdOrdens,
                             ordensConcluidas

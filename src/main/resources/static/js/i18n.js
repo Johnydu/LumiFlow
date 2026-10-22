@@ -131,6 +131,9 @@
         "Ex: 123456": "E.g. 123456",
         "Descrição do produto": "Product description",
         "Buscar por nome ou código do produto...": "Search by product name or code...",
+        "Buscar por código ou nome...": "Search by code or name...",
+        "Carregar mais produtos": "Load more products",
+        "Carregando produtos...": "Loading products...",
         "Buscar setor por nome...": "Search departments by name...",
         "Ex: Costura, Acabamento...": "E.g. Sewing, Finishing...",
         "Buscar usuário...": "Search users...",
@@ -157,6 +160,9 @@
         "Nenhum lançamento registrado até o momento.": "No entries have been recorded yet.",
         "Nenhum operador cadastrado.": "No operators registered.",
         "Nenhum produto cadastrado.": "No products registered.",
+        "Nenhum produto encontrado.": "No products found.",
+        "Não foi possível carregar os produtos. Tente novamente.": "Could not load products. Please try again.",
+        "Nenhuma alteração pendente.": "No pending changes.",
         "Nenhum roteiro cadastrado.": "No production routes registered.",
         "Nenhum setor cadastrado.": "No departments registered.",
         "Nenhum setor encontrado.": "No departments found.",
@@ -210,13 +216,11 @@
         "Prévia do roteiro": "Route preview",
         "Produção": "Production",
         "Produto": "Product",
-        "Carregar mais produtos": "Load more products",
-        "Mostrar somente os vinculados a este roteiro": "Show only products linked to this route",
         "Produto mais demorado": "Slowest product",
-        "Buscar por código ou nome...": "Search by code or name...",
         "PRODUTO/CODIGO": "PRODUCT/CODE",
         "Produtos": "Products",
         "Produtos cadastrados": "Registered products",
+        "Mostrar somente os vinculados a este roteiro": "Show only products linked to this route",
         "Produzido": "Produced",
         "Progresso": "Progress",
         "PROGRESSO": "PROGRESS",
@@ -324,6 +328,10 @@
         "🔧 Refugo": "🔧 Scrap",
         "🗑 Excluir": "🗑 Delete",
         "Pausar": "Pause",
+        "ETAPAS ATIVAS": "ACTIVE STEPS",
+        "etapas não concluídas": "steps not completed",
+        "etapas em produção agora": "steps in production now",
+        "etapas finalizadas hoje": "steps completed today",
         "+ Nova Máquina": "+ New Machine",
         "+ Nova Ordem": "+ New Order",
         "+ Novo Operador": "+ New Operator",
@@ -380,13 +388,13 @@
             'setor(es)': 'department(s)',
             'unid.': 'units',
             registros: 'records',
-            'produto(s)': 'product(s)',
             lançamentos: 'entries',
             'aguardando liberação': 'awaiting release',
             'disp.': 'available',
-            operadores: 'operators'
+            operadores: 'operators',
+            'produto(s)': 'product(s)'
         };
-        const quantity = value.match(/^(\d+)\s+(OPs|ordem\(ns\)|ordens encontradas|setor\(es\)|unid\.|registros|lançamentos|aguardando liberação|disp\.|operadores)$/i);
+        const quantity = value.match(/^(\d+)\s+(OPs|ordem\(ns\)|ordens encontradas|setor\(es\)|unid\.|registros|lançamentos|aguardando liberação|disp\.|operadores|produto\(s\))$/i);
         if (quantity) {
             return `${quantity[1]} ${labels[quantity[2].toLowerCase()]}`;
         }

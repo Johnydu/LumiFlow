@@ -48,21 +48,21 @@
             <!-- CARDS DE ESTATÍSTICAS -->
             <div class="cards">
                 <div class="card">
-                    <h3>TOTAL DE ORDENS</h3>
+                    <h3>ETAPAS ATIVAS</h3>
                     <div class="number" th:text="${totalOrdens ?: 0}">0</div>
-                    <p>este mês</p>
+                    <p>etapas não concluídas</p>
                 </div>
 
                 <div class="card">
                     <h3>EM ANDAMENTO</h3>
                     <div class="number orange" th:text="${ordensAndamento ?: 0}">0</div>
-                    <p>em produção agora</p>
+                    <p>etapas em produção agora</p>
                 </div>
 
                 <div class="card">
                     <h3>CONCLUÍDAS HOJE</h3>
                     <div class="number green" th:text="${ordensConcluidas ?: 0}">0</div>
-                    <p>finalizadas hoje</p>
+                    <p>etapas finalizadas hoje</p>
                 </div>
 
                 <div class="card">
@@ -87,7 +87,7 @@
                         <thead>
                         <tr>
                             <th>Ordem</th>
-                            <th>Codigo/Produto</th>
+                            <th>Item</th>
                             <th>Qtd</th>
                             <th>Progresso</th>
                             <th>Etapa atual</th>
@@ -99,7 +99,9 @@
                             <td class="num" th:text="${ordem.numero()}">-</td>
                             <td>
                                 <div class="produto-celula">
-                                    <span class="produto-codigo" th:if="${ordem.produtoCodigo() != null}" th:text="${ordem.produtoCodigo()}"></span>
+                                    <span class="produto-codigo"
+                                          th:if="${ordem.produtoCodigo() != null}"
+                                          th:text="${ordem.produtoCodigo()}"></span>
                                     <span th:text="${ordem.produtoNome()}">-</span>
                                 </div>
                             </td>

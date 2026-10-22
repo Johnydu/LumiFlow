@@ -46,12 +46,7 @@ public class SetorService {
     public List<SetorListagemDTO> listarSetores() {
         try {
             List<Setor> setores = setorRepository.findAllByOrderByNomeAsc();
-            return setores.stream().map(s -> new SetorListagemDTO(
-                    s.getId(),
-                    s.getNome(),
-                    maquinaRepository.countBySetorId(s.getId()),
-                    setorMapper.toEtapaDtoList(s.getEtapas())
-            )).toList();
+            return montarListagem(setores);
         } catch (DataAccessException e) {
             log.error("Erro de base de dados ao listar setores: {}", e.getMessage(), e);
             throw new BusinessException(AppMessages.ERROR_VALIDATION_FAILED);
@@ -200,12 +195,7 @@ public class SetorService {
             }
 
             List<Setor> setores = setorRepository.findByNomeContainingIgnoreCaseOrderByNomeAsc(normalizeName(nome));
-            return setores.stream().map(s -> new SetorListagemDTO(
-                    s.getId(),
-                    s.getNome(),
-                    maquinaRepository.countBySetorId(s.getId()),
-                    setorMapper.toEtapaDtoList(s.getEtapas())
-            )).toList();
+            return montarListagem(setores);
         } catch (DataAccessException e) {
             log.error("Erro de base de dados ao buscar setores por nome: {}", e.getMessage(), e);
             throw new BusinessException(AppMessages.ERROR_VALIDATION_FAILED);
@@ -213,6 +203,20 @@ public class SetorService {
             log.error("Erro inesperado ao buscar setores por nome: {}", e.getMessage(), e);
             throw new BusinessException(AppMessages.ERROR_VALIDATION_FAILED);
         }
+    }
+
+    /** Monta a listagem com UMA consulta de contagem de máquinas (em vez de uma por setor). */
+    private List<SetorListagemDTO> montarListagem(List<Setor> setores) {
+        Map<Long, Long> maquinasPorSetor = new HashMap<>();
+        for (Object[] linha : maquinaRepository.contarMaquinasPorSetor()) {
+            maquinasPorSetor.put(((Number) linha[0]).longValue(), ((Number) linha[1]).longValue());
+        }
+        return setores.stream().map(s -> new SetorListagemDTO(
+                s.getId(),
+                s.getNome(),
+                maquinasPorSetor.getOrDefault(s.getId(), 0L).intValue(),
+                setorMapper.toEtapaDtoList(s.getEtapas())
+        )).toList();
     }
 
     private String normalizeName(String name) {

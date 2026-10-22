@@ -20,6 +20,7 @@ public final class AppMessages {
     public static final String ERROR_USER_INVALID_CREDENTIALS = "error.user.invalid.credentials";
     public static final String ERROR_USER_OPERATOR_SECTOR_REQUIRED = "error.user.operator.sector.required";
     public static final String ERROR_USER_CANNOT_DELETE_SELF = "error.user.cannot.delete.self";
+    public static final String ERROR_SESSION_EXPIRED = "error.session.expired";
     public static final String ERROR_USER_LAST_ADMIN = "error.user.last.admin";
     public static final String ERROR_ACCESS_LEVEL_NOTFOUND = "error.access.level.notfound";
 
@@ -69,7 +70,6 @@ public final class AppMessages {
     public static final String ERROR_ROUTE_NOTFOUND = "error.route.notfound";
     public static final String ERROR_ROUTE_CODE_DUPLICATE = "error.route.code.duplicate";
     public static final String ERROR_ROUTE_HAS_PRODUCTS = "error.route.has.products";
-    public static final String ERROR_ROUTE_PRODUCT_OPEN_ORDERS = "error.route.product.open.orders";
     public static final String SUCCESS_ROUTE_DUPLICATED = "success.route.duplicated";
     public static final String SUCCESS_ROUTE_PRODUCTS_LINKED = "success.route.products.linked";
 

@@ -17,7 +17,7 @@ public record UsuarioDTO(
         String login,
 
         @NotBlank
-        @Size(min = 8, max = 72, message = "A senha deve ter entre 8 e 72 caracteres")
+        @Size(min = 8, max = 72, message = "validation.password.size")
         String senha,
 
         @NotNull

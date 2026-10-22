@@ -186,8 +186,7 @@
                         </div>
 
                         <div class="field csp-style-ef1f3a5dff">
-                            <label class="csp-style-e4c9ee3efa">Fluxo de produção (Etapas) <span
-                                    class="csp-style-1f62937642">*</span></label>
+                            <label class="csp-style-e4c9ee3efa">Fluxo de produção (Etapas) <span class="csp-style-1f62937642">*</span></label>
 
                             <div class="etapas-list csp-style-3dea91b04e" id="etapas-list"></div>
 
@@ -222,9 +221,7 @@
             <div class="modal-box">
                 <div class="modal-header">
                     <span class="modal-title">Duplicar roteiro</span>
-                    <button type="button" class="modal-close" data-acao="fechar-modal" data-modal="modal-duplicar">
-                        &times;
-                    </button>
+                    <button type="button" class="modal-close" data-acao="fechar-modal" data-modal="modal-duplicar">&times;</button>
                 </div>
 
                 <form id="duplicar-form" method="post" action="">
@@ -243,9 +240,7 @@
                     </div>
 
                     <div class="modal-actions">
-                        <button type="button" class="btn-cancel" data-acao="fechar-modal" data-modal="modal-duplicar">
-                            Cancelar
-                        </button>
+                        <button type="button" class="btn-cancel" data-acao="fechar-modal" data-modal="modal-duplicar">Cancelar</button>
                         <button type="submit" class="btn-submit">Duplicar</button>
                     </div>
                 </form>
@@ -258,9 +253,7 @@
             <div class="modal-box">
                 <div class="modal-header">
                     <span class="modal-title">Produtos do roteiro</span>
-                    <button type="button" class="modal-close" data-acao="fechar-modal" data-modal="modal-vincular">
-                        &times;
-                    </button>
+                    <button type="button" class="modal-close" data-acao="fechar-modal" data-modal="modal-vincular">&times;</button>
                 </div>
 
                 <form id="vincular-form" method="post" action="">
@@ -273,17 +266,17 @@
 
                         <div class="field">
                             <label for="vincular-busca" class="visually-hidden">Buscar produto</label>
-                            <input type="text" id="vincular-busca" placeholder="Buscar por código ou nome..."
-                                   autocomplete="off">
+                            <input type="text" id="vincular-busca" placeholder="Buscar por código ou nome..." autocomplete="off">
                         </div>
 
-                        <label class="produto-check">
+                        <label class="produto-check" for="vincular-so-vinculados">
                             <input type="checkbox" id="vincular-so-vinculados" checked>
                             <span class="produto-check-nome">Mostrar somente os vinculados a este roteiro</span>
                         </label>
 
                         <div class="produto-check-list" id="vincular-lista"></div>
-                        <button type="button" class="btn-add-etapa" id="vincular-mais" hidden>Carregar mais produtos
+                        <button type="button" class="btn-add-etapa" id="vincular-mais" hidden>
+                            Carregar mais produtos
                         </button>
 
                         <p class="hint" id="vincular-resumo"></p>
@@ -291,14 +284,11 @@
                             Produto que já está em outro roteiro será movido para este. A troca vale só para
                             novas ordens: as ordens já criadas mantêm o roteiro com que nasceram.
                         </p>
-
                         <div id="vincular-hidden"></div>
                     </div>
 
                     <div class="modal-actions">
-                        <button type="button" class="btn-cancel" data-acao="fechar-modal" data-modal="modal-vincular">
-                            Cancelar
-                        </button>
+                        <button type="button" class="btn-cancel" data-acao="fechar-modal" data-modal="modal-vincular">Cancelar</button>
                         <button type="submit" class="btn-submit" id="vincular-salvar" disabled>Salvar</button>
                     </div>
                 </form>
@@ -307,6 +297,8 @@
 
     </div>
 </main>
+
+<script th:src="@{/js/filtro-ajax.js}"></script>
 <script th:src="@{/js/vincular-produtos.js}"></script>
 <script th:src="@{/js/roteiros.js}"></script>
 <script th:src="@{/js/sidebar.js}"></script>

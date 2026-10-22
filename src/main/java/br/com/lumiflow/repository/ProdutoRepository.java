@@ -19,7 +19,6 @@ public interface ProdutoRepository extends JpaRepository<Produto, Long> {
 
     List<Produto> findAllByOrderByNomeAsc();
 
-
      Boolean  existsByCodigo(String codigo);
 
     Boolean existsByNome(String nome);
@@ -62,6 +61,5 @@ public interface ProdutoRepository extends JpaRepository<Produto, Long> {
     List<Object[]> contarPorRoteiros(@Param("roteiroIds") Collection<Long> roteiroIds);
 
 }
-
 
 

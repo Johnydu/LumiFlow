@@ -27,7 +27,7 @@
 </head>
 <body class="page-ordemproducao-lancamento"
       th:data-url-voltar="@{/dashboard/ordens-setor/{setorId}(setorId=${ordemSetor.setor.id})}"
-      th:data-produto-id="${ordem.produto.id}"
+      th:data-roteiro-id="${ordem.roteiro.id}"
       th:data-aba-erro="${#fields.hasErrors('producaoDTO.*') ? 'producao' :
                           (#fields.hasErrors('refugoDTO.*') ? 'refugo' :
                           (#fields.hasErrors('retrabalhoDTO.*') ? 'retrabalho' : ''))}">

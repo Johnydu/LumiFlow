@@ -63,9 +63,11 @@
 
         const checkbox = document.createElement('input');
         checkbox.type = 'checkbox';
+        checkbox.id = `produtoVinculo-${item.id}`;
         checkbox.checked = marcado(item);
         checkbox.addEventListener('change', () => alternar(item, checkbox.checked));
 
+        label.htmlFor = checkbox.id;
         const codigo = document.createElement('span');
         codigo.className = 'produto-codigo';
         codigo.textContent = item.codigo;
@@ -86,17 +88,22 @@
         return label;
     }
 
-    function mensagemVazia(texto) {
+    function mensagemVazia(texto, erro = false) {
         const p = document.createElement('p');
         p.className = 'hint';
+        if (erro) p.dataset.vincularErro = 'true';
         p.textContent = texto;
         return p;
     }
 
     async function carregar({ limpar }) {
         if (estado.controlador) estado.controlador.abort(); // descarta resposta antiga
-        estado.controlador = new AbortController();
+        const controlador = new AbortController();
+        estado.controlador = controlador;
         if (limpar) estado.pagina = 0;
+        if (limpar) el.lista.replaceChildren(mensagemVazia('Carregando produtos...'));
+        else el.lista.querySelector('[data-vincular-erro]')?.remove();
+        el.maisBotao.disabled = true;
 
         const params = new URLSearchParams({
             busca: el.busca.value.trim(),
@@ -107,9 +114,12 @@
         try {
             const resposta = await fetch(
                 `/dashboard/roteiros/${encodeURIComponent(estado.roteiroId)}/produtos/busca?${params}`,
-                { signal: estado.controlador.signal });
+                { signal: controlador.signal });
             if (!resposta.ok) throw new Error(`HTTP ${resposta.status}`);
             const pagina = await resposta.json();
+            if (!Array.isArray(pagina.itens)) {
+                throw new Error('Resposta inválida ao buscar produtos do roteiro.');
+            }
 
             if (limpar) el.lista.replaceChildren();
             if (limpar && pagina.itens.length === 0) {
@@ -117,13 +127,23 @@
             }
             pagina.itens.forEach(item => el.lista.appendChild(criarLinha(item)));
 
+            estado.pagina = pagina.pagina + 1;
             estado.temMais = pagina.temMais;
             el.maisBotao.hidden = !pagina.temMais;
         } catch (erro) {
             if (erro.name === 'AbortError') return;
             console.error('Erro ao buscar produtos do roteiro:', erro);
-            el.lista.replaceChildren(mensagemVazia('Não foi possível carregar os produtos. Tente novamente.'));
-            el.maisBotao.hidden = true;
+            const mensagemErro = mensagemVazia('Não foi possível carregar os produtos. Tente novamente.', true);
+            if (limpar) {
+                el.lista.replaceChildren(mensagemErro);
+                el.maisBotao.hidden = true;
+            } else {
+                el.lista.appendChild(mensagemErro);
+            }
+        } finally {
+            if (estado.controlador === controlador) {
+                el.maisBotao.disabled = false;
+            }
         }
     }
 
@@ -153,7 +173,6 @@
         });
         el.somenteVinculados.addEventListener('change', () => carregar({ limpar: true }));
         el.maisBotao.addEventListener('click', () => {
-            estado.pagina += 1;
             carregar({ limpar: false });
         });
 
@@ -163,6 +182,7 @@
             const adicionarCampo = (nome, id) => {
                 const input = document.createElement('input');
                 input.type = 'hidden';
+                input.id = `vincular-${nome}-${id}`;
                 input.name = nome;
                 input.value = id;
                 el.hidden.appendChild(input);

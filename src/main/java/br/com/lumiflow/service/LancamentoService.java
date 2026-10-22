@@ -90,8 +90,7 @@ public class LancamentoService {
                     .orElseThrow(() -> new BusinessException(AppMessages.ERROR_OPERATOR_NOTFOUND));
 
             EtapaSetor etapaSetor = roteiroPassoRepository
-                    .findFirstByProdutoIdAndSequencia(ordemSetor.getOrdemProducao().getProduto().getId(),
-                            ordemSetor.getSequencia())
+                    .findByRoteiroIdAndSequencia(roteiroIdDaOrdem(ordemSetor.getOrdemProducao()), ordemSetor.getSequencia())
                     .map(RoteiroPasso::getEtapaSetor)
                     .orElse(null);
 
@@ -155,7 +154,7 @@ public class LancamentoService {
     private void avancarParaProximaEtapaAPartirDe(OrdemProducao ordem, Integer sequenciaReferencia,
                                                   String variante, Integer quantidadeLancada) {
         RoteiroPasso proximoPasso = roteiroPassoRepository
-                .findProximoPasso(ordem.getProduto().getId(), sequenciaReferencia)
+                .buscarProximoPasso(roteiroIdDaOrdem(ordem), sequenciaReferencia)
                 .orElse(null);
 
         if (proximoPasso == null) {
@@ -223,7 +222,7 @@ public class LancamentoService {
             // na busca da linha acumuladora, na criação dela e na gravação do Refugo.
             // Também valida que o setor escolhido realmente faz parte do roteiro (item 8).
             Integer sequenciaOrigem = buscarPassoNoRoteiro(
-                    ordemSetorAtual.getOrdemProducao().getProduto().getId(),
+                    roteiroIdDaOrdem(ordemSetorAtual.getOrdemProducao()),
                     setorOrigem.getId(),
                     dto.etapaSetorId()
             ).getSequencia();
@@ -278,6 +277,14 @@ public class LancamentoService {
         }
     }
 
+    /** O roteiro da ordem é o gravado na criação, não o atual do produto. */
+    private Long roteiroIdDaOrdem(OrdemProducao ordem) {
+        if (ordem.getRoteiro() == null) {
+            throw new BusinessException(AppMessages.ERROR_PRODUCT_WITHOUT_ROUTE);
+        }
+        return ordem.getRoteiro().getId();
+    }
+
     private OrdemSetor criarOrdemSetorParaRefugo(OrdemProducao ordem, Setor setorOrigem,
                                                  Integer sequenciaOrigem, String variante, Integer quantidade) {
         OrdemSetor nova = new OrdemSetor();
@@ -294,8 +301,8 @@ public class LancamentoService {
     }
 
 
-    private RoteiroPasso buscarPassoNoRoteiro(Long produtoId, Long setorId, Long etapaSetorId) {
-        List<RoteiroPasso> passosDoSetor = roteiroPassoRepository.buscarPorProdutoId(produtoId).stream()
+    private RoteiroPasso buscarPassoNoRoteiro(Long roteiroId, Long setorId, Long etapaSetorId) {
+        List<RoteiroPasso> passosDoSetor = roteiroPassoRepository.findByRoteiroIdOrderBySequenciaAsc(roteiroId).stream()
                 .filter(rp -> rp.getSetor().getId().equals(setorId))
                 .toList();
 
@@ -398,8 +405,7 @@ public class LancamentoService {
     @Transactional(readOnly = true)
     public String buscarNomeEtapa(OrdemSetor ordemSetor) {
         return roteiroPassoRepository
-                .findFirstByProdutoIdAndSequencia(ordemSetor.getOrdemProducao().getProduto().getId(),
-                        ordemSetor.getSequencia())
+                .findByRoteiroIdAndSequencia(roteiroIdDaOrdem(ordemSetor.getOrdemProducao()), ordemSetor.getSequencia())
                 .map(RoteiroPasso::getEtapaSetor)
                 .map(EtapaSetor::getNome)
                 .orElse(null);

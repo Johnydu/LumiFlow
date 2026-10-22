@@ -227,6 +227,13 @@ body.page-ordemproducao-detalhesordem .hist-sub {
   width: 100%;
 }
 
+body.page-ordemproducao-detalhesordem .info-op {
+  margin-top: var(--space-2);
+  color: var(--color-muted);
+  font-family: monospace;
+  font-size: var(--font-size-md);
+}
+
 .page-ordemproducao-detalhesordem .detail-action-form {
   display: inline;
 }

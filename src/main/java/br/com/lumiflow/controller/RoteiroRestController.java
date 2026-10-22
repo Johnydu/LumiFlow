@@ -45,9 +45,9 @@ public class RoteiroRestController {
         }
     }
 
-    @GetMapping("/produto/{produtoId}/setor/{setorId}/etapas")
-    public ResponseEntity<List<EtapaSetorDTO>> buscarEtapasDoSetor(@PathVariable Long produtoId,
+    @GetMapping("/{roteiroId}/setor/{setorId}/etapas")
+    public ResponseEntity<List<EtapaSetorDTO>> buscarEtapasDoSetor(@PathVariable Long roteiroId,
                                                                    @PathVariable Long setorId) {
-        return ResponseEntity.ok(roteiroService.buscarEtapasDoSetorNoRoteiro(produtoId, setorId));
+        return ResponseEntity.ok(roteiroService.buscarEtapasDoSetorNoRoteiro(roteiroId, setorId));
     }
 }

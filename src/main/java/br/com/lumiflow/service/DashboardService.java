@@ -4,9 +4,10 @@ import br.com.lumiflow.config.AppMessages;
 import br.com.lumiflow.dto.dashboard.DashboardOrdemDTO;
 import br.com.lumiflow.dto.dashboard.DashboardResumoDTO;
 import br.com.lumiflow.dto.dashboard.SetorResumoDTO;
-import br.com.lumiflow.dto.roteiro.PassoDoProdutoDTO; // Import do DTO correspondente (ajuste o pacote se necessário)
+import br.com.lumiflow.dto.roteiro.PassoDoRoteiroDTO;
 import br.com.lumiflow.entity.OrdemProducao;
 import br.com.lumiflow.entity.OrdemSetor;
+import br.com.lumiflow.entity.Roteiro;
 import br.com.lumiflow.entity.enums.EstatusOrdemProducao;
 import br.com.lumiflow.exception.BusinessException;
 import br.com.lumiflow.repository.*;
@@ -21,6 +22,7 @@ import java.time.LocalDate;
 import java.util.Comparator;
 import java.util.List;
 import java.util.Map;
+import java.util.Objects;
 import java.util.Set;
 import java.util.stream.Collectors;
 
@@ -30,7 +32,7 @@ import java.util.stream.Collectors;
 public class DashboardService {
 
     private final OrdemProducaoRepository ordemProducaoRepository;
-    private final RoteiroPassoRepository roteiroPassoRepository; // (ou o repositório que agora retorna PassoDoProdutoDTO se aplicável)
+    private final RoteiroPassoRepository roteiroPassoRepository;
     private final OrdemSetorRepository ordemSetorRepository;
     private final RefugoRepository refugoRepository;
 
@@ -85,24 +87,25 @@ public class DashboardService {
             }
 
             List<Long> ordemIds = ordens.stream().map(OrdemProducao::getId).toList();
-            Set<Long> produtoIds = ordens.stream()
-                    .filter(o -> o.getProduto() != null && o.getProduto().getId() != null)
-                    .map(o -> o.getProduto().getId())
+            Set<Long> roteiroIds = ordens.stream()
+                    .map(OrdemProducao::getRoteiro)
+                    .filter(Objects::nonNull)
+                    .map(Roteiro::getId)
                     .collect(Collectors.toSet());
 
             Map<Long, List<OrdemSetor>> etapasPorOrdem = ordemSetorRepository
                     .findByOrdemProducaoIdInOrderBySequenciaAsc(ordemIds).stream()
                     .collect(Collectors.groupingBy(os -> os.getOrdemProducao().getId()));
 
-            Map<Long, List<PassoDoProdutoDTO>> roteiroPorProduto = produtoIds.isEmpty() ? Map.of() : roteiroPassoRepository
-                    .buscarPassosPorProdutoIds(produtoIds).stream()
-                    .collect(Collectors.groupingBy(PassoDoProdutoDTO::produtoId));
+            Map<Long, List<PassoDoRoteiroDTO>> passosPorRoteiro = roteiroIds.isEmpty() ? Map.of() : roteiroPassoRepository
+                    .buscarPassosPorRoteiroIds(roteiroIds).stream()
+                    .collect(Collectors.groupingBy(PassoDoRoteiroDTO::roteiroId));
 
             return ordens.stream()
                     .map(ordem -> montarDashboardOrdemDTO(
                             ordem,
                             etapasPorOrdem.getOrDefault(ordem.getId(), List.of()),
-                            ordem.getProduto() != null ? roteiroPorProduto.getOrDefault(ordem.getProduto().getId(), List.of()) : List.of()
+                            ordem.getRoteiro() != null ? passosPorRoteiro.getOrDefault(ordem.getRoteiro().getId(), List.of()) : List.of()
                     ))
                     .toList();
 
@@ -115,9 +118,9 @@ public class DashboardService {
         }
     }
 
-    private DashboardOrdemDTO montarDashboardOrdemDTO(OrdemProducao ordem, List<OrdemSetor> etapas, List<PassoDoProdutoDTO> roteiro) {
+    private DashboardOrdemDTO montarDashboardOrdemDTO(OrdemProducao ordem, List<OrdemSetor> etapas, List<PassoDoRoteiroDTO> roteiro) {
 
-        long totalEtapas = roteiro.stream().map(PassoDoProdutoDTO::sequencia).distinct().count();
+        long totalEtapas = roteiro.stream().map(PassoDoRoteiroDTO::sequencia).distinct().count();
 
         Set<Integer> sequenciasComPendencia = etapas.stream()
                 .filter(os -> os.getStatus() != EstatusOrdemProducao.CONCLUIDA)
@@ -141,10 +144,10 @@ public class DashboardService {
             if (etapaAtual.getSetor() != null) {
                 setorNome = etapaAtual.getSetor().getNome();
             }
-            // Filtra e pega etapaNome() direto do PassoDoProdutoDTO
+            // Filtra e pega etapaNome() direto do PassoDoRoteiroDTO
             etapaNome = roteiro.stream()
                     .filter(pp -> pp.sequencia().equals(etapaAtual.getSequencia()) && pp.etapaNome() != null)
-                    .map(PassoDoProdutoDTO::etapaNome)
+                    .map(PassoDoRoteiroDTO::etapaNome)
                     .findFirst()
                     .orElse(null);
         }

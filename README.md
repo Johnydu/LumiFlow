@@ -43,7 +43,7 @@ A interface é renderizada no servidor com Thymeleaf. As regras de negócio e a 
 
 - Dashboard com indicadores de produção e resumo por setor.
 - Cadastro de produtos, setores, etapas, máquinas e operadores.
-- Criação e manutenção de roteiros de fabricação por produto.
+- Roteiros de fabricação reutilizáveis (duplicar, vincular produtos). Cada ordem guarda o roteiro com que foi criada; um roteiro já usado em ordens não pode ter a estrutura alterada nem ser excluído (duplique-o para criar uma nova versão).
 - Criação, consulta e acompanhamento de ordens de produção.
 - Visualização das ordens por setor.
 - Liberação e divisão de etapas em variantes.
@@ -240,7 +240,7 @@ Para gerar o pacote sem executar os testes:
 
 ## Banco de dados e migrações
 
-As migrações ficam em `src/main/resources/db/migration/` e são executadas pelo Flyway em ordem de versão. As atuais cobrem: criação das tabelas, triggers de auditoria, índices, atualização dos níveis de acesso e suporte à variante no refugo.
+As migrações ficam em `src/main/resources/db/migration/` e são executadas pelo Flyway em ordem de versão. As atuais cobrem: tabelas (V1), triggers de auditoria (V2), índices (V3) e o roteiro gravado em cada ordem de produção (V4). Como o Railway já tem o histórico do Flyway aplicado, mudanças estruturais entram sempre como nova migração (V5, V6...), sem editar as existentes.
 
 O Hibernate usa `ddl-auto=validate`: valida o modelo contra o banco, sem alterar o schema. Toda mudança estrutural deve ser feita por uma nova migração.
 
@@ -269,10 +269,12 @@ Se o PostgreSQL estiver fora do contêiner, não use `localhost` em `PGHOST`: us
 O projeto inclui `railway.toml` (build por Dockerfile, uma réplica). Para produção:
 
 - use o perfil `prod` (já ativo na imagem Docker), com verificação de saúde em `/actuator/health`;
-- no serviço da aplicação, referencie as variáveis `PGHOST`, `PGPORT`, `PGDATABASE`, `PGUSER` e `PGPASSWORD` do serviço PostgreSQL do Railway;
+- no serviço da aplicação, defina `PG_URL` (URL JDBC, ex.: `jdbc:postgresql://<host>:<porta>/<banco>`), `PG_USERNAME` e `PG_PASSWORD`, referenciando os valores do serviço PostgreSQL do Railway;
 - mantenha `spring.jpa.hibernate.ddl-auto=validate` e deixe o Flyway aplicar as migrações;
 - garanta HTTPS e monitore logs e falhas de migração;
 - mantenha backups do banco.
+
+O limite de falhas de login por IP depende do IP real do cliente. Atrás do proxy do Railway ele vem no `X-Forwarded-For`, e o Tomcat só o aceita de proxies "internos"; o `application-prod.properties` já inclui as faixas privadas e a `100.64.0.0/10` (CGNAT) em `server.tomcat.remoteip.internal-proxies`. Após o deploy, force uma falha de login e confira no log (`Falha de login: ... ip=`) que o IP é o seu e não o do proxy; se for do proxy, ajuste essa propriedade.
 
 O perfil `prod` habilita cache de templates e de recursos estáticos, reduz o nível de log, define cookies de sessão `HttpOnly`, `Secure` e `SameSite=Strict`, e expõe somente o endpoint de saúde do Actuator. O container usa o fuso `America/Sao_Paulo` e dimensiona o heap conforme a memória disponível.
 
@@ -284,6 +286,8 @@ O perfil `prod` habilita cache de templates e de recursos estáticos, reduz o n�
 - Senhas armazenadas com BCrypt.
 - CSRF habilitado para operações que alteram estado.
 - Logout invalida a sessão e remove o cookie `JSESSIONID`.
+- Sessões registradas: ao excluir um usuário ou alterar login, perfil, setor ou senha, as sessões ativas dele são encerradas.
+- Logs sem quebra de linha injetada por entrada do usuário.
 - Cookies de sessão seguros em produção.
 - DTOs e Bean Validation nas entradas.
 - Contêiner executado sem privilégios de administrador.

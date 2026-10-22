@@ -23,7 +23,7 @@ public interface OrdemProducaoRepository extends JpaRepository<OrdemProducao, Lo
     @Query("SELECT o FROM OrdemProducao o JOIN FETCH o.produto WHERE o.id = :id")
     Optional<OrdemProducao> buscarComProduto(@Param("id") Long id);
 
-    boolean existsByProdutoIdAndStatusNot(Long produtoId, EstatusOrdemProducao status);
+    /** Qualquer ordem (aberta ou concluída) que usa o roteiro: a estrutura dele fica congelada. */
+    boolean existsByRoteiroId(Long roteiroId);
 
-    boolean existsByProdutoRoteiroIdAndStatusNot(Long roteiroId, EstatusOrdemProducao status);
 }

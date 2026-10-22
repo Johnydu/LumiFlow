@@ -97,4 +97,15 @@ public class UsuarioDetails implements UserDetails {
         }
         return (partes[0].substring(0, 1) + partes[partes.length - 1].substring(0, 1)).toUpperCase();
     }
+
+    // Necessário para o SessionRegistry reconhecer o mesmo usuário em logins diferentes.
+    @Override
+    public boolean equals(Object outro) {
+        return outro instanceof UsuarioDetails usuario && login.equals(usuario.login);
+    }
+
+    @Override
+    public int hashCode() {
+        return login.hashCode();
+    }
 }

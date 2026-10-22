@@ -361,59 +361,8 @@ function abrirModalVincular(botao) {
 }
 
 // ============================================================
-// FILTRO DINÂMICO DE BUSCA DE ROTEIROS VIA AJAX (DEBOUNCE)
+// FILTRO DINÂMICO DE BUSCA DE ROTEIROS - ver filtro-ajax.js
 // ============================================================
 document.addEventListener('DOMContentLoaded', () => {
-    'use strict';
-    initFiltroBuscaRoteiros();
+    initFiltroAjax({ formSelector: 'form.filter-form' });
 });
-
-function initFiltroBuscaRoteiros() {
-    const inputBusca = document.querySelector('.search');
-    if (!inputBusca) return;
-
-    const formBusca = inputBusca.closest('form');
-    if (!formBusca) return;
-
-    if (inputBusca.value) {
-        const val = inputBusca.value;
-        inputBusca.focus();
-        inputBusca.value = '';
-        inputBusca.value = val;
-    }
-
-    let timeout = null;
-
-    inputBusca.addEventListener('input', () => {
-        clearTimeout(timeout);
-        timeout = setTimeout(async () => {
-            const formData = new FormData(formBusca);
-            const params = new URLSearchParams(formData).toString();
-            const url = `${formBusca.action}?${params}`;
-
-            try {
-                const response = await fetch(url, {
-                    headers: {
-                        'X-Requested-With': 'XMLHttpRequest'
-                    }
-                });
-
-                if (response.ok) {
-                    const htmlText = await response.text();
-                    const parser = new DOMParser();
-                    const doc = parser.parseFromString(htmlText, 'text/html');
-
-                    const novaLista = doc.querySelector('.lista');
-                    const listaAtual = document.querySelector('.lista');
-
-                    if (novaLista && listaAtual) {
-                        listaAtual.replaceWith(novaLista);
-                    }
-                }
-            } catch (error) {
-                console.error('Erro na busca dinâmica de roteiros:', error);
-                formBusca.submit();
-            }
-        }, 400);
-    });
-}

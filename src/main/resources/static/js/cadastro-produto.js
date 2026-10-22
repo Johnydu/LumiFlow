@@ -7,7 +7,7 @@
 // ESTADO GLOBAL
 // ========================
 document.addEventListener('DOMContentLoaded', () => {
-  initFiltroBuscaProdutos();
+  initFiltroAjax({ formSelector: '#form-busca-produto' });
 });
 
 // ========================
@@ -101,55 +101,5 @@ function resetarFormularios() {
 }
 
 // ========================
-// FILTRO DE BUSCA DINÂMICA (AJAX)
+// FILTRO DE BUSCA DINÂMICA - ver filtro-ajax.js
 // ========================
-
-function initFiltroBuscaProdutos() {
-  const inputBusca = document.getElementById('form-busca-produto')?.querySelector('input.search')
-      || document.querySelector('input.search');
-
-  if (!inputBusca) return;
-
-  const formBusca = inputBusca.closest('form');
-  if (!formBusca) return;
-
-  if (inputBusca.value) {
-    const val = inputBusca.value;
-    inputBusca.focus();
-    inputBusca.value = '';
-    inputBusca.value = val;
-  }
-
-  let timeout = null;
-  inputBusca.addEventListener('input', () => {
-    clearTimeout(timeout);
-    timeout = setTimeout(async () => {
-      const termo = inputBusca.value;
-      const url = `${formBusca.action}?nome=${encodeURIComponent(termo)}`;
-
-      try {
-        const response = await fetch(url, {
-          headers: {
-            'X-Requested-With': 'XMLHttpRequest'
-          }
-        });
-
-        if (response.ok) {
-          const htmlText = await response.text();
-          const parser = new DOMParser();
-          const doc = parser.parseFromString(htmlText, 'text/html');
-
-          const novaLista = doc.querySelector('.lista');
-          const listaAtual = document.querySelector('.lista');
-
-          if (novaLista && listaAtual) {
-            listaAtual.replaceWith(novaLista);
-          }
-        }
-      } catch (error) {
-        console.error('Erro na busca dinâmica:', error);
-        formBusca.submit();
-      }
-    }, 300);
-  });
-}

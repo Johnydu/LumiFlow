@@ -18,6 +18,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
+import java.util.Objects;
 
 @Slf4j
 @Service
@@ -28,6 +29,7 @@ public class UsuarioService {
     private final PasswordEncoder passwordEncoder;
     private final NivelAcessoService nivelAcessoService;
     private final SetorService setorService;
+    private final SessaoUsuarioService sessaoUsuarioService;
 
     private void validarLogin(String login) {
         if (login == null || login.isBlank() || !LoginValidator.isValidLogin(login)) {
@@ -124,6 +126,7 @@ public class UsuarioService {
             validarQueNaoEUltimoAdmin(usuario);
             usuarioRepository.delete(usuario);
             usuarioRepository.flush();
+            sessaoUsuarioService.encerrarSessoes(usuario.getLogin());
         } catch (BusinessException e) {
             throw e;
         } catch (DataIntegrityViolationException e) {
@@ -164,6 +167,10 @@ public class UsuarioService {
                 validarQueNaoEUltimoAdmin(usuario);
             }
 
+            String loginAnterior = usuario.getLogin();
+            Long nivelAnterior = usuario.getNivelAcesso().getId();
+            Long setorAnterior = usuario.getSetor() == null ? null : usuario.getSetor().getId();
+
             usuario.setNome(dto.nome().trim());
             usuario.setLogin(dto.login().trim());
             usuario.setNivelAcesso(nivelAcesso);
@@ -175,6 +182,14 @@ public class UsuarioService {
             }
 
             usuarioRepository.save(usuario);
+
+            boolean permissaoOuCredencialMudou = !loginAnterior.equals(usuario.getLogin())
+                    || !Objects.equals(nivelAnterior, nivelAcesso.getId())
+                    || !Objects.equals(setorAnterior, dto.setorId())
+                    || (dto.senha() != null && !dto.senha().isBlank());
+            if (permissaoOuCredencialMudou) {
+                sessaoUsuarioService.encerrarSessoes(loginAnterior);
+            }
 
         } catch (BusinessException e) {
             throw e;

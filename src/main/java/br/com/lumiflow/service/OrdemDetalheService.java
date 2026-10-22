@@ -58,8 +58,9 @@ public class OrdemDetalheService {
         OrdemProducao ordem = ordemProducaoRepository.buscarComProduto(ordemId)
                 .orElseThrow(() -> new BusinessException(AppMessages.ERROR_ORDER_NOTFOUND));
 
-        List<RoteiroPasso> roteiro =
-                roteiroPassoRepository.buscarPassosComSetorEEtapa(ordem.getProduto().getId());
+        List<RoteiroPasso> roteiro = ordem.getRoteiro() == null
+                ? List.of()
+                : roteiroPassoRepository.buscarPassosComSetorEEtapa(ordem.getRoteiro().getId());
         List<OrdemSetor> linhas = ordemSetorRepository.buscarLinhasDaOrdem(ordemId);
         List<Refugo> refugos = refugoRepository.buscarPorOrdem(ordemId);
 

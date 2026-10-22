@@ -50,7 +50,7 @@
                 <div class="info-label">Produto</div>
                 <div class="info-val produto-celula">
                     <span class="produto-codigo" th:text="${ordem.produtoCodigo()}"></span>
-                    <span th:text="${ordem.produtoNome()}"></span>
+                    <span th:text="${ordem.produtoNome()}">Arandela 12W</span>
                 </div>
                 <div class="info-op" th:text="${ordem.numero()}">OP-0001</div>
             </div>
@@ -240,7 +240,7 @@
                                 <input type="hidden" th:id="|retornoPausar-${etapa.ordemSetorId()}|" name="retorno" value="detalhes"/>
                                 <input type="hidden" th:id="|ordemPausar-${etapa.ordemSetorId()}|" name="ordemId" th:value="${ordem.id()}"/>
                                 <button type="submit" class="btn-pausar"
-                                        data-csp-confirm="Voltar esta etapa para Disponível? A produção será interrompida até uma nova liberação.">Pausar</button>
+                                            data-csp-confirm="Voltar esta etapa para Disponível? A produção será interrompida até uma nova liberação.">Pausar</button>
                             </form>
 
                             <button th:if="${etapa.status().name() == 'CONCLUIDA'}"

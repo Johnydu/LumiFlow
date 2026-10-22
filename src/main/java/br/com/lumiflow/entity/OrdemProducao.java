@@ -40,6 +40,10 @@ public class OrdemProducao extends Auditoria{
     private Produto produto;
 
     @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "roteiro_id", nullable = false)
+    private Roteiro roteiro;
+
+    @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "criado_por_id", nullable = false)
     private Usuario criadoPor;
 

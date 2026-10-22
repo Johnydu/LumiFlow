@@ -3,7 +3,7 @@ package br.com.lumiflow.service;
 import br.com.lumiflow.config.AppMessages;
 import br.com.lumiflow.dto.etapaSetor.DividirEtapaDTO;
 import br.com.lumiflow.dto.ordens.*;
-import br.com.lumiflow.dto.roteiro.PassoDoProdutoDTO;
+import br.com.lumiflow.dto.roteiro.PassoDoRoteiroDTO;
 import br.com.lumiflow.entity.*;
 import br.com.lumiflow.entity.enums.EstatusOrdemProducao;
 import br.com.lumiflow.exception.BusinessException;
@@ -48,20 +48,22 @@ public class OrdemProducaoService {
                 return List.of();
             }
 
-            Set<Long> produtoIds = etapas.stream()
-                    .map(os -> os.getOrdemProducao().getProduto().getId())
+            Set<Long> roteiroIds = etapas.stream()
+                    .map(os -> os.getOrdemProducao().getRoteiro())
+                    .filter(Objects::nonNull)
+                    .map(Roteiro::getId)
                     .collect(Collectors.toSet());
 
-            Map<String, String> etapaNomePorProdutoESequencia = roteiroPassoRepository
-                    .buscarPassosPorProdutoIds(produtoIds).stream()
+            Map<String, String> etapaNomePorRoteiroESequencia = roteiroIds.isEmpty() ? Map.of() : roteiroPassoRepository
+                    .buscarPassosPorRoteiroIds(roteiroIds).stream()
                     .filter(pp -> pp.etapaNome() != null)
                     .collect(Collectors.toMap(
-                            pp -> pp.produtoId() + "-" + pp.sequencia(),
-                            PassoDoProdutoDTO::etapaNome,
-                            (a, b) -> a));
+                            pp -> pp.roteiroId() + "-" + pp.sequencia(),
+                            PassoDoRoteiroDTO::etapaNome,
+                            (x, y) -> x));
 
             return etapas.stream()
-                    .map(os -> montarOrdemListagemDTO(os, etapaNomePorProdutoESequencia))
+                    .map(os -> montarOrdemListagemDTO(os, etapaNomePorRoteiroESequencia))
                     .toList();
         } catch (BusinessException e) {
             throw e;
@@ -74,14 +76,14 @@ public class OrdemProducaoService {
         }
     }
 
-    private OrdemListagemDTO montarOrdemListagemDTO(OrdemSetor ordemSetor, Map<String, String> etapaNomePorProdutoESequencia) {
+    private OrdemListagemDTO montarOrdemListagemDTO(OrdemSetor ordemSetor, Map<String, String> etapaNomePorRoteiroESequencia) {
         OrdemProducao ordem = ordemSetor.getOrdemProducao();
         Integer totalEtapa = ordemSetor.getQtdRecebida();
         Integer produzido = ordemSetor.getQtdProduzida();
         Double percentual = totalEtapa == 0 ? 0.0 : (produzido * 100.0) / totalEtapa;
 
-        String chave = ordem.getProduto().getId() + "-" + ordemSetor.getSequencia();
-        String etapaNome = etapaNomePorProdutoESequencia.get(chave);
+        String etapaNome = ordem.getRoteiro() == null ? null
+                : etapaNomePorRoteiroESequencia.get(ordem.getRoteiro().getId() + "-" + ordemSetor.getSequencia());
 
         return new OrdemListagemDTO(
                 ordem.getId(),
@@ -108,12 +110,17 @@ public class OrdemProducaoService {
                 throw new BusinessException(AppMessages.ERROR_VALIDATION_FAILED);
             }
             var produto = produtoService.buscarProdutoPorId(dto.produtoId());
+            Roteiro roteiro = produto.getRoteiro();
+            if (roteiro == null) {
+                throw new BusinessException(AppMessages.ERROR_PRODUCT_WITHOUT_ROUTE);
+            }
 
             OrdemProducao ordem = new OrdemProducao();
             ordem.setNumero(gerarNumero());
             ordem.setQuantidade(dto.quantidade());
             ordem.setStatus(EstatusOrdemProducao.DISPONIVEL);
             ordem.setProduto(produto);
+            ordem.setRoteiro(roteiro); // a ordem guarda o roteiro com que nasceu
             ordem.setCriadoPor(usuarioRepository.getReferenceById(usuarioId));
             ordem.setDataCriacao(dto.dataCriacao() != null ? dto.dataCriacao().atStartOfDay() : java.time.LocalDateTime.now());
             ordem.setObservacao(dto.observacao());
@@ -133,7 +140,7 @@ public class OrdemProducaoService {
     }
 
     private void criarPrimeiraEtapaOrdemSetor(OrdemProducao ordem) {
-        List<RoteiroPasso> roteiro = roteiroPassoRepository.buscarPorProdutoId(ordem.getProduto().getId());
+        List<RoteiroPasso> roteiro = roteiroPassoRepository.findByRoteiroIdOrderBySequenciaAsc(ordem.getRoteiro().getId());
 
         if (roteiro.isEmpty()) {
             throw new BusinessException(AppMessages.ERROR_PRODUCT_WITHOUT_ROUTE);

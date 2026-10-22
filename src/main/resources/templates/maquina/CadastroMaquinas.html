@@ -2,7 +2,7 @@
 <html lang="pt-BR" th:lang="${#locale.toLanguageTag()}" xmlns:th="http://www.thymeleaf.org"
       xmlns:sec="http://www.thymeleaf.org/extras/spring-security">
 <head>
-  <th:block th:replace="~{fragments/theme :: init}"></th:block>
+    <th:block th:replace="~{fragments/theme :: init}"></th:block>
   <title>Máquinas - LumiFlow</title>
   <meta charset="UTF-8"/>
   <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
@@ -97,14 +97,14 @@
                         th:data-id="${maquina.id}"
                         th:data-nome="${maquina.nome}"
                         th:data-setor-id="${maquina.setorId != null ? maquina.setorId : ''}"
-                        data-csp-action="handleEditarMaquina" data-csp-argument="element">
+                       data-csp-action="handleEditarMaquina" data-csp-argument="element">
                   ✏ Editar
                 </button>
 
                 <form class="csp-style-cccfa4560d"
                       th:action="@{/dashboard/maquinas/{id}/excluir(id=${maquina.id})}"
                       method="post"
-                >
+                     >
 
                   <input type="hidden"
                          th:id="|csrfExcluirMaquina-${maquina.id}|"
@@ -113,7 +113,7 @@
 
                   <button type="submit"
                           class="btn-del"
-                          data-csp-confirm="Tem certeza que deseja excluir esta máquina?">
+                         data-csp-confirm="Tem certeza que deseja excluir esta máquina?">
                     🗑 Excluir
                   </button>
 
@@ -143,7 +143,7 @@
               th:action="@{/dashboard/maquinas}"
               th:object="${maquinaDTO}"
               method="post"
-        >
+             >
 
           <input type="hidden"
                  id="csrfMaquina"
@@ -163,7 +163,7 @@
                      th:field="*{nome}"
                      class="form-control csp-style-51fd58adb1"
                      placeholder="Ex: Dobradeira Argus 1" required
-              />
+                    />
             </div>
 
             <div class="field csp-style-954c7a14fa">
@@ -172,7 +172,7 @@
               </label>
 
               <select id="setorMaquinaId" th:field="*{setorId}" class="csp-style-51fd58adb1"
-              >
+                     >
                 <option value="">Selecione o setor</option>
 
                 <option th:each="setor : ${setores}"
@@ -190,7 +190,7 @@
           <div class="modal-actions">
             <button type="button"
                     class="btn-cancel"
-                    data-csp-action="hideForm">
+                   data-csp-action="hideForm">
               Cancelar
             </button>
 

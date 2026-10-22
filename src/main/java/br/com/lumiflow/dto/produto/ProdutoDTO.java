@@ -8,14 +8,14 @@ public record ProdutoDTO(
         Long id,
 
 
-        @Size(max = 100, message = "O nome deve ter no máximo 100 caracteres")
+        @Size(max = 100, message = "validation.name.size100")
         String nome,
 
-        @NotBlank(message = "Campo código obrigatorio !")
-        @Size(max = 30, message = "O código deve ter no máximo 30 caracteres")
+        @NotBlank(message = "validation.code.required")
+        @Size(max = 30, message = "validation.code.size30")
         String codigo,
 
-        @Size(max = 255, message = "A descrição deve ter no máximo 255 caracteres")
+        @Size(max = 255, message = "validation.description.size255")
         String descricao
 ) {
 }

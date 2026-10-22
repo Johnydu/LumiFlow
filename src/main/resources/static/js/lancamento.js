@@ -47,7 +47,7 @@ function filtrarMaquinasRetrabalho() {
   selectMaquina.value = '';
 }
 
-function initEtapaOrigemRefugo(produtoId) {
+function initEtapaOrigemRefugo(roteiroId) {
   const selectSetor = document.getElementById('selectSetorOrigemRefugo');
   const campoEtapa = document.getElementById('campoEtapaOrigemRefugo');
   const selectEtapa = document.getElementById('selectEtapaOrigemRefugo');
@@ -65,7 +65,7 @@ function initEtapaOrigemRefugo(produtoId) {
     if (!setorId) return;
 
     try {
-      const response = await fetch(`/api/roteiros/produto/${produtoId}/setor/${setorId}/etapas`);
+      const response = await fetch(`/api/roteiros/${roteiroId}/setor/${setorId}/etapas`);
       if (!response.ok) {
         console.warn('Falha ao buscar etapas do setor de origem. Status:', response.status);
         return;
@@ -155,32 +155,36 @@ document.addEventListener('DOMContentLoaded', () => {
     const produtoNome = document.querySelector('.produto-nome')?.textContent.trim() || '';
     const produtoOP = document.querySelector('.produto-op')?.textContent.trim() || '';
 
-    const linhas = [criarLinhaResumo('Ordem de Produção:', `${produtoOP} (${produtoCodigo} · ${produtoNome})`)];
+    const linhas = [criarLinhaResumo(
+      'Ordem de Produção:',
+      `${produtoOP} (${produtoCodigo} · ${produtoNome})`
+    )];
+
     if (abaId === 'tab-producao') {
       linhas.push(
-          criarLinhaResumo('Tipo:', 'Lançamento de Produção', 'destaque'),
-          criarLinhaResumo('Qtd. Produzida:', `${valorDoCampo(form, '#quantidadeProducao', '0')} unid.`, 'destaque'),
-          criarLinhaResumo('Máquina:', textoDoSelect(form, '#maquinaProducaoId')),
-          criarLinhaResumo('Operador:', textoDoSelect(form, '#operadorProducaoId')),
-          criarLinhaResumo('Observação:', valorDoCampo(form, '#observacaoProducao'))
+        criarLinhaResumo('Tipo:', 'Lançamento de Produção', 'destaque'),
+        criarLinhaResumo('Qtd. Produzida:', `${valorDoCampo(form, '#quantidadeProducao', '0')} unid.`, 'destaque'),
+        criarLinhaResumo('Máquina:', textoDoSelect(form, '#maquinaProducaoId')),
+        criarLinhaResumo('Operador:', textoDoSelect(form, '#operadorProducaoId')),
+        criarLinhaResumo('Observação:', valorDoCampo(form, '#observacaoProducao'))
       );
     } else if (abaId === 'tab-refugo') {
       linhas.push(
-          criarLinhaResumo('Tipo:', 'Lançamento de Refugo', 'destaque refugo'),
-          criarLinhaResumo('Qtd. Refugada:', `${valorDoCampo(form, '#quantidadeRefugo', '0')} unid.`, 'destaque'),
-          criarLinhaResumo('Setor de Origem:', textoDoSelect(form, '#selectSetorOrigemRefugo')),
-          criarLinhaResumo('Operador:', textoDoSelect(form, '#operadorRefugoId')),
-          criarLinhaResumo('Destino:', textoDoSelect(form, '#destinoRefugo')),
-          criarLinhaResumo('Motivo:', valorDoCampo(form, '#motivoRefugo'))
+        criarLinhaResumo('Tipo:', 'Lançamento de Refugo', 'destaque refugo'),
+        criarLinhaResumo('Qtd. Refugada:', `${valorDoCampo(form, '#quantidadeRefugo', '0')} unid.`, 'destaque'),
+        criarLinhaResumo('Setor de Origem:', textoDoSelect(form, '#selectSetorOrigemRefugo')),
+        criarLinhaResumo('Operador:', textoDoSelect(form, '#operadorRefugoId')),
+        criarLinhaResumo('Destino:', textoDoSelect(form, '#destinoRefugo')),
+        criarLinhaResumo('Motivo:', valorDoCampo(form, '#motivoRefugo'))
       );
     } else if (abaId === 'tab-retrabalho') {
       linhas.push(
-          criarLinhaResumo('Tipo:', 'Lançamento de Retrabalho', 'destaque retrab'),
-          criarLinhaResumo('Refugo Vinculado:', textoDoSelect(form, '#selectRefugoRetrabalho')),
-          criarLinhaResumo('Qtd. Refeita:', `${valorDoCampo(form, '#quantidadeRetrabalho', '0')} unid.`, 'destaque'),
-          criarLinhaResumo('Máquina:', textoDoSelect(form, '#selectMaquinaRetrabalho', 'Nenhuma')),
-          criarLinhaResumo('Operador:', textoDoSelect(form, '#operadorRetrabalhoId')),
-          criarLinhaResumo('Observação:', valorDoCampo(form, '#observacaoRetrabalho'))
+        criarLinhaResumo('Tipo:', 'Lançamento de Retrabalho', 'destaque retrab'),
+        criarLinhaResumo('Refugo Vinculado:', textoDoSelect(form, '#selectRefugoRetrabalho')),
+        criarLinhaResumo('Qtd. Refeita:', `${valorDoCampo(form, '#quantidadeRetrabalho', '0')} unid.`, 'destaque'),
+        criarLinhaResumo('Máquina:', textoDoSelect(form, '#selectMaquinaRetrabalho', 'Nenhuma')),
+        criarLinhaResumo('Operador:', textoDoSelect(form, '#operadorRetrabalhoId')),
+        criarLinhaResumo('Observação:', valorDoCampo(form, '#observacaoRetrabalho'))
       );
     }
 

@@ -7,7 +7,7 @@ import jakarta.validation.constraints.NotEmpty;
 import java.util.List;
 
 public record DividirEtapaDTO(
-        @NotEmpty(message = "Informe ao menos uma divisão")
+        @NotEmpty(message = "validation.split.required")
         @Valid
         List<DivisaoItemDTO> divisoes
 ) {}

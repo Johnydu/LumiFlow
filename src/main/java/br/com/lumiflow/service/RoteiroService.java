@@ -9,7 +9,6 @@ import br.com.lumiflow.dto.roteiro.RoteiroDTO;
 import br.com.lumiflow.dto.roteiro.RoteiroListagemDTO;
 import br.com.lumiflow.entity.Produto;
 import br.com.lumiflow.entity.Roteiro;
-import br.com.lumiflow.entity.enums.EstatusOrdemProducao;
 import br.com.lumiflow.exception.BusinessException;
 import br.com.lumiflow.entity.RoteiroPasso;
 import br.com.lumiflow.repository.OrdemProducaoRepository;
@@ -31,13 +30,14 @@ import java.util.stream.Collectors;
 @RequiredArgsConstructor
 public class RoteiroService {
 
+    private static final int TAMANHO_PAGINA_VINCULO = 20;
+
     private final RoteiroRepository roteiroRepository;
     private final RoteiroPassoRepository roteiroPassoRepository;
     private final ProdutoRepository produtoRepository;
     private final SetorService setorService;
     private final EtapaSetorService etapaSetorService;
     private final OrdemProducaoRepository ordemProducaoRepository;
-    private static final int TAMANHO_PAGINA_VINCULO = 20;
 
     // ==================== CONSULTAS ====================
 
@@ -56,16 +56,17 @@ public class RoteiroService {
         Map<Long, List<RoteiroPasso>> passosPorRoteiro = roteiroPassoRepository.buscarPassosDosRoteiros(ids).stream()
                 .collect(Collectors.groupingBy(p -> p.getRoteiro().getId()));
         Map<Long, Long> produtosPorRoteiro = new HashMap<>();
-        produtoRepository.contarPorRoteiros(ids)
-                .forEach(l -> produtosPorRoteiro.put(((Number) l[0]).longValue(), ((Number) l[1]).longValue()));
-
+        produtoRepository.contarPorRoteiros(ids).forEach(row ->
+                produtosPorRoteiro.put(((Number) row[0]).longValue(), ((Number) row[1]).longValue()));
 
         log.debug("Total de roteiros encontrados: [{}]", roteiros.size());
-        return roteiros.stream().map(r -> new RoteiroListagemDTO(
-                r.getId(), r.getCodigo(), r.getDescricao(),
-                passosPorRoteiro.getOrDefault(r.getId(), List.of()).size(),
-                passosPorRoteiro.getOrDefault(r.getId(), List.of()).stream().map(this::descreverPasso).toList(),
-                produtosPorRoteiro.getOrDefault(r.getId(), 0L))).toList();
+        return roteiros.stream().map(r -> {
+            List<RoteiroPasso> passos = passosPorRoteiro.getOrDefault(r.getId(), List.of());
+            return new RoteiroListagemDTO(
+                    r.getId(), r.getCodigo(), r.getDescricao(), passos.size(),
+                    passos.stream().map(this::descreverPasso).toList(),
+                    produtosPorRoteiro.getOrDefault(r.getId(), 0L));
+        }).toList();
     }
 
     @Transactional(readOnly = true)
@@ -79,7 +80,27 @@ public class RoteiroService {
         return new RoteiroDTO(roteiro.getId(), roteiro.getCodigo(), roteiro.getDescricao(), passos);
     }
 
+    @Transactional(readOnly = true)
+    public PaginaDTO<ProdutoVinculoDTO> buscarProdutosParaVinculo(Long roteiroId, String termo,
+                                                                  boolean somenteVinculados, int pagina) {
+        buscarEntidade(roteiroId);
+        String busca = termo == null ? "" : termo.trim();
+        PageRequest pageable = PageRequest.of(Math.max(pagina, 0), TAMANHO_PAGINA_VINCULO);
+        Page<Produto> resultado = somenteVinculados
+                ? produtoRepository.buscarVinculados(roteiroId, busca, pageable)
+                : produtoRepository.buscarParaVinculo(busca, pageable);
 
+        List<ProdutoVinculoDTO> itens = resultado.getContent().stream()
+                .map(p -> new ProdutoVinculoDTO(
+                        p.getId(),
+                        p.getNome(),
+                        p.getCodigo(),
+                        p.getRoteiro() == null ? null : p.getRoteiro().getCodigo(),
+                        p.getRoteiro() != null && p.getRoteiro().getId().equals(roteiroId)))
+                .toList();
+
+        return new PaginaDTO<>(itens, resultado.getNumber(), resultado.hasNext(), resultado.getTotalElements());
+    }
 
     @Transactional(readOnly = true)
     public List<String> buscarFluxoPorProdutoId(Long produtoId) {
@@ -91,36 +112,15 @@ public class RoteiroService {
     }
 
     @Transactional(readOnly = true)
-    public List<EtapaSetorDTO> buscarEtapasDoSetorNoRoteiro(Long produtoId, Long setorId) {
-        log.debug("Buscando etapas do setor ID: [{}] no roteiro associado ao produto ID: [{}]", setorId, produtoId);
-        return roteiroPassoRepository.buscarPorProdutoId(produtoId).stream()
+    public List<EtapaSetorDTO> buscarEtapasDoSetorNoRoteiro(Long roteiroId, Long setorId) {
+        log.debug("Buscando etapas do setor ID: [{}] no roteiro ID: [{}]", setorId, roteiroId);
+        return roteiroPassoRepository.findByRoteiroIdOrderBySequenciaAsc(roteiroId).stream()
                 .filter(rp -> rp.getSetor().getId().equals(setorId) && rp.getEtapaSetor() != null)
                 .map(rp -> new EtapaSetorDTO(
                         rp.getEtapaSetor().getId(),
                         rp.getEtapaSetor().getNome(),
                         rp.getEtapaSetor().getOrdem()))
                 .toList();
-    }
-
-    @Transactional(readOnly = true)
-    public PaginaDTO<ProdutoVinculoDTO> buscarProdutosParaVinculo(Long roteiroId, String termo,
-                                                                  boolean somenteVinculados, int pagina) {
-        buscarEntidade(roteiroId);
-        String busca = termo == null ? "" : termo.trim();
-        PageRequest pageable = PageRequest.of(Math.max(pagina, 0), TAMANHO_PAGINA_VINCULO);
-
-        Page<Produto> resultado = somenteVinculados
-                ? produtoRepository.buscarVinculados(roteiroId, busca, pageable)
-                : produtoRepository.buscarParaVinculo(busca, pageable);
-
-        List<ProdutoVinculoDTO> itens = resultado.getContent().stream()
-                .map(p -> new ProdutoVinculoDTO(
-                        p.getId(), p.getNome(), p.getCodigo(),
-                        p.getRoteiro() == null ? null : p.getRoteiro().getCodigo(),
-                        p.getRoteiro() != null && p.getRoteiro().getId().equals(roteiroId)))
-                .toList();
-
-        return new PaginaDTO<>(itens, resultado.getNumber(), resultado.hasNext(), resultado.getTotalElements());
     }
 
     // ==================== ESCRITA ====================
@@ -159,8 +159,8 @@ public class RoteiroService {
         List<RoteiroPasso> atuais = roteiroPassoRepository.findByRoteiroIdOrderBySequenciaAsc(id);
         if (!mesmaEstrutura(atuais, dto.passos())) {
             log.debug("Alteração estrutural detectada nos passos do roteiro ID: [{}]", id);
-            if (ordemProducaoRepository.existsByProdutoRoteiroIdAndStatusNot(id, EstatusOrdemProducao.CONCLUIDA)) {
-                log.warn("Falha ao atualizar roteiro ID: [{}] pois existem ordens de produção em aberto vinculadas", id);
+            if (ordemProducaoRepository.existsByRoteiroId(id)) {
+                log.warn("Falha ao alterar estrutura do roteiro ID: [{}]: já existem ordens que o utilizam", id);
                 throw new BusinessException(AppMessages.ERROR_ROUTE_IN_USE);
             }
             roteiroPassoRepository.deletarPorRoteiroId(id);
@@ -205,25 +205,27 @@ public class RoteiroService {
             log.warn("Tentativa de excluir roteiro ID: [{}] que possui produtos vinculados", id);
             throw new BusinessException(AppMessages.ERROR_ROUTE_HAS_PRODUCTS);
         }
+        if (ordemProducaoRepository.existsByRoteiroId(id)) {
+            log.warn("Tentativa de excluir roteiro ID: [{}] que já foi usado em ordens de produção", id);
+            throw new BusinessException(AppMessages.ERROR_ROUTE_IN_USE);
+        }
         roteiroRepository.delete(roteiro);
         log.info("Roteiro ID: [{}] excluído com sucesso", id);
     }
 
     @Transactional
     public void vincularProdutos(Long roteiroId, Collection<Long> adicionar, Collection<Long> remover) {
-        log.info("Atualizando vínculo de produtos do roteiro ID: [{}]", roteiroId);
+        log.info("Atualizando vínculo de produtos para o roteiro ID: [{}]", roteiroId);
         Roteiro roteiro = buscarEntidade(roteiroId);
         Set<Long> idsAdicionar = adicionar == null ? new HashSet<>() : new HashSet<>(adicionar);
         Set<Long> idsRemover = remover == null ? new HashSet<>() : new HashSet<>(remover);
 
-        // Id nos dois lados é contraditório: ignora (nenhuma mudança para ele).
         Set<Long> contraditorios = new HashSet<>(idsAdicionar);
         contraditorios.retainAll(idsRemover);
         idsAdicionar.removeAll(contraditorios);
         idsRemover.removeAll(contraditorios);
 
         if (!idsRemover.isEmpty()) {
-            // Só desvincula o que realmente pertence a ESTE roteiro (ids alheios são ignorados).
             produtoRepository.findAllById(idsRemover).stream()
                     .filter(p -> p.getRoteiro() != null && p.getRoteiro().getId().equals(roteiroId))
                     .forEach(p -> p.setRoteiro(null));
@@ -232,10 +234,12 @@ public class RoteiroService {
         if (!idsAdicionar.isEmpty()) {
             List<Produto> produtos = produtoRepository.findAllById(idsAdicionar);
             if (produtos.size() != idsAdicionar.size()) {
+                log.warn("Um ou mais produtos informados para vínculo não foram encontrados no banco de dados");
                 throw new BusinessException(AppMessages.ERROR_PRODUCT_NOTFOUND);
             }
             produtos.forEach(p -> p.setRoteiro(roteiro));
         }
+        log.info("Vínculo de produtos atualizado com sucesso para o roteiro ID: [{}]", roteiroId);
     }
 
     // ==================== APOIO ====================
@@ -246,13 +250,6 @@ public class RoteiroService {
                     log.warn("Roteiro com ID: [{}] não foi encontrado", id);
                     return new BusinessException(AppMessages.ERROR_ROUTE_NOTFOUND);
                 });
-    }
-
-    private void validarTrocaPermitida(Produto produto) {
-        if (ordemProducaoRepository.existsByProdutoIdAndStatusNot(produto.getId(), EstatusOrdemProducao.CONCLUIDA)) {
-            log.warn("Operação bloqueada para o produto ID: [{}] devido a ordens de produção em aberto", produto.getId());
-            throw new BusinessException(AppMessages.ERROR_ROUTE_PRODUCT_OPEN_ORDERS, new Object[]{produto.getNome()});
-        }
     }
 
     private boolean mesmaEstrutura(List<RoteiroPasso> atuais, List<PassoRoteiroDTO> novos) {

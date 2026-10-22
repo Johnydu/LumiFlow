@@ -12,14 +12,14 @@ public record RoteiroDTO(
 
         Long id,
 
-        @NotBlank(message = "O código é obrigatório")
-        @Size(max = 30, message = "O código deve ter no máximo 30 caracteres")
+        @NotBlank(message = "validation.code.required")
+        @Size(max = 30, message = "validation.code.size30")
         String codigo,
 
-        @Size(max = 255, message = "A descrição deve ter no máximo 255 caracteres")
+        @Size(max = 255, message = "validation.description.size255")
         String descricao,
 
-        @NotEmpty(message = "Adicione ao menos uma etapa ao roteiro")
+        @NotEmpty(message = "validation.route.steps.required")
         @Valid
         List<PassoRoteiroDTO> passos
 ) {

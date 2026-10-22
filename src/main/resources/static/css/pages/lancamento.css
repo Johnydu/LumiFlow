@@ -29,6 +29,10 @@ body.page-ordemproducao-lancamento .produto-destaque {
   transition: background 0.3s ease, border-color 0.3s ease;
 }
 
+body.page-ordemproducao-lancamento .produto-destaque .produto-codigo {
+  margin-bottom: var(--space-2);
+}
+
 body.page-ordemproducao-lancamento .produto-nome {
   color: var(--color-text);
   font-size: var(--font-size-2xl);
@@ -151,9 +155,6 @@ body.page-ordemproducao-lancamento .topbar > .btn-novo:hover {
   border-color: var(--border-subtle);
   transform: none;
   box-shadow: none;
-}
-body.page-ordemproducao-lancamento .produto-destaque .produto-codigo {
-  margin-bottom: var(--space-2);
 }
 
 /* ========================================

@@ -59,10 +59,11 @@ public class RoteiroController {
     @GetMapping("/{id}/produtos/busca")
     @ResponseBody
     @PreAuthorize(PODE_GERENCIAR)
-    public PaginaDTO<ProdutoVinculoDTO> buscarProdutos(@PathVariable Long id,
-                                                       @RequestParam(defaultValue = "") String busca,
-                                                       @RequestParam(defaultValue = "false") boolean vinculados,
-                                                       @RequestParam(defaultValue = "0") int pagina) {
+    public PaginaDTO<ProdutoVinculoDTO> buscarProdutos(
+            @PathVariable Long id,
+            @RequestParam(defaultValue = "") String busca,
+            @RequestParam(defaultValue = "false") boolean vinculados,
+            @RequestParam(defaultValue = "0") int pagina) {
         return roteiroService.buscarProdutosParaVinculo(id, busca, vinculados, pagina);
     }
 

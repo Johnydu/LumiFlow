@@ -192,3 +192,7 @@ body.page-roteiro-cadastroroteiros .produto-check input[type="checkbox"] {
 body.page-roteiro-cadastroroteiros .produto-check-nome {
   flex: 1;
 }
+
+body.page-roteiro-cadastroroteiros .produto-check .produto-codigo {
+  font-size: var(--font-size-md);
+}

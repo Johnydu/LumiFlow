@@ -1,6 +1,6 @@
 package br.com.lumiflow.repository;
 
-import br.com.lumiflow.dto.roteiro.PassoDoProdutoDTO;
+import br.com.lumiflow.dto.roteiro.PassoDoRoteiroDTO;
 import br.com.lumiflow.entity.RoteiroPasso;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Modifying;
@@ -15,6 +15,7 @@ import java.util.Optional;
 @Repository
 public interface RoteiroPassoRepository extends JpaRepository<RoteiroPasso, Long> {
 
+    /** Roteiro ATUAL do produto. Usado só para pré-visualizar/criar ordem; as ordens usam o próprio roteiro. */
     @Query("""
            select p from RoteiroPasso p
            join Produto pr on pr.roteiro.id = p.roteiro.id
@@ -23,56 +24,46 @@ public interface RoteiroPassoRepository extends JpaRepository<RoteiroPasso, Long
            """)
     List<RoteiroPasso> buscarPorProdutoId(@Param("produtoId") Long produtoId);
 
-    @Query("""
-           select p from RoteiroPasso p
-           join Produto pr on pr.roteiro.id = p.roteiro.id
-           where pr.id = :produtoId and p.sequencia = :sequencia
-           """)
-    Optional<RoteiroPasso> findFirstByProdutoIdAndSequencia(@Param("produtoId") Long produtoId,
-                                                            @Param("sequencia") Integer sequencia);
+    List<RoteiroPasso> findByRoteiroIdOrderBySequenciaAsc(Long roteiroId);
+
+    Optional<RoteiroPasso> findByRoteiroIdAndSequencia(Long roteiroId, Integer sequencia);
 
     @Query("""
            select p from RoteiroPasso p
-           join Produto pr on pr.roteiro.id = p.roteiro.id
-           where pr.id = :produtoId and p.sequencia > :sequenciaAtual
+           where p.roteiro.id = :roteiroId and p.sequencia > :sequenciaAtual
            order by p.sequencia asc
            limit 1
            """)
-    Optional<RoteiroPasso> findProximoPasso(@Param("produtoId") Long produtoId,
-                                            @Param("sequenciaAtual") Integer sequenciaAtual);
+    Optional<RoteiroPasso> buscarProximoPasso(@Param("roteiroId") Long roteiroId,
+                                              @Param("sequenciaAtual") Integer sequenciaAtual);
 
     @Modifying(flushAutomatically = true)
     @Query("delete from RoteiroPasso p where p.roteiro.id = :roteiroId")
     void deletarPorRoteiroId(@Param("roteiroId") Long roteiroId);
 
     @Query("""
-           select new br.com.lumiflow.dto.roteiro.PassoDoProdutoDTO(pr.id, p.sequencia, e.nome)
+           select new br.com.lumiflow.dto.roteiro.PassoDoRoteiroDTO(p.roteiro.id, p.sequencia, e.nome)
            from RoteiroPasso p
-           join Produto pr on pr.roteiro.id = p.roteiro.id
            left join p.etapaSetor e
-           where pr.id in :produtoIds
+           where p.roteiro.id in :roteiroIds
            """)
-    List<PassoDoProdutoDTO> buscarPassosPorProdutoIds(@Param("produtoIds") Collection<Long> produtoIds);
-
-    List<RoteiroPasso> findByRoteiroIdOrderBySequenciaAsc(Long roteiroId);
+    List<PassoDoRoteiroDTO> buscarPassosPorRoteiroIds(@Param("roteiroIds") Collection<Long> roteiroIds);
 
     @Query("""
-       select p from RoteiroPasso p
-       join fetch p.setor
-       left join fetch p.etapaSetor
-       where p.roteiro.id in :roteiroIds
-       order by p.roteiro.id, p.sequencia
-       """)
+           select p from RoteiroPasso p
+           join fetch p.setor
+           left join fetch p.etapaSetor
+           where p.roteiro.id in :roteiroIds
+           order by p.roteiro.id, p.sequencia
+           """)
     List<RoteiroPasso> buscarPassosDosRoteiros(@Param("roteiroIds") Collection<Long> roteiroIds);
 
     @Query("""
-       select p from RoteiroPasso p
-       join fetch p.setor
-       left join fetch p.etapaSetor
-       join Produto pr on pr.roteiro.id = p.roteiro.id
-       where pr.id = :produtoId
-       order by p.sequencia asc
-       """)
-    List<RoteiroPasso> buscarPassosComSetorEEtapa(@Param("produtoId") Long produtoId);
-
+           select p from RoteiroPasso p
+           join fetch p.setor
+           left join fetch p.etapaSetor
+           where p.roteiro.id = :roteiroId
+           order by p.sequencia asc
+           """)
+    List<RoteiroPasso> buscarPassosComSetorEEtapa(@Param("roteiroId") Long roteiroId);
 }

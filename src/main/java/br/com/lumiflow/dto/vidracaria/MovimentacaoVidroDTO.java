@@ -7,17 +7,17 @@ import jakarta.validation.constraints.Size;
 import java.time.LocalDateTime;
 
 public record MovimentacaoVidroDTO(
-        @NotNull(message = "Selecione o tipo de vidro")
+        @NotNull(message = "validation.glass.type.required")
         Long chapaVidroId,
 
         @NotNull
         TipoMovimentacao tipoMovimentacao,
 
-        @NotNull(message = "A quantidade é obrigatória")
-        @Positive(message = "A quantidade deve ser maior que zero")
+        @NotNull(message = "validation.quantity.required")
+        @Positive(message = "validation.quantity.positive")
         Integer quantidade,
 
-        @NotNull(message = "Selecione um operador")
+        @NotNull(message = "validation.operator.select")
         Long operadorId,
 
         LocalDateTime dataHora,

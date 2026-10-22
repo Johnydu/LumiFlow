@@ -106,7 +106,7 @@
                                         th:data-login="${usuario.login}"
                                         th:data-nivel="${usuario.nivelAcessoId}"
                                         th:data-setor="${usuario.setorId}"
-                                        data-csp-action="handleEditarUsuario" data-csp-argument="element">
+                                       data-csp-action="handleEditarUsuario" data-csp-argument="element">
                                     ✏ Editar
                                 </button>
 
@@ -121,7 +121,7 @@
 
                                     <button type="submit"
                                             class="btn-del"
-                                            data-csp-confirm="Tem certeza que deseja excluir este usuário?">
+                                           data-csp-confirm="Tem certeza que deseja excluir este usuário?">
                                         🗑 Excluir
                                     </button>
                                 </form>
@@ -169,7 +169,7 @@
                                    id="nomeUsuario"
                                    maxlength="50"
                                    placeholder="Ex: Carlos Silva" required
-                            />
+                                   />
                         </div>
 
                         <div class="field csp-style-ef1f3a5dff">
@@ -179,7 +179,7 @@
                                    id="loginUsuario"
                                    maxlength="20"
                                    placeholder="Ex: carlos" required
-                            />
+                                   />
                             <span class="hint csp-style-e33e0ec328">Usado para acessar o sistema.</span>
                         </div>
 
@@ -196,7 +196,7 @@
                         <div class="field csp-style-ef1f3a5dff">
                             <label for="nivelAcessoUsuarioId" class="csp-style-e4c9ee3efa">Nível de acesso <span class="csp-style-1f62937642">*</span></label>
                             <select th:field="*{nivelAcessoId}" class="csp-style-51fd58adb1" id="nivelAcessoUsuarioId"
-                            >
+                                   >
                                 <option value="">Selecione o nível</option>
                                 <option th:each="nivel : ${niveisAcesso}"
                                         th:value="${nivel.id}"
@@ -208,7 +208,7 @@
                         <div class="field csp-style-ef1f3a5dff">
                             <label for="setorUsuarioId" class="csp-style-e4c9ee3efa">Setor</label>
                             <select th:field="*{setorId}" class="csp-style-51fd58adb1" id="setorUsuarioId"
-                            >
+                                   >
                                 <option value="">Nenhum (gestão/suporte)</option>
                                 <option th:each="setor : ${setores}"
                                         th:value="${setor.id}"

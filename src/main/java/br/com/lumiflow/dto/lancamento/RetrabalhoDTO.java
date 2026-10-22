@@ -5,19 +5,19 @@ import jakarta.validation.constraints.NotNull;
 import jakarta.validation.constraints.Size;
 
 public record RetrabalhoDTO(
-        @NotNull(message = "O refugo vinculado é obrigatório")
+        @NotNull(message = "validation.refugo.required")
         Long refugoId,
 
 
         Long maquinaId,
 
-        @NotNull(message = "O operador é obrigatório")
+        @NotNull(message = "validation.operator.required")
         Long operadorId,
 
-        @NotNull(message = "A quantidade é obrigatória")
-        @Min(value = 1, message = "A quantidade deve ser maior que zero")
+        @NotNull(message = "validation.quantity.required")
+        @Min(value = 1, message = "validation.quantity.positive")
         Integer quantidade,
 
-        @Size(max = 255, message = "A observação deve ter no máximo 255 caracteres")
+        @Size(max = 255, message = "validation.notes.size255")
         String observacao
 ) {}

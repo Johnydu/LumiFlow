@@ -8,13 +8,13 @@ public record MaquinaDTO(
 
         Long id,
 
-        @NotBlank(message = "Informe o nome da máquina")
-        @Size(max = 50, message = "O nome deve ter no máximo 50 caracteres")
+        @NotBlank(message = "validation.machine.name.required")
+        @Size(max = 50, message = "validation.name.size50")
         String nome,
 
         String setor,
 
-        @NotNull(message = "Selecione um setor")
+        @NotNull(message = "validation.sector.required")
         Long setorId
 ) {
 }

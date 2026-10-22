@@ -41,7 +41,7 @@ public class MovimentacaoVidro extends Auditoria {
 
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "operador_id", nullable = false)
-    @NotNull(message = "O operador responsável é obrigatório")
+    @NotNull(message = "validation.operator.required")
     private Operador operador; //
 
     @PrePersist

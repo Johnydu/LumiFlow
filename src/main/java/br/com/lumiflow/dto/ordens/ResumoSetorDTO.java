@@ -1,11 +1,8 @@
 package br.com.lumiflow.dto.ordens;
 
-import java.time.LocalDate;
-
 public record ResumoSetorDTO(
         Long setorId,
         String setorNome,
-        LocalDate data,
         String operadores,
         Long qtdOrdens,
         Long ordensConcluidas

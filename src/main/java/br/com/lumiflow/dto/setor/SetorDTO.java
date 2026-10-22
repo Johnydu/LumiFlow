@@ -13,7 +13,7 @@ public record SetorDTO(
         Long id,
 
         @NotBlank
-        @Size(max = 50, message = "O nome deve ter no máximo 50 caracteres")
+        @Size(max = 50, message = "validation.name.size50")
         String nome,
 
 

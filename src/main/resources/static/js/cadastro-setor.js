@@ -191,51 +191,8 @@ function editarSetorDoBotao(button) {
 }
 
 // ============================================================
-// FILTRO DINÂMICO DE BUSCA DE SETORES VIA AJAX (DEBOUNCE)
+// FILTRO DINÂMICO DE BUSCA DE SETORES - ver filtro-ajax.js
 // ============================================================
 document.addEventListener('DOMContentLoaded', () => {
-  'use strict';
-  initFiltroBuscaSetores();
+  initFiltroAjax({ formSelector: 'form.filter-form' });
 });
-
-function initFiltroBuscaSetores() {
-  const inputBusca = document.querySelector('.search');
-  if (!inputBusca) return;
-
-  const formBusca = inputBusca.closest('form');
-  if (!formBusca) return;
-
-  let timeout = null;
-
-  inputBusca.addEventListener('input', () => {
-    clearTimeout(timeout);
-    timeout = setTimeout(async () => {
-      const formData = new FormData(formBusca);
-      const params = new URLSearchParams(formData).toString();
-      const url = `${formBusca.action}?${params}`;
-
-      try {
-        const response = await fetch(url, {
-          headers: {
-            'X-Requested-With': 'XMLHttpRequest'
-          }
-        });
-
-        if (response.ok) {
-          const htmlText = await response.text();
-          const parser = new DOMParser();
-          const doc = parser.parseFromString(htmlText, 'text/html');
-
-          const novaLista = doc.querySelector('.lista');
-          const listaAtual = document.querySelector('.lista');
-
-          if (novaLista && listaAtual) {
-            listaAtual.replaceWith(novaLista);
-          }
-        }
-      } catch (error) {
-        console.error('Erro na busca dinâmica:', error);
-      }
-    }, 400);
-  });
-}

@@ -7,14 +7,14 @@ import jakarta.validation.constraints.PositiveOrZero;
 import jakarta.validation.constraints.Size;
 
 public record ChapaVidroDTO(
-        @NotNull(message = "Selecione o tipo de vidro")
+        @NotNull(message = "validation.glass.type.required")
         TipoVidro tipoVidro,
 
         @NotBlank
         @Size(max = 100)
         String descricao,
 
-        @NotNull(message = "O estoque mínimo é obrigatório")
-        @PositiveOrZero(message = "O estoque mínimo não pode ser negativo")
+        @NotNull(message = "validation.stock.min.required")
+        @PositiveOrZero(message = "validation.stock.min.negative")
         Integer estoqueMinimo
 ) {}

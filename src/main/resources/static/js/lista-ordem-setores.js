@@ -5,7 +5,7 @@ document.addEventListener("DOMContentLoaded", function () {
         const inputs = formFiltros.querySelectorAll("input");
 
         inputs.forEach(input => {
-            // Dispara a busca automaticamente ao alterar a data ou digitar no campo de busca
+            // Dispara a busca ao confirmar o campo de busca (Enter ou ao sair do campo)
             input.addEventListener("change", () => {
                 formFiltros.submit();
             });

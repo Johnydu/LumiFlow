@@ -9,11 +9,11 @@ public record OperadorDTO(
         Long id,
 
         @NotBlank
-        @Size(max = 100, message = "O nome deve ter no máximo 100 caracteres")
+        @Size(max = 100, message = "validation.name.size100")
         String nome,
 
 
-        @Size(max = 30, message = "A função deve ter no máximo 30 caracteres")
+        @Size(max = 30, message = "validation.role.size30")
         String funcao,
 
         Long setorPadraoId

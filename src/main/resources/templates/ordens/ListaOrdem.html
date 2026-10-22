@@ -16,9 +16,9 @@
     <link rel="stylesheet" th:href="@{/css/sidebar.css}">
     <link rel="stylesheet" th:href="@{/css/topbar.css}">
     <link rel="stylesheet" th:href="@{/css/components/buttons.css}">
-    <link rel="stylesheet" th:href="@{/css/components/badges.css}">
     <link rel="stylesheet" th:href="@{/css/components/forms.css}">
     <link rel="stylesheet" th:href="@{/css/components/tables.css}">
+    <link rel="stylesheet" th:href="@{/css/components/badges.css}">
     <link rel="stylesheet" th:href="@{/css/components/cards.css}">
     <link rel="stylesheet" th:href="@{/css/components/status.css}">
     <link rel="stylesheet" th:href="@{/css/components/alerts.css}">
@@ -151,8 +151,15 @@
                         <td class="produto-nome">
                             <div class="produto-celula">
                                 <span class="produto-codigo" th:text="${ordem.produtoCodigo()}"></span>
-                                <span th:text="${ordem.produtoNome() + (ordem.variante() != null ? ' (' + ordem.variante() + ')' : '')}"></span>
-                                <span th:if="${ordem.origemRefugo()}" class="badge-refugo" title="Contém peças de refugo/retrabalho">🔧 Refugo</span>
+                                <span th:text="${ordem.produtoNome() +
+                                    (ordem.variante() != null
+                                        ? ' (' + ordem.variante() + ')'
+                                        : '')}"></span>
+                            <span th:if="${ordem.origemRefugo()}"
+                                  class="badge-refugo"
+                                  title="Contém peças de refugo/retrabalho">
+                                🔧 Refugo
+                            </span>
                             </div>
                         </td>
 

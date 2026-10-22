@@ -81,80 +81,8 @@ window.hideForm = function() {
 };
 
 // ========================
-// FILTRO DINÂMICO DE BUSCA E SETOR VIA AJAX
+// FILTRO DINÂMICO (busca por nome e setor) - ver filtro-ajax.js
 // ========================
 document.addEventListener('DOMContentLoaded', () => {
-    'use strict';
-    initFiltroOperadores();
+    initFiltroAjax({ formSelector: 'form.filtros' });
 });
-
-function initFiltroOperadores() {
-    const inputBusca = document.querySelector('.search');
-    const selectSetor = document.querySelector('select[name="setorId"]');
-
-    if (!inputBusca && !selectSetor) return;
-
-    const formBusca = inputBusca ? inputBusca.closest('form') : selectSetor.closest('form');
-    if (!formBusca) return;
-
-    // Mantém o foco e a posição do cursor no input de busca se houver valor preenchido
-    if (inputBusca && inputBusca.value) {
-        const val = inputBusca.value;
-        inputBusca.focus();
-        inputBusca.value = '';
-        inputBusca.value = val;
-    }
-
-    let timeout = null;
-
-    // Função central que executa a requisição AJAX considerando os filtros atuais do formulário
-    const dispararBuscaAsync = (isDebounced = true) => {
-        const executar = async () => {
-            const formData = new FormData(formBusca);
-            const params = new URLSearchParams(formData).toString();
-            const url = `${formBusca.action}?${params}`;
-
-            try {
-                const response = await fetch(url, {
-                    headers: {
-                        'X-Requested-With': 'XMLHttpRequest'
-                    }
-                });
-
-                if (response.ok) {
-                    const htmlText = await response.text();
-                    const parser = new DOMParser();
-                    const doc = parser.parseFromString(htmlText, 'text/html');
-
-                    const novaLista = doc.querySelector('.lista');
-                    const listaAtual = document.querySelector('.lista');
-
-                    if (novaLista && listaAtual) {
-                        listaAtual.replaceWith(novaLista);
-                    }
-                }
-            } catch (error) {
-                console.error('Erro na busca dinâmica, enviando via submit normal:', error);
-                formBusca.submit();
-            }
-        };
-
-        if (isDebounced) {
-            clearTimeout(timeout);
-            timeout = setTimeout(executar, 400); // 400ms de atraso para o campo de texto
-        } else {
-            clearTimeout(timeout);
-            executar(); // Execução imediata para a seleção do dropdown de setor
-        }
-    };
-
-    // Evento de digitação no campo de nome (com debounce)
-    if (inputBusca) {
-        inputBusca.addEventListener('input', () => dispararBuscaAsync(true));
-    }
-
-    // Evento de alteração no select de setores (sem atraso, resposta imediata)
-    if (selectSetor) {
-        selectSetor.addEventListener('change', () => dispararBuscaAsync(false));
-    }
-}

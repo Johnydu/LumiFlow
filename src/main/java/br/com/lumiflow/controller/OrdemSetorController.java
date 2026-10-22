@@ -15,7 +15,6 @@ import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.context.MessageSource;
-import org.springframework.format.annotation.DateTimeFormat;
 import org.springframework.orm.ObjectOptimisticLockingFailureException;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.stereotype.Controller;
@@ -24,7 +23,6 @@ import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
-import java.time.LocalDate;
 import java.util.List;
 import java.util.Locale;
 
@@ -43,14 +41,11 @@ public class OrdemSetorController {
     public String listarOrdensSetor(
             @RequestParam(value = "busca", required = false)
             String busca,
-            @RequestParam(value = "data", required = false)
-            @DateTimeFormat(iso = DateTimeFormat.ISO.DATE)
-            LocalDate data,
             Model model,
             Locale locale) {
 
         try {
-            List<ResumoSetorDTO> resumoSetores = ordemSetorService.obterResumoSetores(busca, data);
+            List<ResumoSetorDTO> resumoSetores = ordemSetorService.obterResumoSetores(busca);
             model.addAttribute("resumoSetores", resumoSetores);
         } catch (Exception e) {
             log.error("Erro inesperado ao listar resumo dos setores: {}", e.getMessage(), e);

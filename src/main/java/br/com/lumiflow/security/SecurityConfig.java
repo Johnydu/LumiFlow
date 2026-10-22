@@ -12,11 +12,14 @@ import org.springframework.security.config.annotation.authentication.configurati
 import org.springframework.security.config.annotation.method.configuration.EnableMethodSecurity;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
+import org.springframework.security.core.session.SessionRegistry;
+import org.springframework.security.core.session.SessionRegistryImpl;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.security.web.SecurityFilterChain;
 import org.springframework.security.web.authentication.UsernamePasswordAuthenticationFilter;
 import org.springframework.security.web.header.writers.ReferrerPolicyHeaderWriter;
+import org.springframework.security.web.session.HttpSessionEventPublisher;
 
 /**
  * CONFIGURAÇÃO DE SEGURANÇA — LumiFlow
@@ -77,8 +80,7 @@ public class SecurityConfig {
                         .requestMatchers("/actuator/health", "/actuator/health/**").permitAll()
 
                         // Recursos estáticos
-                        .requestMatchers("/css/**", "/js/**", "/image/**", "/images/**",
-                                "/style.css", "/webjars/**").permitAll()
+                        .requestMatchers("/css/**", "/js/**", "/images/**").permitAll()
 
                         // Ecrã de login
                         .requestMatchers(LOGIN_PAGE).permitAll()
@@ -161,8 +163,14 @@ public class SecurityConfig {
                 )
 
                 // Explícito por clareza: novo ID de sessão a cada login (anti session fixation)
+                // Sessões registradas (sem limite por usuário, pois o computador é compartilhado):
+                // permite encerrar as sessões de quem foi excluído, rebaixado ou trocou de senha.
                 .sessionManagement(session -> session
                         .sessionFixation(fixation -> fixation.migrateSession())
+                        .sessionConcurrency(concurrency -> concurrency
+                                .maximumSessions(-1)
+                                .sessionRegistry(sessionRegistry())
+                                .expiredUrl(LOGIN_PAGE + "?expired=true"))
                 )
 
                 .headers(headers -> headers
@@ -183,6 +191,17 @@ public class SecurityConfig {
     @Bean
     public PasswordEncoder passwordEncoder() {
         return new BCryptPasswordEncoder(12);
+    }
+
+    @Bean
+    public SessionRegistry sessionRegistry() {
+        return new SessionRegistryImpl();
+    }
+
+    /** Avisa o registro quando uma sessão HTTP expira ou é destruída. */
+    @Bean
+    public HttpSessionEventPublisher httpSessionEventPublisher() {
+        return new HttpSessionEventPublisher();
     }
 
     @Bean
