@@ -29,6 +29,7 @@ td {
   font-size: var(--font-size-sm);
   text-align: left;
   vertical-align: middle;
+  font-weight: 500;
 }
 
 tr:last-child td {

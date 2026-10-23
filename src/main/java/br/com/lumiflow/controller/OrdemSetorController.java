@@ -15,6 +15,7 @@ import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.context.MessageSource;
+import org.springframework.data.domain.Page;
 import org.springframework.orm.ObjectOptimisticLockingFailureException;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.stereotype.Controller;
@@ -60,24 +61,27 @@ public class OrdemSetorController {
     @GetMapping("/{setorId}")
     public String listarOrdensPorSetorId(@PathVariable("setorId") Long setorId,
                                          @ModelAttribute OrdemFiltroDTO filtro,
+                                         @RequestParam(value = "page", defaultValue = "0") int page,
                                          Model model,
                                          Locale locale) {
 
         try {
-            List<OrdemListagemDTO> ordens = ordemProducaoService.listarPorSetorIdEFiltros(setorId, filtro);
+            Page<OrdemListagemDTO> pagina = ordemProducaoService.listarPorSetorIdEFiltros(setorId, filtro, page);
             Setor setor = setorService.buscarSetorPorId(setorId);
 
-            model.addAttribute("ordens", ordens);
+            model.addAttribute("pagina", pagina);
+            model.addAttribute("ordens", pagina.getContent());
             model.addAttribute("setorAtual", setor != null ? setor.getNome() : "Desconhecido");
             model.addAttribute("setorIdAtual", setorId);
             model.addAttribute("buscaAtual", filtro.busca());
             model.addAttribute("statusAtual", filtro.status());
-            model.addAttribute("totalOrdens", ordens.size());
+            model.addAttribute("totalOrdens", pagina.getTotalElements());
         } catch (Exception e) {
             log.error("Erro inesperado ao listar ordens para o setor id {}: {}", setorId, e.getMessage(), e);
             model.addAttribute("error", messageSource
                     .getMessage(AppMessages.ERROR_VALIDATION_FAILED, null, locale));
             model.addAttribute("ordens", List.of());
+            model.addAttribute("pagina", Page.empty());
             model.addAttribute("setorAtual", "Desconhecido");
             model.addAttribute("setorIdAtual", setorId);
             model.addAttribute("totalOrdens", 0);

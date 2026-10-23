@@ -2,7 +2,9 @@ package br.com.lumiflow.service;
 
 import br.com.lumiflow.config.AppMessages;
 import br.com.lumiflow.dto.produto.ProdutoDTO;
+import br.com.lumiflow.dto.produto.ProdutoBuscaDTO;
 import br.com.lumiflow.dto.produto.ProdutoListagemDTO;
+import br.com.lumiflow.dto.comum.PaginaDTO;
 import br.com.lumiflow.exception.BusinessException;
 import br.com.lumiflow.mapper.ProdutoMapper;
 import br.com.lumiflow.entity.Produto;
@@ -12,6 +14,9 @@ import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.dao.DataAccessException;
 import org.springframework.dao.DataIntegrityViolationException;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageImpl;
+import org.springframework.data.domain.PageRequest;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -22,6 +27,9 @@ import java.util.Locale;
 @Service
 @RequiredArgsConstructor
 public class ProdutoService {
+    private static final int TAMANHO_PAGINA_LISTA = 25;
+    private static final int TAMANHO_PAGINA_SELECAO = 20;
+
     private final ProdutoRepository produtoRepository;
     private final ProdutoMapper produtoMapper;
 
@@ -40,19 +48,6 @@ public class ProdutoService {
         }
         if (produtoRepository.existsByCodigo(codigo.trim().toUpperCase(Locale.ROOT))) {
             throw new BusinessException(AppMessages.ERROR_PRODUCT_CODIGO_DUPLICATE);
-        }
-    }
-
-    @Transactional(readOnly = true)
-    public List<ProdutoListagemDTO> listarProdutos() {
-        try {
-            return produtoMapper.toListagemDTO(produtoRepository.findAllByOrderByNomeAsc());
-        } catch (DataAccessException e) {
-            log.error("Erro de base de dados ao listar produtos: {}", e.getMessage(), e);
-            throw new BusinessException(AppMessages.ERROR_VALIDATION_FAILED);
-        } catch (Exception e) {
-            log.error("Erro inesperado ao listar produtos: {}", e.getMessage(), e);
-            throw new BusinessException(AppMessages.ERROR_VALIDATION_FAILED);
         }
     }
 
@@ -160,15 +155,13 @@ public class ProdutoService {
     }
 
     @Transactional(readOnly = true)
-    public List<ProdutoListagemDTO> buscarProdutos(String termo) {
+    public Page<ProdutoListagemDTO> buscarProdutos(String termo, int pagina) {
         try {
-            if (termo == null || termo.isBlank()) {
-                return listarProdutos();
-            }
-            String termoTrim = normalizeName(termo);
-            List<Produto> produtos = produtoRepository
-                    .findByNomeContainingIgnoreCaseOrCodigoContainingIgnoreCase(termoTrim, termoTrim);
-            return produtoMapper.toListagemDTO(produtos);
+            String busca = termo == null ? "" : termo.trim();
+            Page<Produto> resultado = produtoRepository.buscarPorTermo(
+                    busca, PageRequest.of(Math.max(pagina, 0), TAMANHO_PAGINA_LISTA));
+            return new PageImpl<>(produtoMapper.toListagemDTO(resultado.getContent()),
+                    resultado.getPageable(), resultado.getTotalElements());
         } catch (DataAccessException e) {
             log.error("Erro de base de dados ao pesquisar produtos por termo '{}': {}", termo, e.getMessage(), e);
             throw new BusinessException(AppMessages.ERROR_VALIDATION_FAILED);
@@ -176,6 +169,27 @@ public class ProdutoService {
             log.error("Erro inesperado ao pesquisar produtos por termo '{}': {}", termo, e.getMessage(), e);
             throw new BusinessException(AppMessages.ERROR_VALIDATION_FAILED);
         }
+    }
+
+    @Transactional(readOnly = true)
+    public PaginaDTO<ProdutoBuscaDTO> buscarParaSelecao(String termo, int pagina) {
+        String busca = termo == null ? "" : termo.trim();
+        Page<Produto> resultado = produtoRepository.buscarPorTermo(
+                busca, PageRequest.of(Math.max(pagina, 0), TAMANHO_PAGINA_SELECAO));
+        List<ProdutoBuscaDTO> itens = resultado.getContent().stream()
+                .map(this::paraBuscaDTO)
+                .toList();
+        return new PaginaDTO<>(itens, resultado.getNumber(), resultado.hasNext(), resultado.getTotalElements());
+    }
+
+    @Transactional(readOnly = true)
+    public ProdutoBuscaDTO buscarParaSelecaoPorId(Long id) {
+        return id == null ? null : produtoRepository.findById(id).map(this::paraBuscaDTO).orElse(null);
+    }
+
+    private ProdutoBuscaDTO paraBuscaDTO(Produto produto) {
+        return new ProdutoBuscaDTO(produto.getId(), produto.getNome(), produto.getCodigo(),
+                produto.getRoteiro() == null ? null : produto.getRoteiro().getCodigo());
     }
 
     private String normalizeName(String name) {

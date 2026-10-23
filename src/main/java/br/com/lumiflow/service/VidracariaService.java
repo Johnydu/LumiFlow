@@ -17,6 +17,8 @@ import br.com.lumiflow.repository.OperadorRepository;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.dao.DataAccessException;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -67,25 +69,7 @@ public class VidracariaService {
     }
 
     @Transactional(readOnly = true)
-    public List<HistoricoMovimentacaoDTO> listarHistorico() {
-        try {
-            return movimentacaoVidroRepository.findAllByOrderByDataHoraDesc().stream()
-                    .map(m -> new HistoricoMovimentacaoDTO(m.getId(), m.getTipoMovimentacao(),
-                            m.getChapaVidro().getTipoVidro(), m.getChapaVidro().getDescricao(),
-                            m.getQuantidade(), m.getDataHora(), m.getOperador() == null ? "Sistema" :
-                            m.getOperador().getNome(),
-                            m.getObservacao())).toList();
-        } catch (DataAccessException e) {
-            log.error("Erro de base de dados ao listar histórico de movimentações: {}", e.getMessage(), e);
-            throw new BusinessException(AppMessages.ERROR_VALIDATION_FAILED);
-        } catch (Exception e) {
-            log.error("Erro inesperado ao listar histórico de movimentações: {}", e.getMessage(), e);
-            throw new BusinessException(AppMessages.ERROR_VALIDATION_FAILED);
-        }
-    }
-
-    @Transactional(readOnly = true)
-    public List<HistoricoMovimentacaoDTO> listarHistoricoFiltrado(String tipoMovStr, String tipoVidroStr) {
+    public Page<HistoricoMovimentacaoDTO> listarHistorico(String tipoMovStr, String tipoVidroStr, int pagina) {
         try {
             TipoMovimentacao tipoMov = null;
             if (tipoMovStr != null && !tipoMovStr.isBlank()) {
@@ -101,19 +85,9 @@ public class VidracariaService {
                 } catch (IllegalArgumentException ignored) {}
             }
 
-            List<MovimentacaoVidro> movimentacoes = movimentacaoVidroRepository.filtrarHistorico(tipoMov, tipoVidro);
-
-            return movimentacoes.stream()
-                    .map(m -> new HistoricoMovimentacaoDTO(
-                            m.getId(),
-                            m.getTipoMovimentacao(),
-                            m.getChapaVidro().getTipoVidro(),
-                            m.getChapaVidro().getDescricao(),
-                            m.getQuantidade(),
-                            m.getDataHora(),
-                            m.getOperador() == null ? "Sistema" : m.getOperador().getNome(),
-                            m.getObservacao()
-                    )).toList();
+            Page<MovimentacaoVidro> movimentacoes = movimentacaoVidroRepository.filtrarHistorico(
+                    tipoMov, tipoVidro, PageRequest.of(Math.max(pagina, 0), 25));
+            return movimentacoes.map(this::paraHistoricoDTO);
         } catch (DataAccessException e) {
             log.error("Erro de base de dados ao filtrar histórico de movimentações: {}", e.getMessage(), e);
             throw new BusinessException(AppMessages.ERROR_VALIDATION_FAILED);
@@ -121,6 +95,18 @@ public class VidracariaService {
             log.error("Erro inesperado ao filtrar histórico de movimentações: {}", e.getMessage(), e);
             throw new BusinessException(AppMessages.ERROR_VALIDATION_FAILED);
         }
+    }
+
+    private HistoricoMovimentacaoDTO paraHistoricoDTO(MovimentacaoVidro movimentacao) {
+        return new HistoricoMovimentacaoDTO(
+                movimentacao.getId(),
+                movimentacao.getTipoMovimentacao(),
+                movimentacao.getChapaVidro().getTipoVidro(),
+                movimentacao.getChapaVidro().getDescricao(),
+                movimentacao.getQuantidade(),
+                movimentacao.getDataHora(),
+                movimentacao.getOperador() == null ? "Sistema" : movimentacao.getOperador().getNome(),
+                movimentacao.getObservacao());
     }
 
     @Transactional

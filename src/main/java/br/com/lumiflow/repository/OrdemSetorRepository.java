@@ -4,11 +4,14 @@ import br.com.lumiflow.dto.dashboard.SetorResumoDTO;
 import br.com.lumiflow.entity.OrdemSetor;
 import br.com.lumiflow.entity.enums.EstatusOrdemProducao;
 import org.springframework.data.jpa.repository.JpaRepository;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.query.Param;
 import org.springframework.stereotype.Repository;
 
 import java.time.LocalDateTime;
+import java.util.Collection;
 import java.util.List;
 import java.util.Optional;
 
@@ -30,20 +33,33 @@ public interface OrdemSetorRepository extends JpaRepository<OrdemSetor, Long> {
     List<Object[]> buscarResumoSetores(@Param("busca") String busca);
 
 
-    @Query("""
-    SELECT DISTINCT os FROM OrdemSetor os
-    JOIN FETCH os.ordemProducao o
-    JOIN FETCH o.produto p
-    WHERE os.setor.id = :setorId
-      AND (:busca IS NULL OR :busca = '' OR 
-           LOWER(o.numero) LIKE LOWER(CONCAT('%', :busca, '%')) OR 
-           LOWER(p.nome) LIKE LOWER(CONCAT('%', :busca, '%')))
-      AND (:status IS NULL OR :status = '' OR CAST(os.status AS string) = :status)
-    ORDER BY os.criadoEm DESC, os.sequencia ASC
-""")
-    List<OrdemSetor> buscarPorSetorIdEFiltros(@Param("setorId") Long setorId,
-                                              @Param("busca") String busca,
-                                              @Param("status") String status);
+    @Query(value = """
+        SELECT os FROM OrdemSetor os
+        JOIN FETCH os.ordemProducao o
+        JOIN FETCH o.produto p
+        WHERE os.setor.id = :setorId
+          AND os.status IN :statuses
+          AND (:busca = ''
+               OR LOWER(o.numero) LIKE LOWER(CONCAT('%', :busca, '%'))
+               OR LOWER(p.nome) LIKE LOWER(CONCAT('%', :busca, '%'))
+               OR LOWER(p.codigo) LIKE LOWER(CONCAT('%', :busca, '%')))
+        ORDER BY os.criadoEm DESC, os.sequencia ASC, os.id ASC
+        """,
+            countQuery = """
+        SELECT COUNT(os) FROM OrdemSetor os
+        JOIN os.ordemProducao o
+        JOIN o.produto p
+        WHERE os.setor.id = :setorId
+          AND os.status IN :statuses
+          AND (:busca = ''
+               OR LOWER(o.numero) LIKE LOWER(CONCAT('%', :busca, '%'))
+               OR LOWER(p.nome) LIKE LOWER(CONCAT('%', :busca, '%'))
+               OR LOWER(p.codigo) LIKE LOWER(CONCAT('%', :busca, '%')))
+        """)
+    Page<OrdemSetor> buscarPorSetorIdEFiltros(@Param("setorId") Long setorId,
+                                               @Param("busca") String busca,
+                                               @Param("statuses") Collection<EstatusOrdemProducao> statuses,
+                                               Pageable pageable);
 
 
     @Query("""

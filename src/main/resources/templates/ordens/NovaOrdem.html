@@ -16,6 +16,7 @@
     <link rel="stylesheet" th:href="@{/css/components/tables.css}">
     <link rel="stylesheet" th:href="@{/css/components/cards.css}">
     <link rel="stylesheet" th:href="@{/css/components/badges.css}">
+    <link rel="stylesheet" th:href="@{/css/components/combobox.css}">
     <link rel="stylesheet" th:href="@{/css/components/status.css}">
     <link rel="stylesheet" th:href="@{/css/components/alerts.css}">
     <link rel="stylesheet" th:href="@{/css/pages/novaordem.css}">
@@ -50,12 +51,23 @@
                 <div class="card-title">Dados da ordem</div>
                 <div class="form-grid csp-style-2b583d7389">
 
-                    <div class="field">
-                        <label for="produtoId">Produto <span>*</span></label>
-                        <select id="produtoId" name="produtoId" required data-csp-change="updateRoteiro" data-csp-argument="value">
-                            <option value="">Selecione o produto</option>
-                            <option th:each="p : ${produtos}" th:value="${p.id}" th:text="${p.codigo + ' - ' + p.nome}"></option>
-                        </select>
+                    <div class="field combo" id="produto-combo"
+                         th:attr="data-inicial-id=${produtoSelecionado != null ? produtoSelecionado.id : ''},
+                                  data-inicial-codigo=${produtoSelecionado != null ? produtoSelecionado.codigo : ''},
+                                  data-inicial-nome=${produtoSelecionado != null ? produtoSelecionado.nome : ''},
+                                  data-inicial-roteiro=${produtoSelecionado != null ? produtoSelecionado.roteiroCodigo : ''}">
+                        <label for="produtoBusca">Produto <span>*</span></label>
+                        <input type="hidden" id="produtoId" name="produtoId"
+                               th:value="${ordemDTO != null ? ordemDTO.produtoId : ''}">
+                        <input type="search" id="produtoBusca" autocomplete="off"
+                               role="combobox" aria-autocomplete="list"
+                               aria-controls="produtoResultados" aria-expanded="false"
+                               placeholder="Buscar produto por código ou nome...">
+                        <ul id="produtoResultados" class="combo-lista is-hidden"
+                            role="listbox" aria-label="Produtos encontrados"></ul>
+                        <span id="produtoComboAjuda" class="combo-dica" aria-live="polite">
+                            Digite para buscar produtos. Produtos sem roteiro não podem gerar ordens.
+                        </span>
                     </div>
 
                     <div class="field">

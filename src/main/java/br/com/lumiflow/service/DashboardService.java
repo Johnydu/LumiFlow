@@ -9,6 +9,7 @@ import br.com.lumiflow.entity.OrdemProducao;
 import br.com.lumiflow.entity.OrdemSetor;
 import br.com.lumiflow.entity.Roteiro;
 import br.com.lumiflow.entity.enums.EstatusOrdemProducao;
+import br.com.lumiflow.entity.enums.DestinoRefugo;
 import br.com.lumiflow.exception.BusinessException;
 import br.com.lumiflow.repository.*;
 import lombok.RequiredArgsConstructor;
@@ -35,6 +36,7 @@ public class DashboardService {
     private final RoteiroPassoRepository roteiroPassoRepository;
     private final OrdemSetorRepository ordemSetorRepository;
     private final RefugoRepository refugoRepository;
+    private final RetrabalhoRepository retrabalhoRepository;
 
     @Transactional(readOnly = true)
     public DashboardResumoDTO obterResumoEstatisticas() {
@@ -168,24 +170,9 @@ public class DashboardService {
     @Transactional(readOnly = true)
     public Long contarPecasEmRetrabalhoAberto() {
         try {
-            List<Object[]> resultados = refugoRepository.buscarRefugosComTotalRetrabalhado();
-
-            if (resultados == null || resultados.isEmpty()) {
-                return 0L;
-            }
-
-            long total = 0;
-            for (Object[] row : resultados) {
-                if (row != null && row.length >= 3) {
-                    Integer qtdRefugo = row[1] instanceof Integer ? (Integer) row[1] : 0;
-                    Long qtdRetrabalhada = row[2] instanceof Long ? (Long) row[2] : 0L;
-                    long pendente = qtdRefugo - qtdRetrabalhada;
-                    if (pendente > 0) {
-                        total += pendente;
-                    }
-                }
-            }
-            return total;
+            Long refugos = refugoRepository.somarQuantidadePorDestino(DestinoRefugo.RETRABALHO);
+            Long refeitas = retrabalhoRepository.somarQuantidadePorDestino(DestinoRefugo.RETRABALHO);
+            return Math.max(0L, refugos - refeitas);
         } catch (DataAccessException e) {
             log.error("Erro de base de dados ao contar peças em retrabalho aberto: {}", e.getMessage(), e);
             throw new BusinessException(AppMessages.ERROR_VALIDATION_FAILED);

@@ -10,6 +10,8 @@ import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.context.MessageSource;
+import org.springframework.data.domain.Page;
+import jakarta.servlet.http.HttpServletResponse;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
@@ -31,9 +33,12 @@ public class VidracariaController {
     private final MessageSource messageSource;
 
     @GetMapping
-    public String vidracaria(Model model, Locale locale) {
+    public String vidracaria(@RequestParam(value = "page", defaultValue = "0") int page,
+                             @RequestParam(required = false) String tipoMovimentacao,
+                             @RequestParam(required = false) String tipoVidroFiltro,
+                             Model model, Locale locale) {
         try {
-            carregarPagina(model);
+            carregarPagina(model, tipoMovimentacao, tipoVidroFiltro, page, locale);
             return "vidracaria/Vidracaria";
         } catch (Exception e) {
             log.error("Erro inesperado ao carregar a página de vidraçaria: {}", e.getMessage(), e);
@@ -43,7 +48,7 @@ public class VidracariaController {
     }
 
     private String erroValidacao(Model model, BindingResult result, Locale locale) {
-        carregarPagina(model);
+        carregarPagina(model, null, null, 0, locale);
         String mensagem = result.getAllErrors().stream()
                 .findFirst()
                 .map(error -> {
@@ -110,18 +115,27 @@ public class VidracariaController {
         return "redirect:/dashboard/vidracaria";
     }
 
-    private void carregarPagina(Model model) {
+    private void carregarPagina(Model model, String tipoMovimentacao, String tipoVidroFiltro, int page,
+                                Locale locale) {
         try {
             model.addAttribute("saldos", vidracariaService.obterSaldosAtuais());
             model.addAttribute("chapas", vidracariaService.listarChapas());
-            model.addAttribute("historico", vidracariaService.listarHistorico());
+            Page<br.com.lumiflow.dto.vidracaria.HistoricoMovimentacaoDTO> pagina =
+                    vidracariaService.listarHistorico(tipoMovimentacao, tipoVidroFiltro, page);
+            model.addAttribute("paginaHistorico", pagina);
+            model.addAttribute("historico", pagina.getContent());
             model.addAttribute("operadores", operadorService.listarOperadores());
+            model.addAttribute("tipoMovimentacaoAtual", tipoMovimentacao);
+            model.addAttribute("tipoVidroFiltroAtual", tipoVidroFiltro);
         } catch (Exception e) {
             log.error("Erro ao carregar dados auxiliares da página de vidraçaria: {}", e.getMessage(), e);
             model.addAttribute("saldos", List.of());
             model.addAttribute("chapas", List.of());
             model.addAttribute("historico", List.of());
+            model.addAttribute("paginaHistorico", Page.empty());
             model.addAttribute("operadores", List.of());
+            model.addAttribute("error",
+                    messageSource.getMessage(AppMessages.ERROR_VALIDATION_FAILED, null, locale));
         }
     }
 
@@ -129,16 +143,22 @@ public class VidracariaController {
     public String filtrarHistoricoAjax(
             @RequestParam(required = false) String tipoMovimentacao,
             @RequestParam(required = false) String tipoVidroFiltro,
-            Model model, Locale locale) {
+            @RequestParam(value = "page", defaultValue = "0") int page,
+            Model model, HttpServletResponse response) {
 
         try {
             String tipoMov = (tipoMovimentacao != null && tipoMovimentacao.isBlank()) ? null : tipoMovimentacao;
             String tipoVidro = (tipoVidroFiltro != null && tipoVidroFiltro.isBlank()) ? null : tipoVidroFiltro;
 
-            model.addAttribute("historico", vidracariaService.listarHistoricoFiltrado(tipoMov, tipoVidro));
+            Page<br.com.lumiflow.dto.vidracaria.HistoricoMovimentacaoDTO> pagina =
+                    vidracariaService.listarHistorico(tipoMov, tipoVidro, page);
+            model.addAttribute("paginaHistorico", pagina);
+            model.addAttribute("historico", pagina.getContent());
         } catch (Exception e) {
             log.error("Erro ao filtrar histórico de movimentação de vidro via AJAX: {}", e.getMessage(), e);
+            response.setStatus(HttpServletResponse.SC_INTERNAL_SERVER_ERROR);
             model.addAttribute("historico", List.of());
+            model.addAttribute("paginaHistorico", Page.empty());
         }
 
         // Aponta diretamente para o arquivo isolado do fragmento

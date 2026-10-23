@@ -132,8 +132,17 @@
         "Descrição do produto": "Product description",
         "Buscar por nome ou código do produto...": "Search by product name or code...",
         "Buscar por código ou nome...": "Search by code or name...",
-        "Carregar mais produtos": "Load more products",
         "Carregando produtos...": "Loading products...",
+        "Selecione um produto com roteiro para criar a ordem.": "Select a product with a route to create the order.",
+        "Sem roteiro": "No route",
+        "Buscar número, código ou produto...": "Search number, code, or product...",
+        "Em aberto": "Open",
+        "Todos (inclui concluídas)": "All (including completed)",
+        "Mostrando": "Showing",
+        "Página": "Page",
+        "Página anterior": "Previous page",
+        "Próxima página": "Next page",
+        "Digite para buscar produtos. Produtos sem roteiro não podem gerar ordens.": "Type to search products. Products without a route cannot be used for orders.",
         "Buscar setor por nome...": "Search departments by name...",
         "Ex: Costura, Acabamento...": "E.g. Sewing, Finishing...",
         "Buscar usuário...": "Search users...",
@@ -399,6 +408,16 @@
             return `${quantity[1]} ${labels[quantity[2].toLowerCase()]}`;
         }
 
+        const paginationRange = value.match(/^Mostrando\s+(\d+)–(\d+)\s+de\s+(\d+)$/i);
+        if (paginationRange) {
+            return `Showing ${paginationRange[1]}–${paginationRange[2]} of ${paginationRange[3]}`;
+        }
+
+        const paginationPage = value.match(/^Página\s+(\d+)\s+de\s+(\d+)$/i);
+        if (paginationPage) {
+            return `Page ${paginationPage[1]} of ${paginationPage[2]}`;
+        }
+
         const operatorEntries = value.match(/^(\d+)\s+operadores\s+·\s+(\d+)\s+lançamentos$/i);
         if (operatorEntries) {
             return `${operatorEntries[1]} operators · ${operatorEntries[2]} entries`;
@@ -407,6 +426,11 @@
         const progress = value.match(/^(\d+)\s*\/\s*(\d+)\s+unidades concluídas$/i);
         if (progress) {
             return `${progress[1]} / ${progress[2]} units completed`;
+        }
+
+        const productsFound = value.match(/^(\d+)\s+produto\(s\)\s+encontrado\(s\)\.$/i);
+        if (productsFound) {
+            return `${productsFound[1]} product(s) found.`;
         }
 
         const duration = value.match(/^(\d+)h\s+(\d{2})min$/i);

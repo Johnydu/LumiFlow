@@ -88,7 +88,7 @@ public class RoteiroService {
         PageRequest pageable = PageRequest.of(Math.max(pagina, 0), TAMANHO_PAGINA_VINCULO);
         Page<Produto> resultado = somenteVinculados
                 ? produtoRepository.buscarVinculados(roteiroId, busca, pageable)
-                : produtoRepository.buscarParaVinculo(busca, pageable);
+                : produtoRepository.buscarPorTermo(busca, pageable);
 
         List<ProdutoVinculoDTO> itens = resultado.getContent().stream()
                 .map(p -> new ProdutoVinculoDTO(

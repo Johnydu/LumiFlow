@@ -14,6 +14,9 @@ import br.com.lumiflow.repository.UsuarioRepository;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.dao.DataAccessException;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
 import org.springframework.orm.ObjectOptimisticLockingFailureException;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -26,6 +29,12 @@ import java.util.stream.Collectors;
 @RequiredArgsConstructor
 public class OrdemProducaoService {
 
+    private static final int TAMANHO_PAGINA_ORDENS = 50;
+    private static final List<EstatusOrdemProducao> STATUS_EM_ABERTO = List.of(
+            EstatusOrdemProducao.DISPONIVEL,
+            EstatusOrdemProducao.LIBERADA,
+            EstatusOrdemProducao.EM_ANDAMENTO);
+
     private final OrdemProducaoRepository ordemProducaoRepository;
     private final ProdutoService produtoService;
     private final RoteiroPassoRepository roteiroPassoRepository;
@@ -33,22 +42,19 @@ public class OrdemProducaoService {
     private final UsuarioRepository usuarioRepository;
 
     @Transactional(readOnly = true)
-    public List<OrdemListagemDTO> listarPorSetorIdEFiltros(Long setorId, OrdemFiltroDTO filtro) {
+    public Page<OrdemListagemDTO> listarPorSetorIdEFiltros(Long setorId, OrdemFiltroDTO filtro, int pagina) {
         try {
             if (setorId == null) {
                 throw new BusinessException(AppMessages.ERROR_VALIDATION_FAILED);
             }
 
-            String busca = (filtro != null && filtro.busca() != null && !filtro.busca().isBlank()) ? filtro.busca().trim() : null;
-            String status = (filtro != null && filtro.status() != null && !filtro.status().isBlank()) ? filtro.status().trim() : null;
+            String busca = filtro != null && filtro.busca() != null ? filtro.busca().trim() : "";
+            String status = filtro != null ? filtro.status() : null;
+            Pageable pageable = PageRequest.of(Math.max(pagina, 0), TAMANHO_PAGINA_ORDENS);
+            Page<OrdemSetor> etapas = ordemSetorRepository.buscarPorSetorIdEFiltros(
+                    setorId, busca, statusDoFiltro(status), pageable);
 
-            List<OrdemSetor> etapas = ordemSetorRepository.buscarPorSetorIdEFiltros(setorId, busca, status);
-
-            if (etapas.isEmpty()) {
-                return List.of();
-            }
-
-            Set<Long> roteiroIds = etapas.stream()
+            Set<Long> roteiroIds = etapas.getContent().stream()
                     .map(os -> os.getOrdemProducao().getRoteiro())
                     .filter(Objects::nonNull)
                     .map(Roteiro::getId)
@@ -62,9 +68,7 @@ public class OrdemProducaoService {
                             PassoDoRoteiroDTO::etapaNome,
                             (x, y) -> x));
 
-            return etapas.stream()
-                    .map(os -> montarOrdemListagemDTO(os, etapaNomePorRoteiroESequencia))
-                    .toList();
+            return etapas.map(os -> montarOrdemListagemDTO(os, etapaNomePorRoteiroESequencia));
         } catch (BusinessException e) {
             throw e;
         } catch (DataAccessException e) {
@@ -73,6 +77,21 @@ public class OrdemProducaoService {
         } catch (Exception e) {
             log.error("Erro inesperado ao listar ordens por setor id {} e filtros: {}", setorId, e.getMessage(), e);
             throw new BusinessException(AppMessages.ERROR_VALIDATION_FAILED);
+        }
+    }
+
+    /** "" = em aberto (padrão); "TODAS" inclui concluídas; senão filtra pelo status. */
+    private List<EstatusOrdemProducao> statusDoFiltro(String status) {
+        if (status == null || status.isBlank()) {
+            return STATUS_EM_ABERTO;
+        }
+        if ("TODAS".equalsIgnoreCase(status.trim())) {
+            return List.of(EstatusOrdemProducao.values());
+        }
+        try {
+            return List.of(EstatusOrdemProducao.valueOf(status.trim()));
+        } catch (IllegalArgumentException e) {
+            return STATUS_EM_ABERTO;
         }
     }
 

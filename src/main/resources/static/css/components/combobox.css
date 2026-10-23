@@ -1,0 +1,51 @@
+.combo {
+  position: relative;
+}
+
+.combo-lista {
+  position: absolute;
+  top: 100%;
+  left: 0;
+  right: 0;
+  z-index: 50;
+  max-height: 280px;
+  margin: var(--space-1) 0 0;
+  padding: var(--space-1);
+  overflow-y: auto;
+  list-style: none;
+  border: 1px solid var(--border-strong);
+  border-radius: var(--radius-lg);
+  background: var(--color-surface);
+  box-shadow: var(--shadow-glass);
+}
+
+.combo-item {
+  display: flex;
+  align-items: center;
+  flex-wrap: wrap;
+  gap: var(--space-2);
+  padding: var(--space-2) var(--space-3);
+  border-radius: var(--radius-md);
+  cursor: pointer;
+}
+
+.combo-item:hover,
+.combo-item.ativo {
+  background: var(--surface-hover);
+}
+
+.combo-item.desabilitado {
+  opacity: 0.55;
+  cursor: not-allowed;
+}
+
+.combo-item .produto-codigo {
+  font-size: var(--font-size-md);
+}
+
+.combo-vazio,
+.combo-dica {
+  padding: var(--space-2) var(--space-3);
+  color: var(--color-muted);
+  font-size: var(--font-size-sm);
+}

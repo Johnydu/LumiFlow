@@ -14,14 +14,8 @@ public interface RefugoRepository extends JpaRepository<Refugo, Long> {
     List<Refugo> findByOrdemSetor_OrdemProducao_IdAndDestinoOrderByDataHoraDesc(
             Long ordemProducaoId, DestinoRefugo destino);
 
-    @Query("""
-    SELECT r.id, r.qtdRefugo, COALESCE(SUM(rt.qtdRefeita), 0)
-    FROM Refugo r
-    LEFT JOIN Retrabalho rt ON rt.refugo = r
-    WHERE r.destino = br.com.lumiflow.entity.enums.DestinoRefugo.RETRABALHO
-    GROUP BY r.id, r.qtdRefugo
-""")
-    List<Object[]> buscarRefugosComTotalRetrabalhado();
+    @Query("SELECT COALESCE(SUM(r.qtdRefugo), 0) FROM Refugo r WHERE r.destino = :destino")
+    Long somarQuantidadePorDestino(@Param("destino") DestinoRefugo destino);
 
     @Query("""
     SELECT r FROM Refugo r

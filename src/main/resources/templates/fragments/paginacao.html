@@ -1,0 +1,17 @@
+<nav th:fragment="pager(pagina, formId)" class="paginacao"
+     th:if="${pagina != null and pagina.totalPages > 1}">
+    <span class="pag-info"
+          th:text="|Mostrando ${pagina.number * pagina.size + 1}–${pagina.number * pagina.size + pagina.numberOfElements} de ${pagina.totalElements}|">
+        Mostrando 1–50 de 120
+    </span>
+    <div class="pag-btns">
+        <button type="button" class="pag-btn" aria-label="Página anterior"
+                th:disabled="${!pagina.hasPrevious()}"
+                th:attr="data-pagina=${pagina.number - 1},data-form=${formId}">&lsaquo;</button>
+        <span class="pag-info"
+              th:text="|Página ${pagina.number + 1} de ${pagina.totalPages}|">Página 1 de 3</span>
+        <button type="button" class="pag-btn" aria-label="Próxima página"
+                th:disabled="${!pagina.hasNext()}"
+                th:attr="data-pagina=${pagina.number + 1},data-form=${formId}">&rsaquo;</button>
+    </div>
+</nav>

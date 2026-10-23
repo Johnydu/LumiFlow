@@ -2,6 +2,7 @@ package br.com.lumiflow.controller;
 
 import br.com.lumiflow.config.AppMessages;
 import br.com.lumiflow.dto.ordens.OrdemProducaoDTO;
+import br.com.lumiflow.dto.produto.ProdutoBuscaDTO;
 import br.com.lumiflow.exception.BusinessException;
 import br.com.lumiflow.security.UsuarioDetails;
 import br.com.lumiflow.service.OrdemProducaoService;
@@ -18,7 +19,6 @@ import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
-import java.util.List;
 import java.util.Locale;
 
 @Slf4j
@@ -40,7 +40,6 @@ public class OrdemProducaoController {
             log.error("Erro inesperado ao carregar o formulário de nova ordem: {}", e.getMessage(), e);
             model.addAttribute("error", messageSource
                     .getMessage(AppMessages.ERROR_VALIDATION_FAILED, null, locale));
-            model.addAttribute("produtos", List.of());
             if (!model.containsAttribute("ordemDTO")) {
                 model.addAttribute("ordemDTO",
                         new OrdemProducaoDTO(null, null, null, null));
@@ -95,16 +94,13 @@ public class OrdemProducaoController {
     }
 
     private void carregarPaginaNovaOrdem(Model model) {
-        try {
-            model.addAttribute("produtos", produtoService.listarProdutos());
-        } catch (Exception e) {
-            log.error("Erro ao carregar produtos para a nova ordem: {}", e.getMessage(), e);
-            model.addAttribute("produtos", List.of());
-        }
-
         if (!model.containsAttribute("ordemDTO")) {
             model.addAttribute("ordemDTO",
                     new OrdemProducaoDTO(null, null, null, null));
         }
+        OrdemProducaoDTO dto = (OrdemProducaoDTO) model.getAttribute("ordemDTO");
+        ProdutoBuscaDTO produtoSelecionado = dto == null ? null
+                : produtoService.buscarParaSelecaoPorId(dto.produtoId());
+        model.addAttribute("produtoSelecionado", produtoSelecionado);
     }
 }

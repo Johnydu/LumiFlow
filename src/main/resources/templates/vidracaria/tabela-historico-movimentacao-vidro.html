@@ -1,4 +1,5 @@
-<table class="history-table" th:fragment="tabela">
+<div th:fragment="tabela">
+<table class="history-table">
     <thead>
     <tr>
         <th>Tipo</th>
@@ -38,3 +39,5 @@
 
     </tbody>
 </table>
+<div th:replace="~{fragments/paginacao :: pager(${paginaHistorico}, 'filter-form')}"></div>
+</div>

@@ -20,6 +20,7 @@
     <link rel="stylesheet" th:href="@{/css/components/badges.css}">
     <link rel="stylesheet" th:href="@{/css/components/status.css}">
     <link rel="stylesheet" th:href="@{/css/components/alerts.css}">
+    <link rel="stylesheet" th:href="@{/css/components/paginacao.css}">
     <link rel="stylesheet" th:href="@{/css/pages/vidracaria.css}">
     <link rel="stylesheet" th:href="@{/css/utils.css}">
     <link rel="stylesheet" th:href="@{/css/responsive.css}"/>
@@ -246,14 +247,17 @@
             </div>
 
             <!-- FORMULÁRIO DE FILTROS ALINHADO EM CIMA (EM LINHA) -->
-            <form id="filter-form" class="csp-style-37bf32a560">
+            <form id="filter-form" class="csp-style-37bf32a560"
+                  th:action="@{/dashboard/vidracaria/filtrar-historico}" method="get">
+                <input type="hidden" name="page"
+                       th:value="${paginaHistorico != null ? paginaHistorico.number : 0}">
 
                 <div class="field csp-style-201859ab6c">
                     <label for="filtroTipoMov">Tipo de Movimentação</label>
                     <select name="tipoMovimentacao" id="filtroTipoMov" class="form-control">
                         <option value="">Todas</option>
-                        <option value="ENTRADA" th:selected="${param.tipoMovimentacao == 'ENTRADA'}">Entrada</option>
-                        <option value="SAIDA" th:selected="${param.tipoMovimentacao == 'SAIDA'}">Saída / Consumo
+                        <option value="ENTRADA" th:selected="${tipoMovimentacaoAtual == 'ENTRADA'}">Entrada</option>
+                        <option value="SAIDA" th:selected="${tipoMovimentacaoAtual == 'SAIDA'}">Saída / Consumo
                         </option>
                     </select>
                 </div>
@@ -265,7 +269,7 @@
                         <option th:each="c : ${chapas}"
                                 th:value="${c.tipoVidro}"
                                 th:text="${c.tipoVidro}"
-                                th:selected="${param.tipoVidroFiltro == c.tipoVidro}">
+                                th:selected="${tipoVidroFiltroAtual == c.tipoVidro}">
                         </option>
                     </select>
                 </div>

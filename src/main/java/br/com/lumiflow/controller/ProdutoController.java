@@ -8,6 +8,7 @@ import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.context.MessageSource;
+import org.springframework.data.domain.Page;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
@@ -28,14 +29,18 @@ public class ProdutoController {
     private final MessageSource messageSource;
 
     @GetMapping
-    public String produtos(@RequestParam(required = false) String nome, Model model, Locale locale) {
+    public String produtos(@RequestParam(required = false) String nome,
+                           @RequestParam(value = "page", defaultValue = "0") int page,
+                           Model model, Locale locale) {
         try {
-            carregarPagina(model, nome);
+            carregarPagina(model, nome, page);
         } catch (Exception e) {
             log.error("Erro inesperado ao carregar a página de produtos: {}", e.getMessage(), e);
             model.addAttribute("error",
                     messageSource.getMessage(AppMessages.ERROR_VALIDATION_FAILED, null, locale));
             model.addAttribute("produtos", List.of());
+            model.addAttribute("pagina", Page.empty());
+            model.addAttribute("nomeAtual", nome);
             if (!model.containsAttribute("produtoDTO")) {
                 model.addAttribute("produtoDTO",
                         new ProdutoDTO(null, null, null, null));
@@ -119,7 +124,7 @@ public class ProdutoController {
     }
 
     private String erroValidacao(Model model, BindingResult result, Locale locale) {
-        carregarPagina(model, null);
+        carregarPagina(model, null, 0);
         String mensagem = result.getAllErrors().stream()
                 .findFirst()
                 .map(error -> {
@@ -133,12 +138,18 @@ public class ProdutoController {
         return "produto/Produtos";
     }
 
-    private void carregarPagina(Model model, String nome) {
+    private void carregarPagina(Model model, String nome, int page) {
         try {
-            model.addAttribute("produtos", produtoService.buscarProdutos(nome));
+            Page<br.com.lumiflow.dto.produto.ProdutoListagemDTO> pagina =
+                    produtoService.buscarProdutos(nome, page);
+            model.addAttribute("produtos", pagina.getContent());
+            model.addAttribute("pagina", pagina);
+            model.addAttribute("nomeAtual", nome);
         } catch (Exception e) {
             log.error("Erro ao carregar produtos na página: {}", e.getMessage(), e);
             model.addAttribute("produtos", List.of());
+            model.addAttribute("pagina", Page.empty());
+            model.addAttribute("nomeAtual", nome);
         }
 
         if (!model.containsAttribute("produtoDTO")) {

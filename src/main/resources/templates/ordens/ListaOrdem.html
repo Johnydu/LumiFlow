@@ -23,6 +23,7 @@
     <link rel="stylesheet" th:href="@{/css/components/status.css}">
     <link rel="stylesheet" th:href="@{/css/components/alerts.css}">
     <link rel="stylesheet" th:href="@{/css/components/modal.css}">
+    <link rel="stylesheet" th:href="@{/css/components/paginacao.css}">
     <link rel="stylesheet" th:href="@{/css/pages/listaordem.css}">
     <link rel="stylesheet" th:href="@{/css/utils.css}">
     <link rel="stylesheet" th:href="@{/css/responsive.css}">
@@ -64,15 +65,17 @@
                   class="filtros order-filters"
                   id="formFiltros">
 
+                <input type="hidden" name="page" th:value="${pagina != null ? pagina.number : 0}">
+
                 <div class="search-input-wrapper">
                     <label for="buscaOrdem">Buscar ordem</label>
                     <input class="filtro-input"
                            id="buscaOrdem"
                            type="text"
                            name="busca"
-                           th:value="${param.busca}"
-                           placeholder="Buscar número ou produto..."
-                           aria-label="Buscar número ou produto"
+                           th:value="${buscaAtual}"
+                           placeholder="Buscar número, código ou produto..."
+                           aria-label="Buscar número, código ou produto"
                            autocomplete="off"/>
                 </div>
 
@@ -80,7 +83,7 @@
                 <select class="filtro-select"
                         name="status"
                         id="filtroStatus">
-                    <option value="">Todos os status</option>
+                    <option value="" th:selected="${statusAtual == null or statusAtual.isBlank()}">Em aberto</option>
                     <option value="DISPONIVEL"
                             th:selected="${param.status != null and param.status[0] == 'DISPONIVEL'}">
                         Disponível
@@ -96,6 +99,10 @@
                     <option value="CONCLUIDA"
                             th:selected="${param.status != null and param.status[0] == 'CONCLUIDA'}">
                         Concluída
+                    </option>
+                    <option value="TODAS"
+                            th:selected="${statusAtual != null and statusAtual.equalsIgnoreCase('TODAS')}">
+                        Todos (inclui concluídas)
                     </option>
                 </select>
 
@@ -118,7 +125,7 @@
                 <span class="panel-title">Ordens</span>
 
                 <span class="panel-count"
-                      th:text="${(ordens != null ? #lists.size(ordens) : 0) + ' ordens encontradas'}">
+                      th:text="${(pagina != null ? pagina.totalElements : 0) + ' ordens encontradas'}">
                     0 ordens encontradas
                 </span>
             </div>
@@ -150,12 +157,12 @@
                         <!-- PRODUTO -->
                         <td class="produto-nome">
                             <div class="produto-celula">
-                                <span class="produto-codigo" th:text="${ordem.produtoCodigo()}"></span>
                                 <span th:text="${ordem.produtoNome() +
                                     (ordem.variante() != null
                                         ? ' (' + ordem.variante() + ')'
                                         : '')}"></span>
-                            <span th:if="${ordem.origemRefugo()}"
+                                <span class="produto-codigo" th:text="${ordem.produtoCodigo()}"></span>
+                                <span th:if="${ordem.origemRefugo()}"
                                   class="badge-refugo"
                                   title="Contém peças de refugo/retrabalho">
                                 🔧 Refugo
@@ -306,29 +313,7 @@
                 </table>
             </div>
 
-            <!-- PAGINAÇÃO ATUAL -->
-            <div class="paginacao"
-                 th:if="${ordens != null and !#lists.isEmpty(ordens)}">
-
-                <span class="pag-info"
-                      th:text="'Mostrando 1–' + ${#lists.size(ordens)} +
-                          ' de ' + ${#lists.size(ordens)} + ' ordens'">
-                </span>
-
-                <div class="pag-btns">
-                    <button class="pag-btn" type="button" disabled>
-                        &lsaquo;
-                    </button>
-
-                    <button class="pag-btn active" type="button">
-                        1
-                    </button>
-
-                    <button class="pag-btn" type="button" disabled>
-                        &rsaquo;
-                    </button>
-                </div>
-            </div>
+            <div th:replace="~{fragments/paginacao :: pager(${pagina}, 'formFiltros')}"></div>
 
         </section>
     </div>
