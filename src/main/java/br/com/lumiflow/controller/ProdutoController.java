@@ -60,7 +60,7 @@ public class ProdutoController {
         try {
             produtoService.novoProduto(dto);
             attributes.addFlashAttribute("success", messageSource
-                    .getMessage(AppMessages.SUCCESS_PRODUCT_CREATED, new Object[]{dto.nome()}, locale));
+                    .getMessage(AppMessages.SUCCESS_PRODUCT_CREATED, new Object[]{dto.identificacao()}, locale));
         } catch (BusinessException e) {
             log.warn("Erro de negócio ao criar produto '{}': {}", dto.nome(), e.getMessage());
             String errorMessage = messageSource.getMessage(e.getMessage(), null, e.getMessage(), locale);
@@ -107,7 +107,7 @@ public class ProdutoController {
         try {
             produtoService.editarProduto(id, dto);
             attributes.addFlashAttribute("success", messageSource
-                    .getMessage(AppMessages.SUCCESS_PRODUCT_UPDATED, new Object[]{dto.nome()}, locale));
+                    .getMessage(AppMessages.SUCCESS_PRODUCT_UPDATED, new Object[]{dto.identificacao()}, locale));
         } catch (BusinessException e) {
             log.warn("Erro de negócio ao editar produto id {}: {}", id, e.getMessage());
             String errorMessage = messageSource.getMessage(e.getMessage(), null, e.getMessage(), locale);

@@ -8,10 +8,12 @@ import br.com.lumiflow.service.DashboardService;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.context.MessageSource;
+import org.springframework.data.domain.Page;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestParam;
 
 import java.util.List;
 import java.util.Locale;
@@ -26,10 +28,13 @@ public class DashboardController {
     private final MessageSource messageSource;
 
     @GetMapping
-    public String carregarMetricas(Model model, Locale locale) {
+    public String carregarMetricas(@RequestParam(required = false) String busca,
+                                   @RequestParam(required = false) String status,
+                                   @RequestParam(value = "page", defaultValue = "0") int page,
+                                   Model model, Locale locale) {
         try {
             DashboardResumoDTO resumoDTO = dashboardService.obterResumoEstatisticas();
-            List<DashboardOrdemDTO> ordensAtivas = dashboardService.listarOrdensAtivas(10);
+            Page<DashboardOrdemDTO> paginaOrdens = dashboardService.listarOrdens(busca, status, page);
             List<SetorResumoDTO> resumoSetores = dashboardService.obterResumoSetores();
 
             if (resumoDTO != null) {
@@ -44,7 +49,8 @@ public class DashboardController {
                 model.addAttribute("ordensPendentes", 0L);
             }
 
-            model.addAttribute("ordensAtivas", ordensAtivas != null ? ordensAtivas : List.of());
+            model.addAttribute("paginaOrdens", paginaOrdens);
+            model.addAttribute("ordens", paginaOrdens.getContent());
             model.addAttribute("resumoSetores", resumoSetores != null ? resumoSetores : List.of());
 
         } catch (Exception e) {
@@ -54,7 +60,8 @@ public class DashboardController {
             model.addAttribute("ordensAndamento", 0L);
             model.addAttribute("ordensConcluidas", 0L);
             model.addAttribute("ordensPendentes", 0L);
-            model.addAttribute("ordensAtivas", List.of());
+            model.addAttribute("paginaOrdens", Page.empty());
+            model.addAttribute("ordens", List.of());
             model.addAttribute("resumoSetores", List.of());
         }
 

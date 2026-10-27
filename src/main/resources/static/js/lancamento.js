@@ -154,11 +154,9 @@ document.addEventListener('DOMContentLoaded', () => {
     const produtoCodigo = document.querySelector('.produto-codigo')?.textContent.trim() || '';
     const produtoNome = document.querySelector('.produto-nome')?.textContent.trim() || '';
     const produtoOP = document.querySelector('.produto-op')?.textContent.trim() || '';
+    const identificacao = [produtoCodigo, produtoNome].filter(Boolean).join(' · ');
 
-    const linhas = [criarLinhaResumo(
-      'Ordem de Produção:',
-      `${produtoOP} (${produtoCodigo} · ${produtoNome})`
-    )];
+    const linhas = [criarLinhaResumo('Ordem de Produção:', `${produtoOP} (${identificacao})`)];
 
     if (abaId === 'tab-producao') {
       linhas.push(

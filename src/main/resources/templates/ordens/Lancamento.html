@@ -50,7 +50,7 @@
         <div class="produto-destaque">
             <div>
                 <span class="produto-codigo produto-codigo--destaque" th:text="${ordem.produto.codigo}">123456</span>
-                <div class="produto-nome" th:text="${ordem.produto.nome}">Arandela 12W</div>
+                <div class="produto-nome" th:if="${ordem.produto.nome != null}" th:text="${ordem.produto.nome}">Arandela 12W</div>
                 <div class="produto-op" th:text="${ordem.numero}">OP-001</div>
             </div>
             <div class="produto-badges">

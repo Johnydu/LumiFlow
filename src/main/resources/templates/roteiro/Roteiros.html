@@ -44,13 +44,14 @@
 
         <!-- BUSCA DINÂMICA (AJAX) -->
         <form method="get" th:action="@{/dashboard/roteiros}" class="filter-form">
-            <label for="buscaRoteiro"></label>
+            <div class="field">
+            <label for="buscaRoteiro">Buscar Roteiros ou Produtos</label>
             <input type="text"
                    id="buscaRoteiro"
                    name="busca"
                    th:value="${param.busca}"
-                   class="search"
-                   placeholder="Buscar roteiro ou produto...">
+                   class="search">
+            </div>
         </form>
 
         <!-- LISTA (fragmento recarregado via AJAX) -->

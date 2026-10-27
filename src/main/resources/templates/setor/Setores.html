@@ -44,13 +44,14 @@
 
     <!-- Formulário de busca dinâmica por AJAX -->
     <form method="get" th:action="@{/dashboard/setores}" class="filter-form">
-      <label for="buscaSetor"></label>
+      <div class="field">
+      <label for="buscaSetor">Buscar Setor</label>
       <input type="text"
              id="buscaSetor"
              name="nome"
              th:value="${param.nome}"
-             class="search"
-             placeholder="Buscar setor por nome...">
+             class="search">
+      </div>
     </form>
 
     <div class="lista" th:fragment="listaSetores">

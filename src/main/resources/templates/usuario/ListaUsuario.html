@@ -44,14 +44,16 @@
         <div class="lista csp-style-69d66e5b2e">
 
             <form method="get" th:action="@{/dashboard/usuario}">
-                <label for="buscaUsuario"></label>
+                <div class="field">
+                <label for="buscaUsuario">Buscar Usuário</label>
                 <input type="text"
                        id="buscaUsuario"
                        name="nome"
                        th:value="${param.nome}"
-                       class="search"
-                       placeholder="Buscar usuário...">
+                       class="search">
+                </div>
             </form>
+
             <div class="panel">
 
                 <div class="panel-header">

@@ -277,7 +277,7 @@
   }
 
   .panel-header { min-width: 0; flex-wrap: wrap; padding: var(--space-3) var(--space-4); }
-  .table-actions { justify-content: flex-start; flex-wrap: wrap; }
+  .table-actions { justify-content: center; flex-wrap: wrap; }
   .table-actions form { display: contents; }
 
   .table-actions a,

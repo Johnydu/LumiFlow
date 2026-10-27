@@ -157,14 +157,11 @@
                         <!-- PRODUTO -->
                         <td class="produto-nome">
                             <div class="produto-celula">
-                                <span th:text="${ordem.produtoNome() +
-                                    (ordem.variante() != null
-                                        ? ' (' + ordem.variante() + ')'
-                                        : '')}"></span>
+                                <span th:text="${(ordem.produtoNome() ?: '') + (ordem.variante() != null ? ' (' + ordem.variante() + ')' : '')}"></span>
                                 <span class="produto-codigo" th:text="${ordem.produtoCodigo()}"></span>
                                 <span th:if="${ordem.origemRefugo()}"
-                                  class="badge-refugo"
-                                  title="Contém peças de refugo/retrabalho">
+                                      class="badge-refugo"
+                                      title="Contém peças de refugo/retrabalho">
                                 🔧 Refugo
                             </span>
                             </div>
@@ -178,7 +175,7 @@
                         </td>
 
                         <!-- QUANTIDADE -->
-                        <td th:text="${ordem.quantidade()}"></td>
+                        <td class="num" th:text="${ordem.quantidade()}"></td>
 
                         <!-- PROGRESSO -->
                         <td>
@@ -273,7 +270,7 @@
                                         type="button" class="btn-dividir"
                                         th:data-id="${ordem.ordemSetorId()}"
                                         th:data-qtd="${ordem.quantidade()}"
-                                        th:data-nome="${ordem.produtoNome()}"
+                                        th:data-nome="${ordem.produtoNome() ?: ordem.produtoCodigo()}"
                                         th:data-setor="${setorIdAtual}">
                                     Dividir
                                 </button>
@@ -295,7 +292,9 @@
                                       th:action="@{/dashboard/ordens-setor/{setorId}/ordens/{ordemSetorId}/pausar(setorId=${setorIdAtual}, ordemSetorId=${ordem.ordemSetorId()})}"
                                       class="pause-form">
                                     <button type="submit" class="btn-pausar"
-                                            data-csp-confirm="Voltar esta etapa para Disponível? A produção será interrompida até uma nova liberação.">Pausar</button>
+                                            data-csp-confirm="Voltar esta etapa para Disponível? A produção será interrompida até uma nova liberação.">
+                                        Pausar
+                                    </button>
                                 </form>
 
                             </div>

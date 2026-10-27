@@ -34,8 +34,9 @@ public class ProdutoService {
     private final ProdutoMapper produtoMapper;
 
     private void validarNomeProduto(String nome) {
+        // O nome é opcional: só checa duplicidade quando foi informado.
         if (nome == null || nome.isBlank()) {
-            throw new BusinessException(AppMessages.ERROR_VALIDATION_FAILED);
+            return;
         }
         if (produtoRepository.existsByNome(nome.trim().toUpperCase(Locale.ROOT))) {
             throw new BusinessException(AppMessages.ERROR_PRODUCT_NOME_DUPLICATE);
@@ -61,7 +62,7 @@ public class ProdutoService {
             validarCodigoProduto(dto.codigo());
 
             Produto produto = produtoMapper.toEntity(dto);
-            produto.setNome(dto.nome().trim());
+            produto.setNome(normalizeName(dto.nome()));
             if (dto.codigo() != null) {
                 produto.setCodigo(dto.codigo().trim());
             }
@@ -124,7 +125,9 @@ public class ProdutoService {
             }
             Produto produto = buscarProdutoPorId(id);
 
-            if (dto.nome() != null && !dto.nome().isBlank()) {
+            if (dto.nome() == null || dto.nome().isBlank()) {
+                produto.setNome(null); // apagar o nome no formulário limpa o campo
+            } else {
                 String novoNome = normalizeName(dto.nome());
                 if (!novoNome.equalsIgnoreCase(produto.getNome()) && produtoRepository.existsByNome(novoNome)) {
                     throw new BusinessException(AppMessages.ERROR_PRODUCT_NOME_DUPLICATE);
@@ -193,6 +196,8 @@ public class ProdutoService {
     }
 
     private String normalizeName(String name) {
-        return name == null ? null : name.trim().toUpperCase(Locale.ROOT);
+        return name == null || name.isEmpty() ? null : name.trim().toUpperCase(Locale.ROOT);
     }
+
+
 }

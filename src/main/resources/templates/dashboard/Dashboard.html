@@ -18,6 +18,7 @@
     <link rel="stylesheet" th:href="@{/css/components/badges.css}">
     <link rel="stylesheet" th:href="@{/css/components/status.css}">
     <link rel="stylesheet" th:href="@{/css/components/alerts.css}">
+    <link rel="stylesheet" th:href="@{/css/components/paginacao.css}">
     <link rel="stylesheet" th:href="@{/css/pages/dashboard.css}">
     <link rel="stylesheet" th:href="@{/css/utils.css}">
     <link rel="stylesheet" th:href="@{/css/responsive.css}">
@@ -72,95 +73,96 @@
                 </div>
             </div>
 
-            <!-- GRID PRINCIPAL (TABELA + SETORES) -->
-            <div class="dashboard-grid">
-
-                <!-- TABELA DE ORDENS PAGINADA -->
-                <div class="panel">
-                    <div class="panel-header">
-                        <span class="panel-title">Ordens em andamento</span>
-                        <span class="panel-count"
-                              th:text="${#lists.size(ordensAtivas) + ' ordem(ns)'}">0 ordem(ns)</span>
-                    </div>
-
-                    <table>
-                        <thead>
-                        <tr>
-                            <th>Ordem</th>
-                            <th>Produto/Codigo</th>
-                            <th>Qtd</th>
-                            <th>Progresso</th>
-                            <th>Etapa atual</th>
-                            <th class="csp-style-bda9996f7a">Ação</th>
-                        </tr>
-                        </thead>
-                        <tbody>
-                        <tr th:each="ordem : ${ordensAtivas}">
-                            <td class="num" th:text="${ordem.numero()}">-</td>
-                            <td>
-                                <div class="produto-celula">
-                                    <span th:text="${ordem.produtoNome()}">-</span>
-                                    <span class="produto-codigo"
-                                          th:if="${ordem.produtoCodigo() != null}"
-                                          th:text="${ordem.produtoCodigo()}"></span>
-                                </div>
-                            </td>
-                            <td class="num" th:text="${ordem.quantidade()}">0</td>
-                            <td>
-                                <div class="table-progress">
-                                    <span class="progress-value" th:data-progress="${#numbers.formatDecimal(ordem.progresso(), 1, 0)}"></span>
-                                </div>
-                            </td>
-                            <td>
-            <span class="status"
-                  th:classappend="${ordem.status() == 'CONCLUIDA'} ? 'status-green' : 'status-purple'"
-                  th:text="${ordem.etapaAtualNome() != null ? ordem.setorAtualNome() + ' - ' + ordem.etapaAtualNome() : ordem.setorAtualNome()}">
-                -
-            </span>
-                            </td>
-                            <td class="csp-style-dac4fe6c9b">
-                                <a sec:authorize="hasAnyRole('ADMIN','GESTAO','SUPERVISOR','PCP')"
-                                   th:href="@{/dashboard/ordens/{id}/detalhes(id=${ordem.id()})}"
-                                   class="btn-ver">Detalhes</a>
-                                <span sec:authorize="!hasAnyRole('ADMIN','GESTAO','SUPERVISOR','PCP')">—</span>
-                            </td>
-                        </tr>
-
-                        <tr th:if="${ordensAtivas == null || #lists.isEmpty(ordensAtivas)}">
-                            <td colspan="6" class="csp-style-d94bd11901">
-                                Nenhuma ordem ativa no momento.
-                            </td>
-                        </tr>
-                        </tbody>
-                    </table>
+            <!-- TABELA DE ORDENS -->
+            <div class="panel">
+                <div class="panel-header">
+                    <span class="panel-title">Ordens</span>
+                    <span class="panel-count"
+                          th:text="${(paginaOrdens != null ? paginaOrdens.totalElements : 0) + ' ordem(ns)'}">0 ordem(ns)</span>
                 </div>
 
-                <!-- ORDENS POR SETOR -->
-                <div class="panel">
-                    <div class="panel-header">
-                        <span class="panel-title">Ordens por setor</span>
-                    </div>
+                <form method="get" th:action="@{/dashboard}" id="formFiltroOrdens" class="panel-filtros">
+                    <input type="hidden" name="page" th:value="${paginaOrdens != null ? paginaOrdens.number : 0}">
 
-                    <div class="sector-list">
-                        <div class="sector-item" th:each="setor : ${resumoSetores}">
-                            <div>
-                                <h4 th:text="${setor?.nome ?: 'Sem nome'}">Nome do Setor</h4>
-                                <p th:text="${(setor?.qtdOrdens ?: 0) + ' aguardando liberação'}">0 aguardando liberação</p>
+                    <input type="text" name="busca" class="filtro-input" autocomplete="off"
+                           th:value="${param.busca}"
+                           placeholder="Buscar ordem, código ou produto..."
+                           aria-label="Buscar ordem, código ou produto">
+
+                    <select name="status" class="filtro-select" aria-label="Filtrar por situação">
+                        <option value="">Todas</option>
+                        <option value="ABERTAS" th:selected="${param.status != null and param.status[0] == 'ABERTAS'}">
+                            Em aberto
+                        </option>
+                        <option value="CONCLUIDAS"
+                                th:selected="${param.status != null and param.status[0] == 'CONCLUIDAS'}">Concluídas
+                        </option>
+                    </select>
+                </form>
+
+                <table>
+                    <thead>
+                    <tr>
+                        <th>Ordem</th>
+                        <th>Item</th>
+                        <th>Qtd</th>
+                        <th>Progresso</th>
+                        <th>Etapa atual</th>
+                        <th>Status</th>
+                        <th class="csp-style-bda9996f7a">Ação</th>
+                    </tr>
+                    </thead>
+                    <tbody>
+                    <tr th:each="ordem : ${ordens}">
+                        <td class="num" th:text="${ordem.numero()}">-</td>
+                        <td>
+                            <div class="produto-celula">
+                    <span class="produto-codigo"
+                          th:if="${ordem.produtoCodigo() != null}"
+                          th:text="${ordem.produtoCodigo()}"></span>
+                                <span th:text="${ordem.produtoNome()}">-</span>
                             </div>
-                            <div class="sector-number"
-                                 th:classappend="${setor?.qtdOrdens ?: 0} > 0 ? 'orange' : ''"
-                                 th:text="${setor?.qtdOrdens ?: 0}">
-                                0
+                        </td>
+                        <td class="num" th:text="${ordem.quantidade()}">0</td>
+                        <td>
+                            <div class="prog-wrap" th:if="${ordem.totalEtapas() > 0}">
+                                <div class="prog-track">
+                                    <div class="prog-fill progress-value"
+                                         th:classappend="${ordem.status().name() == 'CONCLUIDA'} ? 'p-con' : 'p-and'"
+                                         th:data-progress="${#numbers.formatDecimal(ordem.progresso(), 1, 0)}"></div>
+                                </div>
+                                <span class="prog-txt"
+                                      th:text="${ordem.etapasConcluidas() + '/' + ordem.totalEtapas() + ' (' + #numbers.formatDecimal(ordem.progresso(), 1, 0) + '%)'}">3/5 (60%)</span>
                             </div>
-                        </div>
+                            <span th:if="${ordem.totalEtapas() == 0}">—</span>
+                        </td>
+                        <td>
+                            <span class="status"
+                                  th:if="${ordem.setorAtualNome() != null}"
+                                  th:text="${ordem.etapaAtualNome() != null ? ordem.setorAtualNome() + ' - ' + ordem.etapaAtualNome() : ordem.setorAtualNome()}">
+                            -</span>
+                            <span th:if="${ordem.setorAtualNome() == null}">—</span>
+                        </td>
+                        <td>
+                            <span th:replace="~{fragments/status-badge :: badge(${ordem.status()})}"></span>
+                        </td>
+                        <td class="csp-style-dac4fe6c9b">
+                            <a sec:authorize="hasAnyRole('ADMIN','GESTAO','SUPERVISOR','PCP')"
+                               th:href="@{/dashboard/ordens/{id}/detalhes(id=${ordem.id()})}"
+                               class="btn-ver">Detalhes</a>
+                            <span sec:authorize="!hasAnyRole('ADMIN','GESTAO','SUPERVISOR','PCP')">—</span>
+                        </td>
+                    </tr>
 
-                        <div class="csp-style-d94bd11901"
-                             th:if="${resumoSetores == null || #lists.isEmpty(resumoSetores)}">
-                            Nenhum setor encontrado.
-                        </div>
-                    </div>
-                </div>
+                    <tr th:if="${ordens == null || #lists.isEmpty(ordens)}">
+                        <td colspan="7" class="csp-style-d94bd11901">
+                            Nenhuma ordem encontrada.
+                        </td>
+                    </tr>
+                    </tbody>
+                </table>
 
+                <div th:replace="~{fragments/paginacao :: pager(${paginaOrdens}, 'formFiltroOrdens')}"></div>
             </div>
 
         </div>

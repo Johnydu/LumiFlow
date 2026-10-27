@@ -85,7 +85,7 @@ public class OrdemDetalheService {
                 ordem.getQuantidade(),
                 ordem.getDataCriacao(),
                 ordem.getObservacao(),
-                derivarStatus(ordem, linhas),
+                StatusOrdemResolver.derivar(ordem, linhas),
                 produzidoFinal,
                 descartado,
                 percentual,
@@ -107,27 +107,10 @@ public class OrdemDetalheService {
                 .sum();
     }
 
-    /**
-     * O status gravado na ordem só assume DISPONIVEL ou CONCLUIDA. Para exibição,
-     * o status é derivado das linhas por setor.
-     */
-    private EstatusOrdemProducao derivarStatus(OrdemProducao ordem, List<OrdemSetor> linhas) {
-        if (ordem.getStatus() == EstatusOrdemProducao.CONCLUIDA) {
-            return EstatusOrdemProducao.CONCLUIDA;
-        }
-        boolean emAndamento = linhas.stream()
-                .anyMatch(l -> l.getStatus() == EstatusOrdemProducao.EM_ANDAMENTO);
-        if (emAndamento) {
-            return EstatusOrdemProducao.EM_ANDAMENTO;
-        }
-        boolean liberada = linhas.stream().anyMatch(l -> l.getStatus() == EstatusOrdemProducao.LIBERADA);
-        return liberada ? EstatusOrdemProducao.LIBERADA : EstatusOrdemProducao.DISPONIVEL;
-    }
 
-    /**
-     * Um passo só aparece como concluído quando todas as suas linhas estão concluídas
-     * e todos os passos anteriores também estão. Sem linhas, o passo está aguardando.
-     */
+
+
+
     private List<RoteiroPassoDetalheDTO> montarRoteiro(List<RoteiroPasso> roteiro, List<OrdemSetor> linhas) {
         Map<Integer, List<OrdemSetor>> porSequencia = linhas.stream()
                 .collect(Collectors.groupingBy(OrdemSetor::getSequencia));

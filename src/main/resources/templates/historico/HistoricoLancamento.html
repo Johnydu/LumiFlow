@@ -150,7 +150,7 @@
                         <td>
                             <div class="produto-celula">
                                 <span class="produto-codigo" th:if="${item.codigoProduto() != null}" th:text="${item.codigoProduto()}"></span>
-                                <span th:text="${item.produto() + (item.variante() != null and !item.variante().isBlank() ? ' (' + item.variante() + ')' : '')}"></span>
+                                <span th:text="${(item.produto() ?: '') + (item.variante() != null and !item.variante().isBlank() ? ' (' + item.variante() + ')' : '')}"></span>
                             </div>
                         </td>
                         <td th:text="${item.setor()}">Pintura</td>

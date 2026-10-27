@@ -1,7 +1,6 @@
 package br.com.lumiflow.entity;
 
 import jakarta.persistence.*;
-import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.NotNull;
 import lombok.*;
 
@@ -20,8 +19,7 @@ public class Produto extends Auditoria {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
-    @NotBlank
-    @Column(name = "nome", nullable = false)
+    @Column(name = "nome", length = 100)
     private String nome;
 
     @NotNull

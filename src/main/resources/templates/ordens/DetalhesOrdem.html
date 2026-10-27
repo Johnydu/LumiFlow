@@ -223,7 +223,7 @@
                                     type="button" class="btn-dividir"
                                     th:data-id="${etapa.ordemSetorId()}"
                                     th:data-qtd="${etapa.pendente()}"
-                                    th:data-nome="${ordem.produtoNome()}"
+                                    th:data-nome="${ordem.produtoNome() ?: ordem.produtoCodigo()}"
                                     th:data-setor="${etapa.setorId()}"
                                     th:data-ordem="${ordem.id()}">
                                 Dividir

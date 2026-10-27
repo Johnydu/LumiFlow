@@ -15,7 +15,10 @@ import br.com.lumiflow.repository.*;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.dao.DataAccessException;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageImpl;
 import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -37,6 +40,23 @@ public class DashboardService {
     private final OrdemSetorRepository ordemSetorRepository;
     private final RefugoRepository refugoRepository;
     private final RetrabalhoRepository retrabalhoRepository;
+    private static final int TAMANHO_PAGINA_ORDENS = 10;
+    private static final List<EstatusOrdemProducao> STATUS_EM_ABERTO = List.of(
+            EstatusOrdemProducao.DISPONIVEL, EstatusOrdemProducao.LIBERADA, EstatusOrdemProducao.EM_ANDAMENTO);
+
+
+    /**
+     * "ABERTAS", "CONCLUIDAS" ou qualquer outro valor (inclusive vazio) = todas.
+     */
+    private List<EstatusOrdemProducao> statusDoFiltro(String filtro) {
+        if ("ABERTAS".equalsIgnoreCase(filtro)) {
+            return STATUS_EM_ABERTO;
+        }
+        if ("CONCLUIDAS".equalsIgnoreCase(filtro)) {
+            return List.of(EstatusOrdemProducao.CONCLUIDA);
+        }
+        return List.of(EstatusOrdemProducao.values());
+    }
 
     @Transactional(readOnly = true)
     public DashboardResumoDTO obterResumoEstatisticas() {
@@ -79,17 +99,20 @@ public class DashboardService {
     }
 
     @Transactional(readOnly = true)
-    public List<DashboardOrdemDTO> listarOrdensAtivas(int limite) {
+    public Page<DashboardOrdemDTO> listarOrdens(String busca, String filtroStatus, int pagina) {
         try {
-            List<OrdemProducao> ordens = ordemProducaoRepository
-                    .findByStatusNotOrderByDataCriacaoDesc(EstatusOrdemProducao.CONCLUIDA, PageRequest.of(0, limite));
+            String termo = busca == null ? "" : busca.trim();
+            Pageable pageable = PageRequest.of(Math.max(pagina, 0), TAMANHO_PAGINA_ORDENS);
 
-            if (ordens == null || ordens.isEmpty()) {
-                return List.of();
+            Page<OrdemProducao> ordens = ordemProducaoRepository
+                    .buscarParaDashboard(termo, statusDoFiltro(filtroStatus), pageable);
+
+            if (ordens.isEmpty()) {
+                return new PageImpl<>(List.of(), pageable, ordens.getTotalElements());
             }
 
-            List<Long> ordemIds = ordens.stream().map(OrdemProducao::getId).toList();
-            Set<Long> roteiroIds = ordens.stream()
+            List<Long> ordemIds = ordens.getContent().stream().map(OrdemProducao::getId).toList();
+            Set<Long> roteiroIds = ordens.getContent().stream()
                     .map(OrdemProducao::getRoteiro)
                     .filter(Objects::nonNull)
                     .map(Roteiro::getId)
@@ -103,24 +126,26 @@ public class DashboardService {
                     .buscarPassosPorRoteiroIds(roteiroIds).stream()
                     .collect(Collectors.groupingBy(PassoDoRoteiroDTO::roteiroId));
 
-            return ordens.stream()
-                    .map(ordem -> montarDashboardOrdemDTO(
-                            ordem,
-                            etapasPorOrdem.getOrDefault(ordem.getId(), List.of()),
-                            ordem.getRoteiro() != null ? passosPorRoteiro.getOrDefault(ordem.getRoteiro().getId(), List.of()) : List.of()
-                    ))
-                    .toList();
+            return ordens.map(ordem -> montarDashboardOrdemDTO(
+                    ordem,
+                    etapasPorOrdem.getOrDefault(ordem.getId(), List.of()),
+                    ordem.getRoteiro() != null
+                            ? passosPorRoteiro.getOrDefault(ordem.getRoteiro().getId(), List.of())
+                            : List.of()));
 
         } catch (DataAccessException e) {
-            log.error("Erro de base de dados ao listar ordens ativas para o dashboard (limite {}): {}", limite, e.getMessage(), e);
+            log.error("Erro de base de dados ao listar ordens para o dashboard: {}", e.getMessage(), e);
             throw new BusinessException(AppMessages.ERROR_VALIDATION_FAILED);
         } catch (Exception e) {
-            log.error("Erro inesperado ao listar ordens ativas para o dashboard (limite {}): {}", limite, e.getMessage(), e);
+            log.error("Erro inesperado ao listar ordens para o dashboard: {}", e.getMessage(), e);
             throw new BusinessException(AppMessages.ERROR_VALIDATION_FAILED);
         }
     }
 
-    private DashboardOrdemDTO montarDashboardOrdemDTO(OrdemProducao ordem, List<OrdemSetor> etapas, List<PassoDoRoteiroDTO> roteiro) {
+    private DashboardOrdemDTO montarDashboardOrdemDTO(OrdemProducao ordem, List<OrdemSetor> etapas,
+                                                      List<PassoDoRoteiroDTO> roteiro) {
+        EstatusOrdemProducao status = StatusOrdemResolver.derivar(ordem, etapas);
+        boolean concluida = status == EstatusOrdemProducao.CONCLUIDA;
 
         long totalEtapas = roteiro.stream().map(PassoDoRoteiroDTO::sequencia).distinct().count();
 
@@ -130,23 +155,30 @@ public class DashboardService {
                 .collect(Collectors.toSet());
 
         long sequenciasTotais = etapas.stream().map(OrdemSetor::getSequencia).distinct().count();
-        long etapasConcluidas = sequenciasTotais - sequenciasComPendencia.size();
+        long etapasConcluidasCalculadas = sequenciasTotais - sequenciasComPendencia.size();
 
-        double progresso = totalEtapas == 0 ? 0.0 : (etapasConcluidas * 100.0) / totalEtapas;
+        // Ordem concluída: todas as etapas do roteiro. Demais: nunca fora do intervalo [0, total].
+        int etapasConcluidas = concluida
+                ? (int) totalEtapas
+                : (int) Math.max(0, Math.min(etapasConcluidasCalculadas, totalEtapas));
 
-        OrdemSetor etapaAtual = etapas.stream()
+        // Ordem concluída é sempre 100%; as demais, etapas concluídas sobre o total do roteiro.
+        double progresso = concluida ? 100.0
+                : (totalEtapas == 0 ? 0.0 : (etapasConcluidas * 100.0) / totalEtapas);
+
+
+        OrdemSetor etapaAtual = concluida ? null : etapas.stream()
                 .filter(os -> os.getStatus() != EstatusOrdemProducao.CONCLUIDA)
                 .max(Comparator.comparing(OrdemSetor::getSequencia))
                 .orElse(null);
 
         String etapaNome = null;
-        String setorNome = "Concluída";
+        String setorNome = null;
 
         if (etapaAtual != null) {
             if (etapaAtual.getSetor() != null) {
                 setorNome = etapaAtual.getSetor().getNome();
             }
-            // Filtra e pega etapaNome() direto do PassoDoRoteiroDTO
             etapaNome = roteiro.stream()
                     .filter(pp -> pp.sequencia().equals(etapaAtual.getSequencia()) && pp.etapaNome() != null)
                     .map(PassoDoRoteiroDTO::etapaNome)
@@ -161,9 +193,11 @@ public class DashboardService {
                 ordem.getProduto() != null ? ordem.getProduto().getCodigo() : null,
                 ordem.getQuantidade(),
                 progresso,
+                etapasConcluidas,
+                (int) totalEtapas,
                 etapaNome,
                 setorNome,
-                ordem.getStatus() != null ? ordem.getStatus().name() : null
+                status
         );
     }
 

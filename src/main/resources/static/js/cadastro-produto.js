@@ -70,7 +70,7 @@ function editarProduto(id, nome, codigo, descricao) {
   if (idInput) idInput.value = id;
 
   const nomeInput = document.getElementById('nomeProduto');
-  if (nomeInput) nomeInput.value = nome;
+  if (nomeInput) nomeInput.value = nome || '';
 
   const codigoInput = document.getElementById('codigoProduto');
   if (codigoInput) codigoInput.value = codigo;

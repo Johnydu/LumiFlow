@@ -21,7 +21,10 @@ public interface ProdutoMapper {
 
     List<ProdutoDTO>  toListDTO(List<Produto> produtoList);
 
-    List<ProdutoListagemDTO>  toListagemDTO(List<Produto> produtoListagem);
+    @Mapping(target = "roteiroCodigo", source = "roteiro.codigo")
+    @Mapping(target = "roteiroDescricao", source = "roteiro.descricao")
+    ProdutoListagemDTO toListagemDTO(Produto produto);
 
+    List<ProdutoListagemDTO> toListagemDTO(List<Produto> produtoListagem);
 
 }

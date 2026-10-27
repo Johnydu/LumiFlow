@@ -49,14 +49,15 @@
 
     <div class="content">
         <form method="get" th:action="@{/dashboard/produtos}" id="form-busca-produto">
-            <input type="hidden" name="page" th:value="${pagina != null ? pagina.number : 0}">
-            <label for="buscaProduto"></label>
-            <input type="text"
-                   id="buscaProduto"
-                   name="nome"
-                   th:value="${nomeAtual}"
-                   class="search"
-                   placeholder="🔍 Buscar por nome ou código...">
+            <div class="field">
+                <label for="buscaProduto">Buscar por produto ou código</label>
+                <input type="text"
+                       id="buscaProduto"
+                       name="nome"
+                       th:value="${nomeAtual}"
+                       class="search">
+                <input type="hidden" name="page" th:value="${pagina != null ? pagina.number : 0}">
+            </div>
         </form>
 
         <!-- INÍCIO DO FRAGMENTO DA LISTA -->
@@ -81,6 +82,7 @@
                     <tr>
                         <th>Produto</th>
                         <th>Código</th>
+                        <th>Roteiro</th>
                         <th>Descrição</th>
                         <th class="csp-style-7c07cdf8bd">Ações</th>
                     </tr>
@@ -90,11 +92,19 @@
                     <tr th:each="produto : ${produtos}">
                         <td>
                             <div class="produto-info">
-                                <div class="produto-nome" th:text="${produto.nome}"></div>
+                                <div class="produto-nome" th:text="${produto.nome != null ? produto.nome : '—'}"></div>
                             </div>
                         </td>
 
                         <td><span class="produto-codigo" th:text="${produto.codigo}"></span></td>
+
+                        <td>
+                            <span class="tag-maq"
+                                  th:if="${produto.roteiroCodigo != null}"
+                                  th:text="${produto.roteiroCodigo}"
+                                  th:title="${produto.roteiroDescricao}"></span>
+                            <span class="tag-alerta" th:if="${produto.roteiroCodigo == null}">Sem roteiro</span>
+                        </td>
 
                         <td class="produto-desc" th:text="${produto.descricao}"></td>
 
@@ -106,7 +116,7 @@
                                         th:data-nome="${produto.nome}"
                                         th:data-codigo="${produto.codigo}"
                                         th:data-descricao="${produto.descricao}"
-                                       data-csp-action="handleEditarProduto" data-csp-argument="element">
+                                        data-csp-action="handleEditarProduto" data-csp-argument="element">
                                     ✏ Editar
                                 </button>
 
@@ -116,7 +126,7 @@
                                            th:name="${_csrf.parameterName}" th:value="${_csrf.token}"/>
                                     <button type="submit"
                                             class="btn-del"
-                                           data-csp-confirm="Tem certeza que deseja excluir este produto?">
+                                            data-csp-confirm="Tem certeza que deseja excluir este produto?">
                                         🗑 Excluir
                                     </button>
                                 </form>
@@ -164,14 +174,14 @@
                     <div class="modal-body csp-style-dbc770e380">
                         <div class="field csp-style-ef1f3a5dff">
                             <label for="nomeProduto" class="csp-style-e4c9ee3efa">
-                                Nome do produto <span class="csp-style-1f62937642">*</span>
+                                Nome do produto
                             </label>
 
                             <input type="text" class="csp-style-51fd58adb1"
                                    id="nomeProduto"
                                    th:field="*{nome}"
                                    placeholder="Ex: Plafon"
-                                  >
+                            >
                         </div>
 
                         <div class="field csp-style-ef1f3a5dff">
@@ -183,7 +193,7 @@
                                    id="codigoProduto"
                                    th:field="*{codigo}"
                                    placeholder="Ex: 123456" required
-                                  >
+                            >
                         </div>
 
                         <div class="field csp-style-ef1f3a5dff">
@@ -196,7 +206,7 @@
                                       maxlength="500"
                                       rows="4"
                                       placeholder="Descrição do produto"
-                                     >
+                            >
                             </textarea>
                         </div>
                     </div>
@@ -204,7 +214,7 @@
                     <div class="modal-actions">
                         <button type="button"
                                 class="btn-cancel"
-                               data-csp-action="hideForm">
+                                data-csp-action="hideForm">
                             Cancelar
                         </button>
 

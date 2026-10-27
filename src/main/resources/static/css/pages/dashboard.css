@@ -18,3 +18,16 @@
   align-items: center;
   text-align: center; /* Garante que os textos e números fiquem centralizados */
 }
+
+.panel-filtros {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: var(--space-3);
+  padding: var(--space-3) var(--space-5);
+  border-bottom: 1px solid var(--border-subtle);
+}
+
+.panel-filtros .filtro-input {
+  flex: 1 1 220px;
+}

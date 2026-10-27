@@ -1,5 +1,7 @@
 package br.com.lumiflow.dto.dashboard;
 
+import br.com.lumiflow.entity.enums.EstatusOrdemProducao;
+
 public record DashboardOrdemDTO(
         Long id,
         String numero,
@@ -7,7 +9,9 @@ public record DashboardOrdemDTO(
         String produtoCodigo,
         Integer quantidade,
         Double progresso,
+        int etapasConcluidas,
+        int totalEtapas,
         String etapaAtualNome,
         String setorAtualNome,
-        String status
+        EstatusOrdemProducao status
 ) {}
