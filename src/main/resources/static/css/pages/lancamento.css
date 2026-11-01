@@ -137,9 +137,17 @@ body.page-ordemproducao-lancamento .topbar {
   gap: var(--space-4);
 }
 
-/* Joga o botão que estava na direita para o lado esquerdo (antes do menu hambúrguer) */
+body.page-ordemproducao-lancamento .topbar-left {
+  display: contents;
+}
+
+body.page-ordemproducao-lancamento .topbar .menu-toggle {
+  order: 0;
+  flex-shrink: 0;
+}
+
 body.page-ordemproducao-lancamento .topbar > .btn-novo {
-  order: -1;
+  order: 1;
 
   /* Ajustes visuais para transformar o botão de ação principal em um botão secundário/voltar */
   background: var(--surface-subtle);
@@ -149,6 +157,10 @@ body.page-ordemproducao-lancamento .topbar > .btn-novo {
   font-size: 0.9rem;
   box-shadow: none;
   transform: none;
+}
+
+body.page-ordemproducao-lancamento .topbar-title {
+  order: 2;
 }
 
 body.page-ordemproducao-lancamento .topbar > .btn-novo:hover {

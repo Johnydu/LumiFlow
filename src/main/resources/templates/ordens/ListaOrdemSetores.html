@@ -1,5 +1,6 @@
 <!DOCTYPE html>
-<html lang="pt-BR" th:lang="${#locale.toLanguageTag()}" xmlns:th="http://www.thymeleaf.org">
+<html lang="pt-BR" th:lang="${#locale.toLanguageTag()}" xmlns:th="http://www.thymeleaf.org"
+      xmlns:sec="http://www.w3.org/1999/xhtml">
 <head>
     <th:block th:replace="~{fragments/theme :: init}"></th:block>
     <meta charset="UTF-8"/>
@@ -33,11 +34,14 @@
 <main class="main">
 
     <!-- TOPBAR -->
+
+
     <div th:replace="~{fragments/topbar :: topbar(
-        'Setores de Produção',
-        '+ Nova Ordem',
-        'novaOrdemForm'
-    )}"></div>
+    'Setores de Produção',
+    '+ Nova Ordem',
+    'novaOrdemForm',
+    false
+)}"></div>
 
     <div class="content">
 
@@ -105,14 +109,14 @@
                             </span>
                         </div>
                     </td>
-                    
+
 
                     <td class="csp-style-dac4fe6c9b">
                         <a th:href="@{/dashboard/ordens-setor/{setorId}(setorId=${item.setorId()})}" class="btn-ver">
                             Ver
                         </a>
                     </td>
-                    
+
 
                 </tr>
 

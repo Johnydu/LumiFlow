@@ -5,7 +5,8 @@
     <!-- Topo da Sidebar: Logo e Botão de Fechar Responsivo -->
     <div class="sidebar-header">
         <div class="logo">LumiFlow</div>
-        <button class="menu-toggle sidebar-close" data-csp-action="toggleSidebar" aria-label="Fechar Menu">
+        <button type="button" class="menu-toggle sidebar-close"
+                data-csp-action="toggleSidebar" aria-label="Fechar Menu" aria-expanded="false">
             ☰
         </button>
     </div>
@@ -70,7 +71,7 @@
         <div class="menu-title">SISTEMA</div>
         <div class="menu">
             <a th:href="@{/dashboard/configuracoes}"
-               sec:authorize="hasAnyRole('OPERADOR','ADMIN','SUPERVISOR','GESTAO','PCP')"
+               sec:authorize="hasAnyRole('ADMIN','SUPERVISOR','GESTAO','PCP')"
                th:classappend="${activePage == 'configuracoes'} ? 'active'"
                class="menu-item">Configurações</a>
 

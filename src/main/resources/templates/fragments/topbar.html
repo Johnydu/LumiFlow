@@ -2,7 +2,7 @@
 <html xmlns:th="http://www.thymeleaf.org"
       xmlns:sec="http://www.thymeleaf.org/extras/spring-security">
 
-<th:block th:fragment="topbar(titulo, textoBotao, acaoBotao)">
+<th:block th:fragment="topbar(titulo, textoBotao, acaoBotao, publico)">
 
     <div class="sidebar-overlay" aria-hidden="true"></div>
 
@@ -10,7 +10,9 @@
         <div class="topbar-left">
             <button class="menu-toggle"
                     data-csp-action="toggleSidebar"
-                    aria-label="Abrir Menu">
+                    aria-label="Alternar menu"
+                    aria-controls="sidebar"
+                    aria-expanded="true">
                 ☰
             </button>
 
@@ -19,8 +21,14 @@
             </span>
         </div>
 
-        <!-- Botão protegido: Só aparece se houver texto e o utilizador tiver permissão de superior/gestão -->
-        <button th:if="${textoBotao != null}"
+        <button th:if="${textoBotao != null and publico}"
+                class="btn-novo"
+                th:text="${textoBotao}"
+                th:attr="data-csp-action=${acaoBotao}">
+        </button>
+
+        <!-- Ações administrativas continuam protegidas por role. -->
+        <button th:if="${textoBotao != null and !publico}"
                 sec:authorize="hasAnyRole('ADMIN', 'GESTAO', 'SUPERVISOR', 'PCP')"
                 class="btn-novo"
                 th:text="${textoBotao}"

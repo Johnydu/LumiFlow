@@ -1,8 +1,8 @@
 /*
- * RESPONSIVE.CSS
- * Layout "sanduíche": desktop amplo, tablet condensado e celular empilhado.
- * Este arquivo é carregado por último para manter os ajustes de viewport em um só lugar.
- */
+- RESPONSIVE.CSS
+- Layout "sanduíche": desktop amplo, tablet condensado e celular empilhado.
+- Este arquivo é carregado por último para manter os ajustes de viewport em um só lugar.
+*/
 
 /* Tablet horizontal e notebooks menores */
 @media (max-width: 1200px) {
@@ -27,6 +27,10 @@
 
 /* Tablet e celular: a navegação vira drawer e o conteúdo ocupa a viewport. */
 @media (max-width: 1024px) {
+  body.sidebar-collapsed .main {
+    margin-left: 0;
+  }
+
   .main {
     width: 100%;
     max-width: 100%;
@@ -42,6 +46,7 @@
     transform: translateX(-100%);
     transition: transform 180ms ease;
     overflow-y: auto;
+    will-change: transform;
   }
 
   .sidebar.open { transform: translateX(0); }
@@ -50,14 +55,23 @@
   .menu-toggle { display: inline-flex; align-items: center; justify-content: center; }
 
   .sidebar-overlay {
-    display: none;
+    display: block;
     position: fixed;
     inset: 0;
     z-index: 9998;
     background: var(--surface-overlay);
+    visibility: hidden;
+    opacity: 0;
+    pointer-events: none;
+    transition: opacity 180ms ease, visibility 180ms ease;
   }
 
-  .sidebar-overlay.open { display: block; }
+  .sidebar-overlay.open {
+    visibility: visible;
+    opacity: 1;
+    pointer-events: auto;
+  }
+
   body.sidebar-open { overflow: hidden; }
 
   .topbar {
@@ -198,6 +212,22 @@
     flex: 0 1 auto;
     min-width: 0;
     max-width: 100%;
+  }
+}
+
+@media (min-width: 1025px) {
+  .topbar .menu-toggle {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .sidebar,
+  .sidebar-overlay,
+  .main {
+    transition-duration: 0.01ms;
   }
 }
 

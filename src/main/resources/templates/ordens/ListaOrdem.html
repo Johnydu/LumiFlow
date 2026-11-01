@@ -45,7 +45,8 @@
     <div th:replace="~{fragments/topbar :: topbar(
         'Ordens de Produção',
         'VOLTAR',
-        'voltarPagina'
+        'voltarPagina',
+        true
     )}"></div>
 
     <div class="content">
@@ -68,15 +69,17 @@
                 <input type="hidden" name="page" th:value="${pagina != null ? pagina.number : 0}">
 
                 <div class="search-input-wrapper">
-                    <label for="buscaOrdem">Buscar ordem</label>
-                    <input class="filtro-input"
-                           id="buscaOrdem"
-                           type="text"
-                           name="busca"
-                           th:value="${buscaAtual}"
-                           placeholder="Buscar número, código ou produto..."
-                           aria-label="Buscar número, código ou produto"
-                           autocomplete="off"/>
+                    <div class="field">
+                        <label for="buscaOrdem">Buscar ordem</label>
+                        <input class="filtro-input"
+                               id="buscaOrdem"
+                               type="text"
+                               name="busca"
+                               th:value="${buscaAtual}"
+                               placeholder="Buscar número, código ou produto..."
+                               aria-label="Buscar número, código ou produto"
+                               autocomplete="off"/>
+                    </div>
                 </div>
 
                 <label for="filtroStatus">Filtrar por status</label>

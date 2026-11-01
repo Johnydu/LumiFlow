@@ -10,9 +10,18 @@ body.page-lancamentos .topbar {
   gap: var(--space-4);
 }
 
+body.page-lancamentos .topbar-left {
+  display: contents;
+}
+
+body.page-lancamentos .topbar .menu-toggle {
+  order: 0;
+  flex-shrink: 0;
+}
+
 body.page-lancamentos .topbar > .btn-novo,
 body.page-lancamentos .topbar > button[onclick*="voltar"] {
-  order: -1;
+  order: 1;
   display: inline-flex;
   align-items: center;
   justify-content: center;
@@ -32,6 +41,10 @@ body.page-lancamentos .topbar > button[onclick*="voltar"] {
   transform: none;
   backdrop-filter: blur(var(--blur-sm));
   transition: all 0.15s ease;
+}
+
+body.page-lancamentos .topbar-title {
+  order: 2;
 }
 
 body.page-lancamentos .topbar > .btn-novo:hover,

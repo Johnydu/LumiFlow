@@ -59,6 +59,7 @@ textarea {
   min-height: 100vh;
   margin-left: var(--sidebar-width);
   overflow: visible;
+  transition: margin-left 240ms ease;
 }
 
 .content {

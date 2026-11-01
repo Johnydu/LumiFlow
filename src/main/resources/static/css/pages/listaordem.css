@@ -148,8 +148,17 @@ body.page-ordemproducao-listaordem .topbar {
   gap: var(--space-4);
 }
 
+body.page-ordemproducao-listaordem .topbar-left {
+  display: contents;
+}
+
+body.page-ordemproducao-listaordem .topbar .menu-toggle {
+  order: 0;
+  flex-shrink: 0;
+}
+
 body.page-ordemproducao-listaordem .topbar > .btn-novo {
-  order: -1;
+  order: 1;
   background: var(--surface-subtle);
   color: var(--color-text);
   min-height: 40px;
@@ -157,6 +166,10 @@ body.page-ordemproducao-listaordem .topbar > .btn-novo {
   font-size: 0.9rem;
   box-shadow: none;
   transform: none;
+}
+
+body.page-ordemproducao-listaordem .topbar-title {
+  order: 2;
 }
 
 body.page-ordemproducao-listaordem .topbar > .btn-novo:hover {
