@@ -13,6 +13,7 @@ body.page-ordemproducao-lancamento .main {
 body.page-ordemproducao-lancamento .content {
   width: 100%;
   max-width: 1200px;
+  margin-inline: auto;
   overflow: visible;
   gap: var(--space-5);
 }

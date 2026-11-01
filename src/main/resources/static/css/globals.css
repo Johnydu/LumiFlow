@@ -9,8 +9,6 @@ body {
   height: 100%;
   margin: 0;
   padding: 0;
-  overflow-x: hidden;
-  overflow-x: clip;
   box-sizing: border-box;
 }
 
@@ -26,7 +24,7 @@ body {
   background: url("/images/fundo.webp") no-repeat center center fixed var(--color-bg);
   background-size: cover;
   color: var(--color-text);
-  font-family: var(--font-family-base), serif;
+  font-family: var(--font-family-base);
   line-height: var(--line-height-normal);
   overflow-y: auto; /* A página inteira gerencia o scroll vertical no canto da tela */
 }
@@ -124,7 +122,7 @@ textarea {
 /* Aumenta o espaçamento interno das células para dar mais "respiro" e preencher melhor o espaço */
 table th,
 table td {
-  font-size: 0.95rem; /* Garante que o texto tenha um tamanho excelente para leitura */
+  font-size: var(--font-size-md);
 }
 
 /* Respiro das células apenas no desktop: abaixo de 1024px as tabelas viram cards
@@ -132,13 +130,13 @@ table td {
 @media (min-width: 1025px) {
   table th,
   table td {
-    padding: 16px 20px !important;
+    padding: var(--table-cell-padding);
   }
 }
 
 /* Deixa os cabeçalhos das tabelas um pouco mais destacados e limpos */
 table th {
-  font-weight: 600;
+  font-weight: var(--font-weight-semibold);
   letter-spacing: 0.02em;
 }
 
@@ -146,8 +144,8 @@ table th {
 table td .btn,
 table td button,
 table td a.btn {
-  padding: 8px 14px;
-  font-size: 0.9rem;
+  padding: var(--space-2) var(--space-3);
+  font-size: var(--font-size-sm);
 }
 
 /* ======================================== */

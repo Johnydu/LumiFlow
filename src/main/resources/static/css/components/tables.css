@@ -69,6 +69,7 @@ tr:hover td {
   color: var(--color-muted);
   font-family: monospace;
   font-size: var(--font-size-sm);
+
 }
 
 .prog-wrap {

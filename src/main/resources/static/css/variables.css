@@ -110,6 +110,10 @@
     --color-cyan: #00f2fe;
     --color-cyan-strong: #00c6ff;
     --color-cyan-blue: #0072ff;
+    --cyan-alpha-12: rgba(0, 242, 254, 0.12);
+    --cyan-alpha-20: rgba(0, 242, 254, 0.2);
+    --cyan-alpha-25: rgba(0, 242, 254, 0.25);
+    --cyan-alpha-50: rgba(0, 242, 254, 0.5);
     --color-night: #030712;
     --color-slate-100: #f1f5f9;
     --color-slate-200: #e2e8f0;

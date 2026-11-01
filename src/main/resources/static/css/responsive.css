@@ -123,6 +123,11 @@
     border-spacing: 0;
   }
 
+  body.page-lancamentos .history-table-scroll .responsive-table,
+  body.page-ordemproducao-listaordem .order-table-scroll .responsive-table {
+    min-width: 0;
+  }
+
   .responsive-table thead {
     position: absolute;
     width: 1px;
@@ -146,7 +151,7 @@
 
   .responsive-table tbody td {
     display: grid;
-    grid-template-columns: minmax(96px, 34%) minmax(0, 1fr);
+    grid-template-columns: minmax(6rem, 34%) minmax(0, 1fr);
     align-items: start;
     gap: var(--space-2);
     width: 100% !important;
@@ -328,7 +333,7 @@
   body.page-vidracaria-vidracaria .saldo-grid { grid-template-columns: 1fr; }
 
   .panel-header { align-items: flex-start; flex-direction: column; }
-  .responsive-table tbody td { grid-template-columns: minmax(84px, 32%) minmax(0, 1fr); }
+  .responsive-table tbody td { grid-template-columns: minmax(5.25rem, 32%) minmax(0, 1fr); }
 
   .modal-actions { flex-direction: column-reverse; }
   .modal-actions > * { width: 100%; flex-basis: auto; }
