@@ -4,6 +4,8 @@ Sistema web para gestão do fluxo de produção de uma vidraçaria. O LumiFlow c
 
 > **Status:** MVP funcional em evolução.
 
+> **Documentação completa:** escopo, requisitos, diagramas, telas e banco de dados em [docs/LumiFlow_Documentacao_Oficial.pdf](docs/LumiFlow_Documentacao_Oficial.pdf).
+
 ## Sumário
 
 - [Visão geral](#visão-geral)
