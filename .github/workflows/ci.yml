@@ -1,0 +1,54 @@
+# CI do LumiFlow: compila e roda toda a suíte de testes a cada push/PR.
+# O teste de contexto (LumiflowApplicationTests) sobe a aplicação inteira, então o job
+# cria um Postgres descartável e usa o perfil prod: isso também valida as migrações
+# Flyway e o ddl-auto=validate contra um banco limpo, como acontece no Railway.
+name: CI
+
+on:
+  push:
+    branches: [main, develop]
+  pull_request:
+    branches: [main]
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    timeout-minutes: 15
+
+    services:
+      postgres:
+        image: postgres:16
+        env:
+          POSTGRES_DB: lumiflow
+          POSTGRES_USER: lumiflow
+          POSTGRES_PASSWORD: lumiflow
+        ports: ["5432:5432"]
+        options: >-
+          --health-cmd pg_isready
+          --health-interval 5s
+          --health-timeout 5s
+          --health-retries 10
+
+    env:
+      # Credenciais apenas do banco descartável do CI; nada de produção aqui.
+      SPRING_PROFILES_ACTIVE: prod
+      PGHOST: localhost
+      PGPORT: 5432
+      PGDATABASE: lumiflow
+      PGUSER: lumiflow
+      PGPASSWORD: lumiflow
+      TZ: America/Sao_Paulo
+
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/setup-java@v4
+        with:
+          distribution: temurin
+          java-version: "21"
+          cache: maven
+
+      - name: Compilar e testar
+        run: |
+          chmod +x mvnw
+          ./mvnw -B verify
