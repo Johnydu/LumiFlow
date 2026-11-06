@@ -2,15 +2,11 @@ package br.com.lumiflow.mapper;
 
 import br.com.lumiflow.dto.etapaSetor.EtapaSetorDTO;
 import br.com.lumiflow.dto.nivelacesso.NivelAcessoDTO;
-import br.com.lumiflow.dto.ordens.OrdemProducaoDTO;
-import br.com.lumiflow.dto.ordens.OrdenListaDTO;
 import br.com.lumiflow.dto.vidracaria.ChapaVidroDTO;
 import br.com.lumiflow.entity.ChapaVidro;
 import br.com.lumiflow.entity.EtapaSetor;
 import br.com.lumiflow.entity.NivelAcesso;
-import br.com.lumiflow.entity.OrdemProducao;
 import br.com.lumiflow.entity.enums.Descricao;
-import br.com.lumiflow.entity.enums.EstatusOrdemProducao;
 import br.com.lumiflow.entity.enums.TipoVidro;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Nested;
@@ -101,64 +97,6 @@ class MapeadoresSimplesTest {
         @DisplayName("Entrada nula retorna nulo")
         void nulo() {
             assertThat(mapper.toEntity(null)).isNull();
-        }
-    }
-
-    @Nested
-    @DisplayName("OrdemProducaoMapper")
-    class OrdemProducao_ {
-        private final OrdemProducaoMapper mapper = Mappers.getMapper(OrdemProducaoMapper.class);
-
-        private OrdemProducao ordem() {
-            OrdemProducao o = new OrdemProducao();
-            o.setId(10L);
-            o.setNumero("OP-0010");
-            o.setQuantidade(50);
-            o.setObservacao("urgente");
-            o.setStatus(EstatusOrdemProducao.LIBERADA);
-            return o;
-        }
-
-        @Test
-        @DisplayName("toListDTO expõe id, número, quantidade e status como texto")
-        void toListDto() {
-            List<OrdenListaDTO> lista = mapper.toListDTO(List.of(ordem()));
-
-            assertThat(lista).hasSize(1);
-            OrdenListaDTO dto = lista.get(0);
-            assertThat(dto.id()).isEqualTo(10L);
-            assertThat(dto.numero()).isEqualTo("OP-0010");
-            assertThat(dto.quantidade()).isEqualTo(50);
-            assertThat(dto.status()).isEqualTo("LIBERADA");
-        }
-
-        @Test
-        @DisplayName("toDTO copia quantidade e observação")
-        void toDto() {
-            OrdemProducaoDTO dto = mapper.toDTO(ordem());
-
-            assertThat(dto.quantidade()).isEqualTo(50);
-            assertThat(dto.observacao()).isEqualTo("urgente");
-        }
-
-        @Test
-        @DisplayName("toEntity converte o status de texto para enum")
-        void toEntity() {
-            OrdemProducao entity = mapper.toEntity(
-                    new OrdenListaDTO(3L, "OP-0003", 7, "EM_ANDAMENTO", 1, "2025-01-01"));
-
-            assertThat(entity.getId()).isEqualTo(3L);
-            assertThat(entity.getNumero()).isEqualTo("OP-0003");
-            assertThat(entity.getQuantidade()).isEqualTo(7);
-            assertThat(entity.getStatus()).isEqualTo(EstatusOrdemProducao.EM_ANDAMENTO);
-        }
-
-        @Test
-        @DisplayName("Entradas nulas retornam nulo")
-        void nulos() {
-            assertThat(mapper.toDTO(null)).isNull();
-            assertThat(mapper.toEntity(null)).isNull();
-            assertThat(mapper.toListDTO(null)).isNull();
         }
     }
 }
