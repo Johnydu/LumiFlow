@@ -5,8 +5,9 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
     <title>Login - LumiFlow</title>
 
-    <link rel="preload" as="image" href="/images/fundo.webp">
+    <link rel="preload" as="image" th:href="@{/images/fundo.webp}">
     <link rel="stylesheet" th:href="@{/css/variables.css}">
+    <link rel="stylesheet" th:href="@{/css/components/csp-migrated.css}">
     <link rel="stylesheet" th:href="@{/css/pages/login.css}">
     <link rel="stylesheet" th:href="@{/css/responsive.css}">
     <link rel="stylesheet" th:href="@{/css/components/alerts.css}">
@@ -116,7 +117,8 @@
                 <div class="input-wrapper">
                     <i class="fa-solid fa-lock input-icon"></i>
                     <input type="password" id="password" name="senha" placeholder="Digite sua senha" required/>
-                    <button type="button" class="toggle-password" data-csp-action="togglePasswordVisibility">
+                    <button type="button" class="toggle-password" data-csp-action="togglePasswordVisibility"
+                            aria-label="Mostrar ou ocultar senha" aria-controls="password">
                         <i class="fa-regular fa-eye" id="toggleIcon"></i>
                     </button>
                 </div>
@@ -148,7 +150,7 @@
         </div>
 
         <div class="security-footer">
-            <i class="fa-regular fa-shield-check"></i>
+            <i class="fa-solid fa-shield-halved" aria-hidden="true"></i>
             <span>Sistema seguro e protegido</span>
         </div>
 
@@ -156,7 +158,7 @@
 
 </div>
 
-<script th:src="@{/js/login.js}"></script>
-<script th:src="@{/js/alerts.js}"></script>
+<script th:src="@{/js/login.js}" defer></script>
+<script th:src="@{/js/alerts.js}" defer></script>
 </body>
 </html>

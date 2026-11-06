@@ -84,7 +84,7 @@ public class LancamentoController {
 
         } catch (BusinessException e) {
             log.warn("Erro de negócio ao lançar produção na ordem {}: {}", ordemId, e.getMessage());
-            attributes.addFlashAttribute("error", traduzir(e, locale));
+            attributes.addFlashAttribute("error", MensagensWeb.de(messageSource, e, locale));
             attributes.addFlashAttribute("producaoDTO", dto);
             return "redirect:/dashboard/ordens/" + ordemId + "/setor/" + ordemSetorId + "/lancar";
         }
@@ -111,7 +111,7 @@ public class LancamentoController {
             return "redirect:/dashboard/ordens/" + ordemId + "/setor/" + ordemSetorId + "/lancar";
         } catch (BusinessException e) {
             log.warn("Erro de negócio ao registar refugo na ordem {}: {}", ordemId, e.getMessage());
-            attributes.addFlashAttribute("error", traduzir(e, locale));
+            attributes.addFlashAttribute("error", MensagensWeb.de(messageSource, e, locale));
             attributes.addFlashAttribute("refugoDTO", dto);
             return "redirect:/dashboard/ordens/" + ordemId + "/setor/" + ordemSetorId + "/lancar";
         }
@@ -140,7 +140,7 @@ public class LancamentoController {
 
         } catch (BusinessException e) {
             log.warn("Erro de negócio ao registar retrabalho na ordem {}: {}", ordemId, e.getMessage());
-            attributes.addFlashAttribute("error", traduzir(e, locale));
+            attributes.addFlashAttribute("error", MensagensWeb.de(messageSource, e, locale));
             attributes.addFlashAttribute("retrabalhoDTO", dto);
             return "redirect:/dashboard/ordens/" + ordemId + "/setor/" + ordemSetorId + "/lancar";
         }
@@ -149,21 +149,9 @@ public class LancamentoController {
     private String recarregarComErro(Long ordemId, Long ordemSetorId, BindingResult result,
                                      Model model, Locale locale) {
         lancamento(ordemId, ordemSetorId, model);
-        String mensagem = result.getAllErrors().stream()
-                .findFirst()
-                .map(error -> {
-                    String defaultMessage = error.getDefaultMessage();
-                    return defaultMessage == null ? "" :
-                            messageSource.getMessage(defaultMessage, null, defaultMessage, locale);
-                })
-                .orElseGet(() -> messageSource.getMessage(
-                        AppMessages.ERROR_VALIDATION_FAILED, null, locale));
+        String mensagem = MensagensWeb.deBinding(messageSource, result, locale);
         model.addAttribute("error", mensagem);
         return "ordens/Lancamento";
-    }
-
-    private String traduzir(BusinessException e, Locale locale) {
-        return messageSource.getMessage(e.getMessageKey(), e.getArgs(), e.getMessageKey(), locale);
     }
 
 }

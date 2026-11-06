@@ -58,7 +58,6 @@ function initEtapaOrigemRefugo(roteiroId) {
     const setorId = selectSetor.value;
 
     selectEtapa.replaceChildren(new Option('Selecione a etapa', ''));
-    campoEtapa.classList.remove('is-visible');
     campoEtapa.classList.add('is-hidden');
     selectEtapa.required = false;
 
@@ -76,7 +75,6 @@ function initEtapaOrigemRefugo(roteiroId) {
       if (etapas.length > 1) {
         etapas.forEach(etapa => selectEtapa.appendChild(new Option(etapa.nome, etapa.id)));
         campoEtapa.classList.remove('is-hidden');
-        campoEtapa.classList.add('is-visible');
         selectEtapa.required = true;
       }
     } catch (e) {
@@ -86,10 +84,10 @@ function initEtapaOrigemRefugo(roteiroId) {
 }
 
 document.addEventListener('DOMContentLoaded', () => {
-  const { abaErro, produtoId } = document.body.dataset;
+  const { abaErro, roteiroId } = document.body.dataset;
 
   if (abaErro) showTab(abaErro);
-  if (produtoId) initEtapaOrigemRefugo(produtoId);
+  if (roteiroId) initEtapaOrigemRefugo(roteiroId);
 
   // Lógica da Modal de Confirmação e Resumo
   const modal = document.getElementById('modal-confirmacao-lancamento');
@@ -208,10 +206,19 @@ document.addEventListener('DOMContentLoaded', () => {
 
   if (btnConfirmarEnvio) {
     btnConfirmarEnvio.addEventListener('click', () => {
-      if (formParaSubmeter) {
-        formParaSubmeter.dataset.confirmado = 'true';
-        formParaSubmeter.submit();
-      }
+      // Evita envio duplo: o botão fica desabilitado no primeiro clique.
+      if (btnConfirmarEnvio.disabled || !formParaSubmeter) return;
+      btnConfirmarEnvio.disabled = true;
+      formParaSubmeter.dataset.confirmado = 'true';
+      formParaSubmeter.submit();
     });
   }
+
+  // Voltar pelo histórico (bfcache) não pode deixar o botão travado nem o formulário já confirmado.
+  window.addEventListener('pageshow', event => {
+    if (!event.persisted) return;
+    if (btnConfirmarEnvio) btnConfirmarEnvio.disabled = false;
+    document.querySelectorAll('.form-card form').forEach(form => delete form.dataset.confirmado);
+    fecharModal();
+  });
 });

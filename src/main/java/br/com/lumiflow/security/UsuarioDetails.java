@@ -91,6 +91,9 @@ public class UsuarioDetails implements UserDetails {
     }
 
     public String getIniciais() {
+        if (nome == null || nome.isBlank()) {
+            return "?";
+        }
         String[] partes = nome.trim().split("\\s+");
         if (partes.length == 1) {
             return partes[0].substring(0, 1).toUpperCase();

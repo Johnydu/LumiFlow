@@ -81,7 +81,7 @@
 .is-hidden, [hidden] { display: none !important; }
 .modal-overlay:not(.is-open) { display: none; }
 .modal-overlay.is-open { display: flex !important; }
-.is-visible { display: block !important; }
+.is-visible { display: block; }
 .text-danger { color: var(--color-danger); }
 .text-blue { color: var(--color-blue); }
 .text-success { color: var(--color-success); }

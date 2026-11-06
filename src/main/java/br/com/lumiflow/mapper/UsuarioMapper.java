@@ -14,6 +14,7 @@ import java.util.List;
 @Mapper(componentModel = "spring")
 public interface UsuarioMapper {
 
+    @Mapping(target = "id", ignore = true)
     @Mapping(target = "senha", ignore = true)
     @Mapping(target = "nivelAcesso", ignore = true)
     @Mapping(target = "setor", ignore = true)

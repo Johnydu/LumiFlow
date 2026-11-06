@@ -1,13 +1,13 @@
 body.page-usuario-cadastrousuario .user-avatar {
-  min-width: 36px !important;
-  width: 36px !important;
-  height: 36px !important;
-  border-radius: 50% !important;
-  background: var(--color-primary) !important;
-  display: flex !important;
-  align-items: center !important;
-  justify-content: center !important;
-  color: var(--color-text) !important;
-  font-weight: 700 !important;
-  font-size: var(--font-size-lg) !important;
+  min-width: 36px;
+  width: 36px;
+  height: 36px;
+  border-radius: 50%;
+  background: var(--color-primary);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  color: var(--color-text);
+  font-weight: 700;
+  font-size: var(--font-size-lg);
 }

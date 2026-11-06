@@ -1,6 +1,7 @@
 package br.com.lumiflow.security;
 
 import br.com.lumiflow.service.LoginAttemptService;
+import br.com.lumiflow.validation.LoginValidator;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.context.event.EventListener;
@@ -19,6 +20,8 @@ import org.springframework.stereotype.Component;
 @Component
 @RequiredArgsConstructor
 public class AuthenticationEventsListener {
+
+    private static final String LOGIN_MASCARADO = "[login-invalido]";
 
     private final LoginAttemptService loginAttemptService;
     private final LoginIpThrottle ipThrottle;
@@ -52,12 +55,15 @@ public class AuthenticationEventsListener {
         return detalhes instanceof WebAuthenticationDetails web ? web.getRemoteAddress() : "desconhecido";
     }
 
-    /** Evita log injection (quebras de linha) e valores gigantes vindos do formulário. */
+    /**
+     * Só registra o texto digitado quando ele tem formato de login válido (3-20 caracteres seguros).
+     * Qualquer outra coisa (senha digitada no campo errado, lixo, tentativa de injeção) é mascarada,
+     * o que também elimina log injection e valores gigantes vindos do formulário.
+     */
     private String sanitizar(String valor) {
-        if (valor == null) {
+        if (valor == null || valor.isBlank()) {
             return "";
         }
-        String limpo = valor.replaceAll("[\\r\\n\\t]", "_");
-        return limpo.length() > 50 ? limpo.substring(0, 50) : limpo;
+        return LoginValidator.isValidLogin(valor) ? valor : LOGIN_MASCARADO;
     }
 }

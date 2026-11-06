@@ -23,6 +23,7 @@
     <link rel="stylesheet" th:href="@{/css/components/status.css}">
     <link rel="stylesheet" th:href="@{/css/components/alerts.css}">
     <link rel="stylesheet" th:href="@{/css/components/modal.css}">
+    <link rel="stylesheet" th:href="@{/css/components/csp-migrated.css}">
     <link rel="stylesheet" th:href="@{/css/pages/ordensDetalhes.css}">
     <link rel="stylesheet" th:href="@{/css/utils.css}">
     <link rel="stylesheet" th:href="@{/css/responsive.css}">
@@ -36,11 +37,11 @@
 
 <div th:replace="~{fragments/messages :: alerts}"></div>
 
-<aside th:replace="~{fragments/sidebar :: sidebar(activePage='dashboard')}"></aside>
+<aside th:replace="~{fragments/sidebar :: sidebar(activePage='ordens-setor')}"></aside>
 
 <main class="main">
 
-    <div th:replace="~{fragments/topbar :: topbar('Detalhe da Ordem', 'VOLTAR', 'goBack', false)}"></div>
+    <div th:replace="~{fragments/topbar :: topbar('Detalhe da Ordem', 'VOLTAR', 'goBack', 'padrao')}"></div>
 
     <div class="content">
 

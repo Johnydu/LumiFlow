@@ -152,7 +152,7 @@ public class RoteiroController {
 
     private String erroValidacao(RedirectAttributes attributes, Locale locale) {
         attributes.addFlashAttribute("error",
-                messageSource.getMessage(AppMessages.ERROR_VALIDATION_FAILED, null, locale));
+                MensagensWeb.validacaoFalhou(messageSource, locale));
         return REDIRECT_LISTA;
     }
 }

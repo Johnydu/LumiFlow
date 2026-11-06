@@ -11,6 +11,7 @@ import java.util.List;
 @Mapper(componentModel = "spring")
 public interface MaquinaMapper {
 
+    @Mapping(target = "id", ignore = true)
     @Mapping(target = "setor", ignore = true)
     @Mapping(target = "nome", source = "nome", qualifiedByName = "normalizarNome")
     Maquina toEntity(MaquinaDTO maquinaDTO);

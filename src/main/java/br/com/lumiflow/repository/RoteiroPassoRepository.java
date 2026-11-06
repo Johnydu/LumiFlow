@@ -18,6 +18,8 @@ public interface RoteiroPassoRepository extends JpaRepository<RoteiroPasso, Long
     /** Roteiro ATUAL do produto. Usado só para pré-visualizar/criar ordem; as ordens usam o próprio roteiro. */
     @Query("""
            select p from RoteiroPasso p
+           join fetch p.setor
+           left join fetch p.etapaSetor
            join Produto pr on pr.roteiro.id = p.roteiro.id
            where pr.id = :produtoId
            order by p.sequencia asc
@@ -25,6 +27,9 @@ public interface RoteiroPassoRepository extends JpaRepository<RoteiroPasso, Long
     List<RoteiroPasso> buscarPorProdutoId(@Param("produtoId") Long produtoId);
 
     List<RoteiroPasso> findByRoteiroIdOrderBySequenciaAsc(Long roteiroId);
+
+    /** Etapa do setor referenciada por algum roteiro (a FK é ON DELETE SET NULL: apagar a etapa apagaria o vínculo). */
+    boolean existsByEtapaSetorId(Long etapaSetorId);
 
     Optional<RoteiroPasso> findByRoteiroIdAndSequencia(Long roteiroId, Integer sequencia);
 

@@ -55,6 +55,7 @@ public final class AppMessages {
     public static final String ERROR_SECTOR_NAME_DUPLICATE = "error.sector.name.duplicate";
     public static final String ERROR_SECTOR_HAS_MACHINES = "error.sector.has.machines";
     public static final String ERROR_SECTOR_IN_USE = "error.sector.in.use";
+    public static final String ERROR_STAGE_IN_USE = "error.stage.in.use";
 
     // ==================== ROTEIRO ====================
     public static final String SUCCESS_ROUTE_CREATED = "success.route.created";
@@ -89,6 +90,7 @@ public final class AppMessages {
     public static final String SUCCESS_LAUNCH_REGISTERED = "success.launch.registered";
     public static final String ERROR_LAUNCH_EXCEEDS_PENDING = "error.launch.exceeds.pending";
     public static final String ERROR_CONCURRENT_UPDATE = "error.concurrent.update";
+    public static final String ERROR_LAUNCH_REWORK_LINE = "error.launch.rework.line";
 
     // ==================== REFUGO / RETRABALHO ====================
     public static final String SUCCESS_REFUGO_REGISTERED = "success.refugo.registered";
@@ -104,6 +106,7 @@ public final class AppMessages {
     public static final String ERROR_GLASS_OPERATOR_NOTFOUND = "error.glass.operator.notfound";
     public static final String ERROR_GLASS_TYPE_DUPLICATE = "error.glass.type.duplicate";
     public static final String ERROR_GLASS_INSUFFICIENT_STOCK = "error.glass.insufficient.stock";
+    public static final String ERROR_GLASS_DATE_FUTURE = "error.glass.date.future";
 
     // ==================== GENÉRICO / SISTEMA ====================
     public static final String ERROR_VALIDATION_FAILED = "error.validation.failed";

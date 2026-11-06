@@ -21,6 +21,7 @@
     <link rel="stylesheet" th:href="@{/css/components/badges.css}">
     <link rel="stylesheet" th:href="@{/css/components/status.css}">
     <link rel="stylesheet" th:href="@{/css/components/alerts.css}">
+    <link rel="stylesheet" th:href="@{/css/components/csp-migrated.css}">
     <link rel="stylesheet" th:href="@{/css/pages/historicoLancamento.css}">
     <link rel="stylesheet" th:href="@{/css/utils.css}">
     <link rel="stylesheet" th:href="@{/css/responsive.css}">
@@ -29,7 +30,8 @@
           crossorigin="anonymous" referrerpolicy="no-referrer">
 </head>
 
-<body class="page-lancamentos">
+<body class="page-lancamentos"
+      th:data-setor-id="${filtro != null ? filtro.setorId() : null}">
 
 <div th:replace="~{fragments/messages :: alerts}"></div>
 
@@ -41,7 +43,7 @@
     'Histórico de Lançamentos',
     'VOLTAR',
     'voltarParaSetor',
-    true
+    'publico'
 )}"></div>
 
 
@@ -213,6 +215,7 @@
 </main>
 
 <script th:src="@{/js/sidebar.js}" defer></script>
+<script th:src="@{/js/alerts.js}" defer></script>
 <script th:src="@{/js/historicoLancamentos.js}" defer></script>
 </body>
 </html>

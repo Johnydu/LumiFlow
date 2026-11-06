@@ -46,10 +46,6 @@ public class HistoricoLancamentosController {
                         a.getAuthority().equals("ROLE_SUPERVISOR")
         );
 
-        if (filtro == null) {
-            filtro = new HistoricoLancamentoFiltroDTO(null, null, null);
-        }
-
         // Se for superior, usa o filtro da tela; se for operador, prioriza o setor que veio via parâmetro da URL (ou mantém se já estiver no filtro)
         Long setorId = isSuperior ? filtro.setorId() : (setorIdParam != null ? setorIdParam : filtro.setorId());
         Long operadorId = isSuperior ? filtro.operadorId() : null;

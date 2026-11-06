@@ -39,7 +39,7 @@ public class SetorController {
             carregarPagina(model, nome);
         } catch (Exception e) {
             log.error("Erro inesperado ao carregar a página de setores: {}", e.getMessage(), e);
-            model.addAttribute("error", messageSource.getMessage(AppMessages.ERROR_VALIDATION_FAILED, null, locale));
+            model.addAttribute("error", MensagensWeb.validacaoFalhou(messageSource, locale));
             model.addAttribute("setores", List.of());
             if (!model.containsAttribute("setorDTO")) {
                 model.addAttribute("setorDTO", new SetorDTO(null, null, null));
@@ -73,12 +73,12 @@ public class SetorController {
                     .getMessage(AppMessages.SUCCESS_SECTOR_CREATED, new Object[]{dto.nome()}, locale));
         } catch (BusinessException e) {
             log.warn("Erro de negócio ao criar setor '{}': {}", dto.nome(), e.getMessage());
-            String errorMessage = messageSource.getMessage(e.getMessage(), null, e.getMessage(), locale);
+            String errorMessage = MensagensWeb.de(messageSource, e, locale);
             attributes.addFlashAttribute("error", errorMessage);
             attributes.addFlashAttribute("setorDTO", dto);
         } catch (Exception e) {
             log.error("Erro inesperado ao criar setor '{}': {}", dto.nome(), e.getMessage(), e);
-            attributes.addFlashAttribute("error", messageSource.getMessage(AppMessages.ERROR_VALIDATION_FAILED, null, locale));
+            attributes.addFlashAttribute("error", MensagensWeb.validacaoFalhou(messageSource, locale));
             attributes.addFlashAttribute("setorDTO", dto);
         }
 
@@ -98,11 +98,11 @@ public class SetorController {
                     .getMessage(AppMessages.SUCCESS_SECTOR_DELETED, null, locale));
         } catch (BusinessException e) {
             log.warn("Erro de negócio ao excluir setor id {}: {}", id, e.getMessage());
-            String errorMessage = messageSource.getMessage(e.getMessage(), null, e.getMessage(), locale);
+            String errorMessage = MensagensWeb.de(messageSource, e, locale);
             attributes.addFlashAttribute("error", errorMessage);
         } catch (Exception e) {
             log.error("Erro inesperado ao excluir setor id {}: {}", id, e.getMessage(), e);
-            attributes.addFlashAttribute("error", messageSource.getMessage(AppMessages.ERROR_VALIDATION_FAILED, null, locale));
+            attributes.addFlashAttribute("error", MensagensWeb.validacaoFalhou(messageSource, locale));
         }
 
         return "redirect:/dashboard/setores";
@@ -128,12 +128,12 @@ public class SetorController {
                     .getMessage(AppMessages.SUCCESS_SECTOR_UPDATED, new Object[]{dto.nome()}, locale));
         } catch (BusinessException e) {
             log.warn("Erro de negócio ao editar setor id {}: {}", id, e.getMessage());
-            String errorMessage = messageSource.getMessage(e.getMessage(), null, e.getMessage(), locale);
+            String errorMessage = MensagensWeb.de(messageSource, e, locale);
             attributes.addFlashAttribute("error", errorMessage);
             attributes.addFlashAttribute("setorDTO", dto);
         } catch (Exception e) {
             log.error("Erro inesperado ao editar setor id {}: {}", id, e.getMessage(), e);
-            attributes.addFlashAttribute("error", messageSource.getMessage(AppMessages.ERROR_VALIDATION_FAILED, null, locale));
+            attributes.addFlashAttribute("error", MensagensWeb.validacaoFalhou(messageSource, locale));
             attributes.addFlashAttribute("setorDTO", dto);
         }
 
@@ -142,29 +142,17 @@ public class SetorController {
 
     private String erroValidacao(Model model, BindingResult result, Locale locale) {
         carregarPagina(model, null);
-        String mensagem = result.getAllErrors().stream()
-                .findFirst()
-                .map(error -> {
-                    String defaultMessage = error.getDefaultMessage();
-                    return defaultMessage == null ? "" :
-                            messageSource.getMessage(defaultMessage, null, defaultMessage, locale);
-                })
-                .orElseGet(() -> messageSource.getMessage(
-                        AppMessages.ERROR_VALIDATION_FAILED, null, locale));
+        String mensagem = MensagensWeb.deBinding(messageSource, result, locale);
         model.addAttribute("error", mensagem);
         return "setor/Setores";
     }
 
     private void carregarPagina(Model model, String nome) {
-        try {
-            if (nome != null && !nome.isBlank()) {
-                model.addAttribute("setores", setorService.buscarPorNome(nome.trim()));
-            } else {
-                model.addAttribute("setores", setorService.listarSetores());
-            }
-        } catch (Exception e) {
-            log.error("Erro ao carregar setores na página: {}", e.getMessage(), e);
-            model.addAttribute("setores", List.of());
+        // Falhas de carga propagam: o chamador mostra o erro ao usuário (nunca uma lista vazia silenciosa).
+        if (nome != null && !nome.isBlank()) {
+            model.addAttribute("setores", setorService.buscarPorNome(nome.trim()));
+        } else {
+            model.addAttribute("setores", setorService.listarSetores());
         }
 
         if (!model.containsAttribute("setorDTO")) {

@@ -22,6 +22,7 @@ import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.time.Clock;
 import java.time.LocalDate;
 import java.util.Comparator;
 import java.util.List;
@@ -40,6 +41,7 @@ public class DashboardService {
     private final OrdemSetorRepository ordemSetorRepository;
     private final RefugoRepository refugoRepository;
     private final RetrabalhoRepository retrabalhoRepository;
+    private final Clock clock;
     private static final int TAMANHO_PAGINA_ORDENS = 10;
     private static final List<EstatusOrdemProducao> STATUS_EM_ABERTO = List.of(
             EstatusOrdemProducao.DISPONIVEL, EstatusOrdemProducao.LIBERADA, EstatusOrdemProducao.EM_ANDAMENTO);
@@ -63,10 +65,11 @@ public class DashboardService {
         try {
             Long totalAtivas = ordemSetorRepository.countByStatusNot(EstatusOrdemProducao.CONCLUIDA);
             Long etapasEmAndamento = ordemSetorRepository.countByStatus(EstatusOrdemProducao.EM_ANDAMENTO);
-            Long concluidasHoje = ordemSetorRepository.countByStatusAndFimBetween(
+            LocalDate hoje = LocalDate.now(clock);
+            Long concluidasHoje = ordemSetorRepository.countByStatusAndFimGreaterThanEqualAndFimLessThan(
                     EstatusOrdemProducao.CONCLUIDA,
-                    LocalDate.now().atStartOfDay(),
-                    LocalDate.now().atTime(23, 59, 59));
+                    hoje.atStartOfDay(),
+                    hoje.plusDays(1).atStartOfDay());
             Long pecasEmRetrabalho = contarPecasEmRetrabalhoAberto();
 
             return new DashboardResumoDTO(

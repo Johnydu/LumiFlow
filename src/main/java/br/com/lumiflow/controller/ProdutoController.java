@@ -37,7 +37,7 @@ public class ProdutoController {
         } catch (Exception e) {
             log.error("Erro inesperado ao carregar a página de produtos: {}", e.getMessage(), e);
             model.addAttribute("error",
-                    messageSource.getMessage(AppMessages.ERROR_VALIDATION_FAILED, null, locale));
+                    MensagensWeb.validacaoFalhou(messageSource, locale));
             model.addAttribute("produtos", List.of());
             model.addAttribute("pagina", Page.empty());
             model.addAttribute("nomeAtual", nome);
@@ -63,13 +63,13 @@ public class ProdutoController {
                     .getMessage(AppMessages.SUCCESS_PRODUCT_CREATED, new Object[]{dto.identificacao()}, locale));
         } catch (BusinessException e) {
             log.warn("Erro de negócio ao criar produto '{}': {}", dto.nome(), e.getMessage());
-            String errorMessage = messageSource.getMessage(e.getMessage(), null, e.getMessage(), locale);
+            String errorMessage = MensagensWeb.de(messageSource, e, locale);
             attributes.addFlashAttribute("error", errorMessage);
             attributes.addFlashAttribute("produtoDTO", dto);
         } catch (Exception e) {
             log.error("Erro inesperado ao criar produto '{}': {}", dto.nome(), e.getMessage(), e);
             attributes.addFlashAttribute("error",
-                    messageSource.getMessage(AppMessages.ERROR_VALIDATION_FAILED, null, locale));
+                    MensagensWeb.validacaoFalhou(messageSource, locale));
             attributes.addFlashAttribute("produtoDTO", dto);
         }
 
@@ -85,12 +85,11 @@ public class ProdutoController {
                     .getMessage(AppMessages.SUCCESS_PRODUCT_DELETED, null, locale));
         } catch (BusinessException e) {
             log.warn("Erro de negócio ao excluir produto id {}: {}", id, e.getMessage());
-            String errorMessage = messageSource.getMessage(e.getMessage(), null, e.getMessage(), locale);
+            String errorMessage = MensagensWeb.de(messageSource, e, locale);
             attributes.addFlashAttribute("error", errorMessage);
         } catch (Exception e) {
             log.error("Erro inesperado ao excluir produto id {}: {}", id, e.getMessage(), e);
-            attributes.addFlashAttribute("error", messageSource
-                    .getMessage(AppMessages.ERROR_VALIDATION_FAILED, null, locale));
+            attributes.addFlashAttribute("error", MensagensWeb.validacaoFalhou(messageSource, locale));
         }
 
         return "redirect:/dashboard/produtos";
@@ -110,13 +109,12 @@ public class ProdutoController {
                     .getMessage(AppMessages.SUCCESS_PRODUCT_UPDATED, new Object[]{dto.identificacao()}, locale));
         } catch (BusinessException e) {
             log.warn("Erro de negócio ao editar produto id {}: {}", id, e.getMessage());
-            String errorMessage = messageSource.getMessage(e.getMessage(), null, e.getMessage(), locale);
+            String errorMessage = MensagensWeb.de(messageSource, e, locale);
             attributes.addFlashAttribute("error", errorMessage);
             attributes.addFlashAttribute("produtoDTO", dto);
         } catch (Exception e) {
             log.error("Erro inesperado ao editar produto id {}: {}", id, e.getMessage(), e);
-            attributes.addFlashAttribute("error", messageSource
-                    .getMessage(AppMessages.ERROR_VALIDATION_FAILED, null, locale));
+            attributes.addFlashAttribute("error", MensagensWeb.validacaoFalhou(messageSource, locale));
             attributes.addFlashAttribute("produtoDTO", dto);
         }
 
@@ -125,32 +123,17 @@ public class ProdutoController {
 
     private String erroValidacao(Model model, BindingResult result, Locale locale) {
         carregarPagina(model, null, 0);
-        String mensagem = result.getAllErrors().stream()
-                .findFirst()
-                .map(error -> {
-                    String defaultMessage = error.getDefaultMessage();
-                    return defaultMessage == null ? "" :
-                            messageSource.getMessage(defaultMessage, null, defaultMessage, locale);
-                })
-                .orElseGet(() -> messageSource.getMessage(
-                        AppMessages.ERROR_VALIDATION_FAILED, null, locale));
+        String mensagem = MensagensWeb.deBinding(messageSource, result, locale);
         model.addAttribute("error", mensagem);
         return "produto/Produtos";
     }
 
     private void carregarPagina(Model model, String nome, int page) {
-        try {
-            Page<br.com.lumiflow.dto.produto.ProdutoListagemDTO> pagina =
-                    produtoService.buscarProdutos(nome, page);
-            model.addAttribute("produtos", pagina.getContent());
-            model.addAttribute("pagina", pagina);
-            model.addAttribute("nomeAtual", nome);
-        } catch (Exception e) {
-            log.error("Erro ao carregar produtos na página: {}", e.getMessage(), e);
-            model.addAttribute("produtos", List.of());
-            model.addAttribute("pagina", Page.empty());
-            model.addAttribute("nomeAtual", nome);
-        }
+        // Falhas de carga propagam: o chamador mostra o erro ao usuário (nunca uma lista vazia silenciosa).
+        Page<br.com.lumiflow.dto.produto.ProdutoListagemDTO> pagina = produtoService.buscarProdutos(nome, page);
+        model.addAttribute("produtos", pagina.getContent());
+        model.addAttribute("pagina", pagina);
+        model.addAttribute("nomeAtual", nome);
 
         if (!model.containsAttribute("produtoDTO")) {
             model.addAttribute("produtoDTO",

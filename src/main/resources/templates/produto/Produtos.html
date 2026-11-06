@@ -21,6 +21,7 @@
     <!-- Componente Modal Centralizado -->
     <link rel="stylesheet" th:href="@{/css/components/modal.css}">
     <link rel="stylesheet" th:href="@{/css/components/paginacao.css}">
+    <link rel="stylesheet" th:href="@{/css/components/csp-migrated.css}">
     <link rel="stylesheet" th:href="@{/css/pages/produtos.css}">
     <link rel="stylesheet" th:href="@{/css/utils.css}">
     <link rel="stylesheet" th:href="@{/css/responsive.css}">
@@ -45,7 +46,7 @@
     'Produtos',
     '+ Novo Produto',
     'novoProdutoForm',
-    false
+    'padrao'
 )}"></div>
 
     <div class="content">
@@ -152,10 +153,10 @@
         <!-- MODAL DE FORMULÁRIO / DADOS DO PRODUTO -->
         <div class="modal-overlay" id="form-panel"
              sec:authorize="hasAnyRole('ADMIN', 'PCP', 'SUPERVISOR')">
-            <div class="modal-box csp-style-dc271cfe4e">
+            <div class="modal-box csp-style-dc271cfe4e" role="dialog" aria-modal="true" aria-labelledby="form-title">
                 <div class="modal-header">
                     <span class="modal-title" id="form-title">Novo produto</span>
-                    <button type="button" class="modal-close" data-csp-action="hideForm">&times;</button>
+                    <button type="button" class="modal-close" data-csp-action="hideForm" aria-label="Fechar janela">&times;</button>
                 </div>
 
                 <form id="produto-form"
@@ -234,10 +235,10 @@
 
 </main>
 
-<script th:src="@{/js/filtro-ajax.js}"></script>
-<script th:src="@{/js/cadastro-produto.js}"></script>
-<script th:src="@{/js/sidebar.js}"></script>
-<script th:src="@{/js/alerts.js}"></script>
+<script th:src="@{/js/filtro-ajax.js}" defer></script>
+<script th:src="@{/js/cadastro-produto.js}" defer></script>
+<script th:src="@{/js/sidebar.js}" defer></script>
+<script th:src="@{/js/alerts.js}" defer></script>
 
 </body>
 </html>

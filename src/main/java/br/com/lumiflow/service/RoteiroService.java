@@ -73,7 +73,7 @@ public class RoteiroService {
     public RoteiroDTO buscarPorId(Long id) {
         log.debug("Buscando roteiro por ID: [{}]", id);
         Roteiro roteiro = buscarEntidade(id);
-        List<PassoRoteiroDTO> passos = roteiroPassoRepository.findByRoteiroIdOrderBySequenciaAsc(id).stream()
+        List<PassoRoteiroDTO> passos = roteiroPassoRepository.buscarPassosComSetorEEtapa(id).stream()
                 .map(p -> new PassoRoteiroDTO(p.getSetor().getId(),
                         p.getEtapaSetor() == null ? null : p.getEtapaSetor().getId()))
                 .toList();
@@ -114,7 +114,7 @@ public class RoteiroService {
     @Transactional(readOnly = true)
     public List<EtapaSetorDTO> buscarEtapasDoSetorNoRoteiro(Long roteiroId, Long setorId) {
         log.debug("Buscando etapas do setor ID: [{}] no roteiro ID: [{}]", setorId, roteiroId);
-        return roteiroPassoRepository.findByRoteiroIdOrderBySequenciaAsc(roteiroId).stream()
+        return roteiroPassoRepository.buscarPassosComSetorEEtapa(roteiroId).stream()
                 .filter(rp -> rp.getSetor().getId().equals(setorId) && rp.getEtapaSetor() != null)
                 .map(rp -> new EtapaSetorDTO(
                         rp.getEtapaSetor().getId(),
@@ -146,7 +146,7 @@ public class RoteiroService {
     @Transactional
     public void atualizar(Long id, RoteiroDTO dto) {
         log.info("Iniciando atualização do roteiro ID: [{}]", id);
-        Roteiro roteiro = buscarEntidade(id);
+        Roteiro roteiro = buscarEntidadeParaAtualizacao(id);
         String codigo = normalizarCodigo(dto.codigo());
         if (roteiroRepository.existsByCodigoIgnoreCaseAndIdNot(codigo, id)) {
             log.warn("Tentativa de atualizar para um código de roteiro já existente: [{}]", codigo);
@@ -246,6 +246,15 @@ public class RoteiroService {
 
     private Roteiro buscarEntidade(Long id) {
         return roteiroRepository.findById(id)
+                .orElseThrow(() -> {
+                    log.warn("Roteiro com ID: [{}] não foi encontrado", id);
+                    return new BusinessException(AppMessages.ERROR_ROUTE_NOTFOUND);
+                });
+    }
+
+    /** Mesma busca, mas travando o roteiro: a edição estrutural não corre junto com a criação de ordens. */
+    private Roteiro buscarEntidadeParaAtualizacao(Long id) {
+        return roteiroRepository.findByIdForUpdate(id)
                 .orElseThrow(() -> {
                     log.warn("Roteiro com ID: [{}] não foi encontrado", id);
                     return new BusinessException(AppMessages.ERROR_ROUTE_NOTFOUND);

@@ -24,6 +24,7 @@
     <link rel="stylesheet" th:href="@{/css/components/alerts.css}">
     <link rel="stylesheet" th:href="@{/css/components/modal.css}">
     <link rel="stylesheet" th:href="@{/css/components/paginacao.css}">
+    <link rel="stylesheet" th:href="@{/css/components/csp-migrated.css}">
     <link rel="stylesheet" th:href="@{/css/pages/listaordem.css}">
     <link rel="stylesheet" th:href="@{/css/utils.css}">
     <link rel="stylesheet" th:href="@{/css/responsive.css}">
@@ -46,7 +47,7 @@
         'Ordens de Produção',
         'VOLTAR',
         'voltarPagina',
-        true
+        'publico'
     )}"></div>
 
     <div class="content">
@@ -77,7 +78,6 @@
                                name="busca"
                                th:value="${buscaAtual}"
                                placeholder="Buscar número, código ou produto..."
-                               aria-label="Buscar número, código ou produto"
                                autocomplete="off"/>
                     </div>
                 </div>

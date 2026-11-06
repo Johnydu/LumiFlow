@@ -1,9 +1,13 @@
+<!-- csp-migrated.css NÃO é carregado aqui: ele define utilitários que substituem style="" inline e
+     precisa vir DEPOIS de variables/globals/components e ANTES de pages/*. Cada página o inclui
+     no ponto certo da sua lista de CSS. -->
 <th:block th:fragment="init">
     <script th:src="@{/js/sidebar-init.js}"></script>
     <link rel="icon" type="image/webp" th:href="@{/images/logo.webp}">
-    <link rel="stylesheet" th:href="@{/css/components/csp-migrated.css}">
     <script th:src="@{/js/theme.js}"></script>
     <script th:src="@{/js/csp-actions.js}" defer></script>
     <script th:src="@{/js/i18n.js}" defer></script>
     <script th:src="@{/js/paginacao.js}" defer></script>
+    <script th:src="@{/js/responsive-tables.js}" defer></script>
+    <script th:src="@{/js/modal.js}" defer></script>
 </th:block>

@@ -14,11 +14,25 @@
   const root = document.documentElement;
   root.classList.add('sidebar-collapsed-init');
   document.addEventListener('DOMContentLoaded', () => {
-    document.body.classList.add('sidebar-collapsed');
-    requestAnimationFrame(() => {
-      requestAnimationFrame(() => {
-        root.classList.remove('sidebar-collapsed-init');
-      });
-    });
+    const temSidebar = document.querySelector('.sidebar') !== null;
+    if (temSidebar) {
+      document.body.classList.add('sidebar-collapsed');
+    }
+
+    // Sem sidebar não há nada a restaurar: remove a classe de imediato.
+    if (!temSidebar) {
+      root.classList.remove('sidebar-collapsed-init');
+      return;
+    }
+
+    // setTimeout como garantia: requestAnimationFrame fica pausado em aba em segundo plano.
+    let removida = false;
+    const remover = () => {
+      if (removida) return;
+      removida = true;
+      root.classList.remove('sidebar-collapsed-init');
+    };
+    requestAnimationFrame(() => requestAnimationFrame(remover));
+    setTimeout(remover, 300);
   }, { once: true });
 })();

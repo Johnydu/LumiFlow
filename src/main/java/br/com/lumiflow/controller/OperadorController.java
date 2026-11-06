@@ -42,8 +42,7 @@ public class OperadorController {
             carregarPagina(model, nome, setorId);
         } catch (Exception e) {
             log.error("Erro inesperado ao carregar a página de operadores: {}", e.getMessage(), e);
-            model.addAttribute("error", messageSource
-                    .getMessage(AppMessages.ERROR_VALIDATION_FAILED, null, locale));
+            model.addAttribute("error", MensagensWeb.validacaoFalhou(messageSource, locale));
             model.addAttribute("operadores", List.of());
             model.addAttribute("listaSetores", List.of());
             if (!model.containsAttribute("operadorDTO")) {
@@ -61,24 +60,15 @@ public class OperadorController {
     }
 
     private void carregarPagina(Model model, String nome, Long setorId) {
-        try {
-            if ((nome != null && !nome.isBlank()) || setorId != null) {
-                model.addAttribute("operadores", operadorService.buscarOperadores(nome, setorId));
-            } else {
-                model.addAttribute("operadores", operadorService.listarOperadores());
-            }
-        } catch (Exception e) {
-            log.error("Erro ao carregar operadores: {}", e.getMessage(), e);
-            model.addAttribute("operadores", List.of());
+        // Falhas de carga propagam: o chamador mostra o erro ao usuário (nunca uma lista vazia silenciosa).
+        if ((nome != null && !nome.isBlank()) || setorId != null) {
+            model.addAttribute("operadores", operadorService.buscarOperadores(nome, setorId));
+        } else {
+            model.addAttribute("operadores", operadorService.listarOperadores());
         }
 
-        try {
-            if (!model.containsAttribute("listaSetores")) {
-                model.addAttribute("listaSetores", setorService.listarSetores());
-            }
-        } catch (Exception e) {
-            log.error("Erro ao carregar setores para operadores: {}", e.getMessage(), e);
-            model.addAttribute("listaSetores", List.of());
+        if (!model.containsAttribute("listaSetores")) {
+            model.addAttribute("listaSetores", setorService.listarSetores());
         }
 
         if (!model.containsAttribute("operadorDTO")) {
@@ -101,13 +91,12 @@ public class OperadorController {
                     messageSource.getMessage(AppMessages.SUCCESS_OPERATOR_CREATED, new Object[]{dto.nome()}, locale));
         } catch (BusinessException e) {
             log.warn("Erro de negócio ao criar operador '{}': {}", dto.nome(), e.getMessage());
-            String errorMessage = messageSource.getMessage(e.getMessage(), null, e.getMessage(), locale);
+            String errorMessage = MensagensWeb.de(messageSource, e, locale);
             attributes.addFlashAttribute("error", errorMessage);
             attributes.addFlashAttribute("operadorDTO", dto);
         } catch (Exception e) {
             log.error("Erro inesperado ao criar operador '{}': {}", dto.nome(), e.getMessage(), e);
-            attributes.addFlashAttribute("error", messageSource
-                    .getMessage(AppMessages.ERROR_VALIDATION_FAILED, null, locale));
+            attributes.addFlashAttribute("error", MensagensWeb.validacaoFalhou(messageSource, locale));
             attributes.addFlashAttribute("operadorDTO", dto);
         }
 
@@ -123,12 +112,11 @@ public class OperadorController {
                     messageSource.getMessage(AppMessages.SUCCESS_OPERATOR_DELETED, null, locale));
         } catch (BusinessException e) {
             log.warn("Erro de negócio ao excluir operador id {}: {}", id, e.getMessage());
-            String errorMessage = messageSource.getMessage(e.getMessage(), null, e.getMessage(), locale);
+            String errorMessage = MensagensWeb.de(messageSource, e, locale);
             attributes.addFlashAttribute("error", errorMessage);
         } catch (Exception e) {
             log.error("Erro inesperado ao excluir operador id {}: {}", id, e.getMessage(), e);
-            attributes.addFlashAttribute("error", messageSource
-                    .getMessage(AppMessages.ERROR_VALIDATION_FAILED, null, locale));
+            attributes.addFlashAttribute("error", MensagensWeb.validacaoFalhou(messageSource, locale));
         }
 
         return "redirect:/dashboard/operadores";
@@ -149,13 +137,12 @@ public class OperadorController {
                     messageSource.getMessage(AppMessages.SUCCESS_OPERATOR_UPDATED, new Object[]{dto.nome()}, locale));
         } catch (BusinessException e) {
             log.warn("Erro de negócio ao editar operador id {}: {}", id, e.getMessage());
-            String errorMessage = messageSource.getMessage(e.getMessage(), null, e.getMessage(), locale);
+            String errorMessage = MensagensWeb.de(messageSource, e, locale);
             attributes.addFlashAttribute("error", errorMessage);
             attributes.addFlashAttribute("operadorDTO", dto);
         } catch (Exception e) {
             log.error("Erro inesperado ao editar operador id {}: {}", id, e.getMessage(), e);
-            attributes.addFlashAttribute("error", messageSource
-                    .getMessage(AppMessages.ERROR_VALIDATION_FAILED, null, locale));
+            attributes.addFlashAttribute("error", MensagensWeb.validacaoFalhou(messageSource, locale));
             attributes.addFlashAttribute("operadorDTO", dto);
         }
 
@@ -164,15 +151,7 @@ public class OperadorController {
 
     private String erroValidacao(Model model, BindingResult result, Locale locale) {
         carregarPagina(model, null, null);
-        String mensagem = result.getAllErrors().stream()
-                .findFirst()
-                .map(error -> {
-                    String defaultMessage = error.getDefaultMessage();
-                    return defaultMessage == null ? "" :
-                            messageSource.getMessage(defaultMessage, null, defaultMessage, locale);
-                })
-                .orElseGet(() -> messageSource.getMessage(
-                        AppMessages.ERROR_VALIDATION_FAILED, null, locale));
+        String mensagem = MensagensWeb.deBinding(messageSource, result, locale);
         model.addAttribute("error", mensagem);
         return "operador/Operadores";
     }

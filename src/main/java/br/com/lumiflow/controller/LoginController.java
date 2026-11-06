@@ -25,25 +25,20 @@ public class LoginController {
                         Model model,
                         Locale locale) {
 
-        try {
-            if (error != null) {
-                String msgErro = messageSource.getMessage(AppMessages.ERROR_USER_INVALID_CREDENTIALS, null, locale);
-                model.addAttribute("error", msgErro);
-                log.debug("Parâmetro 'error' detectado na tela de login.");
-            }
+        if (error != null) {
+            String msgErro = messageSource.getMessage(AppMessages.ERROR_USER_INVALID_CREDENTIALS, null, locale);
+            model.addAttribute("error", msgErro);
+            log.debug("Parâmetro 'error' detectado na tela de login.");
+        }
 
-            if (expired != null) {
-                model.addAttribute("error", messageSource.getMessage(AppMessages.ERROR_SESSION_EXPIRED, null, locale));
-            }
+        if (expired != null) {
+            model.addAttribute("error", messageSource.getMessage(AppMessages.ERROR_SESSION_EXPIRED, null, locale));
+        }
 
-            if (logout != null) {
-                String msgLogout = messageSource.getMessage(AppMessages.SUCCESS_USER_LOGOUT, null, locale);
-                model.addAttribute("success", msgLogout);
-                log.debug("Parâmetro 'logout' detectado na tela de login.");
-            }
-        } catch (Exception e) {
-            log.error("Erro inesperado ao processar mensagens da página de login: {}", e.getMessage(), e);
-            model.addAttribute("error", "Ocorreu um erro ao carregar as mensagens do sistema.");
+        if (logout != null) {
+            String msgLogout = messageSource.getMessage(AppMessages.SUCCESS_USER_LOGOUT, null, locale);
+            model.addAttribute("success", msgLogout);
+            log.debug("Parâmetro 'logout' detectado na tela de login.");
         }
 
         return "usuario/Login";

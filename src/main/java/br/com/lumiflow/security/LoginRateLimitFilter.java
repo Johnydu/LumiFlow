@@ -27,7 +27,27 @@ public class LoginRateLimitFilter extends OncePerRequestFilter {
 
     @Override
     protected boolean shouldNotFilter(HttpServletRequest request) {
-        return !("POST".equalsIgnoreCase(request.getMethod()) && "/login".equals(request.getServletPath()));
+        return !("POST".equalsIgnoreCase(request.getMethod()) && "/login".equals(caminhoSemContexto(request)));
+    }
+
+    /**
+     * URI da requisição sem o context path, sem parâmetros de caminho (";jsessionid=...") e sem barras finais,
+     * para que "/app/login", "/login/" e "/login;x=1" sejam tratados como o login.
+     */
+    static String caminhoSemContexto(HttpServletRequest request) {
+        String caminho = request.getRequestURI();
+        String contexto = request.getContextPath();
+        if (contexto != null && !contexto.isEmpty() && caminho.startsWith(contexto)) {
+            caminho = caminho.substring(contexto.length());
+        }
+        int parametros = caminho.indexOf(';');
+        if (parametros >= 0) {
+            caminho = caminho.substring(0, parametros);
+        }
+        while (caminho.length() > 1 && caminho.endsWith("/")) {
+            caminho = caminho.substring(0, caminho.length() - 1);
+        }
+        return caminho;
     }
 
     @Override

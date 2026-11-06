@@ -12,6 +12,7 @@ import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.context.MessageSource;
+import org.springframework.security.access.AccessDeniedException;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.stereotype.Controller;
@@ -43,8 +44,7 @@ public class UsuarioController {
             return "usuario/ListaUsuario";
         } catch (Exception e) {
             log.error("Erro inesperado ao carregar a página de listagem de usuários: {}", e.getMessage(), e);
-            model.addAttribute("error", messageSource
-                    .getMessage(AppMessages.ERROR_VALIDATION_FAILED, null, locale));
+            model.addAttribute("error", MensagensWeb.validacaoFalhou(messageSource, locale));
             return "usuario/ListaUsuario";
         }
     }
@@ -63,13 +63,12 @@ public class UsuarioController {
                     .getMessage(AppMessages.SUCCESS_USER_CREATED, new Object[]{dto.login()}, locale));
         } catch (BusinessException e) {
             log.warn("Erro de negócio ao criar usuário '{}': {}", dto.login(), e.getMessage());
-            String errorMessage = messageSource.getMessage(e.getMessage(), null, e.getMessage(), locale);
+            String errorMessage = MensagensWeb.de(messageSource, e, locale);
             attributes.addFlashAttribute("error", errorMessage);
             attributes.addFlashAttribute("usuarioDTO", dto.semSenha());
         } catch (Exception e) {
             log.error("Erro inesperado ao criar usuário '{}': {}", dto.login(), e.getMessage(), e);
-            attributes.addFlashAttribute("error", messageSource
-                    .getMessage(AppMessages.ERROR_VALIDATION_FAILED, null, locale));
+            attributes.addFlashAttribute("error", MensagensWeb.validacaoFalhou(messageSource, locale));
             attributes.addFlashAttribute("usuarioDTO", dto.semSenha());
         }
 
@@ -81,18 +80,21 @@ public class UsuarioController {
     public String deletarUsuario(@PathVariable Long id,
                                  @AuthenticationPrincipal UsuarioDetails usuarioLogado,
                                  RedirectAttributes attributes, Locale locale) {
+        if (usuarioLogado == null) {
+            // Principal ausente ou de outro tipo: não dá para garantir que não é auto-exclusão.
+            throw new AccessDeniedException("Usuário autenticado não identificado");
+        }
         try {
             usuarioService.excluirUsuario(id, usuarioLogado.getId());
             attributes.addFlashAttribute("success", messageSource
                     .getMessage(AppMessages.SUCCESS_USER_DELETED, null, locale));
         } catch (BusinessException e) {
             log.warn("Erro de negócio ao excluir usuário id {}: {}", id, e.getMessage());
-            String errorMessage = messageSource.getMessage(e.getMessage(), null, e.getMessage(), locale);
+            String errorMessage = MensagensWeb.de(messageSource, e, locale);
             attributes.addFlashAttribute("error", errorMessage);
         } catch (Exception e) {
             log.error("Erro inesperado ao excluir usuário id {}: {}", id, e.getMessage(), e);
-            attributes.addFlashAttribute("error", messageSource
-                    .getMessage(AppMessages.ERROR_VALIDATION_FAILED, null, locale));
+            attributes.addFlashAttribute("error", MensagensWeb.validacaoFalhou(messageSource, locale));
         }
 
         return "redirect:/dashboard/usuario";
@@ -112,13 +114,12 @@ public class UsuarioController {
                     .getMessage(AppMessages.SUCCESS_USER_UPDATED, new Object[]{dto.login()}, locale));
         } catch (BusinessException e) {
             log.warn("Erro de negócio ao editar usuário id {}: {}", id, e.getMessage());
-            String errorMessage = messageSource.getMessage(e.getMessage(), null, e.getMessage(), locale);
+            String errorMessage = MensagensWeb.de(messageSource, e, locale);
             attributes.addFlashAttribute("error", errorMessage);
             attributes.addFlashAttribute("usuarioDTO", dto.semSenha());
         } catch (Exception e) {
             log.error("Erro inesperado ao editar usuário id {}: {}", id, e.getMessage(), e);
-            attributes.addFlashAttribute("error", messageSource
-                    .getMessage(AppMessages.ERROR_VALIDATION_FAILED, null, locale));
+            attributes.addFlashAttribute("error", MensagensWeb.validacaoFalhou(messageSource, locale));
             attributes.addFlashAttribute("usuarioDTO", dto.semSenha());
         }
 
@@ -127,15 +128,7 @@ public class UsuarioController {
 
     private String erroValidacao(Model model, BindingResult result, Locale locale) {
         carregarPagina(model, null);
-        String mensagem = result.getAllErrors().stream()
-                .findFirst()
-                .map(error -> {
-                    String defaultMessage = error.getDefaultMessage();
-                    return defaultMessage == null ? "" :
-                            messageSource.getMessage(defaultMessage, null, defaultMessage, locale);
-                })
-                .orElseGet(() -> messageSource.getMessage(
-                        AppMessages.ERROR_VALIDATION_FAILED, null, locale));
+        String mensagem = MensagensWeb.deBinding(messageSource, result, locale);
         model.addAttribute("error", mensagem);
         return "usuario/ListaUsuario";
     }

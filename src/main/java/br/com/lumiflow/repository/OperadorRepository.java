@@ -1,6 +1,7 @@
 package br.com.lumiflow.repository;
 
 import br.com.lumiflow.entity.Operador;
+import org.springframework.data.jpa.repository.EntityGraph;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.query.Param;
@@ -10,6 +11,7 @@ import java.util.List;
 
 @Repository
 public interface OperadorRepository extends JpaRepository<Operador, Long> {
+    @EntityGraph(attributePaths = "setorPadrao")
     List<Operador> findAllByOrderByNomeAsc();
 
 
@@ -21,6 +23,7 @@ public interface OperadorRepository extends JpaRepository<Operador, Long> {
 
     List<Operador> findBySetorPadraoIdOrSetorPadraoIsNullOrderByNomeAsc(Long setorId);
 
+    @EntityGraph(attributePaths = "setorPadrao")
     @Query("SELECT o FROM Operador o LEFT JOIN o.setorPadrao s WHERE " +
             "(:termo IS NULL OR :termo = '' OR LOWER(o.nome) LIKE LOWER(CONCAT('%', :termo, '%'))) " +
             "AND (:setorId IS NULL OR s.id = :setorId OR s.id IS NULL)")

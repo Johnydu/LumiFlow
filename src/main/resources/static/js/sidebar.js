@@ -11,8 +11,24 @@ function atualizarControlesSidebar(aberta) {
     });
 }
 
+function lerPreferenciaRecolhida() {
+    try {
+        return window.localStorage.getItem(SIDEBAR_STORAGE_KEY) === 'true';
+    } catch (error) {
+        return false;
+    }
+}
+
+function salvarPreferenciaRecolhida(recolhida) {
+    try {
+        window.localStorage.setItem(SIDEBAR_STORAGE_KEY, String(recolhida));
+    } catch (error) {
+        // Armazenamento indisponível: a preferência vale só para esta página.
+    }
+}
+
 function aplicarEstadoDesktop() {
-    const recolhida = localStorage.getItem(SIDEBAR_STORAGE_KEY) === 'true';
+    const recolhida = lerPreferenciaRecolhida();
     document.body.classList.toggle('sidebar-collapsed', recolhida);
     document.body.classList.remove('sidebar-open');
     document.querySelector('.sidebar')?.classList.remove('open');
@@ -27,7 +43,7 @@ function toggleSidebar() {
 
     if (window.innerWidth > DESKTOP_BREAKPOINT) {
         const recolhida = document.body.classList.toggle('sidebar-collapsed');
-        localStorage.setItem(SIDEBAR_STORAGE_KEY, String(recolhida));
+        salvarPreferenciaRecolhida(recolhida);
         atualizarControlesSidebar(!recolhida);
         return;
     }
@@ -68,8 +84,16 @@ document.addEventListener('DOMContentLoaded', () => {
         }
     });
 
+    // Só reage quando o breakpoint é atravessado; resizes que mantêm o modo
+    // (barra de endereço do navegador móvel, teclado virtual) são ignorados.
+    let modoDesktopAnterior = null;
+
     const sincronizarViewport = () => {
-        if (window.innerWidth > DESKTOP_BREAKPOINT) {
+        const modoDesktop = window.innerWidth > DESKTOP_BREAKPOINT;
+        if (modoDesktop === modoDesktopAnterior) return;
+        modoDesktopAnterior = modoDesktop;
+
+        if (modoDesktop) {
             aplicarEstadoDesktop();
         } else {
             document.body.classList.remove('sidebar-collapsed');

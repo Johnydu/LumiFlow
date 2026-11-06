@@ -10,8 +10,8 @@ public record ChapaVidroDTO(
         @NotNull(message = "validation.glass.type.required")
         TipoVidro tipoVidro,
 
-        @NotBlank
-        @Size(max = 100)
+        @NotBlank(message = "validation.glass.description.required")
+        @Size(max = 100, message = "validation.description.size100")
         String descricao,
 
         @NotNull(message = "validation.stock.min.required")

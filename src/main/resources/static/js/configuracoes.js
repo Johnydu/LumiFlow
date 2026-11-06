@@ -7,7 +7,7 @@ function mudarIdioma(lang) {
 
 // O tema em si é aplicado por mudarTema() (theme.js); aqui só marcamos o botão ativo.
 function atualizarBotoesTema() {
-    const atual = localStorage.getItem('theme') || 'identity';
+    const atual = lerTemaSalvo() || 'identity';
     document.querySelectorAll('[data-csp-action="mudarTema"]').forEach(botao => {
         botao.setAttribute('aria-pressed', String(botao.dataset.cspValue === atual));
     });

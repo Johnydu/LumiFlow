@@ -3,6 +3,7 @@ package br.com.lumiflow.repository;
 import br.com.lumiflow.entity.Usuario;
 import br.com.lumiflow.entity.enums.Descricao;
 import jakarta.persistence.LockModeType;
+import org.springframework.data.jpa.repository.EntityGraph;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Lock;
 import org.springframework.data.jpa.repository.Modifying;
@@ -19,8 +20,10 @@ public interface UsuarioRepository extends JpaRepository<Usuario, Long> {
 
     Optional<Usuario> findByLogin(String login);
 
+    @EntityGraph(attributePaths = {"nivelAcesso", "setor"})
     List<Usuario> findAllByOrderByNomeAsc();
 
+    @EntityGraph(attributePaths = {"nivelAcesso", "setor"})
     List<Usuario> findByNomeContainingIgnoreCaseOrLoginContainingIgnoreCaseOrderByNomeAsc(String nome, String login);
 
     @Lock(LockModeType.PESSIMISTIC_WRITE)

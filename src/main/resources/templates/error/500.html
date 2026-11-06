@@ -10,13 +10,11 @@
     <link rel="stylesheet" th:href="@{/css/error.css}">
 </head>
 <body>
-<div th:replace="~{fragments/messages :: alerts}"></div>
-
 <div class="error-container">
     <h1>500</h1>
     <h2>Erro interno do sistema</h2>
     <p>Ocorreu um erro inesperado durante o processamento da sua solicitação. Nossa equipe foi notificada automaticamente.</p>
-    <a th:href="@{/dashboard}" class="btn-voltar">Voltar ao Dashboard</a>
+    <a th:href="@{/dashboard/ordens-setor}" class="btn-voltar">Voltar</a>
 </div>
 
 </body>

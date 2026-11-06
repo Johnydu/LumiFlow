@@ -14,6 +14,9 @@ import java.util.List;
 @Repository
 public interface LancamentoRepository extends JpaRepository<Lancamento, Long> {
 
+    /** Etapa do setor usada em algum lançamento (a FK é ON DELETE SET NULL: apagar a etapa perderia o histórico). */
+    boolean existsByEtapaSetorId(Long etapaSetorId);
+
 
     @Query("""
     SELECT l FROM Lancamento l

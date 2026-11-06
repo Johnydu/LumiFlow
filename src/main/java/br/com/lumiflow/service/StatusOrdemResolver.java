@@ -20,6 +20,10 @@ public final class StatusOrdemResolver {
         if (ordem.getStatus() == EstatusOrdemProducao.CONCLUIDA) {
             return EstatusOrdemProducao.CONCLUIDA;
         }
+        // Todas as linhas concluídas: a ordem está concluída mesmo que o status gravado esteja defasado.
+        if (!linhas.isEmpty() && linhas.stream().allMatch(l -> l.getStatus() == EstatusOrdemProducao.CONCLUIDA)) {
+            return EstatusOrdemProducao.CONCLUIDA;
+        }
         if (linhas.stream().anyMatch(l -> l.getStatus() == EstatusOrdemProducao.EM_ANDAMENTO)) {
             return EstatusOrdemProducao.EM_ANDAMENTO;
         }

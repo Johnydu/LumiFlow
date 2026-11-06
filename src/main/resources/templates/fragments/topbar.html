@@ -2,11 +2,22 @@
 <html xmlns:th="http://www.thymeleaf.org"
       xmlns:sec="http://www.thymeleaf.org/extras/spring-security">
 
-<th:block th:fragment="topbar(titulo, textoBotao, acaoBotao, publico)">
+<!--
+  Parâmetros (todos obrigatórios; passe null quando não houver botão):
+    titulo      - título da barra
+    textoBotao  - rótulo do botão de ação (null = sem botão)
+    acaoBotao   - valor de data-csp-action do botão
+    acesso      - quem enxerga o botão:
+                    'publico' = qualquer usuário autenticado
+                    'pcp'     = ADMIN, SUPERVISOR, PCP (quem acessa /dashboard/ordens/novaOrdem; GESTAO não herda PCP)
+                    qualquer outro valor (ex.: 'padrao') = ADMIN, GESTAO, SUPERVISOR, PCP
+-->
+<th:block th:fragment="topbar(titulo, textoBotao, acaoBotao, acesso)">
 
     <div class="sidebar-overlay" aria-hidden="true"></div>
 
-    <header class="topbar">
+    <header class="topbar"
+            th:classappend="${textoBotao != null and (acaoBotao == 'voltarPagina' or acaoBotao == 'voltarParaSetor')} ? 'topbar--back'">
         <div class="topbar-left">
             <button class="menu-toggle"
                     data-csp-action="toggleSidebar"
@@ -21,15 +32,27 @@
             </span>
         </div>
 
-        <button th:if="${textoBotao != null and publico}"
+        <!-- Botão visível para qualquer usuário autenticado. -->
+        <button th:if="${textoBotao != null and acesso == 'publico'}"
+                type="button"
                 class="btn-novo"
                 th:text="${textoBotao}"
                 th:attr="data-csp-action=${acaoBotao}">
         </button>
 
-        <!-- Ações administrativas continuam protegidas por role. -->
-        <button th:if="${textoBotao != null and !publico}"
+        <!-- Nova Ordem: somente quem acessa /dashboard/ordens/novaOrdem. -->
+        <button th:if="${textoBotao != null and acesso == 'pcp'}"
+                sec:authorize="hasAnyRole('ADMIN', 'SUPERVISOR', 'PCP')"
+                type="button"
+                class="btn-novo"
+                th:text="${textoBotao}"
+                th:attr="data-csp-action=${acaoBotao}">
+        </button>
+
+        <!-- Demais ações administrativas continuam protegidas por role. -->
+        <button th:if="${textoBotao != null and acesso != 'publico' and acesso != 'pcp'}"
                 sec:authorize="hasAnyRole('ADMIN', 'GESTAO', 'SUPERVISOR', 'PCP')"
+                type="button"
                 class="btn-novo"
                 th:text="${textoBotao}"
                 th:attr="data-csp-action=${acaoBotao}">

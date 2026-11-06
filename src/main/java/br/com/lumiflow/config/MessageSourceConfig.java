@@ -36,6 +36,8 @@ public class MessageSourceConfig implements WebMvcConfigurer {
     public LocaleChangeInterceptor localeChangeInterceptor() {
         LocaleChangeInterceptor interceptor = new LocaleChangeInterceptor();
         interceptor.setParamName("lang");
+        // /login?lang=!! não deve gerar 500: locale inválido é simplesmente ignorado
+        interceptor.setIgnoreInvalidLocale(true);
         return interceptor;
     }
 

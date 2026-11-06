@@ -6,8 +6,8 @@
     <div class="sidebar-header">
         <div class="logo">LumiFlow</div>
         <button type="button" class="menu-toggle sidebar-close"
-                data-csp-action="toggleSidebar" aria-label="Fechar Menu" aria-expanded="false">
-            ☰
+                data-csp-action="closeSidebar" aria-label="Fechar menu" aria-controls="sidebar">
+            <span aria-hidden="true">&times;</span>
         </button>
     </div>
 
@@ -103,6 +103,5 @@
         </div>
     </div>
 
-    <script th:src="@{/js/responsive-tables.js}"></script>
 
 </aside>

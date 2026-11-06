@@ -32,6 +32,7 @@
 
 html.sidebar-collapsed-init .sidebar {
   transform: translateX(-100%) !important;
+  visibility: hidden;
 }
 
 html.sidebar-collapsed-init .sidebar,
@@ -46,6 +47,9 @@ html.sidebar-collapsed-init .main {
 @media (min-width: 1025px) {
   body.sidebar-collapsed .sidebar {
     transform: translateX(-100%);
+    visibility: hidden;
+    /* Mantém visível durante a animação de saída e some depois (sem links focáveis). */
+    transition: transform 240ms ease, visibility 0s linear 240ms;
   }
 
   body.sidebar-collapsed .main {

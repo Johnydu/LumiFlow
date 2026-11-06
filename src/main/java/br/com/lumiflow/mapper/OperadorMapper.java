@@ -11,9 +11,10 @@ import java.util.List;
 @Mapper(componentModel = "spring")
 public interface OperadorMapper {
 
-    // 1. DTO -> Entidade (Cadastro e Edição)
+    // 1. DTO -> Entidade (Cadastro). O id nunca vem do DTO: um POST com id faria merge/sobrescreveria outro registro.
     @Mapping(target = "nome", source = "nome")
     @Mapping(target = "funcao", source = "funcao")
+    @Mapping(target = "id", ignore = true)
     @Mapping(target = "setorPadrao", ignore = true) // A busca da entidade Setor é feita no Service pelo ID
     Operador toEntity(OperadorDTO dto);
 

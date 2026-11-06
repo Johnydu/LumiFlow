@@ -1,6 +1,6 @@
 <!DOCTYPE html>
 <html lang="pt-BR" th:lang="${#locale.toLanguageTag()}" xmlns:th="http://www.thymeleaf.org"
-      xmlns:sec="http://www.w3.org/1999/xhtml">
+      xmlns:sec="http://www.thymeleaf.org/extras/spring-security">
 <head>
     <th:block th:replace="~{fragments/theme :: init}"></th:block>
     <meta charset="UTF-8"/>
@@ -17,6 +17,7 @@
     <link rel="stylesheet" th:href="@{/css/components/badges.css}">
     <link rel="stylesheet" th:href="@{/css/components/status.css}">
     <link rel="stylesheet" th:href="@{/css/components/alerts.css}">
+    <link rel="stylesheet" th:href="@{/css/components/csp-migrated.css}">
     <link rel="stylesheet" th:href="@{/css/pages/listaordemsetores.css}">
     <link rel="stylesheet" th:href="@{/css/utils.css}">
     <link rel="stylesheet" th:href="@{/css/responsive.css}">
@@ -40,7 +41,7 @@
     'Setores de Produção',
     '+ Nova Ordem',
     'novaOrdemForm',
-    false
+    'pcp'
 )}"></div>
 
     <div class="content">
@@ -52,7 +53,7 @@
             <input type="text"
                    id="buscaSetorOrdens"
                    name="busca"
-                   th:value="${param.busca}"
+                   th:value="${param.busca != null ? param.busca[0] : ''}"
                    class="search"
                    autocomplete="off">
             </div>
@@ -134,9 +135,9 @@
 
 </main>
 
-<script th:src="@{/js/sidebar.js}"></script>
-<script th:src="@{/js/alerts.js}"></script>
-<script th:src="@{/js/lista-ordem-setores.js}"></script>
+<script th:src="@{/js/sidebar.js}" defer></script>
+<script th:src="@{/js/alerts.js}" defer></script>
+<script th:src="@{/js/lista-ordem-setores.js}" defer></script>
 
 </body>
 </html>

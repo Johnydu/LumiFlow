@@ -10,13 +10,11 @@
     <link rel="stylesheet" th:href="@{/css/error.css}">
 </head>
 <body>
-<div th:replace="~{fragments/messages :: alerts}"></div>
-
 <div class="error-container">
     <h1>403</h1>
     <h2>Acesso Restrito</h2>
     <p>Você não possui permissão ou nível de acesso suficiente para visualizar esta página ou recurso.</p>
-    <a th:href="@{/dashboard}" class="btn-voltar">Voltar ao Dashboard</a>
+    <a th:href="@{/dashboard/ordens-setor}" class="btn-voltar">Voltar</a>
 </div>
 
 </body>

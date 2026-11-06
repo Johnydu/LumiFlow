@@ -3,21 +3,21 @@
 
 <div th:fragment="alerts">
     <!-- Sucesso -->
-    <div th:if="${success}" class="alert alert-success" role="alert">
+    <div th:if="${success}" class="alert alert-success" role="status" aria-live="polite">
         <i class="fas fa-check-circle"></i>
         <span th:text="${success}"></span>
         <button type="button" class="btn-close" aria-label="Fechar">&times;</button>
     </div>
 
     <!-- Erro -->
-    <div th:if="${error}" class="alert alert-danger" role="alert">
+    <div th:if="${error}" class="alert alert-danger" role="alert" aria-live="assertive">
         <i class="fas fa-exclamation-circle"></i>
         <span th:text="${error}"></span>
         <button type="button" class="btn-close" aria-label="Fechar">&times;</button>
     </div>
 
     <!-- Info -->
-    <div th:if="${info}" class="alert alert-info" role="alert">
+    <div th:if="${info}" class="alert alert-info" role="status" aria-live="polite">
         <i class="fas fa-info-circle"></i>
         <span th:text="${info}"></span>
         <button type="button" class="btn-close" aria-label="Fechar">&times;</button>

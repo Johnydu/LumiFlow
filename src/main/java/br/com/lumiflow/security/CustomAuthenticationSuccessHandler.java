@@ -25,6 +25,6 @@ public class CustomAuthenticationSuccessHandler implements AuthenticationSuccess
 
         String destino = podeAcessarDashboard ? "/dashboard" : "/dashboard/ordens-setor";
 
-        response.sendRedirect(destino);
+        response.sendRedirect(request.getContextPath() + destino);
     }
 }

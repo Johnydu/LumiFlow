@@ -19,6 +19,7 @@
     <link rel="stylesheet" th:href="@{/css/components/combobox.css}">
     <link rel="stylesheet" th:href="@{/css/components/status.css}">
     <link rel="stylesheet" th:href="@{/css/components/alerts.css}">
+    <link rel="stylesheet" th:href="@{/css/components/csp-migrated.css}">
     <link rel="stylesheet" th:href="@{/css/pages/novaordem.css}">
     <link rel="stylesheet" th:href="@{/css/utils.css}">
     <link rel="stylesheet" th:href="@{/css/responsive.css}">
@@ -38,7 +39,7 @@
             'Nova Ordem de Produção',
             null,
             null,
-            false
+            'padrao'
         )}">
     </div>
 
@@ -96,7 +97,7 @@
                     <div class="roteiro-pills" id="roteiro-pills">
                         <span class="r-empty">Selecione um produto para ver o roteiro.</span>
                     </div>
-                    <div class="roteiro-info csp-style-6b99de8b69" id="roteiro-info">
+                    <div class="roteiro-info is-hidden" id="roteiro-info">
                         ℹ️ Roteiro carregado automaticamente do cadastro do produto.
                     </div>
                 </div>
@@ -113,9 +114,9 @@
 
 </main>
 
-<script th:src="@{/js/sidebar.js}"></script>
-<script th:src="@{/js/alerts.js}"></script>
-<script th:src="@{/js/nova-ordem.js}"></script>
+<script th:src="@{/js/sidebar.js}" defer></script>
+<script th:src="@{/js/alerts.js}" defer></script>
+<script th:src="@{/js/nova-ordem.js}" defer></script>
 
 </body>
 

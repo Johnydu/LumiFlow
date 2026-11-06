@@ -50,8 +50,7 @@ public class OrdemSetorController {
             model.addAttribute("resumoSetores", resumoSetores);
         } catch (Exception e) {
             log.error("Erro inesperado ao listar resumo dos setores: {}", e.getMessage(), e);
-            model.addAttribute("error", messageSource
-                    .getMessage(AppMessages.ERROR_VALIDATION_FAILED, null, locale));
+            model.addAttribute("error", MensagensWeb.validacaoFalhou(messageSource, locale));
             model.addAttribute("resumoSetores", List.of());
         }
 
@@ -63,6 +62,7 @@ public class OrdemSetorController {
                                          @ModelAttribute OrdemFiltroDTO filtro,
                                          @RequestParam(value = "page", defaultValue = "0") int page,
                                          Model model,
+                                         RedirectAttributes attributes,
                                          Locale locale) {
 
         try {
@@ -76,10 +76,14 @@ public class OrdemSetorController {
             model.addAttribute("buscaAtual", filtro.busca());
             model.addAttribute("statusAtual", filtro.status());
             model.addAttribute("totalOrdens", pagina.getTotalElements());
+        } catch (BusinessException e) {
+            // Setor inexistente: volta para a lista de setores com o aviso, em vez de uma tela vazia.
+            log.warn("Erro de negócio ao listar ordens do setor id {}: {}", setorId, e.getMessage());
+            attributes.addFlashAttribute("error", MensagensWeb.de(messageSource, e, locale));
+            return "redirect:/dashboard/ordens-setor";
         } catch (Exception e) {
             log.error("Erro inesperado ao listar ordens para o setor id {}: {}", setorId, e.getMessage(), e);
-            model.addAttribute("error", messageSource
-                    .getMessage(AppMessages.ERROR_VALIDATION_FAILED, null, locale));
+            model.addAttribute("error", MensagensWeb.validacaoFalhou(messageSource, locale));
             model.addAttribute("ordens", List.of());
             model.addAttribute("pagina", Page.empty());
             model.addAttribute("setorAtual", "Desconhecido");
@@ -105,15 +109,14 @@ public class OrdemSetorController {
                     .getMessage(AppMessages.SUCCESS_ORDER_LIBERADA, null, locale));
         } catch (BusinessException e) {
             log.warn("Erro de negócio ao liberar ordem setor id {}: {}", ordemSetorId, e.getMessage());
-            String errorMessage = messageSource.getMessage(e.getMessage(), null, e.getMessage(), locale);
+            String errorMessage = MensagensWeb.de(messageSource, e, locale);
             attributes.addFlashAttribute("error", errorMessage);
         } catch (ObjectOptimisticLockingFailureException e) {
             // tratado pelo GlobalExceptionHandler com a mensagem de edição concorrente
             throw e;
         } catch (Exception e) {
             log.error("Erro inesperado ao liberar ordem setor id {}: {}", ordemSetorId, e.getMessage(), e);
-            attributes.addFlashAttribute("error", messageSource
-                    .getMessage(AppMessages.ERROR_VALIDATION_FAILED, null, locale));
+            attributes.addFlashAttribute("error", MensagensWeb.validacaoFalhou(messageSource, locale));
         }
 
         return destino(setorId, ordemId, retorno);
@@ -134,15 +137,14 @@ public class OrdemSetorController {
                     .getMessage(AppMessages.SUCCESS_ORDER_PAUSADA, null, locale));
         } catch (BusinessException e) {
             log.warn("Erro de negócio ao pausar ordem setor id {}: {}", ordemSetorId, e.getMessage());
-            String errorMessage = messageSource.getMessage(e.getMessage(), null, e.getMessage(), locale);
+            String errorMessage = MensagensWeb.de(messageSource, e, locale);
             attributes.addFlashAttribute("error", errorMessage);
         } catch (ObjectOptimisticLockingFailureException e) {
             // tratado pelo GlobalExceptionHandler com a mensagem de edição concorrente
             throw e;
         } catch (Exception e) {
             log.error("Erro inesperado ao pausar ordem setor id {}: {}", ordemSetorId, e.getMessage(), e);
-            attributes.addFlashAttribute("error", messageSource
-                    .getMessage(AppMessages.ERROR_VALIDATION_FAILED, null, locale));
+            attributes.addFlashAttribute("error", MensagensWeb.validacaoFalhou(messageSource, locale));
         }
 
         return destino(setorId, ordemId, retorno);
@@ -158,8 +160,7 @@ public class OrdemSetorController {
                                RedirectAttributes attributes, Locale locale) {
 
         if (result.hasErrors()) {
-            attributes.addFlashAttribute("error", messageSource
-                    .getMessage(AppMessages.ERROR_VALIDATION_FAILED, null, locale));
+            attributes.addFlashAttribute("error", MensagensWeb.validacaoFalhou(messageSource, locale));
             return destino(setorId, ordemId, retorno);
         }
 
@@ -170,15 +171,14 @@ public class OrdemSetorController {
                     .getMessage(AppMessages.SUCCESS_ORDER_DIVIDED, null, locale));
         } catch (BusinessException e) {
             log.warn("Erro de negócio ao dividir etapa da ordem setor id {}: {}", ordemSetorId, e.getMessage());
-            String errorMessage = messageSource.getMessage(e.getMessage(), null, e.getMessage(), locale);
+            String errorMessage = MensagensWeb.de(messageSource, e, locale);
             attributes.addFlashAttribute("error", errorMessage);
         } catch (ObjectOptimisticLockingFailureException e) {
             // tratado pelo GlobalExceptionHandler com a mensagem de edição concorrente
             throw e;
         } catch (Exception e) {
             log.error("Erro inesperado ao dividir etapa da ordem setor id {}: {}", ordemSetorId, e.getMessage(), e);
-            attributes.addFlashAttribute("error", messageSource
-                    .getMessage(AppMessages.ERROR_VALIDATION_FAILED, null, locale));
+            attributes.addFlashAttribute("error", MensagensWeb.validacaoFalhou(messageSource, locale));
         }
 
         return destino(setorId, ordemId, retorno);

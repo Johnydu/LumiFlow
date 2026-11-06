@@ -10,7 +10,7 @@ public record MovimentacaoVidroDTO(
         @NotNull(message = "validation.glass.type.required")
         Long chapaVidroId,
 
-        @NotNull
+        @NotNull(message = "validation.glass.movement.type.required")
         TipoMovimentacao tipoMovimentacao,
 
         @NotNull(message = "validation.quantity.required")
@@ -22,6 +22,6 @@ public record MovimentacaoVidroDTO(
 
         LocalDateTime dataHora,
 
-        @Size(max = 255)
+        @Size(max = 255, message = "validation.notes.size255")
         String observacao
 ) {}

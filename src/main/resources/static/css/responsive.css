@@ -1,17 +1,15 @@
 /*
-- RESPONSIVE.CSS
-- Layout "sanduíche": desktop amplo, tablet condensado e celular empilhado.
-- Este arquivo é carregado por último para manter os ajustes de viewport em um só lugar.
+   RESPONSIVE.CSS
+   Layout "sanduíche": desktop amplo, tablet condensado e celular empilhado.
+   Este arquivo é carregado por último para manter os ajustes de viewport em um só lugar.
 */
 
 /* Tablet horizontal e notebooks menores */
 @media (max-width: 1200px) {
   .content { padding: var(--space-5) var(--space-6); }
 
-  .cards,
-  body.page-relatorio-relatoriotempo .kpi-grid { grid-template-columns: repeat(2, minmax(0, 1fr)); }
+  .cards { grid-template-columns: repeat(2, minmax(0, 1fr)); }
 
-  .dashboard-grid { grid-template-columns: 1fr; }
 
   body.page-ordemproducao-detalhesordem .info-cards,
   body.page-vidracaria-vidracaria .saldo-grid { grid-template-columns: repeat(2, minmax(0, 1fr)); }
@@ -22,7 +20,6 @@
   body.page-ordemproducao-novaordem .content { padding: var(--space-6); }
   body.page-ordemproducao-novaordem .form-card { padding: var(--space-6); }
 
-  .dashboard-grid { min-width: 0; }
 }
 
 /* Tablet e celular: a navegação vira drawer e o conteúdo ocupa a viewport. */
@@ -40,16 +37,22 @@
   .sidebar {
     position: fixed;
     inset: 0 auto 0 0;
-    z-index: 9999;
+    z-index: 9000;
     width: min(82vw, var(--sidebar-width));
     max-width: 320px;
     transform: translateX(-100%);
-    transition: transform 180ms ease;
+    /* Fechado: invisível e fora da ordem de foco (some após a animação de saída). */
+    visibility: hidden;
+    transition: transform 180ms ease, visibility 0s linear 180ms;
     overflow-y: auto;
     will-change: transform;
   }
 
-  .sidebar.open { transform: translateX(0); }
+  .sidebar.open {
+    transform: translateX(0);
+    visibility: visible;
+    transition: transform 180ms ease, visibility 0s;
+  }
 
   .sidebar-close,
   .menu-toggle { display: inline-flex; align-items: center; justify-content: center; }
@@ -58,7 +61,7 @@
     display: block;
     position: fixed;
     inset: 0;
-    z-index: 9998;
+    z-index: 8999;
     background: var(--surface-overlay);
     visibility: hidden;
     opacity: 0;
@@ -92,7 +95,6 @@
   }
 
   .content > *,
-  .dashboard-grid > *,
   .cards > * {
     min-width: 0;
     max-width: 100%;
@@ -110,10 +112,8 @@
   .filtros { gap: var(--space-2); }
 
   .filtro-input,
-  .filtro-select,
-  .filtro-date { min-width: 0; }
+  .filtro-select { min-width: 0; }
 
-  body.page-ordemproducao-lancamento .form-grid-3 { grid-template-columns: repeat(2, minmax(0, 1fr)); }
   body.page-vidracaria-vidracaria #filter-form { grid-template-columns: 1fr 1fr; }
   body.page-vidracaria-vidracaria .filter-actions { grid-column: 1 / -1; }
 
@@ -237,8 +237,7 @@
   .topbar-left { flex: 1 1 0; }
   .topbar-title { font-size: var(--font-size-lg); }
 
-  .btn-novo,
-  .btn-nova {
+  .btn-novo {
     flex: 0 1 auto;
     min-height: var(--control-height-md);
     max-width: 48vw;
@@ -260,21 +259,13 @@
   .search,
   .search-input-wrapper,
   .filtro-input,
-  .filtro-select,
-  .filtro-date { width: 100%; min-width: 0; }
-
-  body.page-ordemproducao-listaordemsetores .filtros .filtro-input,
-  body.page-ordemproducao-listaordemsetores .filtros .filtro-date { min-width: 0; }
+  .filtro-select { width: 100%; min-width: 0; }
 
   .cards,
-  body.page-relatorio-relatoriotempo .kpi-grid,
   body.page-ordemproducao-detalhesordem .info-cards,
   body.page-vidracaria-vidracaria .saldo-grid,
-  body.page-ordemproducao-lancamento .form-grid-3,
   .form-grid,
-  .form-grid-3,
-  body.page-vidracaria-vidracaria .form-grid,
-  body.page-produto-cadastroproduto .setores-grid { grid-template-columns: 1fr; }
+  body.page-vidracaria-vidracaria .form-grid { grid-template-columns: 1fr; }
 
   .card,
   .form-card { padding: var(--space-4); }
@@ -343,10 +334,8 @@
   }
 
   .login-body .login-brand-panel { display: none; }
-  .login-shell { padding: var(--space-4); }
   .login-card,
   .login-card-container { width: 100%; min-height: 0; }
-  .login-form-side,
   .login-form-panel { padding: var(--space-8) var(--space-6); }
 }
 
@@ -354,11 +343,9 @@
 @media (max-width: 480px) {
   .content { padding: var(--space-3); }
   .topbar-title { font-size: var(--font-size-md); }
-  .btn-novo,
-  .btn-nova { max-width: 44vw; padding-inline: var(--space-2); }
+  .btn-novo { max-width: 44vw; padding-inline: var(--space-2); }
 
   .cards,
-  body.page-relatorio-relatoriotempo .kpi-grid,
   body.page-ordemproducao-detalhesordem .info-cards,
   body.page-vidracaria-vidracaria .saldo-grid { grid-template-columns: 1fr; }
 
@@ -367,7 +354,5 @@
 
   .modal-actions { flex-direction: column-reverse; }
   .modal-actions > * { width: 100%; flex-basis: auto; }
-  .login-shell { padding: var(--space-2); }
-  .login-form-side,
   .login-form-panel { padding: var(--space-6) var(--space-4); }
 }

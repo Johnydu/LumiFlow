@@ -1,5 +1,26 @@
+// localStorage pode lançar (modo privado, cookies bloqueados): a tela deve funcionar sem ele.
+function lerTemaSalvo() {
+  try {
+    return window.localStorage.getItem('theme');
+  } catch (error) {
+    return null;
+  }
+}
+
+function salvarTema(tema) {
+  try {
+    if (tema) {
+      window.localStorage.setItem('theme', tema);
+    } else {
+      window.localStorage.removeItem('theme');
+    }
+  } catch (error) {
+    // Armazenamento indisponível: o tema vale só para esta página.
+  }
+}
+
 (function () {
-  const savedTheme = localStorage.getItem('theme');
+  const savedTheme = lerTemaSalvo();
   if (savedTheme === 'dark') {
     document.documentElement.classList.add('dark');
   } else if (savedTheme === 'light') {
@@ -19,12 +40,12 @@ function mudarTema(tema) {
 
   if (tema === 'light') {
     htmlEl.classList.add('theme-light');
-    localStorage.setItem('theme', 'light');
+    salvarTema('light');
   } else if (tema === 'dark') {
     htmlEl.classList.add('dark');
-    localStorage.setItem('theme', 'dark');
+    salvarTema('dark');
   } else {
     // Tema Identidade (Original - sem classes no html)
-    localStorage.removeItem('theme'); // ou localStorage.setItem('theme', 'identity');
+    salvarTema(null);
   }
 }

@@ -44,6 +44,12 @@ public class LancamentoService {
         OrdemSetor ordemSetor = ordemSetorRepository.findById(ordemSetorId)
                 .orElseThrow(() -> new BusinessException(AppMessages.ERROR_ORDER_NOT_AVAILABLE));
 
+        validarEtapaAtiva(ordemId, ordemSetor);
+        return ordemSetor;
+    }
+
+    /** A etapa precisa pertencer à ordem e estar LIBERADA ou EM_ANDAMENTO para receber lançamentos. */
+    private void validarEtapaAtiva(Long ordemId, OrdemSetor ordemSetor) {
         if (!ordemSetor.getOrdemProducao().getId().equals(ordemId)) {
             throw new BusinessException(AppMessages.ERROR_ORDER_NOT_AVAILABLE);
         }
@@ -52,8 +58,6 @@ public class LancamentoService {
                 && ordemSetor.getStatus() != EstatusOrdemProducao.EM_ANDAMENTO) {
             throw new BusinessException(AppMessages.ERROR_ORDER_NOT_AVAILABLE);
         }
-
-        return ordemSetor;
     }
 
     @Transactional(readOnly = true)
@@ -75,6 +79,12 @@ public class LancamentoService {
             }
 
             OrdemSetor ordemSetor = buscarEtapaAtiva(ordemId, ordemSetorId);
+
+            // Linha de refugo (peças a retrabalhar) só recebe produção via registrarRetrabalho,
+            // que vincula o que foi refeito ao refugo de origem.
+            if (ordemSetor.isOrigemRefugo()) {
+                throw new BusinessException(AppMessages.ERROR_LAUNCH_REWORK_LINE);
+            }
 
             if (dto.quantidade() > ordemSetor.getQtdPendente()) {
                 throw new BusinessException(AppMessages.ERROR_LAUNCH_EXCEEDS_PENDING);
@@ -268,6 +278,8 @@ public class LancamentoService {
 
         } catch (BusinessException e) {
             throw e;
+        } catch (ObjectOptimisticLockingFailureException e) {
+            throw e;
         } catch (DataAccessException e) {
             log.error("Erro de base de dados ao registar refugo para a ordem {}: {}", ordemId, e.getMessage(), e);
             throw new BusinessException(AppMessages.ERROR_PERSISTENCE_RETRY);
@@ -361,6 +373,10 @@ public class LancamentoService {
                 throw new BusinessException(AppMessages.ERROR_ORDER_NOT_AVAILABLE);
             }
 
+            // A linha de retrabalho precisa estar liberada/em andamento (não pode estar DISPONIVEL,
+            // pausada ou concluída), igual a qualquer outro lançamento.
+            validarEtapaAtiva(ordemId, ordemSetorOrigem);
+
             if (dto.quantidade() > ordemSetorOrigem.getQtdPendente()) {
                 throw new BusinessException(AppMessages.ERROR_LAUNCH_EXCEEDS_PENDING);
             }
@@ -374,6 +390,9 @@ public class LancamentoService {
             retrabalho.setOperador(operador);
             retrabalhoRepository.save(retrabalho);
 
+            if (ordemSetorOrigem.getInicio() == null) {
+                ordemSetorOrigem.setInicio(LocalDateTime.now());
+            }
             ordemSetorOrigem.setQtdProduzida(ordemSetorOrigem.getQtdProduzida() + dto.quantidade());
             ordemSetorOrigem.setQtdPendente(ordemSetorOrigem.getQtdPendente() - dto.quantidade());
 
@@ -392,6 +411,8 @@ public class LancamentoService {
             return ordemSetorOrigem;
 
         } catch (BusinessException e) {
+            throw e;
+        } catch (ObjectOptimisticLockingFailureException e) {
             throw e;
         } catch (DataAccessException e) {
             log.error("Erro de base de dados ao registar retrabalho para a ordem {}: {}", ordemId, e.getMessage(), e);

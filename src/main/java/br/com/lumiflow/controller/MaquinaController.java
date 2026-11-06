@@ -35,7 +35,7 @@ public class MaquinaController {
             carregarPagina(model);
         } catch (Exception e) {
             log.error("Erro inesperado ao carregar a página de máquinas: {}", e.getMessage(), e);
-            model.addAttribute("error", messageSource.getMessage(AppMessages.ERROR_VALIDATION_FAILED, null, locale));
+            model.addAttribute("error", MensagensWeb.validacaoFalhou(messageSource, locale));
             model.addAttribute("maquinas", List.of());
             model.addAttribute("setores", List.of());
             if (!model.containsAttribute("maquinaDTO")) {
@@ -59,12 +59,12 @@ public class MaquinaController {
                     messageSource.getMessage(AppMessages.SUCCESS_MACHINE_CREATED, new Object[]{dto.nome()}, locale));
         } catch (BusinessException e) {
             log.warn("Erro de negócio ao criar máquina '{}': {}", dto.nome(), e.getMessage());
-            String errorMessage = messageSource.getMessage(e.getMessage(), null, e.getMessage(), locale);
+            String errorMessage = MensagensWeb.de(messageSource, e, locale);
             attributes.addFlashAttribute("error", errorMessage);
             attributes.addFlashAttribute("maquinaDTO", dto);
         } catch (Exception e) {
             log.error("Erro inesperado ao criar máquina '{}': {}", dto.nome(), e.getMessage(), e);
-            attributes.addFlashAttribute("error", messageSource.getMessage(AppMessages.ERROR_VALIDATION_FAILED, null, locale));
+            attributes.addFlashAttribute("error", MensagensWeb.validacaoFalhou(messageSource, locale));
             attributes.addFlashAttribute("maquinaDTO", dto);
         }
 
@@ -80,11 +80,11 @@ public class MaquinaController {
                     messageSource.getMessage(AppMessages.SUCCESS_MACHINE_DELETED, null, locale));
         } catch (BusinessException e) {
             log.warn("Erro de negócio ao excluir máquina id {}: {}", id, e.getMessage());
-            String errorMessage = messageSource.getMessage(e.getMessage(), null, e.getMessage(), locale);
+            String errorMessage = MensagensWeb.de(messageSource, e, locale);
             attributes.addFlashAttribute("error", errorMessage);
         } catch (Exception e) {
             log.error("Erro inesperado ao excluir máquina id {}: {}", id, e.getMessage(), e);
-            attributes.addFlashAttribute("error", messageSource.getMessage(AppMessages.ERROR_VALIDATION_FAILED, null, locale));
+            attributes.addFlashAttribute("error", MensagensWeb.validacaoFalhou(messageSource, locale));
         }
 
         return "redirect:/dashboard/maquinas";
@@ -104,12 +104,12 @@ public class MaquinaController {
                     messageSource.getMessage(AppMessages.SUCCESS_MACHINE_UPDATED, new Object[]{dto.nome()}, locale));
         } catch (BusinessException e) {
             log.warn("Erro de negócio ao editar máquina id {}: {}", id, e.getMessage());
-            String errorMessage = messageSource.getMessage(e.getMessage(), null, e.getMessage(), locale);
+            String errorMessage = MensagensWeb.de(messageSource, e, locale);
             attributes.addFlashAttribute("error", errorMessage);
             attributes.addFlashAttribute("maquinaDTO", dto);
         } catch (Exception e) {
             log.error("Erro inesperado ao editar máquina id {}: {}", id, e.getMessage(), e);
-            attributes.addFlashAttribute("error", messageSource.getMessage(AppMessages.ERROR_VALIDATION_FAILED, null, locale));
+            attributes.addFlashAttribute("error", MensagensWeb.validacaoFalhou(messageSource, locale));
             attributes.addFlashAttribute("maquinaDTO", dto);
         }
 
@@ -118,33 +118,15 @@ public class MaquinaController {
 
     private String erroValidacao(Model model, BindingResult result, Locale locale) {
         carregarPagina(model);
-        String mensagem = result.getAllErrors().stream()
-                .findFirst()
-                .map(error -> {
-                    String defaultMessage = error.getDefaultMessage();
-                    return defaultMessage == null ? "" :
-                            messageSource.getMessage(defaultMessage, null, defaultMessage, locale);
-                })
-                .orElseGet(() -> messageSource.getMessage(
-                        AppMessages.ERROR_VALIDATION_FAILED, null, locale));
+        String mensagem = MensagensWeb.deBinding(messageSource, result, locale);
         model.addAttribute("error", mensagem);
         return "maquina/CadastroMaquinas";
     }
 
     private void carregarPagina(Model model) {
-        try {
-            model.addAttribute("maquinas", maquinaService.listarMaquinas());
-        } catch (Exception e) {
-            log.error("Erro ao carregar lista de máquinas: {}", e.getMessage(), e);
-            model.addAttribute("maquinas", List.of());
-        }
-
-        try {
-            model.addAttribute("setores", setorService.listarSetores());
-        } catch (Exception e) {
-            log.error("Erro ao carregar lista de setores para máquinas: {}", e.getMessage(), e);
-            model.addAttribute("setores", List.of());
-        }
+        // Falhas de carga propagam: o chamador mostra o erro ao usuário (nunca uma lista vazia silenciosa).
+        model.addAttribute("maquinas", maquinaService.listarMaquinas());
+        model.addAttribute("setores", setorService.listarSetores());
 
         if (!model.containsAttribute("maquinaDTO")) {
             model.addAttribute("maquinaDTO",

@@ -21,6 +21,7 @@
   <link rel="stylesheet" th:href="@{/css/components/alerts.css}">
   <!-- Componente Modal Centralizado -->
   <link rel="stylesheet" th:href="@{/css/components/modal.css}">
+  <link rel="stylesheet" th:href="@{/css/components/csp-migrated.css}">
   <link rel="stylesheet" th:href="@{/css/pages/setores.css}">
   <link rel="stylesheet" th:href="@{/css/utils.css}">
   <link rel="stylesheet" th:href="@{/css/responsive.css}">
@@ -38,7 +39,7 @@
     'Setores',
     '+ Novo Setor',
     'novoSetorForm',
-    false
+    'padrao'
 )}"></div>
 
   <div class="content">
@@ -50,7 +51,7 @@
       <input type="text"
              id="buscaSetor"
              name="nome"
-             th:value="${param.nome}"
+             th:value="${param.nome != null ? param.nome[0] : ''}"
              class="search">
       </div>
     </form>
@@ -138,10 +139,10 @@
     <!-- MODAL DE CADASTRO / EDIÇÃO DE SETOR -->
     <div class="modal-overlay" id="form-panel"
          sec:authorize="hasAnyRole('ADMIN', 'PCP', 'SUPERVISOR')">
-      <div class="modal-box csp-style-eb1967695a">
+      <div class="modal-box csp-style-eb1967695a" role="dialog" aria-modal="true" aria-labelledby="form-title">
         <div class="modal-header">
           <span class="modal-title" id="form-title">Novo Setor</span>
-          <button type="button" class="modal-close" data-csp-action="hideForm">&times;</button>
+          <button type="button" class="modal-close" data-csp-action="hideForm" aria-label="Fechar janela">&times;</button>
         </div>
 
         <form id="setor-form"
@@ -189,9 +190,9 @@
   </div>
 </main>
 
-<script th:src="@{/js/filtro-ajax.js}"></script>
-<script th:src="@{/js/cadastro-setor.js}"></script>
-<script th:src="@{/js/sidebar.js}"></script>
-<script th:src="@{/js/alerts.js}"></script>
+<script th:src="@{/js/filtro-ajax.js}" defer></script>
+<script th:src="@{/js/cadastro-setor.js}" defer></script>
+<script th:src="@{/js/sidebar.js}" defer></script>
+<script th:src="@{/js/alerts.js}" defer></script>
 </body>
 </html>

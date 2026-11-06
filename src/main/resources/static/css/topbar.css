@@ -26,6 +26,21 @@
   min-width: 0;
 }
 
+/* Topbar com botão de ação à esquerda (voltar), compartilhada por páginas de detalhe */
+.topbar.topbar--back {
+  justify-content: flex-start;
+  gap: var(--space-4);
+}
+
+.topbar--back .topbar-left {
+  display: contents;
+}
+
+.topbar--back .menu-toggle {
+  order: 0;
+  flex-shrink: 0;
+}
+
 .topbar-title {
   overflow: hidden;
   color: var(--color-text);

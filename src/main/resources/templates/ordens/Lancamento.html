@@ -19,6 +19,7 @@
     <link rel="stylesheet" th:href="@{/css/components/alerts.css}">
     <link rel="stylesheet" th:href="@{/css/components/tabs.css}">
     <link rel="stylesheet" th:href="@{/css/components/modal.css}">
+    <link rel="stylesheet" th:href="@{/css/components/csp-migrated.css}">
     <link rel="stylesheet" th:href="@{/css/pages/lancamento.css}">
     <link rel="stylesheet" th:href="@{/css/responsive.css}"/>
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css"
@@ -41,7 +42,7 @@
         'LANÇAR PRODUÇÃO',
         'VOLTAR',
         'voltarPagina',
-        true
+        'publico'
     )}">
     </div>
 
@@ -237,12 +238,12 @@
 
     <!-- MODAL DE CONFIRMAÇÃO COM RESUMO -->
     <div class="modal-overlay is-hidden" id="modal-confirmacao-lancamento">
-        <div class="modal-box">
+        <div class="modal-box" role="dialog" aria-modal="true" aria-labelledby="modal-confirmacao-titulo">
             <div class="modal-header">
                 <span class="modal-title" id="modal-confirmacao-titulo">
                     <i class="fa-solid fa-clipboard-check"></i> Confirmar Lançamento
                 </span>
-                <button type="button" class="modal-close" id="btn-modal-fechar">&times;</button>
+                <button type="button" class="modal-close" id="btn-modal-fechar" aria-label="Fechar janela">&times;</button>
             </div>
 
             <div class="modal-body">
@@ -260,9 +261,9 @@
     </div>
 </main>
 
-<script th:src="@{/js/sidebar.js}"></script>
-<script th:src="@{/js/alerts.js}"></script>
-<script th:src="@{/js/lancamento.js}"></script>
+<script th:src="@{/js/sidebar.js}" defer></script>
+<script th:src="@{/js/alerts.js}" defer></script>
+<script th:src="@{/js/lancamento.js}" defer></script>
 
 </body>
 </html>

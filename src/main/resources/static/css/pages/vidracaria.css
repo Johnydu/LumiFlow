@@ -225,7 +225,7 @@ body.page-vidracaria-vidracaria .tipo-con {
 }
 
 /* Responsivo para telas menores */
-@media (max-width: 768px) {
+@media (max-width: 700px) {
   body.page-vidracaria-vidracaria #filter-form {
     grid-template-columns: 1fr;
     gap: var(--space-3);

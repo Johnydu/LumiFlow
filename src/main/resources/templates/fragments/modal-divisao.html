@@ -7,9 +7,9 @@
      class="modal-overlay is-hidden"
      sec:authorize="hasAnyRole('ADMIN', 'GESTAO', 'SUPERVISOR', 'PCP')">
 
-    <div class="modal-box">
+    <div class="modal-box" role="dialog" aria-modal="true" aria-labelledby="modal-divisao-titulo">
         <div class="modal-header">
-            <span class="modal-title">Dividir Ordem</span>
+            <span class="modal-title" id="modal-divisao-titulo">Dividir Ordem</span>
             <button type="button"
                     class="modal-close"
                     data-divisao-fechar

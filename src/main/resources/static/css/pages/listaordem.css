@@ -123,7 +123,7 @@ body.page-ordemproducao-listaordem .pag-btns {
 }
 
 /* Responsividade para telas muito pequenas (Smartphones) */
-@media (max-width: 768px) {
+@media (max-width: 700px) {
   body.page-ordemproducao-listaordem .order-filters {
     flex-direction: column;
     align-items: stretch;
@@ -142,21 +142,7 @@ body.page-ordemproducao-listaordem .pag-btns {
   }
 }
 
-/* Alinha os itens da topbar à esquerda na página */
-body.page-ordemproducao-listaordem .topbar {
-  justify-content: flex-start;
-  gap: var(--space-4);
-}
-
-body.page-ordemproducao-listaordem .topbar-left {
-  display: contents;
-}
-
-body.page-ordemproducao-listaordem .topbar .menu-toggle {
-  order: 0;
-  flex-shrink: 0;
-}
-
+/* Alinhamento da topbar (esquerda) vem de topbar.css */
 body.page-ordemproducao-listaordem .topbar > .btn-novo {
   order: 1;
   background: var(--surface-subtle);

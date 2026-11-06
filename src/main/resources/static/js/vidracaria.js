@@ -56,8 +56,20 @@ const VidracariaModule = (() => {
           headers: { 'X-Requested-With': 'XMLHttpRequest' }
         });
         if (!response.ok) throw new Error(`HTTP ${response.status}`);
+
+        // Sessão expirada: o fetch segue o redirect para /login e recebe a página inteira.
+        // Recarrega para o navegador ir ao login em vez de injetar a página no painel.
+        if (response.redirected || new URL(response.url).pathname.endsWith('/login')) {
+          window.location.reload();
+          return;
+        }
+
         const html = await response.text();
         const parsedDocument = new DOMParser().parseFromString(html, 'text/html');
+        if (!parsedDocument.querySelector('table.history-table')) {
+          window.location.reload();
+          return;
+        }
         const content = Array.from(parsedDocument.body.childNodes, node =>
           document.importNode(node, true)
         );

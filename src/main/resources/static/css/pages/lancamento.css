@@ -131,21 +131,7 @@ body.page-ordemproducao-lancamento .btn-submit.retrab {
   color: var(--color-track);
 }
 
-/* Alinha os itens da topbar à esquerda na página de lançamento */
-body.page-ordemproducao-lancamento .topbar {
-  justify-content: flex-start;
-  gap: var(--space-4);
-}
-
-body.page-ordemproducao-lancamento .topbar-left {
-  display: contents;
-}
-
-body.page-ordemproducao-lancamento .topbar .menu-toggle {
-  order: 0;
-  flex-shrink: 0;
-}
-
+/* Alinhamento da topbar (esquerda) vem de topbar.css */
 body.page-ordemproducao-lancamento .topbar > .btn-novo {
   order: 1;
 

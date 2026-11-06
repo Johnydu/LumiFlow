@@ -22,17 +22,24 @@ import org.springframework.data.domain.PageRequest;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.time.Clock;
+import java.time.Duration;
 import java.time.LocalDateTime;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 @Slf4j
 @Service
 @RequiredArgsConstructor
 public class VidracariaService {
+    private static final Duration TOLERANCIA_DATA_FUTURA = Duration.ofMinutes(1);
+
     private final ChapaVidroRepository chapaVidroRepository;
     private final MovimentacaoVidroRepository movimentacaoVidroRepository;
     private final ChapaVidroMapper chapaVidroMapper;
     private final OperadorRepository operadorRepository;
+    private final Clock clock;
 
     @Transactional(readOnly = true)
     public List<ChapaVidro> listarChapas() {
@@ -50,12 +57,13 @@ public class VidracariaService {
     @Transactional(readOnly = true)
     public List<SaldoVidroDTO> obterSaldosAtuais() {
         try {
+            // Uma consulta para todos os saldos (em vez de duas por chapa); sem movimento = saldo 0.
+            Map<Long, Integer> saldos = new HashMap<>();
+            for (Object[] linha : movimentacaoVidroRepository.somarSaldosPorChapa()) {
+                saldos.put(((Number) linha[0]).longValue(), ((Number) linha[1]).intValue());
+            }
             return chapaVidroRepository.findAll().stream().map(chapa -> {
-                int entradas = movimentacaoVidroRepository.somarQuantidadePorChapaETipo(chapa.getId(),
-                        TipoMovimentacao.ENTRADA);
-                int consumos = movimentacaoVidroRepository.somarQuantidadePorChapaETipo(chapa.getId(),
-                        TipoMovimentacao.SAIDA);
-                int saldo = entradas - consumos;
+                int saldo = saldos.getOrDefault(chapa.getId(), 0);
                 return new SaldoVidroDTO(chapa.getId(), chapa.getTipoVidro(), chapa.getDescricao(),
                         saldo, chapa.getEstoqueMinimo(), saldo <= chapa.getEstoqueMinimo());
             }).toList();
@@ -71,23 +79,31 @@ public class VidracariaService {
     @Transactional(readOnly = true)
     public Page<HistoricoMovimentacaoDTO> listarHistorico(String tipoMovStr, String tipoVidroStr, int pagina) {
         try {
+            // Filtro com valor desconhecido é erro explícito: ignorá-lo mostraria o histórico inteiro
+            // como se o filtro tivesse sido aplicado.
             TipoMovimentacao tipoMov = null;
             if (tipoMovStr != null && !tipoMovStr.isBlank()) {
                 try {
-                    tipoMov = TipoMovimentacao.valueOf(tipoMovStr);
-                } catch (IllegalArgumentException ignored) {}
+                    tipoMov = TipoMovimentacao.valueOf(tipoMovStr.trim());
+                } catch (IllegalArgumentException e) {
+                    throw new BusinessException(AppMessages.ERROR_VALIDATION_FAILED);
+                }
             }
 
             TipoVidro tipoVidro = null;
             if (tipoVidroStr != null && !tipoVidroStr.isBlank()) {
                 try {
-                    tipoVidro = TipoVidro.valueOf(tipoVidroStr);
-                } catch (IllegalArgumentException ignored) {}
+                    tipoVidro = TipoVidro.valueOf(tipoVidroStr.trim());
+                } catch (IllegalArgumentException e) {
+                    throw new BusinessException(AppMessages.ERROR_VALIDATION_FAILED);
+                }
             }
 
             Page<MovimentacaoVidro> movimentacoes = movimentacaoVidroRepository.filtrarHistorico(
                     tipoMov, tipoVidro, PageRequest.of(Math.max(pagina, 0), 25));
             return movimentacoes.map(this::paraHistoricoDTO);
+        } catch (BusinessException e) {
+            throw e;
         } catch (DataAccessException e) {
             log.error("Erro de base de dados ao filtrar histórico de movimentações: {}", e.getMessage(), e);
             throw new BusinessException(AppMessages.ERROR_VALIDATION_FAILED);
@@ -115,6 +131,11 @@ public class VidracariaService {
             if (dto == null) {
                 throw new BusinessException(AppMessages.ERROR_VALIDATION_FAILED);
             }
+            // Movimentação datada no futuro distorce saldo e histórico. Tolera 1 minuto de diferença de relógio.
+            if (dto.dataHora() != null
+                    && dto.dataHora().isAfter(LocalDateTime.now(clock).plus(TOLERANCIA_DATA_FUTURA))) {
+                throw new BusinessException(AppMessages.ERROR_GLASS_DATE_FUTURE);
+            }
             var chapa = chapaVidroRepository.findByIdForUpdate(dto.chapaVidroId())
                     .orElseThrow(() -> new BusinessException(AppMessages.ERROR_GLASS_SHEET_NOTFOUND));
             var operador = operadorRepository.findById(dto.operadorId())
@@ -136,7 +157,7 @@ public class VidracariaService {
             movimentacao.setQuantidade(dto.quantidade());
             movimentacao.setOperador(operador);
             movimentacao.setTipoMovimentacao(dto.tipoMovimentacao());
-            movimentacao.setDataHora(dto.dataHora() == null ? LocalDateTime.now() : dto.dataHora());
+            movimentacao.setDataHora(dto.dataHora() == null ? LocalDateTime.now(clock) : dto.dataHora());
             movimentacao.setObservacao(dto.observacao());
 
             movimentacaoVidroRepository.save(movimentacao);

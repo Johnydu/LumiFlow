@@ -42,22 +42,14 @@ public class VidracariaController {
             return "vidracaria/Vidracaria";
         } catch (Exception e) {
             log.error("Erro inesperado ao carregar a página de vidraçaria: {}", e.getMessage(), e);
-            model.addAttribute("error", messageSource.getMessage(AppMessages.ERROR_VALIDATION_FAILED, null, locale));
+            model.addAttribute("error", MensagensWeb.validacaoFalhou(messageSource, locale));
             return "vidracaria/Vidracaria";
         }
     }
 
     private String erroValidacao(Model model, BindingResult result, Locale locale) {
         carregarPagina(model, null, null, 0, locale);
-        String mensagem = result.getAllErrors().stream()
-                .findFirst()
-                .map(error -> {
-                    String defaultMessage = error.getDefaultMessage();
-                    return defaultMessage == null ? "" :
-                            messageSource.getMessage(defaultMessage, null, defaultMessage, locale);
-                })
-                .orElseGet(() -> messageSource.getMessage(
-                        AppMessages.ERROR_VALIDATION_FAILED, null, locale));
+        String mensagem = MensagensWeb.deBinding(messageSource, result, locale);
         model.addAttribute("error", mensagem);
         return "vidracaria/Vidracaria";
     }
@@ -76,12 +68,12 @@ public class VidracariaController {
                     messageSource.getMessage(AppMessages.SUCCESS_GLASS_MOVEMENT_CREATED, null, locale));
         } catch (BusinessException e) {
             log.warn("Erro de negócio ao registrar movimentação de vidro: {}", e.getMessage());
-            String errorMessage = messageSource.getMessage(e.getMessage(), null, e.getMessage(), locale);
+            String errorMessage = MensagensWeb.de(messageSource, e, locale);
             attributes.addFlashAttribute("error", errorMessage);
             attributes.addFlashAttribute("movimentacaoDTO", dto);
         } catch (Exception e) {
             log.error("Erro inesperado ao registrar movimentação de vidro: {}", e.getMessage(), e);
-            attributes.addFlashAttribute("error", messageSource.getMessage(AppMessages.ERROR_VALIDATION_FAILED, null, locale));
+            attributes.addFlashAttribute("error", MensagensWeb.validacaoFalhou(messageSource, locale));
             attributes.addFlashAttribute("movimentacaoDTO", dto);
         }
 
@@ -103,12 +95,12 @@ public class VidracariaController {
                     messageSource.getMessage(AppMessages.SUCCESS_GLASS_TYPE_CREATED, null, locale));
         } catch (BusinessException e) {
             log.warn("Erro de negócio ao cadastrar chapa de vidro: {}", e.getMessage());
-            String errorMessage = messageSource.getMessage(e.getMessage(), null, e.getMessage(), locale);
+            String errorMessage = MensagensWeb.de(messageSource, e, locale);
             attributes.addFlashAttribute("error", errorMessage);
             attributes.addFlashAttribute("chapaDTO", dto);
         } catch (Exception e) {
             log.error("Erro inesperado ao cadastrar chapa de vidro: {}", e.getMessage(), e);
-            attributes.addFlashAttribute("error", messageSource.getMessage(AppMessages.ERROR_VALIDATION_FAILED, null, locale));
+            attributes.addFlashAttribute("error", MensagensWeb.validacaoFalhou(messageSource, locale));
             attributes.addFlashAttribute("chapaDTO", dto);
         }
 
@@ -135,7 +127,7 @@ public class VidracariaController {
             model.addAttribute("paginaHistorico", Page.empty());
             model.addAttribute("operadores", List.of());
             model.addAttribute("error",
-                    messageSource.getMessage(AppMessages.ERROR_VALIDATION_FAILED, null, locale));
+                    MensagensWeb.validacaoFalhou(messageSource, locale));
         }
     }
 

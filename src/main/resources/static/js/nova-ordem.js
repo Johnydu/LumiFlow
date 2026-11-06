@@ -69,7 +69,6 @@
     });
 
     infoBox.classList.remove('is-hidden');
-    infoBox.classList.add('is-visible');
   }
 
   document.addEventListener('DOMContentLoaded', () => {

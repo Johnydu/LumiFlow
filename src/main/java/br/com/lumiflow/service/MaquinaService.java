@@ -99,11 +99,13 @@ public class MaquinaService {
             Maquina maquina = buscarPorId(id);
 
             if (dto.nome() != null && !dto.nome().isBlank()) {
-                maquinaRepository.findByNome(normalizeName(dto.nome()))
+                String novoNome = normalizeName(dto.nome());
+                maquinaRepository.findByNome(novoNome)
                         .filter(outra -> !outra.getId().equals(id))
                         .ifPresent(outra -> {
                             throw new BusinessException(AppMessages.ERROR_MACHINE_NAME_DUPLICATE);
                         });
+                maquina.setNome(novoNome);
             }
 
             if (dto.setorId() != null) {

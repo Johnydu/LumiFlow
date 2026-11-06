@@ -85,6 +85,7 @@ public class OperadorService {
             if (dto.nome() != null) {
                 operador.setNome(dto.nome().trim().toUpperCase(Locale.ROOT));
             }
+            operador.setFuncao(normalizarFuncao(dto.funcao()));
             if (dto.setorPadraoId() != null) {
                 operador.setSetorPadrao(setorService.buscarSetorPorId(dto.setorPadraoId()));
             }
@@ -137,7 +138,7 @@ public class OperadorService {
             if (dto.nome() != null && !dto.nome().isBlank()) {
                 operador.setNome(dto.nome().trim().toUpperCase(Locale.ROOT));
             }
-            operador.setFuncao(dto.funcao() == null || dto.funcao().isBlank() ? null : dto.funcao().trim());
+            operador.setFuncao(normalizarFuncao(dto.funcao()));
             operador.setSetorPadrao(dto.setorPadraoId() == null ? null : setorService.buscarSetorPorId(dto.setorPadraoId()));
 
             operadorRepository.save(operador);
@@ -150,6 +151,11 @@ public class OperadorService {
             log.error("Erro inesperado ao editar operador id {}: {}", id, e.getMessage(), e);
             throw new BusinessException(AppMessages.ERROR_VALIDATION_FAILED);
         }
+    }
+
+    /** Mesma regra no cadastro e na edição: sem espaços nas pontas, em maiúsculas, vazio vira null. */
+    private String normalizarFuncao(String funcao) {
+        return funcao == null || funcao.isBlank() ? null : funcao.trim().toUpperCase(Locale.ROOT);
     }
 
     @Transactional(readOnly = true)

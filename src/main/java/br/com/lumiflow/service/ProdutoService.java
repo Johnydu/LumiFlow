@@ -196,7 +196,7 @@ public class ProdutoService {
     }
 
     private String normalizeName(String name) {
-        return name == null || name.isEmpty() ? null : name.trim().toUpperCase(Locale.ROOT);
+        return name == null || name.isBlank() ? null : name.trim().toUpperCase(Locale.ROOT);
     }
 
 

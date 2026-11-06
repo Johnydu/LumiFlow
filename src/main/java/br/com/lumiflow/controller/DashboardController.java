@@ -55,7 +55,7 @@ public class DashboardController {
 
         } catch (Exception e) {
             log.error("Erro inesperado ao carregar as métricas do dashboard: {}", e.getMessage(), e);
-            model.addAttribute("error", messageSource.getMessage(AppMessages.ERROR_VALIDATION_FAILED, null, locale));
+            model.addAttribute("error", MensagensWeb.validacaoFalhou(messageSource, locale));
             model.addAttribute("totalOrdens", 0L);
             model.addAttribute("ordensAndamento", 0L);
             model.addAttribute("ordensConcluidas", 0L);

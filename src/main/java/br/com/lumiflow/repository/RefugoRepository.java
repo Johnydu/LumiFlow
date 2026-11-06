@@ -11,6 +11,10 @@ import java.util.List;
 
 @Repository
 public interface RefugoRepository extends JpaRepository<Refugo, Long> {
+
+    /** A linha de ordem_setor é referenciada por algum refugo (FK RESTRICT: não pode ser apagada). */
+    boolean existsByOrdemSetorId(Long ordemSetorId);
+
     List<Refugo> findByOrdemSetor_OrdemProducao_IdAndDestinoOrderByDataHoraDesc(
             Long ordemProducaoId, DestinoRefugo destino);
 

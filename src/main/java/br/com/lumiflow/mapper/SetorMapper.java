@@ -15,6 +15,7 @@ import java.util.List;
 public interface SetorMapper {
 
     @Mapping(target = "nome", source = "nome")
+    @Mapping(target = "id", ignore = true)
     @Mapping(target = "etapas", ignore = true)
     Setor toEntity(SetorDTO dto);
 

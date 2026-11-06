@@ -75,13 +75,21 @@ public interface OrdemSetorRepository extends JpaRepository<OrdemSetor, Long> {
             @Param("variante") String variante);
 
 
-    List<OrdemSetor> findByOrdemProducaoIdInOrderBySequenciaAsc(List<Long> ordemProducaoIds);
+    @Query("""
+        SELECT os FROM OrdemSetor os
+        JOIN FETCH os.setor
+        WHERE os.ordemProducao.id IN :ordemProducaoIds
+        ORDER BY os.sequencia ASC
+        """)
+    List<OrdemSetor> findByOrdemProducaoIdInOrderBySequenciaAsc(@Param("ordemProducaoIds") List<Long> ordemProducaoIds);
 
     Long countByStatus(EstatusOrdemProducao status);
 
     Long countByStatusNot(EstatusOrdemProducao status);
 
-    Long countByStatusAndFimBetween(EstatusOrdemProducao status, LocalDateTime inicio, LocalDateTime fim);
+    /** Intervalo semiaberto [inicio, fimExclusivo): não perde nem duplica o instante de virada do dia. */
+    Long countByStatusAndFimGreaterThanEqualAndFimLessThan(EstatusOrdemProducao status,
+                                                           LocalDateTime inicio, LocalDateTime fimExclusivo);
 
     @Query("""
     SELECT new br.com.lumiflow.dto.dashboard.SetorResumoDTO(

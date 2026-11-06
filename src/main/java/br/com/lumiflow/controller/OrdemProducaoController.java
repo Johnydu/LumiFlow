@@ -11,6 +11,7 @@ import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.context.MessageSource;
+import org.springframework.security.access.AccessDeniedException;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.stereotype.Controller;
@@ -38,8 +39,7 @@ public class OrdemProducaoController {
             carregarPaginaNovaOrdem(model);
         } catch (Exception e) {
             log.error("Erro inesperado ao carregar o formulário de nova ordem: {}", e.getMessage(), e);
-            model.addAttribute("error", messageSource
-                    .getMessage(AppMessages.ERROR_VALIDATION_FAILED, null, locale));
+            model.addAttribute("error", MensagensWeb.validacaoFalhou(messageSource, locale));
             if (!model.containsAttribute("ordemDTO")) {
                 model.addAttribute("ordemDTO",
                         new OrdemProducaoDTO(null, null, null, null));
@@ -54,6 +54,11 @@ public class OrdemProducaoController {
                             Model model, RedirectAttributes attributes, Locale locale,
                             @AuthenticationPrincipal UsuarioDetails usuarioLogado) {
 
+        if (usuarioLogado == null) {
+            // Principal ausente ou de outro tipo: sem identificar o autor não há como criar a ordem.
+            throw new AccessDeniedException("Usuário autenticado não identificado");
+        }
+
         if (result.hasErrors()) {
             return erroValidacao(model, result, locale);
         }
@@ -65,14 +70,13 @@ public class OrdemProducaoController {
             return "redirect:/dashboard";
         } catch (BusinessException e) {
             log.warn("Erro de negócio ao criar ordem de produção: {}", e.getMessage());
-            String errorMessage = messageSource.getMessage(e.getMessage(), null, e.getMessage(), locale);
+            String errorMessage = MensagensWeb.de(messageSource, e, locale);
             attributes.addFlashAttribute("error", errorMessage);
             attributes.addFlashAttribute("ordemDTO", dto);
             return "redirect:/dashboard/ordens/novaOrdem";
         } catch (Exception e) {
             log.error("Erro inesperado ao criar ordem de produção: {}", e.getMessage(), e);
-            attributes.addFlashAttribute("error", messageSource
-                    .getMessage(AppMessages.ERROR_VALIDATION_FAILED, null, locale));
+            attributes.addFlashAttribute("error", MensagensWeb.validacaoFalhou(messageSource, locale));
             attributes.addFlashAttribute("ordemDTO", dto);
             return "redirect:/dashboard/ordens/novaOrdem";
         }
@@ -80,15 +84,7 @@ public class OrdemProducaoController {
 
     private String erroValidacao(Model model, BindingResult result, Locale locale) {
         carregarPaginaNovaOrdem(model);
-        String mensagem = result.getAllErrors().stream()
-                .findFirst()
-                .map(error -> {
-                    String defaultMessage = error.getDefaultMessage();
-                    return defaultMessage == null ? "" :
-                            messageSource.getMessage(defaultMessage, null, defaultMessage, locale);
-                })
-                .orElseGet(() -> messageSource.getMessage(
-                        AppMessages.ERROR_VALIDATION_FAILED, null, locale));
+        String mensagem = MensagensWeb.deBinding(messageSource, result, locale);
         model.addAttribute("error", mensagem);
         return "ordens/NovaOrdem";
     }

@@ -9,6 +9,8 @@ import br.com.lumiflow.entity.enums.EstatusOrdemProducao;
 import br.com.lumiflow.exception.BusinessException;
 import br.com.lumiflow.repository.OrdemProducaoRepository;
 import br.com.lumiflow.repository.OrdemSetorRepository;
+import br.com.lumiflow.repository.RefugoRepository;
+import br.com.lumiflow.repository.RoteiroRepository;
 import br.com.lumiflow.repository.RoteiroPassoRepository;
 import br.com.lumiflow.repository.UsuarioRepository;
 import lombok.RequiredArgsConstructor;
@@ -21,6 +23,8 @@ import org.springframework.orm.ObjectOptimisticLockingFailureException;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.time.Clock;
+import java.time.LocalDateTime;
 import java.util.*;
 import java.util.stream.Collectors;
 
@@ -40,6 +44,9 @@ public class OrdemProducaoService {
     private final RoteiroPassoRepository roteiroPassoRepository;
     private final OrdemSetorRepository ordemSetorRepository;
     private final UsuarioRepository usuarioRepository;
+    private final RoteiroRepository roteiroRepository;
+    private final RefugoRepository refugoRepository;
+    private final Clock clock;
 
     @Transactional(readOnly = true)
     public Page<OrdemListagemDTO> listarPorSetorIdEFiltros(Long setorId, OrdemFiltroDTO filtro, int pagina) {
@@ -129,10 +136,13 @@ public class OrdemProducaoService {
                 throw new BusinessException(AppMessages.ERROR_VALIDATION_FAILED);
             }
             var produto = produtoService.buscarProdutoPorId(dto.produtoId());
-            Roteiro roteiro = produto.getRoteiro();
-            if (roteiro == null) {
+            if (produto.getRoteiro() == null) {
                 throw new BusinessException(AppMessages.ERROR_PRODUCT_WITHOUT_ROUTE);
             }
+            // Trava o roteiro até o fim da transação: RoteiroService.atualizar não troca os passos
+            // enquanto a ordem está sendo criada com eles.
+            Roteiro roteiro = roteiroRepository.findByIdForUpdate(produto.getRoteiro().getId())
+                    .orElseThrow(() -> new BusinessException(AppMessages.ERROR_PRODUCT_WITHOUT_ROUTE));
 
             OrdemProducao ordem = new OrdemProducao();
             ordem.setNumero(gerarNumero());
@@ -141,7 +151,7 @@ public class OrdemProducaoService {
             ordem.setProduto(produto);
             ordem.setRoteiro(roteiro); // a ordem guarda o roteiro com que nasceu
             ordem.setCriadoPor(usuarioRepository.getReferenceById(usuarioId));
-            ordem.setDataCriacao(dto.dataCriacao() != null ? dto.dataCriacao().atStartOfDay() : java.time.LocalDateTime.now());
+            ordem.setDataCriacao(dto.dataCriacao() != null ? dto.dataCriacao().atStartOfDay() : LocalDateTime.now(clock));
             ordem.setObservacao(dto.observacao());
 
             ordemProducaoRepository.save(ordem);
@@ -312,6 +322,14 @@ public class OrdemProducaoService {
                 // A sobra mantém a variante que a linha já tinha (null quando não havia divisão)
                 ordemOriginal.setQtdRecebida(restante);
                 ordemOriginal.setQtdPendente(restante);
+                ordemSetorRepository.save(ordemOriginal);
+            } else if (refugoRepository.existsByOrdemSetorId(ordemOriginal.getId())) {
+                // A linha já tem refugo registrado (FK RESTRICT): não pode ser apagada sem perder o
+                // histórico. Tudo foi para as novas linhas, então ela fica zerada e concluída.
+                ordemOriginal.setQtdRecebida(0);
+                ordemOriginal.setQtdPendente(0);
+                ordemOriginal.setStatus(EstatusOrdemProducao.CONCLUIDA);
+                ordemOriginal.setFim(LocalDateTime.now(clock));
                 ordemSetorRepository.save(ordemOriginal);
             } else {
                 ordemSetorRepository.delete(ordemOriginal);

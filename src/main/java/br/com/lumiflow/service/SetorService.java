@@ -9,7 +9,9 @@ import br.com.lumiflow.mapper.SetorMapper;
 import br.com.lumiflow.entity.EtapaSetor;
 import br.com.lumiflow.entity.Setor;
 import br.com.lumiflow.repository.EtapaSetorRepository;
+import br.com.lumiflow.repository.LancamentoRepository;
 import br.com.lumiflow.repository.MaquinaRepository;
+import br.com.lumiflow.repository.RoteiroPassoRepository;
 import br.com.lumiflow.repository.SetorRepository;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -33,6 +35,8 @@ public class SetorService {
     private final EtapaSetorRepository etapaSetorRepository;
     private final SetorMapper setorMapper;
     private final MaquinaRepository maquinaRepository;
+    private final RoteiroPassoRepository roteiroPassoRepository;
+    private final LancamentoRepository lancamentoRepository;
 
     public Setor buscarSetorPorId(Long id) {
         if (id == null) {
@@ -153,8 +157,21 @@ public class SetorService {
                 }
             }
 
-            setor.getEtapas().removeIf(etapa ->
-                    etapa.getId() != null && !etapasRecebidas.contains(etapa.getId()));
+            // etapas == null significa "não alterar as etapas"; só uma lista (mesmo vazia) as substitui.
+            if (dto.etapas() != null) {
+                List<EtapaSetor> removidas = setor.getEtapas().stream()
+                        .filter(etapa -> etapa.getId() != null && !etapasRecebidas.contains(etapa.getId()))
+                        .toList();
+                for (EtapaSetor removida : removidas) {
+                    // As FKs de roteiro_passo e lancamento são ON DELETE SET NULL: remover uma etapa em uso
+                    // apagaria silenciosamente o vínculo/histórico, então é bloqueado.
+                    if (roteiroPassoRepository.existsByEtapaSetorId(removida.getId())
+                            || lancamentoRepository.existsByEtapaSetorId(removida.getId())) {
+                        throw new BusinessException(AppMessages.ERROR_STAGE_IN_USE);
+                    }
+                }
+                setor.getEtapas().removeAll(removidas);
+            }
 
             if (setor.getEtapas().isEmpty() && dto.etapas() != null && !dto.etapas().isEmpty()) {
                 throw new BusinessException(AppMessages.ERROR_VALIDATION_FAILED);

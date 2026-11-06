@@ -3,7 +3,7 @@ package br.com.lumiflow.security;
 import lombok.AllArgsConstructor;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
-import org.springframework.http.HttpMethod;
+import org.springframework.http.HttpStatus;
 import org.springframework.security.access.hierarchicalroles.RoleHierarchy;
 import org.springframework.security.access.hierarchicalroles.RoleHierarchyImpl;
 import org.springframework.security.authentication.AuthenticationManager;
@@ -16,19 +16,32 @@ import org.springframework.security.core.session.SessionRegistry;
 import org.springframework.security.core.session.SessionRegistryImpl;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.crypto.password.PasswordEncoder;
+import org.springframework.security.web.AuthenticationEntryPoint;
 import org.springframework.security.web.SecurityFilterChain;
+import org.springframework.security.web.authentication.DelegatingAuthenticationEntryPoint;
+import org.springframework.security.web.authentication.HttpStatusEntryPoint;
+import org.springframework.security.web.authentication.LoginUrlAuthenticationEntryPoint;
 import org.springframework.security.web.authentication.UsernamePasswordAuthenticationFilter;
 import org.springframework.security.web.header.writers.ReferrerPolicyHeaderWriter;
+import org.springframework.security.web.header.writers.StaticHeadersWriter;
+import org.springframework.security.web.servlet.util.matcher.PathPatternRequestMatcher;
 import org.springframework.security.web.session.HttpSessionEventPublisher;
+import org.springframework.security.web.util.matcher.RequestMatcher;
+
+import java.util.LinkedHashMap;
 
 /**
  * CONFIGURAÇÃO DE SEGURANÇA — LumiFlow
  * <p>
- * HIERARQUIA DE PERFIS:
- * ADMIN: acesso total
+ * HIERARQUIA DE PERFIS (ADMIN > SUPERVISOR > PCP/GESTÃO > OPERADOR):
+ * ADMIN: acesso total; é o único perfil que gere utilizadores
  * SUPERVISOR: engloba PCP e Gestão
- * PCP / GESTÃO: planejamento e liberação/relatórios
+ * PCP / GESTÃO: planejamento, liberação de ordens, relatórios e configurações
  * OPERADOR: lançamentos no chão de fábrica
+ * <p>
+ * Como a hierarquia já propaga as permissões, as regras usam o menor perfil necessário
+ * (ex.: hasRole(PCP) já vale para SUPERVISOR e ADMIN). Cada regra de URL tem o mesmo critério do
+ * @PreAuthorize do controller correspondente (defesa em profundidade).
  */
 @Configuration
 @EnableWebSecurity
@@ -41,11 +54,17 @@ public class SecurityConfig {
 
     private static final String ROLE_ADMIN = "ADMIN";
     private static final String ROLE_PCP = "PCP";
-    private static final String ROLE_SUPERVISOR = "SUPERVISOR";
     private static final String ROLE_GESTAO = "GESTAO";
     private static final String ROLE_OPERADOR = "OPERADOR";
 
     private static final String LOGIN_PAGE = "/login";
+
+    /** HSTS: 1 ano. Só é emitido pelo Spring Security em requisições HTTPS. */
+    private static final long HSTS_MAX_AGE_SEGUNDOS = 31_536_000L;
+
+    /** Recursos de hardware que a aplicação não usa ficam desligados para qualquer origem. */
+    private static final String PERMISSIONS_POLICY =
+            "camera=(), microphone=(), geolocation=(), payment=(), usb=(), interest-cohort=()";
 
     /**
      * CSP em modo de imposição (enforcement) ativa.
@@ -85,12 +104,15 @@ public class SecurityConfig {
                         // Ecrã de login
                         .requestMatchers(LOGIN_PAGE).permitAll()
 
-                        // ADMIN: utilizadores e configurações
+                        // ADMIN: somente gestão de utilizadores
                         .requestMatchers("/dashboard/usuario/**").hasRole(ROLE_ADMIN)
-                        .requestMatchers("/dashboard/configuracao/**",
-                                "/dashboard/configuracoes/**").authenticated()
 
-                        // Cadastros e criação de ordens: PCP (Supervisor e Admin por herança)
+                        // Configurações: PCP e Gestão (Supervisor e Admin por herança)
+                        .requestMatchers("/dashboard/configuracao/**",
+                                "/dashboard/configuracoes/**")
+                        .hasAnyRole(ROLE_GESTAO, ROLE_PCP)
+
+                        // Cadastros: PCP (Supervisor e Admin por herança)
                         .requestMatchers(
                                 "/dashboard/setores/**",
                                 "/dashboard/maquinas/**",
@@ -99,38 +121,35 @@ public class SecurityConfig {
                                 "/dashboard/operadores/**"
                         ).hasRole(ROLE_PCP)
 
-                        .requestMatchers(HttpMethod.GET, "/dashboard/ordens/novaOrdem").hasRole(ROLE_PCP)
-                        .requestMatchers(HttpMethod.POST, "/dashboard/ordens").hasRole(ROLE_PCP)
+                        // Criação de ordens: PCP, qualquer verbo (alinhado ao @PreAuthorize do controller)
+                        .requestMatchers("/dashboard/ordens", "/dashboard/ordens/novaOrdem").hasRole(ROLE_PCP)
 
-                        // Liberação e divisão de ordens: Gestão
-                        .requestMatchers(HttpMethod.POST, "/dashboard/ordens-setor/*/ordens/*/liberar")
-                        .hasAnyRole(ROLE_GESTAO, ROLE_PCP, ROLE_SUPERVISOR)
-                        .requestMatchers(HttpMethod.POST, "/dashboard/ordens-setor/*/ordens/*/dividir")
-                        .hasAnyRole(ROLE_GESTAO, ROLE_PCP, ROLE_SUPERVISOR)
-                        .requestMatchers(HttpMethod.POST, "/dashboard/ordens-setor/*/ordens/*/pausar"
-                        )
-                        .hasAnyRole(ROLE_ADMIN, ROLE_GESTAO, ROLE_PCP, ROLE_SUPERVISOR)
+                        // Liberação, divisão e pausa de etapas (e qualquer subrota/verbo): Gestão e PCP
+                        .requestMatchers("/dashboard/ordens-setor/*/ordens/**")
+                        .hasAnyRole(ROLE_GESTAO, ROLE_PCP)
 
-                        // Ordens por setor: autenticados
+                        // Ordens por setor (consulta): autenticados
                         .requestMatchers("/dashboard/ordens-setor/**").authenticated()
 
-                        .requestMatchers(HttpMethod.GET, "/dashboard/ordens/*/detalhes")
-                        .hasAnyRole(ROLE_GESTAO, ROLE_PCP)
+                        // Detalhes da ordem: Gestão e PCP, qualquer verbo
+                        .requestMatchers("/dashboard/ordens/*/detalhes").hasAnyRole(ROLE_GESTAO, ROLE_PCP)
 
                         // Lançamento de produção: Operador e acima
                         .requestMatchers("/dashboard/ordens/*/setor/*/lancar/**").hasRole(ROLE_OPERADOR)
 
-                        // Demais rotas de ordens: autenticados
-                        .requestMatchers("/dashboard/ordens/**").authenticated()
+                        // Demais rotas de ordens (inclui PUT/DELETE e subrotas futuras): PCP por padrão
+                        .requestMatchers("/dashboard/ordens/**").hasRole(ROLE_PCP)
 
                         // Vidraçaria: autenticados
                         .requestMatchers("/dashboard/vidracaria/**").authenticated()
 
-                        .requestMatchers("/dashboard/relatorios/**")
-                        .hasAnyRole(ROLE_GESTAO, ROLE_PCP, ROLE_SUPERVISOR)
+                        .requestMatchers("/dashboard/relatorios/**").hasAnyRole(ROLE_GESTAO, ROLE_PCP)
 
                         // Dashboard (raiz)
-                        .requestMatchers("/dashboard").hasAnyRole(ROLE_GESTAO, ROLE_PCP, ROLE_SUPERVISOR)
+                        .requestMatchers("/dashboard").hasAnyRole(ROLE_GESTAO, ROLE_PCP)
+
+                        // API interna: autenticados (anônimo recebe 401, ver exceptionHandling)
+                        .requestMatchers("/api/**").authenticated()
 
                         // Regras genéricas (devem vir após as específicas)
                         .requestMatchers("/dashboard/**").authenticated()
@@ -142,6 +161,9 @@ public class SecurityConfig {
                 // Limite de falhas por IP, antes da autenticação por formulário
                 .addFilterBefore(new LoginRateLimitFilter(loginIpThrottle),
                         UsernamePasswordAuthenticationFilter.class)
+
+                // /api/** (fetch/AJAX) recebe 401 em vez de redirect 302 para a página de login
+                .exceptionHandling(ex -> ex.authenticationEntryPoint(authenticationEntryPoint()))
 
                 .formLogin(form -> form
                         .loginPage(LOGIN_PAGE)
@@ -177,11 +199,25 @@ public class SecurityConfig {
                         .contentSecurityPolicy(csp -> csp.policyDirectives(CSP_POLICY))
                         .referrerPolicy(referrer -> referrer
                                 .policy(ReferrerPolicyHeaderWriter.ReferrerPolicy.STRICT_ORIGIN_WHEN_CROSS_ORIGIN))
+                        .httpStrictTransportSecurity(hsts -> hsts
+                                .includeSubDomains(true)
+                                .maxAgeInSeconds(HSTS_MAX_AGE_SEGUNDOS))
+                        .addHeaderWriter(new StaticHeadersWriter("Permissions-Policy", PERMISSIONS_POLICY))
                 )
 
                 .csrf(Customizer.withDefaults());
 
         return http.build();
+    }
+
+    /** /api/** responde 401 para anônimos; as demais rotas redirecionam para a tela de login. */
+    private AuthenticationEntryPoint authenticationEntryPoint() {
+        LinkedHashMap<RequestMatcher, AuthenticationEntryPoint> porRota = new LinkedHashMap<>();
+        porRota.put(PathPatternRequestMatcher.withDefaults().matcher("/api/**"),
+                new HttpStatusEntryPoint(HttpStatus.UNAUTHORIZED));
+        DelegatingAuthenticationEntryPoint entryPoint = new DelegatingAuthenticationEntryPoint(porRota);
+        entryPoint.setDefaultEntryPoint(new LoginUrlAuthenticationEntryPoint(LOGIN_PAGE));
+        return entryPoint;
     }
 
     /**
